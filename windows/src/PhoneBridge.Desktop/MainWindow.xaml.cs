@@ -5,7 +5,11 @@ using System.Net.Http;
 using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 using System.Windows.Threading;
+using WpfButton = System.Windows.Controls.Button;
+using WpfBrush = System.Windows.Media.Brush;
+using WpfBrushes = System.Windows.Media.Brushes;
 using SaveFileDialog = Microsoft.Win32.SaveFileDialog;
 using MessageBox = System.Windows.MessageBox;
 using PhoneBridge.Connection;
@@ -54,6 +58,89 @@ public partial class MainWindow : Window
     private static string T(string key) => TextCatalog.Get(key);
     private DeviceRow? Selected => Devices.SelectedItem as DeviceRow;
 
+    private void ShowMainPage(UIElement page, WpfButton activeNavigation)
+    {
+        foreach (var item in new UIElement[] { DevicesPage, AddPhonePage, DeviceSettingsPage, SettingsPage, AboutPage })
+            item.Visibility = item == page ? Visibility.Visible : Visibility.Collapsed;
+        foreach (var button in new[] { DevicesNavigation, SettingsNavigation, AboutNavigation })
+        {
+            bool active = button == activeNavigation;
+            button.Background = (WpfBrush)FindResource(active ? "SubtleBrush" : "SurfaceBrush");
+            if (!active) button.Background = WpfBrushes.Transparent;
+            button.Foreground = (WpfBrush)FindResource(active ? "PrimaryBrush" : "TextBrush");
+        }
+    }
+
+    private void NavigateDevicesClick(object sender, RoutedEventArgs e) => ShowMainPage(DevicesPage, DevicesNavigation);
+    private void NavigateSettingsClick(object sender, RoutedEventArgs e)
+    {
+        ShowMainPage(SettingsPage, SettingsNavigation);
+        ShowGeneralSettingsClick(sender, e);
+    }
+    private void NavigateAboutClick(object sender, RoutedEventArgs e) => ShowMainPage(AboutPage, AboutNavigation);
+
+    private void ShowGeneralSettingsClick(object sender, RoutedEventArgs e)
+    {
+        GeneralSettingsPage.Visibility = Visibility.Visible;
+        AdvancedSettingsPage.Visibility = Visibility.Collapsed;
+        GeneralSettingsNavigation.Background = (WpfBrush)FindResource("SubtleBrush");
+        GeneralSettingsNavigation.Foreground = (WpfBrush)FindResource("PrimaryBrush");
+        AdvancedSettingsNavigation.Background = WpfBrushes.Transparent;
+        AdvancedSettingsNavigation.Foreground = (WpfBrush)FindResource("TextBrush");
+    }
+
+    private void ShowAdvancedSettingsClick(object sender, RoutedEventArgs e)
+    {
+        GeneralSettingsPage.Visibility = Visibility.Collapsed;
+        AdvancedSettingsPage.Visibility = Visibility.Visible;
+        GeneralSettingsNavigation.Background = WpfBrushes.Transparent;
+        GeneralSettingsNavigation.Foreground = (WpfBrush)FindResource("TextBrush");
+        AdvancedSettingsNavigation.Background = (WpfBrush)FindResource("SubtleBrush");
+        AdvancedSettingsNavigation.Foreground = (WpfBrush)FindResource("PrimaryBrush");
+    }
+
+    private void SelectDevice(DeviceRow row)
+    {
+        Devices.SelectedItem = row;
+        Devices.ScrollIntoView(row);
+        RefreshEndpoints();
+        UpdateControls();
+    }
+
+    private void AddPhoneClick(object sender, RoutedEventArgs e)
+    {
+        var row = Selected ?? (Devices.ItemsSource as IEnumerable<DeviceRow>)?.FirstOrDefault(item => item.Record is null);
+        if (row is not null) SelectDevice(row);
+        PairingPhoneName.Text = row?.Name ?? T("ChoosePhoneFirst");
+        ShowMainPage(AddPhonePage, DevicesNavigation);
+    }
+
+    private void DevicePrimaryClick(object sender, RoutedEventArgs e)
+    {
+        if (sender is not WpfButton { DataContext: DeviceRow row }) return;
+        SelectDevice(row);
+        if (row.IsConnected) OpenClick(sender, e);
+        else if (row.Record is null) AddPhoneClick(sender, e);
+        else if (Connect.IsEnabled) ConnectClick(sender, e);
+    }
+
+    private void DeviceDisconnectClick(object sender, RoutedEventArgs e)
+    {
+        if (sender is not WpfButton { DataContext: DeviceRow row }) return;
+        SelectDevice(row);
+        if (Unmount.IsEnabled) UnmountClick(sender, e);
+    }
+
+    private void DeviceSettingsClick(object sender, RoutedEventArgs e)
+    {
+        if (sender is not WpfButton { DataContext: DeviceRow row }) return;
+        SelectDevice(row);
+        DeviceSettingsName.Text = row.Name;
+        ShowMainPage(DeviceSettingsPage, DevicesNavigation);
+    }
+
+    private void PairingCodeChanged(object sender, RoutedEventArgs e) => UpdateControls();
+
     private async void OnLoaded(object sender, RoutedEventArgs e)
     {
         FillDrives();
@@ -81,8 +168,15 @@ public partial class MainWindow : Window
     private void RebuildRows()
     {
         string? selected = Selected?.Id;
-        var rows = candidates.Values.Select(c => new DeviceRow(c.Id, c, records.FirstOrDefault(r => r.DeviceId == c.DeviceIdHint))).ToList();
-        rows.AddRange(records.Where(r => !candidates.Values.Any(c => c.DeviceIdHint == r.DeviceId)).Select(r => new DeviceRow(r.DeviceId, null, r)));
+        string? connectedDevice = client.Mount.State == MountState.Mounted ? client.Connected?.Record.DeviceId : null;
+        char? connectedDrive = connectedDevice is null ? null : client.Connected?.DriveLetter;
+        var rows = candidates.Values.Select(c =>
+        {
+            var record = records.FirstOrDefault(r => r.DeviceId == c.DeviceIdHint);
+            return new DeviceRow(c.Id, c, record, record?.DeviceId == connectedDevice, record?.DeviceId == connectedDevice ? connectedDrive : null);
+        }).ToList();
+        rows.AddRange(records.Where(r => !candidates.Values.Any(c => c.DeviceIdHint == r.DeviceId))
+            .Select(r => new DeviceRow(r.DeviceId, null, r, r.DeviceId == connectedDevice, r.DeviceId == connectedDevice ? connectedDrive : null)));
         Devices.ItemsSource = rows.OrderBy(r => r.Name, StringComparer.CurrentCulture).ToArray();
         Devices.SelectedItem = rows.FirstOrDefault(r => r.Id == selected);
         UpdateControls();
@@ -104,6 +198,8 @@ public partial class MainWindow : Window
         RefreshEndpoints(Endpoints.SelectedItem as DeviceEndpoint);
         ManualAddress.Clear();
         ManualPort.Text = ManualEndpointSession.DefaultPort;
+        if (PairingPhoneName is not null) PairingPhoneName.Text = Selected?.Name ?? T("ChoosePhoneFirst");
+        if (DeviceSettingsName is not null) DeviceSettingsName.Text = Selected?.Name ?? string.Empty;
         UpdateControls();
     }
     private void RefreshEndpoints(DeviceEndpoint? preferred = null)
@@ -124,7 +220,7 @@ public partial class MainWindow : Window
         bool mounted = client.Mount.State == MountState.Mounted;
         var row = Selected;
         bool idle = client.Mount.State is MountState.Idle or MountState.Stopped or MountState.Failed;
-        Pair.IsEnabled = !busy && !storeUnavailable && idle && row?.Record is null && row?.Candidate?.Protocol == CandidateProtocol.PairedV3 && row.Candidate.Pairing is not null;
+        Pair.IsEnabled = !busy && !storeUnavailable && idle && Code.SecurePassword.Length == 8 && row?.Record is null && row?.Candidate?.Protocol == CandidateProtocol.PairedV3 && row.Candidate.Pairing is not null;
         Connect.IsEnabled = !busy && !storeUnavailable && idle &&
             row?.Record?.State is (PairingRecordState.Pending or PairingRecordState.Active) && Endpoints.SelectedItem is DeviceEndpoint;
         Revoke.IsEnabled = !busy && !storeUnavailable && row?.Record is not null;
@@ -511,11 +607,22 @@ public partial class MainWindow : Window
         catch { closing = false; ShowFromTray(); Status.Text = T("unmount-not-confirmed"); UpdateControls(); }
     }
 
-    private sealed record DeviceRow(string Id, DeviceCandidate? Candidate, PairingRecord? Record)
+    private sealed record DeviceRow(string Id, DeviceCandidate? Candidate, PairingRecord? Record, bool IsConnected, char? DriveLetter)
     {
         public string Name => Record?.DeviceName ?? Candidate!.DisplayName;
         public string Address => Candidate is null ? T("Offline") : string.Join(", ", Candidate.Endpoints.Select(p => p.Address));
         public string Mode => Record is null ? T("NotPaired") : T(Record.Mode.ToString());
-        public string State => Record is not null ? T(Record.State.ToString()) : Candidate?.Protocol == CandidateProtocol.ExperimentalV2 ? T("Experimental") : Candidate?.Pairing is null ? T("EnablePairing") : T("PairingAvailable");
+        public string State => IsConnected ? T("ConnectedState") : Record?.State switch
+        {
+            PairingRecordState.Active => T("NotConnected"),
+            PairingRecordState.Pending => T("Pending"),
+            PairingRecordState.RevocationPending => T("RevocationPending"),
+            PairingRecordState.NeedsRepair => T("NeedsRepair"),
+            _ => Candidate?.Protocol == CandidateProtocol.ExperimentalV2 ? T("Experimental") : Candidate?.Pairing is null ? T("EnablePairing") : T("NotPaired")
+        };
+        public string PrimaryAction => IsConnected ? T("OpenFiles") : Record?.State == PairingRecordState.Pending ? T("ContinueConnecting") : Record is null ? T("PairAction") : T("ConnectAction");
+        public string DriveSummary => IsConnected && DriveLetter is { } letter ? $"{letter}:\\" : Address;
+        public string Accent => IsConnected ? "#16865B" : Record is null ? "#109DA8" : Record.State == PairingRecordState.Active ? "#8A96A6" : "#A85F00";
+        public bool CanDisconnect => IsConnected;
     }
 }

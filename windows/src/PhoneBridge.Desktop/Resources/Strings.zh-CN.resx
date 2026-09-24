@@ -124,4 +124,47 @@
   <data name="ManualEndpointInvalid" xml:space="preserve"><value>请输入 IPv4 或 IPv6 字面地址及 1–65535 端口；不接受网址或主机名。</value></data>
   <data name="ManualEndpointAdded" xml:space="preserve"><value>已为这条配对记录选择临时地址；连接仍会验证设备身份。</value></data>
   <data name="ManualEndpointCleared" xml:space="preserve"><value>临时地址已清除。</value></data>
+  <data name="NavDevices" xml:space="preserve"><value>设备</value></data>
+  <data name="NavSettings" xml:space="preserve"><value>设置</value></data>
+  <data name="NavAbout" xml:space="preserve"><value>关于</value></data>
+  <data name="MyPhones" xml:space="preserve"><value>我的手机</value></data>
+  <data name="DevicesSubtitle" xml:space="preserve"><value>同一局域网内的附近手机与已保存配对</value></data>
+  <data name="AddPhone" xml:space="preserve"><value>添加手机</value></data>
+  <data name="Disconnect" xml:space="preserve"><value>断开</value></data>
+  <data name="PhoneSettings" xml:space="preserve"><value>设备设置</value></data>
+  <data name="OpenFiles" xml:space="preserve"><value>打开文件</value></data>
+  <data name="PairAction" xml:space="preserve"><value>配对</value></data>
+  <data name="ConnectAction" xml:space="preserve"><value>连接</value></data>
+  <data name="ContinueConnecting" xml:space="preserve"><value>继续连接</value></data>
+  <data name="ConnectedState" xml:space="preserve"><value>已连接</value></data>
+  <data name="NotConnected" xml:space="preserve"><value>未连接</value></data>
+  <data name="Back" xml:space="preserve"><value>返回</value></data>
+  <data name="AddPhoneSteps" xml:space="preserve"><value>1 选择手机    ·    2 输入配对码    ·    3 在手机上批准    ·    4 自动连接</value></data>
+  <data name="ChoosePhoneFirst" xml:space="preserve"><value>请选择附近手机</value></data>
+  <data name="AddPhoneInstructions" xml:space="preserve"><value>在手机上开始共享并打开“配对新电脑”。</value></data>
+  <data name="PairingCodeHint" xml:space="preserve"><value>只接受 8 位数字；输入完成前“配对”不可用。</value></data>
+  <data name="ConnectionPreferences" xml:space="preserve"><value>连接偏好</value></data>
+  <data name="ModeManagedOnPhone" xml:space="preserve"><value>访问模式由手机确认，此处只读显示。</value></data>
+  <data name="SafetyOperations" xml:space="preserve"><value>安全操作</value></data>
+  <data name="AuthorizeDeletion" xml:space="preserve"><value>授权一次删除</value></data>
+  <data name="RemoveAndAdvanced" xml:space="preserve"><value>移除与高级排障</value></data>
+  <data name="RemovePhoneHelp" xml:space="preserve"><value>正常移除会禁用本机配对，并请求手机撤销授权。</value></data>
+  <data name="RemovePhone" xml:space="preserve"><value>移除此手机</value></data>
+  <data name="ForgetLocalOnly" xml:space="preserve"><value>仅忘记本机…</value></data>
+  <data name="General" xml:space="preserve"><value>常规</value></data>
+  <data name="AdvancedTroubleshooting" xml:space="preserve"><value>高级排障</value></data>
+  <data name="Language" xml:space="preserve"><value>语言</value></data>
+  <data name="SimplifiedChinese" xml:space="preserve"><value>简体中文</value></data>
+  <data name="Startup" xml:space="preserve"><value>启动</value></data>
+  <data name="AutoStartHelp" xml:space="preserve"><value>只启动客户端并进入托盘，不自动连接或创建盘符。</value></data>
+  <data name="DefaultDrive" xml:space="preserve"><value>默认盘符</value></data>
+  <data name="AutomaticDriveHelp" xml:space="preserve"><value>当前单设备核心使用选中的空闲盘符；设备级偏好将在多会话隔离后接入。</value></data>
+  <data name="TemporaryManualAddress" xml:space="preserve"><value>临时手动地址</value></data>
+  <data name="IdentityStillVerified" xml:space="preserve"><value>请先选择已配对手机；连接仍会验证已保存的设备身份。</value></data>
+  <data name="Diagnostics" xml:space="preserve"><value>诊断</value></data>
+  <data name="DiagnosticsNotUploaded" xml:space="preserve"><value>诊断包只保存到本机，不会自动上传。</value></data>
+  <data name="VersionPreview" xml:space="preserve"><value>v0.2.0 UI 验收版本</value></data>
+  <data name="ProjectAndLicense" xml:space="preserve"><value>项目与许可</value></data>
+  <data name="LicenseSummary" xml:space="preserve"><value>PhoneBridge NG 按 GPL-3.0-or-later 分发，包含 rclone 与 WinFsp；正式交付会提供通知和对应源码。</value></data>
+  <data name="GitHubProject" xml:space="preserve"><value>打开 GitHub 项目</value></data>
 </root>

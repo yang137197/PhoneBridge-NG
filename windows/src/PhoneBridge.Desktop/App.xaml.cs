@@ -14,9 +14,10 @@ public partial class App : System.Windows.Application
     protected override void OnStartup(StartupEventArgs e)
     {
         bool startupLaunch = AutoStartManager.IsStartupLaunch(e.Args);
-        CultureInfo.CurrentUICulture = CultureInfo.GetCultureInfo(CultureInfo.CurrentUICulture.TwoLetterISOLanguageName == "zh" ? "zh-CN" : "en-US");
+        bool uiPreview = e.Args.Contains("--ui-preview", StringComparer.Ordinal);
+        CultureInfo.CurrentUICulture = CultureInfo.GetCultureInfo("zh-CN");
         using var identity = WindowsIdentity.GetCurrent();
-        instance = new Mutex(true, "Local\\PhoneBridge-NG-Desktop-" + identity.User!.Value, out bool created);
+        instance = new Mutex(true, "Local\\PhoneBridge-NG-Desktop-" + identity.User!.Value + (uiPreview ? "-UiPreview" : string.Empty), out bool created);
         if (!created)
         {
             if (!startupLaunch) MessageBox.Show(TextCatalog.Get("AlreadyRunning"), "PhoneBridge NG");

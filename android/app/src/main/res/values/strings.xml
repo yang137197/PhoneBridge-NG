@@ -38,4 +38,18 @@
     <string name="cancel">取消</string>
     <string name="development_limit">访问模式按已配对电脑分别设置；切换后 Windows 需要重新连接。</string>
     <string name="permission_missing">请先允许文件访问，并确认所选目录存在。</string>
+    <string name="settings">设置</string>
+    <string name="back">返回</string>
+    <string name="permission_card_title">需要文件访问权限</string>
+    <string name="computer_details">电脑详情</string>
+    <string name="online">在线</string>
+    <string name="language">语言</string>
+    <string name="language_zh">简体中文</string>
+    <string name="language_en">English</string>
+    <string name="language_behavior">语言行为</string>
+    <string name="language_note">切换后当前界面受控刷新，并在重启后保持。通知与对话框使用同一选择。</string>
+    <string name="no_theme">本版本不提供主题选择。</string>
+    <string name="approval_status">批准状态（请求到达时）</string>
+    <string name="mode_reconnect">更改后，Windows 需要重新连接。</string>
+    <string name="danger_zone">危险操作</string>
 </resources>

@@ -124,4 +124,47 @@
   <data name="ManualEndpointInvalid" xml:space="preserve"><value>Enter a literal IPv4 or IPv6 address and a port from 1 to 65535. URLs and host names are not accepted.</value></data>
   <data name="ManualEndpointAdded" xml:space="preserve"><value>The temporary address is selected for this saved pairing. Identity verification remains required.</value></data>
   <data name="ManualEndpointCleared" xml:space="preserve"><value>The temporary address was cleared.</value></data>
+  <data name="NavDevices" xml:space="preserve"><value>Devices</value></data>
+  <data name="NavSettings" xml:space="preserve"><value>Settings</value></data>
+  <data name="NavAbout" xml:space="preserve"><value>About</value></data>
+  <data name="MyPhones" xml:space="preserve"><value>My phones</value></data>
+  <data name="DevicesSubtitle" xml:space="preserve"><value>Nearby phones and saved pairings on this network</value></data>
+  <data name="AddPhone" xml:space="preserve"><value>Add phone</value></data>
+  <data name="Disconnect" xml:space="preserve"><value>Disconnect</value></data>
+  <data name="PhoneSettings" xml:space="preserve"><value>Phone settings</value></data>
+  <data name="OpenFiles" xml:space="preserve"><value>Open files</value></data>
+  <data name="PairAction" xml:space="preserve"><value>Pair</value></data>
+  <data name="ConnectAction" xml:space="preserve"><value>Connect</value></data>
+  <data name="ContinueConnecting" xml:space="preserve"><value>Continue connecting</value></data>
+  <data name="ConnectedState" xml:space="preserve"><value>Connected</value></data>
+  <data name="NotConnected" xml:space="preserve"><value>Not connected</value></data>
+  <data name="Back" xml:space="preserve"><value>Back</value></data>
+  <data name="AddPhoneSteps" xml:space="preserve"><value>1 Choose phone    ·    2 Enter code    ·    3 Approve on phone    ·    4 Connect automatically</value></data>
+  <data name="ChoosePhoneFirst" xml:space="preserve"><value>Choose a nearby phone</value></data>
+  <data name="AddPhoneInstructions" xml:space="preserve"><value>Start sharing on your phone and open “Pair a new computer.”</value></data>
+  <data name="PairingCodeHint" xml:space="preserve"><value>Enter exactly 8 digits. Pairing stays disabled until the code is complete.</value></data>
+  <data name="ConnectionPreferences" xml:space="preserve"><value>Connection preferences</value></data>
+  <data name="ModeManagedOnPhone" xml:space="preserve"><value>Access mode is confirmed on the phone and shown here read-only.</value></data>
+  <data name="SafetyOperations" xml:space="preserve"><value>Safety operations</value></data>
+  <data name="AuthorizeDeletion" xml:space="preserve"><value>Authorize one deletion</value></data>
+  <data name="RemoveAndAdvanced" xml:space="preserve"><value>Remove and advanced troubleshooting</value></data>
+  <data name="RemovePhoneHelp" xml:space="preserve"><value>Normal removal disables this local pairing and requests revocation on the phone.</value></data>
+  <data name="RemovePhone" xml:space="preserve"><value>Remove this phone</value></data>
+  <data name="ForgetLocalOnly" xml:space="preserve"><value>Forget locally only…</value></data>
+  <data name="General" xml:space="preserve"><value>General</value></data>
+  <data name="AdvancedTroubleshooting" xml:space="preserve"><value>Advanced troubleshooting</value></data>
+  <data name="Language" xml:space="preserve"><value>Language</value></data>
+  <data name="SimplifiedChinese" xml:space="preserve"><value>简体中文</value></data>
+  <data name="Startup" xml:space="preserve"><value>Startup</value></data>
+  <data name="AutoStartHelp" xml:space="preserve"><value>Starts the app in the tray. It does not connect or create a drive automatically.</value></data>
+  <data name="DefaultDrive" xml:space="preserve"><value>Default drive</value></data>
+  <data name="AutomaticDriveHelp" xml:space="preserve"><value>The current single-device core uses the selected available drive. Per-phone preferences follow after multi-device isolation.</value></data>
+  <data name="TemporaryManualAddress" xml:space="preserve"><value>Temporary manual address</value></data>
+  <data name="IdentityStillVerified" xml:space="preserve"><value>Choose a saved phone first. Saved phone identity verification is still required.</value></data>
+  <data name="Diagnostics" xml:space="preserve"><value>Diagnostics</value></data>
+  <data name="DiagnosticsNotUploaded" xml:space="preserve"><value>The diagnostic bundle is saved locally and is not uploaded automatically.</value></data>
+  <data name="VersionPreview" xml:space="preserve"><value>v0.2.0 UI acceptance build</value></data>
+  <data name="ProjectAndLicense" xml:space="preserve"><value>Project and license</value></data>
+  <data name="LicenseSummary" xml:space="preserve"><value>PhoneBridge NG is distributed under GPL-3.0-or-later. It includes rclone and WinFsp; notices and source are provided with delivery builds.</value></data>
+  <data name="GitHubProject" xml:space="preserve"><value>Open GitHub project</value></data>
 </root>

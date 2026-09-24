@@ -6,8 +6,17 @@ android {
     defaultConfig {
         applicationId = "org.phonebridge.ng"
         minSdk = 26; targetSdk = 36
-        versionCode = 1; versionName = "0.1.0"
+        versionCode = 2; versionName = "0.2.0"
         testInstrumentationRunner = "org.phonebridge.ng.BridgeTestRunner"
+    }
+    buildTypes {
+        create("uiPreview") {
+            initWith(getByName("debug"))
+            applicationIdSuffix = ".uipreview"
+            versionNameSuffix = "-ui-preview"
+            isDebuggable = true
+            signingConfig = signingConfigs.getByName("debug")
+        }
     }
     compileOptions { sourceCompatibility = JavaVersion.VERSION_1_8; targetCompatibility = JavaVersion.VERSION_1_8 }
     sourceSets.named("main") {
@@ -24,6 +33,7 @@ android {
         resources.excludes += setOf("META-INF/versions/9/OSGI-INF/MANIFEST.MF")
         resources.merges += "META-INF/LICENSE.md"
     }
+    bundle { language { enableSplit = false } }
 }
 kotlin { compilerOptions { jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_1_8); allWarningsAsErrors.set(true) } }
 dependencies {

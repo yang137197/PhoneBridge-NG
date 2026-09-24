@@ -46,7 +46,8 @@ class BridgeTestRunner : AndroidJUnitRunner() {
             while (!clicked && SystemClock.elapsedRealtime() < until) {
                 runOnMainSync {
                     fun search(view: View): Button? {
-                        if (view is Button && view.isEnabled && view.text.toString() == targetContext.getString(resource)) return view
+                        val expected = activity?.getString(resource) ?: targetContext.getString(resource)
+                        if (view is Button && view.isEnabled && view.text.toString() == expected) return view
                         if (view is ViewGroup) for (i in 0 until view.childCount) search(view.getChildAt(i))?.let { return it }
                         return null
                     }

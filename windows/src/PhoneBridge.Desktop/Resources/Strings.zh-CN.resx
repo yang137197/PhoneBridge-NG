@@ -3,7 +3,7 @@
   <data name="TimedOut" xml:space="preserve"><value>请求超时，已保存的配对状态会保留。如果手机已批准，请使用“连接 / 恢复确认”。</value></data>
   <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
   <resheader name="version"><value>2.0</value></resheader>
-  <data name="Introduction" xml:space="preserve"><value>手机和电脑连接同一 Wi-Fi，在手机上开始共享并打开配对。</value></data>
+  <data name="Introduction" xml:space="preserve"><value>手机和电脑连接同一 Wi-Fi，先完成配对，再开始共享并手动连接。</value></data>
   <data name="ReadOnlyNotice" xml:space="preserve"><value>访问模式由手机端按电脑设置；Windows 只使用手机会话确认的模式。安全模式不覆盖已有文件，删除须逐项确认。</value></data>
   <data name="WinFspAttribution" xml:space="preserve"><value>WinFsp - Windows File System Proxy，Copyright (C) Bill Zissimopoulos · </value></data>
   <data name="ConfirmedMode" xml:space="preserve"><value>手机确认模式</value></data>
@@ -38,6 +38,7 @@
   <data name="Revoke" xml:space="preserve"><value>撤销配对</value></data>
   <data name="Ready" xml:space="preserve"><value>选择手机后开始。</value></data>
   <data name="Completed" xml:space="preserve"><value>操作已完成。</value></data>
+  <data name="PairingCompleted" xml:space="preserve"><value>配对已完成。请先在手机上开始共享，再点击“连接”。</value></data>
   <data name="OperationCancelled" xml:space="preserve"><value>已取消。未确认的远端授权保持本地禁用，请查看配对状态。</value></data>
   <data name="AlreadyRunning" xml:space="preserve"><value>当前用户已运行 PhoneBridge NG。</value></data>
   <data name="DiscoveryFailed" xml:space="preserve"><value>设备发现已停止。请检查网络后重新打开客户端。</value></data>
@@ -137,9 +138,9 @@
   <data name="ConnectedState" xml:space="preserve"><value>已连接</value></data>
   <data name="NotConnected" xml:space="preserve"><value>未连接</value></data>
   <data name="Back" xml:space="preserve"><value>返回</value></data>
-  <data name="AddPhoneSteps" xml:space="preserve"><value>1 选择手机    ·    2 输入配对码    ·    3 在手机上批准    ·    4 自动连接</value></data>
+  <data name="AddPhoneSteps" xml:space="preserve"><value>1 手机打开配对    ·    2 选择手机    ·    3 输入配对码    ·    4 手机批准</value></data>
   <data name="ChoosePhoneFirst" xml:space="preserve"><value>请选择附近手机</value></data>
-  <data name="AddPhoneInstructions" xml:space="preserve"><value>在手机上开始共享并打开“配对新电脑”。</value></data>
+  <data name="AddPhoneInstructions" xml:space="preserve"><value>先在手机上打开“配对新电脑”。配对完成后开始共享，再回到 Windows 点击“连接”。</value></data>
   <data name="PairingCodeHint" xml:space="preserve"><value>只接受 8 位数字；输入完成前“配对”不可用。</value></data>
   <data name="ConnectionPreferences" xml:space="preserve"><value>连接偏好</value></data>
   <data name="ModeManagedOnPhone" xml:space="preserve"><value>访问模式由手机确认，此处只读显示。</value></data>

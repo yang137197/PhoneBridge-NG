@@ -37,12 +37,12 @@
 | 1 选择手机 | 1 Choose phone |
 | 2 输入配对码 | 2 Enter code |
 | 3 在手机上批准 | 3 Approve on phone |
-| 4 自动连接 | 4 Connect automatically |
-| 在手机上开始共享并打开“配对新电脑”。 | Start sharing on your phone and open “Pair a new computer.” |
+| 4 开始共享并连接 | 4 Start sharing and connect |
+| 先在手机上打开“配对新电脑”，无需提前开始共享。 | First open “Pair a new computer” on your phone. Sharing does not need to be started yet. |
 | 手机上的 8 位配对码 | 8-digit code on phone |
 | 正在确认配对码与手机身份… | Confirming the code and phone identity… |
 | 请在手机上批准此电脑。 | Approve this computer on the phone. |
-| 配对成功，正在连接… | Paired. Connecting… |
+| 配对成功。请在手机上开始共享，然后点击“连接”。 | Paired. Start sharing on your phone, then click “Connect.” |
 | 重新扫描 | Scan again |
 
 ## 3. Windows 设置与排障

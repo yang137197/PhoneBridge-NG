@@ -225,3 +225,11 @@ P2-003 r2 由用户复验通过后，用户明确要求：Windows“移除此手
 Windows 当前按钮停止该设备挂载并删除本机 DPAPI 配对记录，同时清除临时地址和进程内恢复状态；不再调用远端 self-revocation。Android 本地按钮在授权提交锁内从加密库精确删除 client 的名称、访问模式和凭据验证值，并关闭其活动连接。远端 `DELETE /phonebridge/v1/pairings/self` 及 Revoked 墓碑仍保留给旧客户端兼容和配对取消流程，但不再是当前本地移除按钮的依赖。
 
 单端不联系远端就不可能保证远端记录也已删除，因此产品只承诺本端完整移除，不宣称双端同步清除。旧 token 在删除端立即失效；重新连接必须产生新的 client_id/token。Android 删除 `FLAG_SECURE` 及 build type 截图开关，所有构建允许系统截屏；应用仍禁止把配对码或凭据写入日志、遥测和剪贴板，用户负责截图的保存与分享。
+
+## ADR-034 验收身份按修订隔离，首次流程改为先配对、后共享、手动连接
+
+P2-004 实机准备确认两个缺陷具有同一验收状态根因：Windows `--ui-preview` 只隔离单实例互斥体，仍读取正式 `%LOCALAPPDATA%\PhoneBridge-NG\Pairings-v1`；Android `uiPreview` 固定包名并使用覆盖安装，保留上轮数据。同时 Android“配对新电脑”被错误依赖于共享引擎已启动。旧记录使 Windows 对已配对候选禁用“配对”，而手机开始共享后既有身份又触发 Windows 已保存路径，表现为未完成新配对却自动连接。该结论来自源码、正式目录中的既有记录和实际候选状态，不再把现象归因于按钮视觉问题。
+
+首次流程固定为：Android 在未共享时打开“配对新电脑”并启动仅配对前台服务；Windows 完成身份/授权后只保存 Active 记录；手机开始共享；用户在 Windows 手动点击“连接”。仅配对状态的 session 返回 `share_ready=false`，文件路由返回 `share_not_ready`，不得启动 rclone、创建盘符或设置恢复意图。共享开始后 session 才报告就绪，但仍不自动连接。
+
+每轮 UI 验收必须使用未复用的修订号：Windows 程序版本随修订变化，并只读写 `%LOCALAPPDATA%\PhoneBridge-NG-UiPreview\<assembly-version>`；Android 包名为 `org.phonebridge.ng.uipreview<revision>`，使用不带 `-r` 的全新安装。构建脚本拒绝复用已存在的修订输出。该隔离仅用于验收候选，不改变正式升级语义：同一正式签名/包名的正式升级仍应保留用户配对和设置。本文覆盖 ADR-031 中“Windows 预览不隔离数据”和固定 Android 预览包名的历史描述。

@@ -71,12 +71,12 @@ Windows 先生成独立随机 32 字节长期 token，再将 CA、client_id、to
 | `POST /phonebridge/v1/pairing/<attempt_id>` | 当前 grant；JSON 恰好 client_id、client_name、credential 三字段。前者为当前 32 位小写 hex，credential 为新 token 的 canonical base64url（43 chars），名称 1..128 Unicode scalar、UTF-8 <=256 bytes、无控制/格式字符；总 body <=2048 bytes。拒绝重复/未知键、无效 UTF-8、尾数据与大小溢出。 |
 | `GET /phonebridge/v1/pairing/<attempt_id>` | 同一 grant；只返回自己的 PendingApproval/Active/Rejected/Cancelled，不列举其他电脑。每秒最多 1 次轮询，不能延长期限。 |
 | `DELETE /phonebridge/v1/pairing/<attempt_id>` | 同一 grant；原子取消尚未激活的请求。与手机批准竞争时，若已 Active 则返回 409，客户端改用自身 token 撤销；不能把取消回执误写成已撤销已激活 token。 |
-| `GET /phonebridge/v1/session` | 长期 Basic 凭据；返回 device_id、client_id、当前授权模式及共享就绪状态。Windows 验证字段与待保存记录相符后，才将 Pending 标记 Active 并允许挂载。 |
+| `GET /phonebridge/v1/session` | 长期 Basic 凭据；返回 device_id、client_id、当前授权模式及共享就绪状态。Windows 验证字段与待保存记录相符后即可将 Pending 标记 Active；只有 `share_ready=true` 时才允许连接和挂载。 |
 | `DELETE /phonebridge/v1/pairings/self` | 长期 Basic 凭据，只撤销自身 client_id；不能以 body/path 参数撤销其他电脑。手机本地 UI 另可撤销任意已配对电脑。 |
 
 所有响应带 `Cache-Control: no-store`，无重定向、不返回 token/grant，正文最多 4096 bytes，只含固定代码和自己的非秘密状态。非法/过期认证统一 401；有效当前 grant 的拒绝/取消为 403/410，字段或顺序冲突为 409，容量限制为 429；未批准为 202，Active 为 200。权限检查不能将未识别 API 路径落入 WebDAV 文件路由。控制路径为保留空间，不能通过 PROPFIND/PUT 操作其下的“文件”。
 
-JSON 使用 `application/json` 与严格 UTF-8；不启用 HTTP 内容压缩。202/200 配对状态响应恰好为 `attempt_id`、`client_id`、`state`，state 取上述四个大小写固定值；session 响应恰好为 `device_id`、`client_id`、`mode`（`readOnly`/`safe`/`readWrite`）、`share_ready`（boolean）。错误响应只有固定 `code`：`unauthorized`、`rejected`、`cancelled`、`conflict`、`capacity`、`invalid_request`、`not_found`、`method_not_allowed` 或 `storage_failure`。格式错误为 400，保留路径不存在为 404，不支持的方法为 405，持久化失败为 503；仍先完成该路由适用的认证，不以错误正文泄露其他尝试是否存在。self 撤销持久成功返回 204，无正文；以后相同 token 的 session 必须为 401。Windows 校验 JSON 字段/类型/绑定身份，不仅检查 HTTP 200。
+JSON 使用 `application/json` 与严格 UTF-8；不启用 HTTP 内容压缩。202/200 配对状态响应恰好为 `attempt_id`、`client_id`、`state`，state 取上述四个大小写固定值；session 响应恰好为 `device_id`、`client_id`、`mode`（`readOnly`/`safe`/`readWrite`）、`share_ready`（boolean）。错误响应只有固定 `code`：`unauthorized`、`rejected`、`cancelled`、`conflict`、`capacity`、`invalid_request`、`not_found`、`method_not_allowed`、`share_not_ready` 或 `storage_failure`。格式错误为 400，保留路径不存在为 404，不支持的方法为 405，配对完成但共享未开始时文件路由为 409 `share_not_ready`，持久化失败为 503；仍先完成该路由适用的认证，不以错误正文泄露其他尝试是否存在。self 撤销持久成功返回 204，无正文；以后相同 token 的 session 必须为 401。Windows 校验 JSON 字段/类型/绑定身份，不仅检查 HTTP 200。
 
 POST 提交前 GET 状态返回 409；错误响应仅返回上述 code，不返回配对状态对象。POST 的单次授权绑定当前 attempt_id、client_id、名称原始 UTF-8 字节和 token 验证值。完全相同的重试只返回现有状态；任一字段改变返回 409 并不覆盖。手机 UI 只能批准该确定请求；批准时先成功保存受保护 Active 记录，再承认激活。grant 的单次性指只能产生一个确定的配对记录；同一操作的幂等回读不产生第二个 token/记录。成功后不再接受新 credential，直到窗口期限可回读既定状态；过期后依靠已保存新 token 调用 session 恢复确认。
 
@@ -102,6 +102,8 @@ P1-005 的 Windows 实现入口见 [存储模块](../windows/src/PhoneBridge.Cre
 ## 7. 恢复、撤销与权限
 
 状态分开：Windows `Pending → Active → RevocationPending/NeedsRepair`；Android 远端撤销路径为 `PendingApproval → Active → Revoked`，手机本地“移除此电脑”则直接删除该 Active/Revoked 记录。Rejected/Cancelled/Expired 不授权文件。短码正确或 CA 正确不等于用户已批准，配对 Active 也不等于存储权限/共享服务就绪。
+
+P2-004 起 Android 可在停止共享时启动只承载配对的前台服务：配对与批准路由可用，session 返回 `share_ready=false`，所有文件/目录/删除路由返回 409 `share_not_ready`。Windows 可据严格 session 保存 Active 记录，但不得自动启动 rclone、创建盘符或设置恢复意图。用户在手机点击“开始共享”后，session 才返回 `share_ready=true`；Windows 用户仍需手动点击“连接”。
 
 - POST 前/后崩溃：Windows 已有受 DPAPI 保护的 Pending。恢复只对该已确认 CA 的严格 HTTPS 查询 session；200 且身份/client_id 相符才激活。401 不自动重新提交、生成第二个 token 或尝试旧上游密码；保留可解释的待处理状态，用户可重试/取消/重新配对。
 - 手机批准后回执丢失：同样通过已保存 token 的 session 回读，不能将网络超时判成“未授权”。未批准请求只在内存，期限/重启后清除；已经持久激活的记录不因临时配对窗口关闭而消失。

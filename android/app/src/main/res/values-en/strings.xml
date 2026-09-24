@@ -9,6 +9,7 @@
     <string name="starting">Starting sharing…</string>
     <string name="sharing">Sharing</string>
     <string name="sharing_notification">Sharing phone storage</string>
+    <string name="pairing_notification">Waiting to pair a new computer; file sharing has not started</string>
     <string name="sharing_channel">File sharing</string>
     <string name="start_failed">Could not start. Check file access and the selected folder.</string>
     <string name="battery_optimization_required">Allow PhoneBridge NG to ignore battery optimization so sharing can continue while locked. Sharing will not start without it.</string>

@@ -1,6 +1,8 @@
 using System.Globalization;
+using System.IO;
 using System.Security.Principal;
 using System.Windows;
+using PhoneBridge.Credentials;
 using MessageBox = System.Windows.MessageBox;
 
 namespace PhoneBridge.Desktop;
@@ -25,9 +27,19 @@ public partial class App : System.Windows.Application
         }
         installerGuard = new Mutex(true, "Local\\PhoneBridge-NG-Installer-Guard");
         base.OnStartup(e);
-        diagnostics = DiagnosticEventLog.OpenDefault();
+        string? previewRoot = null;
+        PairingStore? previewStore = null;
+        if (uiPreview)
+        {
+            string revision = typeof(App).Assembly.GetName().Version?.ToString() ?? throw new InvalidOperationException("ui-preview-version-missing");
+            previewRoot = PairingStore.UiPreviewDataRoot(revision);
+            previewStore = PairingStore.OpenUiPreview(revision);
+        }
+        diagnostics = previewRoot is null
+            ? DiagnosticEventLog.OpenDefault()
+            : DiagnosticEventLog.Open(Path.Combine(previewRoot, "Logs"), DiagnosticEventLog.ProductVersion());
         diagnostics.Write(new(DiagnosticEventName.AppStarted, State: startupLaunch ? DiagnosticState.Startup : DiagnosticState.Manual));
-        var window = new MainWindow(diagnostics);
+        var window = new MainWindow(diagnostics, previewStore, previewRoot, uiPreview);
         MainWindow = window;
         try
         {

@@ -16,8 +16,8 @@ public sealed class ConnectionClient(PairingStore store) : IAsyncDisposable
     public MountSnapshot Mount => mounts.Snapshot;
     public Task<IReadOnlyList<PairingRecord>> RecordsAsync() => Task.Run(store.List);
 
-    public Task<PairingRecord> PairAndConnectAsync(DeviceCandidate candidate, DeviceEndpoint endpoint, char[] code,
-        string clientName, MountOptions options, IProgress<ConnectionStage>? progress, CancellationToken cancellationToken) =>
+    public Task<PairingRecord> PairAsync(DeviceCandidate candidate, DeviceEndpoint endpoint, char[] code,
+        string clientName, IProgress<ConnectionStage>? progress, CancellationToken cancellationToken) =>
         RunAsync(async () =>
         {
             PairingRecord? record = null;
@@ -64,9 +64,12 @@ public sealed class ConnectionClient(PairingStore store) : IAsyncDisposable
                     }
                 }
                 finally { CryptographicOperations.ZeroMemory(body); }
-                record = await ValidateAsync(api, record, progress, cancellationToken).ConfigureAwait(false);
-                await MountAsync(record, verifiedEndpoint, options, progress, cancellationToken).ConfigureAwait(false);
-                return record;
+                progress?.Report(ConnectionStage.Validating);
+                using var sessionCredential = store.OpenCredential(record.DeviceId, record.ClientId, CredentialPurpose.SessionValidation);
+                var session = await api.SessionAsync(record, DeviceApi.Basic(sessionCredential), cancellationToken).ConfigureAwait(false);
+                if (session is null) throw new ConnectionException("authorization-unconfirmed");
+                cancellationToken.ThrowIfCancellationRequested();
+                return store.ApplyVerifiedSession(record, record.DeviceId, record.ClientId, session.Mode);
             }
             catch when (cancellationToken.IsCancellationRequested)
             {

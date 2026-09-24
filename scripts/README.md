@@ -20,4 +20,6 @@
 
 [Verify-AndroidApp.ps1](Verify-AndroidApp.ps1) 构建 NG App 的 Debug/未签名 Release、测试 APK、Kotlin 协议单元测试和两套 Lint。严格锁和散列核对，不操作设备；[配对服务复验](../tests/integration/android_pairing/README.md)另行执行。
 
+[Build-UiAcceptance.ps1](Build-UiAcceptance.ps1) 为每轮 UI 验收生成不可复用的 `rN` 修订：Windows 使用独立程序集版本和 LocalAppData 数据根，Android 使用独立应用 ID 并以全新安装部署；脚本拒绝覆盖既有修订。可选 `-DeviceSerial` 时只安装该验收 APK并配置已确认的本地测试权限，不修改正式包或正式配对数据。
+
 现有审计复现工具保留于 [docs/audit](../docs/audit/VALIDATION.md)，它用于观察上游缺陷，不是产品通过测试的证据。后续测试数据/原始证据可用已忽略的 `.audit/runs/`，禁止存入用户秘密和真实文件。

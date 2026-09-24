@@ -9,6 +9,7 @@
     <string name="starting">正在启动共享…</string>
     <string name="sharing">正在共享</string>
     <string name="sharing_notification">正在共享手机存储</string>
+    <string name="pairing_notification">正在等待新电脑配对，文件共享尚未开始</string>
     <string name="sharing_channel">文件共享</string>
     <string name="start_failed">启动失败，请检查文件权限和共享目录</string>
     <string name="battery_optimization_required">需要允许 PhoneBridge NG 忽略电池优化，才能在锁屏时继续共享。未允许，共享不会启动。</string>

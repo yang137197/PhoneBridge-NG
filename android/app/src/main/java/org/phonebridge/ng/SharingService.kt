@@ -35,11 +35,18 @@ internal object SharedFolders {
 }
 
 class SharingService : Service() {
-    companion object { const val START = "org.phonebridge.ng.START"; const val STOP = "org.phonebridge.ng.STOP"; private const val CHANNEL = "sharing" }
+    companion object {
+        const val START = "org.phonebridge.ng.START"
+        const val PAIR = "org.phonebridge.ng.PAIR"
+        const val STOP = "org.phonebridge.ng.STOP"
+        private const val CHANNEL = "sharing"
+    }
     private val worker = Executors.newSingleThreadExecutor()
     @Volatile internal var engine: SharingEngine? = null
         private set
     @Volatile internal var status = R.string.stopped
+        private set
+    @Volatile internal var sharingEnabled = false
         private set
     @Volatile internal var selectedFolder = 0
         private set
@@ -74,37 +81,54 @@ class SharingService : Service() {
             worker.execute { stopEngine(); stopSelf() }; return START_NOT_STICKY
         }
         val prefs = getSharedPreferences("settings", MODE_PRIVATE)
-        if (intent?.action != START && !prefs.getBoolean("sharing", false)) { stopSelf(); return START_NOT_STICKY }
-        startForeground(1, notification())
-        val selected = if (intent?.action == START) intent.getIntExtra("folder", 0) else prefs.getInt("folder", 0)
+        val action = intent?.action
+        val resumeSharing = action == null && prefs.getBoolean("sharing", false)
+        if (action !in setOf(START, PAIR) && !resumeSharing) { stopSelf(); return START_NOT_STICKY }
+        val pairingOnly = action == PAIR
+        startForeground(1, notification(if (pairingOnly && !sharingEnabled) R.string.pairing_notification else R.string.sharing_notification))
+        val selected = if (action in setOf(START, PAIR)) intent?.getIntExtra("folder", 0) ?: 0 else prefs.getInt("folder", 0)
         worker.execute {
-            if (engine != null) return@execute
-            status = R.string.starting
             try {
-                check(SharedFolders.allowed(this))
-                val root = SharedFolders.selected(selected)
-                acquireRuntimeLocks()
-                val created = SharingEngine(applicationContext, root, 8273) { worker.execute { status = R.string.storage_error; stopEngine(); stopSelf() } }
-                engine = created; selectedFolder = selected
-                check(prefs.edit().putBoolean("sharing", true).putInt("folder", selected).commit())
-                status = R.string.sharing
+                if (engine == null) {
+                    status = R.string.starting
+                    check(SharedFolders.allowed(this))
+                    val root = SharedFolders.selected(selected)
+                    acquireRuntimeLocks()
+                    val created = SharingEngine(applicationContext, root, 8273, { sharingEnabled }) {
+                        worker.execute { status = R.string.storage_error; stopEngine(); stopSelf() }
+                    }
+                    engine = created; selectedFolder = selected
+                }
+                if (pairingOnly) {
+                    if (!sharingEnabled) {
+                        check(prefs.edit().putBoolean("sharing", false).putInt("folder", selectedFolder).commit())
+                        status = R.string.stopped
+                    }
+                    val generation = foregroundGeneration.get()
+                    engine?.pairing?.openWindow { foreground.get() && foregroundGeneration.get() == generation }
+                } else {
+                    sharingEnabled = true
+                    check(prefs.edit().putBoolean("sharing", true).putInt("folder", selectedFolder).commit())
+                    status = R.string.sharing
+                    startForeground(1, notification(R.string.sharing_notification))
+                }
             } catch (_: Exception) { status = R.string.start_failed; stopEngine(); stopSelf() }
         }
         return START_STICKY
     }
     private fun submit(action: () -> Unit) {
         worker.execute {
-            try { action(); if (engine != null) status = R.string.sharing }
+            try { action(); if (engine != null) status = if (sharingEnabled) R.string.sharing else R.string.stopped }
             catch (_: StoreException) { status = R.string.storage_error; stopEngine(); stopSelf() }
             catch (e: ApiFailure) { status = if (e.status == 503) R.string.storage_error else R.string.action_rejected }
             catch (_: Exception) { status = R.string.action_rejected }
         }
     }
-    private fun notification(): Notification {
+    private fun notification(text: Int): Notification {
         val launch = PendingIntent.getActivity(this, 0, Intent(this, MainActivity::class.java), PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
         val stop = PendingIntent.getService(this, 1, Intent(this, SharingService::class.java).setAction(STOP), PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
         return Notification.Builder(this, CHANNEL).setSmallIcon(android.R.drawable.stat_sys_upload)
-            .setContentTitle(getString(R.string.app_name)).setContentText(getString(R.string.sharing_notification)).setContentIntent(launch)
+            .setContentTitle(getString(R.string.app_name)).setContentText(getString(text)).setContentIntent(launch)
             .setOngoing(true).addAction(Notification.Action.Builder(null, getString(R.string.stop), stop).build()).build()
     }
     private fun acquireRuntimeLocks() {
@@ -113,6 +137,7 @@ class SharingService : Service() {
     }
     private fun stopEngine() {
         val old = engine; engine = null
+        sharingEnabled = false
         try { old?.close() } catch (_: Exception) { }
         runtimeLocks?.close(); runtimeLocks = null
         stopForeground(STOP_FOREGROUND_REMOVE)

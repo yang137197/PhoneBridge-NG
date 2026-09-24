@@ -195,11 +195,11 @@ P1-007 API 36 复验修正：活动下载撤销连续两次在约 5 秒后使 se
 
 发现同时保留实验 v2 和正式 v3；v3 必须包含 paired-v1 与规范 device_id，配对三字段必须完整且有效。字段均为未认证路由提示，变化必须触发候选更新。新版界面不连接 v2、不导入旧密码。每次操作冻结所选候选；首次 PAKE 在一个选定 IP 完成八帧与双向 EOF，随后 HTTPS 只使用同 IP 和已确认端口，CA 来自确认结果；不在提交凭据后跟随广告切换。重连使用保存 CA，广告 device_id 仅帮助查找记录。
 
-HTTPS 使用 SocketsHttpHandler 的 CustomRootTrust、原生 SAN 校验和 serverAuth 策略，无证书接受回调；禁用代理、重定向、Cookie、压缩，限制头/正文和端到端截止时间。严格校验 JSON 唯一字段、类型、身份、client_id、状态及 no-store。先持久 Pending 再 POST；超时保留 Pending，恢复仅查询已保存 token 的 session。只有身份正确且 share_ready 的 session 才激活/挂载。配对取消先持久 RevocationPending，尝试 grant 取消及长期 token 撤销；离线保留禁用记录，不以超时推断未批准。
+HTTPS 使用 SocketsHttpHandler 的 CustomRootTrust、原生 SAN 校验和 serverAuth 策略，无证书接受回调；禁用代理、重定向、Cookie、压缩，限制头/正文和端到端截止时间。严格校验 JSON 唯一字段、类型、身份、client_id、状态及 no-store。先持久 Pending 再 POST；超时保留 Pending，恢复仅查询已保存 token 的 session。身份正确的 session 可在 `share_ready=false` 时完成配对并激活记录，但不得挂载、启动 rclone 或设置恢复意图；只有用户之后手动连接且 session 为 `share_ready=true` 时才挂载。配对取消先持久 RevocationPending，尝试 grant 取消及长期 token 撤销；离线保留禁用记录，不以超时推断未批准。
 
 凭据库同时保留两条路径：配对取消/兼容流程可在已确认远端撤销后删除 RevocationPending；当前 Windows 用户“移除此手机”则先停止所属挂载，再直接删除本机精确记录，不发网络请求。后者同时清除临时端点和自动恢复状态；手机端可能仍保留旧授权，因此不得宣称远端也已删除。重新连接必须创建新 client_id/token，不覆盖任何仍存在的本机记录。
 
-WPF 显示附近设备和离线保存记录、短码输入、等待手机批准、配对/连接/取消/打开/卸载/移除，以及只读开发能力说明。当前“移除此手机”只清理 Windows 本端并返回未配对候选；不要求手机确认。rclone 从程序目录 tools/rclone.exe 加载，沿用固定 SHA-256 与 WinFsp 检查；不把 .audit 路径写入产品。当前只有一台设备的活动挂载；驱动器由用户选择可用字母，凭据只从受保护记录取得。
+WPF 显示附近设备和离线保存记录、短码输入、等待手机批准、配对/连接/取消/打开/卸载/移除，以及只读开发能力说明。“配对”只保存已验证身份和凭据，不自动连接、挂载或启动恢复；手机开始共享后，用户从设备卡片手动点击“连接”。当前“移除此手机”只清理 Windows 本端并返回未配对候选；不要求手机确认。rclone 从程序目录 tools/rclone.exe 加载，沿用固定 SHA-256 与 WinFsp 检查；不把 .audit 路径写入产品。当前只有一台设备的活动挂载；驱动器由用户选择可用字母，凭据只从受保护记录取得。
 
 依据：[WPF 线程模型](https://learn.microsoft.com/en-us/dotnet/desktop/wpf/advanced/threading-model)、[CertificateChainPolicy](https://learn.microsoft.com/en-us/dotnet/api/system.net.security.sslclientauthenticationoptions.certificatechainpolicy?view=net-10.0)。严格 TLS 拒绝、持久状态竞争和 Redmi K40 的 NG→WPF→rclone→WinFsp 真实链路已由 P1-008 通过；测试入口未进入产品二进制。
 

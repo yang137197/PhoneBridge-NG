@@ -1,4 +1,7 @@
 plugins { id("com.android.application") }
+val uiPreviewRevision = providers.gradleProperty("uiPreviewRevision").orElse("dev").get().also {
+    require(it.matches(Regex("[a-z][a-z0-9]{0,15}"))) { "uiPreviewRevision must be a short lowercase identifier such as r8" }
+}
 android {
     namespace = "org.phonebridge.ng"
     compileSdk = 36
@@ -12,8 +15,8 @@ android {
     buildTypes {
         create("uiPreview") {
             initWith(getByName("debug"))
-            applicationIdSuffix = ".uipreview"
-            versionNameSuffix = "-ui-preview"
+            applicationIdSuffix = ".uipreview$uiPreviewRevision"
+            versionNameSuffix = "-ui-preview-$uiPreviewRevision"
             isDebuggable = true
             signingConfig = signingConfigs.getByName("debug")
         }

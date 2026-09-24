@@ -10,7 +10,8 @@ import org.phonebridge.credentials.StoreSnapshot
 import java.io.File
 import java.util.concurrent.atomic.AtomicBoolean
 
-internal class SharingEngine(context: Context, root: File, port: Int, private val failed: () -> Unit) : AutoCloseable {
+internal class SharingEngine(context: Context, root: File, port: Int, private val shareReady: () -> Boolean,
+    private val failed: () -> Unit) : AutoCloseable {
     private val identity = TlsHelper.openIdentity(context)
     val fingerprint = identity.fingerprint
     private val store = if (identity.created) PairingStore.initializeForNewIdentity(context, fingerprint) else PairingStore.openExisting(context, fingerprint)
@@ -21,7 +22,7 @@ internal class SharingEngine(context: Context, root: File, port: Int, private va
     private val publisher = DiscoveryPublisher(context, fingerprint)
     private val connections = ClientConnections(store, ::publishClients, ::storageFailed)
     private var pairingInstance: PairingController? = null
-    private val server = AuthorizedServer(port, root, fingerprint, { pairingInstance ?: throw ApiFailure(503, "storage_failure") }, connections)
+    private val server = AuthorizedServer(port, root, fingerprint, { pairingInstance ?: throw ApiFailure(503, "storage_failure") }, connections, shareReady)
     val pairing: PairingController get() = pairingInstance ?: throw ApiFailure(503, "storage_failure")
     val httpsPort: Int get() = server.listeningPort
     init {

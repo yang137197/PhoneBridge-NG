@@ -22,7 +22,8 @@ namespace PhoneBridge.Desktop;
 
 public partial class MainWindow : Window
 {
-    private readonly ConnectionClient client = new(PairingStore.Open());
+    private readonly ConnectionClient client;
+    private readonly string appDataRoot;
     private readonly DiscoveryService discovery = new();
     private readonly CancellationTokenSource lifetime = new();
     private readonly ReconnectPolicy reconnect = new();
@@ -47,11 +48,13 @@ public partial class MainWindow : Window
         e.Handled = true;
     }
 
-    internal MainWindow(DiagnosticEventLog diagnostics)
+    internal MainWindow(DiagnosticEventLog diagnostics, PairingStore? pairingStore = null, string? isolatedDataRoot = null, bool uiPreview = false)
     {
         this.diagnostics = diagnostics;
+        appDataRoot = isolatedDataRoot ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "PhoneBridge-NG");
+        client = new(pairingStore ?? PairingStore.Open());
         InitializeComponent();
-        try { autoStart = new(new WindowsAutoStartStore(), Environment.ProcessPath ?? string.Empty); }
+        try { if (!uiPreview) autoStart = new(new WindowsAutoStartStore(), Environment.ProcessPath ?? string.Empty); }
         catch (AutoStartException error) { autoStartInitializationError = error.Code; }
         timer.Tick += OnTimerTick;
     }
@@ -145,7 +148,7 @@ public partial class MainWindow : Window
     {
         FillDrives();
         await ReloadRecords();
-        RefreshAutoStart(reportFailure: true);
+        RefreshAutoStart(reportFailure: autoStart is not null);
         discoveryTask = Task.Run(async () =>
         {
             try { await discovery.RunAsync(change => Dispatcher.BeginInvoke(() => Apply(change)), lifetime.Token); }
@@ -304,7 +307,7 @@ public partial class MainWindow : Window
         Drives.ItemsSource = available; Drives.SelectedItem = available.Contains(current) ? current : available.FirstOrDefault();
     }
     private MountOptions Options() => new(Drives.SelectedItem is char letter ? letter : throw new ConnectionException("drive-occupied"),
-        Path.Combine(AppContext.BaseDirectory, "tools", "rclone.exe"), Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "PhoneBridge-NG", "Sessions"));
+        Path.Combine(AppContext.BaseDirectory, "tools", "rclone.exe"), Path.Combine(appDataRoot, "Sessions"));
     private IProgress<ConnectionStage> Progress() => new Progress<ConnectionStage>(stage => Status.Text = T(stage.ToString()));
     private static bool Terminal(ConnectionException error) => error.Code is
         "unauthorized" or "identity-mismatch" or "record-changed" or "mode-changed" or "invalid-response";
@@ -408,7 +411,7 @@ public partial class MainWindow : Window
 
     private MountOptions OptionsFor(char letter) => new(letter,
         Path.Combine(AppContext.BaseDirectory, "tools", "rclone.exe"),
-        Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "PhoneBridge-NG", "Sessions"));
+        Path.Combine(appDataRoot, "Sessions"));
     private void Start(DiagnosticEventName completionEvent, Func<CancellationToken, Task> work, string successKey = "Completed")
     {
         if (!operation.IsCompleted || closing) return;
@@ -450,13 +453,12 @@ public partial class MainWindow : Window
         }
         Code.Clear();
         if (code.Length != 8 || code.Any(c => c is < '0' or > '9')) { Array.Clear(code); Status.Text = T("InvalidCode"); return; }
-        var options = Options(); var progress = Progress(); reconnect.Suppress();
+        var progress = Progress(); reconnect.Suppress();
         diagnostics.Write(new(DiagnosticEventName.PairingStarted, State: DiagnosticState.Starting));
         Start(DiagnosticEventName.AuthenticationCompleted, async token =>
         {
-            var record = await client.PairAndConnectAsync(candidate, endpoint, code, Environment.MachineName, options, progress, token);
-            reconnect.Arm(record.DeviceId, options, DateTimeOffset.UtcNow);
-        });
+            await client.PairAsync(candidate, endpoint, code, Environment.MachineName, progress, token);
+        }, "PairingCompleted");
     }
     private void ConnectClick(object sender, RoutedEventArgs e)
     {

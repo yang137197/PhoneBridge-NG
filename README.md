@@ -67,13 +67,13 @@
 | P2-001 v0.2.0 需求与开发计划 | 已完成需求同步与任务拆分；未修改业务代码 | [版本计划](docs/V0.2_PLAN.md)、[完成记录](docs/tasks/completed/P2-001-v0.2-requirements-and-ui-plan.md) |
 | P2-002 两端线框与图标概念 | 已完成并经用户确认；r1 视觉、分层、按钮命名、Android 层级及图标 A“桥接文件”均已冻结，未修改业务代码 | [设计包](docs/design/v0.2/README.md)、[完成记录](docs/tasks/completed/P2-002-ui-wireframes-and-icon-concepts.md) |
 | P2-003 两端 UI 实际效果验收 | 已完成；r2 的 A 图标、Android 48dp 导航图标、独立设置菜单及两端实际视觉由用户复验通过 | [验收记录](docs/audit/P2-003-UI-ACCEPTANCE.md)、[完成记录](docs/tasks/completed/P2-003-ui-acceptance-builds.md) |
-| P2-004 两端本地移除与截屏策略 | 已实现并通过隔离验证；两端本地移除不等待远端、旧凭据失效，Android 全构建允许截屏，等待真实配对验收 | [验收记录](docs/audit/P2-004-VALIDATION.md)、[当前任务](docs/tasks/active/P2-004-local-removal-and-screenshot-policy.md) |
+| P2-004 本地移除、截屏与全新验收流程 | 已实现并通过隔离验证；修正为先配对、后共享、Windows 手动连接，每轮候选使用全新身份，等待真实端到端验收 | [验收记录](docs/audit/P2-004-VALIDATION.md)、[当前任务](docs/tasks/active/P2-004-local-removal-and-screenshot-policy.md) |
 | Phase 1 新版 Windows 客户端 | 配对、挂载、文件操作、生命周期与本地安装交付主链路已验收 | [开发规则](DEVELOPMENT_RULES.md) |
 | MVP 验收 | 15 项通过 | [15 项产品验收](docs/PRODUCT.md)、[P1-030 最终需求验收](docs/audit/P1-030-VALIDATION.md) |
 
 当前唯一交付目录是 `.audit/delivery/output/`；正式交付包含安装器、正式 APK、对应源码 ZIP、README、SHA256SUMS 和 manifest。二进制构建后运行 `scripts/New-SourceDelivery.ps1` 生成并核验对应源码包。`.audit/runs/` 中的文件只用于历史验证，不作为当前安装入口。先阅读交付目录内的 `README.txt`。
 
-`.audit/ui-acceptance/` 当前保存 P2-004 本地验收候选，不是正式交付，也不替换上述 v0.1.0 安装入口。Windows 预览与安装版共用当前用户数据；真实移除测试只能使用可重建配对。Android 验收包使用独立应用 ID，与正式包分开保存数据。
+`.audit/ui-acceptance/` 当前保存 P2-004 本地验收候选，不是正式交付，也不替换上述 v0.1.0 安装入口。每个候选修订使用独立 Windows 数据根和独立 Android 应用 ID，不读取上轮验收或正式配对数据；正式升级仍保留正式用户数据。
 
 P0-001 的 107 个通过测试、1 个跳过用例及 7 项离线问题复现仅为上游审计证据，不能代表真实手机、Explorer、大文件或断网恢复通过。
 

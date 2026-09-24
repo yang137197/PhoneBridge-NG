@@ -161,13 +161,13 @@ class MainActivity : Activity() {
         }
 
         start = button(statusCard, R.string.start, primary = true) {
-            if (binder?.service?.engine != null) startService(Intent(this, SharingService::class.java).setAction(SharingService.STOP))
+            if (binder?.service?.sharingEnabled == true) startService(Intent(this, SharingService::class.java).setAction(SharingService.STOP))
             else if (!SharedFolders.allowed(this)) status.setText(R.string.permission_missing)
             else requestStart(folder.selectedItemPosition)
         }
 
         pair = button(content, R.string.pair, primary = false) {
-            binder?.openPairing()
+            requestPairing(folder.selectedItemPosition)
             showPairing()
         }
         sectionTitle(content, R.string.computers)
@@ -253,10 +253,10 @@ class MainActivity : Activity() {
         val service = binder?.service
         val engine = service?.engine
         status.setText(service?.status ?: R.string.stopped)
-        status.setTextColor(if (engine == null) muted else success)
-        start.setText(if (engine == null) R.string.start else R.string.stop)
+        status.setTextColor(if (service?.sharingEnabled == true) success else muted)
+        start.setText(if (service?.sharingEnabled == true) R.string.stop else R.string.start)
         folder.isEnabled = engine == null
-        pair.isEnabled = engine != null && runCatching { engine.pairing.view() }.getOrNull() == null
+        pair.isEnabled = SharedFolders.allowed(this) && runCatching { engine?.pairing?.view() }.getOrNull() == null
         val clients = engine?.clients?.clients?.filter { it.state == ClientState.ACTIVE } ?: emptyList()
         if (renderedClients == clients) return
         renderedClients = clients
@@ -457,6 +457,12 @@ class MainActivity : Activity() {
         if (Build.VERSION.SDK_INT >= 33 && checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED)
             requestPermissions(arrayOf(Manifest.permission.POST_NOTIFICATIONS), 2)
         startForegroundService(Intent(this, SharingService::class.java).setAction(SharingService.START).putExtra("folder", selected))
+    }
+    private fun requestPairing(selected: Int) {
+        if (!SharedFolders.allowed(this)) { status.setText(R.string.permission_missing); return }
+        if (Build.VERSION.SDK_INT >= 33 && checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED)
+            requestPermissions(arrayOf(Manifest.permission.POST_NOTIFICATIONS), 2)
+        startForegroundService(Intent(this, SharingService::class.java).setAction(SharingService.PAIR).putExtra("folder", selected))
     }
     private fun requestStorage() {
         if (Build.VERSION.SDK_INT >= 30) startActivity(Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION, Uri.parse("package:$packageName")))

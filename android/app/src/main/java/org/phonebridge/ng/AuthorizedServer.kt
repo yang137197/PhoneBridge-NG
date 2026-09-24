@@ -116,6 +116,7 @@ internal class ClientConnections(private val store: PairingStore, private val on
 
 internal class AuthorizedServer(port: Int, root: File, private val fingerprint: String,
     private val pairing: () -> PairingController, private val connections: ClientConnections,
+    private val shareReady: () -> Boolean = { true },
     private val deletionLifetimeMillis: Long = 30_000,
     private val clock: () -> Long = { SystemClock.elapsedRealtime() }) : NanoHTTPD(port) {
     private val storage = SharedStorage(root)
@@ -185,13 +186,14 @@ internal class AuthorizedServer(port: Int, root: File, private val fingerprint: 
             if (path == "/phonebridge/v1/session") {
                 requireEmpty(length); if (method != "GET") throw ApiFailure(405, "method_not_allowed")
                 val mode = when (client.mode) { AccessMode.READ_ONLY -> "readOnly"; AccessMode.SAFE -> "safe"; AccessMode.READ_WRITE -> "readWrite" }
-                return json(200, JSONObject().put("device_id", "pbng-$fingerprint").put("client_id", client.clientId).put("mode", mode).put("share_ready", true))
+                return json(200, JSONObject().put("device_id", "pbng-$fingerprint").put("client_id", client.clientId).put("mode", mode).put("share_ready", shareReady()))
             }
             if (path == "/phonebridge/v1/pairings/self") {
                 requireEmpty(length); if (method != "DELETE") throw ApiFailure(405, "method_not_allowed")
                 connections.revoke(client.clientId, socket)
                 return response(204, "application/json", "")
             }
+            if (!shareReady()) throw ApiFailure(409, "share_not_ready")
             if (path == "/phonebridge/v1/deletions") {
                 if (method != "POST") throw ApiFailure(405, "method_not_allowed")
                 if (client.mode == AccessMode.READ_ONLY) throw ApiFailure(403, "rejected")

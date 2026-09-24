@@ -3,7 +3,7 @@
   <data name="TimedOut" xml:space="preserve"><value>Request timed out. Saved pairing state is retained; if approval succeeded on the phone, use Connect / recover.</value></data>
   <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
   <resheader name="version"><value>2.0</value></resheader>
-  <data name="Introduction" xml:space="preserve"><value>Connect your phone on the same Wi-Fi. Start sharing and open pairing on the phone.</value></data>
+  <data name="Introduction" xml:space="preserve"><value>Connect both devices to the same Wi-Fi. Pair first, then start sharing and connect manually.</value></data>
   <data name="ReadOnlyNotice" xml:space="preserve"><value>Set access mode per computer on the phone. Windows uses only the mode confirmed by the phone session. Safe mode never replaces existing files and requires confirmation for deletion.</value></data>
   <data name="WinFspAttribution" xml:space="preserve"><value>WinFsp - Windows File System Proxy, Copyright (C) Bill Zissimopoulos · </value></data>
   <data name="ConfirmedMode" xml:space="preserve"><value>Phone-confirmed mode</value></data>
@@ -38,6 +38,7 @@
   <data name="Revoke" xml:space="preserve"><value>Revoke pairing</value></data>
   <data name="Ready" xml:space="preserve"><value>Select a phone to begin.</value></data>
   <data name="Completed" xml:space="preserve"><value>Operation completed.</value></data>
+  <data name="PairingCompleted" xml:space="preserve"><value>Pairing completed. Start sharing on the phone, then select Connect.</value></data>
   <data name="OperationCancelled" xml:space="preserve"><value>Cancelled. Any unconfirmed remote authorization remains disabled locally; check the saved pairing status.</value></data>
   <data name="AlreadyRunning" xml:space="preserve"><value>PhoneBridge NG is already running for this user.</value></data>
   <data name="DiscoveryFailed" xml:space="preserve"><value>Discovery stopped. Check the network, then restart the app.</value></data>
@@ -137,9 +138,9 @@
   <data name="ConnectedState" xml:space="preserve"><value>Connected</value></data>
   <data name="NotConnected" xml:space="preserve"><value>Not connected</value></data>
   <data name="Back" xml:space="preserve"><value>Back</value></data>
-  <data name="AddPhoneSteps" xml:space="preserve"><value>1 Choose phone    ·    2 Enter code    ·    3 Approve on phone    ·    4 Connect automatically</value></data>
+  <data name="AddPhoneSteps" xml:space="preserve"><value>1 Open pairing on phone    ·    2 Choose phone    ·    3 Enter code    ·    4 Approve</value></data>
   <data name="ChoosePhoneFirst" xml:space="preserve"><value>Choose a nearby phone</value></data>
-  <data name="AddPhoneInstructions" xml:space="preserve"><value>Start sharing on your phone and open “Pair a new computer.”</value></data>
+  <data name="AddPhoneInstructions" xml:space="preserve"><value>Open “Pair a new computer” before starting sharing. After pairing, start sharing and select Connect in Windows.</value></data>
   <data name="PairingCodeHint" xml:space="preserve"><value>Enter exactly 8 digits. Pairing stays disabled until the code is complete.</value></data>
   <data name="ConnectionPreferences" xml:space="preserve"><value>Connection preferences</value></data>
   <data name="ModeManagedOnPhone" xml:space="preserve"><value>Access mode is confirmed on the phone and shown here read-only.</value></data>

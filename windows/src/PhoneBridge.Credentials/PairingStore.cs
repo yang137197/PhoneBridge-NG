@@ -20,6 +20,16 @@ public sealed class PairingStore
         string local=Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
         string app=Path.Combine(local,"PhoneBridge-NG");return new(Path.Combine(app,"Pairings-v1"),app,null);
     }
+    public static string UiPreviewDataRoot(string revision)
+    {
+        if(string.IsNullOrWhiteSpace(revision)||!System.Text.RegularExpressions.Regex.IsMatch(revision,"^[0-9]+(?:\\.[0-9]+){1,3}$"))
+            throw new ArgumentException("invalid-ui-preview-revision",nameof(revision));
+        return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),"PhoneBridge-NG-UiPreview",revision);
+    }
+    public static PairingStore OpenUiPreview(string revision)
+    {
+        string app=UiPreviewDataRoot(revision);return new(Path.Combine(app,"Pairings-v1"),app,null);
+    }
     internal static PairingStore OpenAt(string root,Action<CommitStage>? checkpoint=null) => new(root,root,checkpoint);
 
     public PairingRecord CreatePending(ValidatedDeviceIdentity identity,string clientId,string deviceName,string clientName)

@@ -77,7 +77,7 @@ public sealed class ConnectionTests
             await using var server = new NetworkPeer(); server.StartPairing(trailing: trailing);
             var store = Store(); await using var client = new ConnectionClient(store);
             char[] code = (trailing ? "01234567" : "87654321").ToCharArray();
-            await Assert.ThrowsAsync<Exception>(() => client.PairAndConnectAsync(server.Candidate, server.Endpoint, code, "Synthetic PC", NoMount, null, default));
+            await Assert.ThrowsAsync<Exception>(() => client.PairAsync(server.Candidate, server.Endpoint, code, "Synthetic PC", null, default));
             Assert.IsEmpty(store.List()); Assert.AreEqual(0, server.RequestCount); Assert.IsTrue(code.All(c => c == '\0'));
         }
     }
@@ -87,7 +87,7 @@ public sealed class ConnectionTests
         await using var server = new NetworkPeer(); server.StartPairing(hold: true);
         var store = Store(); await using var client = new ConnectionClient(store);
         using var cancel = new CancellationTokenSource(200);
-        await Assert.ThrowsAsync<OperationCanceledException>(() => client.PairAndConnectAsync(server.Candidate, server.Endpoint, "01234567".ToCharArray(), "Synthetic PC", NoMount, null, cancel.Token));
+        await Assert.ThrowsAsync<OperationCanceledException>(() => client.PairAsync(server.Candidate, server.Endpoint, "01234567".ToCharArray(), "Synthetic PC", null, cancel.Token));
         Assert.IsEmpty(store.List());
     }
     [TestMethod]
@@ -96,7 +96,7 @@ public sealed class ConnectionTests
         await using var server = new NetworkPeer(); server.StartPairing(hold: true);
         var store = Store(); await using var client = new ConnectionClient(store);
         var watch = System.Diagnostics.Stopwatch.StartNew();
-        await Assert.ThrowsAsync<OperationCanceledException>(() => client.PairAndConnectAsync(server.Candidate, server.Endpoint, "01234567".ToCharArray(), "Synthetic PC", NoMount, null, default));
+        await Assert.ThrowsAsync<OperationCanceledException>(() => client.PairAsync(server.Candidate, server.Endpoint, "01234567".ToCharArray(), "Synthetic PC", null, default));
         Assert.IsTrue(watch.Elapsed < TimeSpan.FromSeconds(10)); Assert.IsEmpty(store.List());
     }
     [TestMethod]
@@ -107,7 +107,7 @@ public sealed class ConnectionTests
         server.Respond = _ => Task.FromResult(new Reply(202, Status(server, "PendingApproval")));
         using var cancel = new CancellationTokenSource();
         const string replacement = "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb";
-        await Assert.ThrowsAsync<CredentialStoreException>(() => client.PairAndConnectAsync(server.Candidate, server.Endpoint, "01234567".ToCharArray(), "Synthetic PC", NoMount,
+        await Assert.ThrowsAsync<CredentialStoreException>(() => client.PairAsync(server.Candidate, server.Endpoint, "01234567".ToCharArray(), "Synthetic PC",
             new StageObserver(stage =>
             {
                 if (stage != ConnectionStage.WaitingApproval) return;
@@ -146,9 +146,22 @@ public sealed class ConnectionTests
             return Task.FromResult(Unauthorized);
         };
         using var cancel = new CancellationTokenSource();
-        await Assert.ThrowsAsync<OperationCanceledException>(() => client.PairAndConnectAsync(server.Candidate, server.Endpoint, "01234567".ToCharArray(), "Synthetic PC", NoMount,
+        await Assert.ThrowsAsync<OperationCanceledException>(() => client.PairAsync(server.Candidate, server.Endpoint, "01234567".ToCharArray(), "Synthetic PC",
             new StageObserver(stage => { if (stage == ConnectionStage.WaitingApproval) cancel.Cancel(); }), cancel.Token));
         Assert.IsTrue(sawPost); Assert.AreEqual(alreadyApproved, deleted); Assert.IsEmpty(store.List());
+    }
+    [TestMethod]
+    public async Task PairingCompletesWithoutSharingAndDoesNotMount()
+    {
+        await using var server = new NetworkPeer(); server.StartPairing();
+        var store = Store(); await using var client = new ConnectionClient(store);
+        server.Respond = request => Task.FromResult(request.Path == "/phonebridge/v1/session"
+            ? new Reply(200, JsonSerializer.Serialize(new { device_id = server.Identity.DeviceId, client_id = server.ClientId, mode = "safe", share_ready = false }))
+            : new Reply(200, Status(server, "Active")));
+        var record = await client.PairAsync(server.Candidate, server.Endpoint, "01234567".ToCharArray(), "Synthetic PC", null, default);
+        Assert.AreEqual(PairingRecordState.Active, record.State);
+        Assert.AreEqual(MountState.Idle, client.Mount.State);
+        Assert.IsNull(client.Connected);
     }
     [TestMethod]
     public async Task LostPostReplyPreservesPendingAndRecoveryOnlyUsesSession()
@@ -161,7 +174,7 @@ public sealed class ConnectionTests
             if (request.Method == "POST") { posts++; return Task.FromResult(new Reply(200, "", Disconnect: true)); }
             Assert.AreEqual("/phonebridge/v1/session", request.Path); return Task.FromResult(Session(server));
         };
-        await Assert.ThrowsAsync<HttpRequestException>(() => client.PairAndConnectAsync(server.Candidate, server.Endpoint, "01234567".ToCharArray(), "Synthetic PC", NoMount, null, default));
+        await Assert.ThrowsAsync<HttpRequestException>(() => client.PairAsync(server.Candidate, server.Endpoint, "01234567".ToCharArray(), "Synthetic PC", null, default));
         Assert.AreEqual(PairingRecordState.Pending, store.List().Single().State);
         await Assert.ThrowsAsync<MountException>(() => client.ConnectAsync(server.Identity.DeviceId, server.Endpoint, NoMount, null, default));
         Assert.AreEqual(PairingRecordState.Active, store.List().Single().State); Assert.AreEqual(1, posts);

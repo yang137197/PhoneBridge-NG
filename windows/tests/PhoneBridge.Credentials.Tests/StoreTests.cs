@@ -40,6 +40,15 @@ public sealed class StoreTests
         _base=Path.Combine(_run,Guid.NewGuid().ToString("N"));Directory.CreateDirectory(_base);_root=Path.Combine(_base,"store");
         AppDomain.CurrentDomain.FirstChanceException+=RecordIoFailure;
     }
+    [TestMethod]
+    public void UiPreviewRevisionsUseSeparateNonProductionRoots()
+    {
+        string first=PairingStore.UiPreviewDataRoot("0.2.0.8");
+        string second=PairingStore.UiPreviewDataRoot("0.2.0.9");
+        Assert.AreNotEqual(first,second);
+        StringAssert.Contains(first,Path.Combine("PhoneBridge-NG-UiPreview","0.2.0.8"));
+        Assert.Throws<ArgumentException>(()=>PairingStore.UiPreviewDataRoot("../unsafe"));
+    }
     [TestCleanup] public void ReportIoFailure()
     {
         AppDomain.CurrentDomain.FirstChanceException-=RecordIoFailure;

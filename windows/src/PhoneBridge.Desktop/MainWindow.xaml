@@ -45,7 +45,7 @@
       AutomationProperties.AutomationId="Devices" SelectionMode="Single" SelectionChanged="SelectionChanged"
       ScrollViewer.HorizontalScrollBarVisibility="Disabled">
       <ListBox.ItemsPanel><ItemsPanelTemplate><WrapPanel/></ItemsPanelTemplate></ListBox.ItemsPanel>
-      <ListBox.ItemContainerStyle><Style TargetType="ListBoxItem"><Setter Property="Padding" Value="0"/><Setter Property="Margin" Value="0"/><Setter Property="Background" Value="Transparent"/><Setter Property="BorderThickness" Value="0"/><Setter Property="HorizontalContentAlignment" Value="Stretch"/><Setter Property="Template"><Setter.Value><ControlTemplate TargetType="ListBoxItem"><ContentPresenter/></ControlTemplate></Setter.Value></Setter></Style></ListBox.ItemContainerStyle>
+      <ListBox.ItemContainerStyle><Style TargetType="ListBoxItem"><Setter Property="Visibility" Value="{Binding ShowInDeviceList, Converter={StaticResource BooleanToVisibility}}"/><Setter Property="Padding" Value="0"/><Setter Property="Margin" Value="0"/><Setter Property="Background" Value="Transparent"/><Setter Property="BorderThickness" Value="0"/><Setter Property="HorizontalContentAlignment" Value="Stretch"/><Setter Property="Template"><Setter.Value><ControlTemplate TargetType="ListBoxItem"><ContentPresenter/></ControlTemplate></Setter.Value></Setter></Style></ListBox.ItemContainerStyle>
       <ListBox.ItemTemplate>
        <DataTemplate>
         <Border Style="{StaticResource Card}" Width="340" MinHeight="216" Margin="8">

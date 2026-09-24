@@ -127,7 +127,7 @@
   <data name="NavSettings" xml:space="preserve"><value>Settings</value></data>
   <data name="NavAbout" xml:space="preserve"><value>About</value></data>
   <data name="MyPhones" xml:space="preserve"><value>My phones</value></data>
-  <data name="DevicesSubtitle" xml:space="preserve"><value>Nearby phones and saved pairings on this network</value></data>
+  <data name="DevicesSubtitle" xml:space="preserve"><value>Phones paired with this computer</value></data>
   <data name="AddPhone" xml:space="preserve"><value>Add phone</value></data>
   <data name="Disconnect" xml:space="preserve"><value>Disconnect</value></data>
   <data name="PhoneSettings" xml:space="preserve"><value>Phone settings</value></data>

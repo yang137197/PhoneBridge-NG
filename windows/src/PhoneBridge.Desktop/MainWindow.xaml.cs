@@ -113,7 +113,8 @@ public partial class MainWindow : Window
     private void AddPhoneClick(object sender, RoutedEventArgs e)
     {
         var available = (Devices.ItemsSource as IEnumerable<DeviceRow>)?.ToArray() ?? [];
-        var row = Selected ?? available.FirstOrDefault(CanPair) ?? available.FirstOrDefault(item => item.Record is null);
+        var selected = Selected;
+        var row = selected is not null && CanPair(selected) ? selected : available.FirstOrDefault(CanPair);
         if (row is not null) SelectDevice(row);
         PairingPhoneName.Text = row?.Name ?? T("ChoosePhoneFirst");
         ShowMainPage(AddPhonePage, DevicesNavigation);
@@ -174,13 +175,19 @@ public partial class MainWindow : Window
         string? selected = Selected?.Id;
         string? connectedDevice = client.Mount.State == MountState.Mounted ? client.Connected?.Record.DeviceId : null;
         char? connectedDrive = connectedDevice is null ? null : client.Connected?.DriveLetter;
-        var rows = candidates.Values.Select(c =>
+        var rows = candidates.Values.Where(c => DeviceListPolicy.IncludeCandidate(c.Pairing is not null,
+            records.Any(r => r.DeviceId == c.DeviceIdHint))).Select(c =>
         {
             var record = records.FirstOrDefault(r => r.DeviceId == c.DeviceIdHint);
-            return new DeviceRow(c.Id, c, record, record?.DeviceId == connectedDevice, record?.DeviceId == connectedDevice ? connectedDrive : null);
+            bool isConnected = DeviceListPolicy.IsConnected(record?.DeviceId, connectedDevice);
+            return new DeviceRow(c.Id, c, record, isConnected, isConnected ? connectedDrive : null);
         }).ToList();
         rows.AddRange(records.Where(r => !candidates.Values.Any(c => c.DeviceIdHint == r.DeviceId))
-            .Select(r => new DeviceRow(r.DeviceId, null, r, r.DeviceId == connectedDevice, r.DeviceId == connectedDevice ? connectedDrive : null)));
+            .Select(r =>
+            {
+                bool isConnected = DeviceListPolicy.IsConnected(r.DeviceId, connectedDevice);
+                return new DeviceRow(r.DeviceId, null, r, isConnected, isConnected ? connectedDrive : null);
+            }));
         var ordered = rows.OrderBy(r => r.Name, StringComparer.CurrentCulture).ToArray();
         Devices.ItemsSource = ordered;
         var restored = ordered.FirstOrDefault(r => r.Id == selected);
@@ -630,5 +637,6 @@ public partial class MainWindow : Window
         public string DriveSummary => IsConnected && DriveLetter is { } letter ? $"{letter}:\\" : Address;
         public string Accent => IsConnected ? "#16865B" : Record is null ? "#109DA8" : Record.State == PairingRecordState.Active ? "#8A96A6" : "#A85F00";
         public bool CanDisconnect => IsConnected;
+        public bool ShowInDeviceList => Record is not null;
     }
 }

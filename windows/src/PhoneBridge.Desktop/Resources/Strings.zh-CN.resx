@@ -127,7 +127,7 @@
   <data name="NavSettings" xml:space="preserve"><value>设置</value></data>
   <data name="NavAbout" xml:space="preserve"><value>关于</value></data>
   <data name="MyPhones" xml:space="preserve"><value>我的手机</value></data>
-  <data name="DevicesSubtitle" xml:space="preserve"><value>同一局域网内的附近手机与已保存配对</value></data>
+  <data name="DevicesSubtitle" xml:space="preserve"><value>已完成配对的手机</value></data>
   <data name="AddPhone" xml:space="preserve"><value>添加手机</value></data>
   <data name="Disconnect" xml:space="preserve"><value>断开</value></data>
   <data name="PhoneSettings" xml:space="preserve"><value>设备设置</value></data>

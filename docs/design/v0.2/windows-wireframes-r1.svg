@@ -1,0 +1,210 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1500" viewBox="0 0 1600 1500" role="img" aria-labelledby="title desc">
+  <title id="title">PhoneBridge NG v0.2 Windows 六页线框</title>
+  <desc id="desc">设备主页、添加手机、设备设置、常规设置、高级排障和关于页的冻结候选线框。</desc>
+  <defs>
+    <style>
+      .board { fill:#F4F7FB; stroke:#C9D4E2; stroke-width:1.5; }
+      .surface { fill:#FFFFFF; stroke:#D8E1EC; stroke-width:1.2; }
+      .subtle { fill:#EDF4FC; stroke:#D8E1EC; stroke-width:1; }
+      .selected { fill:#DDEBFF; }
+      .primary { fill:#1769E0; }
+      .danger { fill:#FFFFFF; stroke:#C43D4B; stroke-width:1.4; }
+      .line { stroke:#D8E1EC; stroke-width:1; }
+      .ink { fill:#172033; font-family:'Segoe UI','Microsoft YaHei UI',sans-serif; }
+      .body { fill:#354154; font-family:'Segoe UI','Microsoft YaHei UI',sans-serif; }
+      .muted { fill:#667487; font-family:'Segoe UI','Microsoft YaHei UI',sans-serif; }
+      .white { fill:#FFFFFF; font-family:'Segoe UI','Microsoft YaHei UI',sans-serif; }
+      .blue { fill:#1769E0; font-family:'Segoe UI','Microsoft YaHei UI',sans-serif; }
+      .red { fill:#C43D4B; font-family:'Segoe UI','Microsoft YaHei UI',sans-serif; }
+      .green { fill:#16865B; font-family:'Segoe UI','Microsoft YaHei UI',sans-serif; }
+      .amber { fill:#A85F00; font-family:'Segoe UI','Microsoft YaHei UI',sans-serif; }
+      .h1 { font-size:24px; font-weight:600; }
+      .h2 { font-size:17px; font-weight:600; }
+      .label { font-size:14px; font-weight:600; }
+      .small { font-size:12px; }
+      .tiny { font-size:11px; }
+    </style>
+  </defs>
+
+  <rect width="1600" height="1500" fill="#E9EFF6"/>
+  <text x="40" y="42" class="ink h1">PhoneBridge NG v0.2 · Windows 线框冻结候选 r1</text>
+
+  <!-- 1 Devices -->
+  <g transform="translate(40 70)">
+    <rect class="board" width="740" height="410" rx="14"/>
+    <rect class="surface" x="0" y="0" width="740" height="34" rx="14"/>
+    <circle cx="18" cy="17" r="6" fill="#1769E0"/>
+    <text x="32" y="22" class="body small">PhoneBridge NG</text>
+    <rect x="0" y="34" width="150" height="376" fill="#F8FAFD"/>
+    <text x="18" y="74" class="blue label">▣ 设备</text>
+    <text x="18" y="112" class="body label">⚙ 设置</text>
+    <text x="18" y="150" class="body label">ⓘ 关于</text>
+    <text x="174" y="74" class="ink h1">我的手机</text>
+    <text x="174" y="96" class="muted small">同一局域网内的附近手机与已保存配对</text>
+    <rect class="primary" x="604" y="54" width="112" height="38" rx="8"/>
+    <text x="628" y="78" class="white label">＋ 添加手机</text>
+    <rect class="surface" x="174" y="122" width="260" height="190" rx="12"/>
+    <circle cx="202" cy="151" r="9" fill="#16865B"/>
+    <text x="220" y="157" class="ink h2">Galaxy S23 Ultra</text>
+    <text x="202" y="183" class="green small">已连接 · P:</text>
+    <text x="202" y="205" class="muted small">安全模式</text>
+    <rect class="primary" x="202" y="238" width="108" height="38" rx="8"/>
+    <text x="224" y="262" class="white label">打开文件</text>
+    <rect class="surface" x="320" y="238" width="78" height="38" rx="8"/>
+    <text x="344" y="262" class="body label">断开</text>
+    <text x="404" y="262" class="muted small">设备设置 ›</text>
+    <rect class="surface" x="450" y="122" width="266" height="190" rx="12"/>
+    <circle cx="478" cy="151" r="9" fill="#8A96A6"/>
+    <text x="496" y="157" class="ink h2">Redmi K40</text>
+    <text x="478" y="183" class="muted small">已配对 · 未连接</text>
+    <text x="478" y="205" class="muted small">安全模式</text>
+    <rect class="primary" x="478" y="238" width="92" height="38" rx="8"/>
+    <text x="507" y="262" class="white label">连接</text>
+    <text x="584" y="262" class="muted small">设备设置 ›</text>
+    <rect class="subtle" x="174" y="332" width="542" height="52" rx="10"/>
+    <text x="192" y="354" class="body small">卡片独立显示状态和操作；一个设备失败不影响另一个。</text>
+    <text x="192" y="374" class="muted tiny">此多设备行为要到 P2-003 才能验证。</text>
+    <text x="12" y="398" class="muted tiny">01 设备主页</text>
+  </g>
+
+  <!-- 2 Add phone -->
+  <g transform="translate(820 70)">
+    <rect class="board" width="740" height="410" rx="14"/>
+    <rect class="surface" width="740" height="34" rx="14"/>
+    <text x="20" y="22" class="body small">PhoneBridge NG · 添加手机</text>
+    <text x="28" y="74" class="blue label">1 选择手机</text>
+    <line x1="118" y1="69" x2="165" y2="69" class="line"/>
+    <text x="176" y="74" class="body label">2 输入配对码</text>
+    <line x1="286" y1="69" x2="333" y2="69" class="line"/>
+    <text x="344" y="74" class="body label">3 在手机上批准</text>
+    <line x1="472" y1="69" x2="519" y2="69" class="line"/>
+    <text x="530" y="74" class="body label">4 自动连接</text>
+    <rect class="surface" x="70" y="102" width="600" height="236" rx="16"/>
+    <text x="104" y="140" class="ink h2">输入手机显示的 8 位配对码</text>
+    <text x="104" y="165" class="muted small">保持手机的“配对新电脑”页面在前台。</text>
+    <rect class="surface" x="104" y="188" width="300" height="54" rx="8"/>
+    <text x="128" y="223" class="ink h1" letter-spacing="6">4827 1953</text>
+    <text x="104" y="266" class="muted small">只接受 8 位数字；输入未完成时“配对”禁用。</text>
+    <rect class="surface" x="456" y="188" width="82" height="40" rx="8"/>
+    <text x="480" y="213" class="body label">取消</text>
+    <rect class="primary" x="548" y="188" width="88" height="40" rx="8"/>
+    <text x="578" y="213" class="white label">配对</text>
+    <text x="104" y="304" class="muted tiny">批准后仍需验证身份、授权、共享状态和盘符就绪，才显示“已连接”。</text>
+    <text x="12" y="398" class="muted tiny">02 添加手机 · 独立四步流程</text>
+  </g>
+
+  <!-- 3 Device settings -->
+  <g transform="translate(40 515)">
+    <rect class="board" width="740" height="410" rx="14"/>
+    <rect class="surface" width="740" height="34" rx="14"/>
+    <text x="20" y="22" class="body small">PhoneBridge NG · Galaxy S23 Ultra</text>
+    <text x="28" y="75" class="ink h1">设备设置</text>
+    <rect class="surface" x="28" y="98" width="326" height="118" rx="12"/>
+    <text x="48" y="126" class="ink h2">连接偏好</text>
+    <text x="48" y="153" class="body small">手机确认模式</text>
+    <text x="220" y="153" class="muted small">安全模式 · 只读显示</text>
+    <text x="48" y="181" class="body small">首选盘符</text>
+    <rect class="surface" x="220" y="161" width="108" height="34" rx="8"/>
+    <text x="235" y="183" class="body small">自动（P:）⌄</text>
+    <rect class="surface" x="372" y="98" width="340" height="118" rx="12"/>
+    <text x="392" y="126" class="ink h2">安全操作</text>
+    <text x="392" y="150" class="muted small">安全模式下为一个已被阻止的路径授权一次删除。</text>
+    <rect class="surface" x="392" y="164" width="176" height="34" rx="8"/>
+    <text x="406" y="185" class="muted small">/待删除项目</text>
+    <rect class="surface" x="578" y="164" width="114" height="34" rx="8"/>
+    <text x="590" y="185" class="body small">授权一次删除</text>
+    <rect class="surface" x="28" y="236" width="684" height="130" rx="12"/>
+    <text x="48" y="266" class="ink h2">移除与高级排障</text>
+    <text x="48" y="292" class="muted small">正常移除会先禁用本机配对、断开盘符，并请求手机撤销授权。</text>
+    <rect class="danger" x="48" y="312" width="118" height="38" rx="8"/>
+    <text x="67" y="336" class="red label">移除此手机</text>
+    <text x="204" y="336" class="blue small">仅忘记本机…</text>
+    <text x="310" y="336" class="muted tiny">仅用于远端撤销无法确认的排障场景</text>
+    <text x="12" y="398" class="muted tiny">03 设备设置</text>
+  </g>
+
+  <!-- 4 General settings -->
+  <g transform="translate(820 515)">
+    <rect class="board" width="740" height="410" rx="14"/>
+    <rect class="surface" width="740" height="34" rx="14"/>
+    <text x="20" y="22" class="body small">PhoneBridge NG · 设置</text>
+    <rect x="0" y="34" width="160" height="376" fill="#F8FAFD"/>
+    <rect class="selected" x="12" y="56" width="136" height="34" rx="8"/>
+    <text x="28" y="78" class="blue label">常规</text>
+    <text x="28" y="116" class="body label">高级排障</text>
+    <text x="184" y="74" class="ink h1">常规</text>
+    <text x="184" y="112" class="ink h2">语言</text>
+    <circle cx="198" cy="140" r="8" fill="#1769E0"/><circle cx="198" cy="140" r="3" fill="#FFFFFF"/>
+    <text x="216" y="145" class="body small">简体中文</text>
+    <circle cx="318" cy="140" r="8" fill="#FFFFFF" stroke="#667487" stroke-width="1.5"/>
+    <text x="336" y="145" class="body small">English</text>
+    <line x1="184" y1="170" x2="708" y2="170" class="line"/>
+    <text x="184" y="204" class="ink h2">启动</text>
+    <rect x="184" y="222" width="38" height="22" rx="11" fill="#D8E1EC"/>
+    <circle cx="195" cy="233" r="8" fill="#FFFFFF"/>
+    <text x="236" y="237" class="body small">Windows 登录时自动运行 PhoneBridge NG</text>
+    <text x="236" y="258" class="muted tiny">只启动客户端并进入托盘，不自动连接或创建盘符。</text>
+    <line x1="184" y1="284" x2="708" y2="284" class="line"/>
+    <text x="184" y="318" class="ink h2">默认盘符</text>
+    <rect class="surface" x="184" y="334" width="230" height="36" rx="8"/>
+    <text x="198" y="357" class="body small">自动选择空闲盘符 ⌄</text>
+    <text x="12" y="398" class="muted tiny">04 设置 · 常规</text>
+  </g>
+
+  <!-- 5 Advanced -->
+  <g transform="translate(40 960)">
+    <rect class="board" width="740" height="410" rx="14"/>
+    <rect class="surface" width="740" height="34" rx="14"/>
+    <text x="20" y="22" class="body small">PhoneBridge NG · 设置</text>
+    <rect x="0" y="34" width="160" height="376" fill="#F8FAFD"/>
+    <text x="28" y="78" class="body label">常规</text>
+    <rect class="selected" x="12" y="94" width="136" height="34" rx="8"/>
+    <text x="28" y="116" class="blue label">高级排障</text>
+    <text x="184" y="74" class="ink h1">高级排障</text>
+    <rect class="surface" x="184" y="98" width="524" height="150" rx="12"/>
+    <text x="204" y="128" class="ink h2">临时手动地址</text>
+    <text x="204" y="151" class="muted small">仅用于已有配对；仍会验证已保存的设备身份。</text>
+    <rect class="surface" x="204" y="168" width="180" height="36" rx="8"/>
+    <text x="218" y="191" class="muted small">选择已配对手机 ⌄</text>
+    <rect class="surface" x="394" y="168" width="152" height="36" rx="8"/>
+    <text x="408" y="191" class="muted small">IP 地址</text>
+    <rect class="surface" x="556" y="168" width="70" height="36" rx="8"/>
+    <text x="572" y="191" class="body small">8273</text>
+    <rect class="surface" x="636" y="168" width="52" height="36" rx="8"/>
+    <text x="650" y="191" class="body small">使用</text>
+    <rect class="surface" x="184" y="268" width="524" height="106" rx="12"/>
+    <text x="204" y="298" class="ink h2">诊断</text>
+    <text x="204" y="321" class="muted small">导出脱敏诊断包；文件不会自动上传。</text>
+    <rect class="surface" x="204" y="334" width="126" height="34" rx="8"/>
+    <text x="218" y="356" class="body small">导出诊断包</text>
+    <text x="12" y="398" class="muted tiny">05 设置 · 高级排障</text>
+  </g>
+
+  <!-- 6 About -->
+  <g transform="translate(820 960)">
+    <rect class="board" width="740" height="410" rx="14"/>
+    <rect class="surface" width="740" height="34" rx="14"/>
+    <text x="20" y="22" class="body small">PhoneBridge NG · 关于</text>
+    <rect x="0" y="34" width="150" height="376" fill="#F8FAFD"/>
+    <text x="18" y="74" class="body label">▣ 设备</text>
+    <text x="18" y="112" class="body label">⚙ 设置</text>
+    <text x="18" y="150" class="blue label">ⓘ 关于</text>
+    <rect class="subtle" x="186" y="76" width="62" height="62" rx="16"/>
+    <text x="201" y="103" class="muted tiny">图标</text>
+    <text x="201" y="122" class="muted tiny">待选</text>
+    <text x="268" y="104" class="ink h1">PhoneBridge NG</text>
+    <text x="268" y="130" class="muted small">版本 0.2.0</text>
+    <line x1="186" y1="164" x2="708" y2="164" class="line"/>
+    <text x="186" y="198" class="ink h2">项目与许可</text>
+    <text x="186" y="228" class="blue small">GitHub 项目主页 ↗</text>
+    <text x="186" y="256" class="body small">PhoneBridge NG 依 GPL-3.0-or-later 分发。</text>
+    <text x="186" y="281" class="muted small">包含 rclone 与 WinFsp；详细通知与源码入口随交付提供。</text>
+    <rect class="surface" x="186" y="310" width="122" height="36" rx="8"/>
+    <text x="202" y="333" class="body small">查看开源许可</text>
+    <text x="12" y="398" class="muted tiny">06 关于</text>
+  </g>
+
+  <text x="40" y="1425" class="ink h2">实现来源优先级</text>
+  <text x="40" y="1452" class="body small">控件与文案：本线框 + CONTROL_STATES.md + COPY_MAP.md；颜色与尺寸：VISUAL_TOKENS.md；PNG 仅作视觉气质参考。</text>
+  <text x="40" y="1476" class="muted small">静态稿不证明 WPF 渲染、DPI、键盘、高对比度或多设备运行行为。</text>
+</svg>

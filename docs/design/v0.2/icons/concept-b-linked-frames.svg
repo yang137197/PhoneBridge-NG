@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 64 64" role="img" aria-labelledby="title desc">
+  <title id="title">图标概念 B：双端连接</title>
+  <desc id="desc">蓝色圆角底板上，手机端和电脑端两个轮廓由青色桥梁连接的原创图标。</desc>
+  <rect x="4" y="4" width="56" height="56" rx="16" fill="#1769E0"/>
+  <rect x="12" y="15" width="17" height="34" rx="5" fill="none" stroke="#FFFFFF" stroke-width="4"/>
+  <circle cx="20.5" cy="43" r="1.7" fill="#FFFFFF"/>
+  <rect x="38" y="18" width="15" height="25" rx="3" fill="none" stroke="#FFFFFF" stroke-width="4"/>
+  <path d="M35 44h21M45 44v5" fill="none" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round"/>
+  <path d="M26 29c5-5 9-5 14 0M26 36c5 5 9 5 14 0" fill="none" stroke="#34D1DB" stroke-width="4" stroke-linecap="round"/>
+</svg>

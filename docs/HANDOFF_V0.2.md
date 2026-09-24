@@ -8,7 +8,8 @@
 - 本地目录：`C:\Users\yang1\Documents\ChatGPT\samsung link windows\PhoneBridge-NG`
 - 已发布版本：`v0.1.0`，标签提交 `e74e3a2403d3485883e24a723826c786973eb29e`。
 - v0.2.0 需求计划基线：`18b5e0778d4fd03fad95a0a4602cea36dcc83f28`。
-- v0.2.0 尚未修改 Windows/Android 业务代码、资源或构建配置，也没有生成候选安装包或 APK。
+- P2-002 已产出并冻结静态 r1 设计候选，入口为 `docs/design/v0.2/README.md`；用户尚未确认，任务保持 active。
+- v0.2.0 仍未修改 Windows/Android 业务代码、资源或构建配置，也没有生成候选安装包或 APK。
 - 开始新任务前必须重新检查 `git status --short --branch`、`git log -5 --oneline --decorate` 和远端状态，不从本交接推断后来发生的变化。
 
 ## 2. 新对话必读顺序
@@ -21,6 +22,7 @@
 6. `docs/PRODUCT.md` 中的“v0.2.0 已确认需求”
 7. `ARCHITECTURE.md` 与 `DECISIONS.md`
 8. `docs/tasks/completed/P2-001-v0.2-requirements-and-ui-plan.md`
+9. `docs/design/v0.2/README.md` 与 `docs/tasks/active/P2-002-ui-wireframes-and-icon-concepts.md`
 
 涉及实现时再读对应 Windows/Android 源码和安全、配对、测试规范，不在任务开始时无差别展开所有历史验收文件。
 
@@ -77,28 +79,26 @@
 
 只增加一个轻量会话协调器管理会话集合、盘符冲突、应用退出和托盘汇总。一个设备的取消、断开或失败不得停止另一设备。第一条真实通过线是 Samsung 与 Redmi 在同一 LAN 同时挂载两个盘符，各自可打开和双向复制；断开其中一个后另一个继续可用。
 
-## 8. 唯一下一任务：P2-002
+## 8. 唯一下一任务：确认 P2-002 冻结候选
 
 ### 目标
 
-只制作并冻结 Windows/Android 线框、控件状态、视觉变量和图标概念，先交给用户确认；本任务不修改业务代码，不开始多设备核心重构。
+用户审阅已提交的 Windows/Android 线框、控件状态、视觉变量、双语关键文案和图标概念，并明确确认或指出需要调整的具体项。本任务不修改业务代码，不开始多设备核心重构。
 
-### 必须交付
+### 已交付
 
-- Windows：设备主页、添加手机流程、设备设置、常规设置、高级排障、关于页线框。
-- Android：首页、配对会话、电脑详情、设置页线框。
-- Windows 设备卡片在未配对、未连接、处理中、已连接和需要处理五种状态的控件矩阵。
-- 颜色、字号、间距、圆角、按钮层级、状态色和最小图标尺寸规范。
-- 两到三个原创图标概念，说明其在 Windows、托盘和 Android 小尺寸下的适配方式。
-- 简体中文主稿及 English 关键页面文案映射。
+- `docs/design/v0.2/` 中的 Windows 六页、Android 四页线框和两张视觉方向稿。
+- Windows 五态设备卡片矩阵、通用控件状态和两端视觉变量。
+- 简体中文主稿与 English 关键路径文案。
+- A“桥接文件”、B“双端连接”、C“文件入口”三个原创 SVG 概念及 32/16 px 简化说明；当前推荐 A，但尚未替用户选择。
 
 ### 通过条件
 
-用户能够从静态稿明确判断首次配对、日常连接、打开文件、断开、设置、排障和手机共享流程，并确认视觉方向、按钮命名、设置层级和一个图标方向。没有用户确认前不得开始 P2-003 多设备代码。
+用户确认首次配对、日常连接、打开文件、断开、设置、排障和手机共享流程，接受视觉方向、按钮命名与设置层级，并选择一个图标方向。没有用户确认前不得开始 P2-003 多设备代码。
 
 ## 9. 后续顺序
 
-1. P2-002：视觉与交互定稿。
+1. P2-002：用户确认视觉与交互冻结候选。
 2. P2-003：按设备隔离的多会话核心和真实双设备最小链路。
 3. P2-004：Windows 新 UI、操作精简和语言设置。
 4. P2-005：Android 新 UI 和语言设置。
@@ -116,7 +116,7 @@
 
 先读取 AGENTS.md、DEVELOPMENT_RULES.md、README.md、docs/HANDOFF_V0.2.md、docs/V0.2_PLAN.md、docs/PRODUCT.md、ARCHITECTURE.md、DECISIONS.md，并核对当前 main、git status、最近提交和远端状态。以仓库当前事实为准，不沿用对话中的旧状态。
 
-v0.1.0 已发布。v0.2.0 已完成需求计划，尚未开发代码。已确认范围：重构 Windows/Android UI、重做两端图标、两端首次默认简体中文并提供 English 设置、精简 Windows 操作、支持一台 Windows 同时连接至少两台 Android 手机。保持现有 Kotlin/WPF、HTTPS/WebDAV、rclone、WinFsp、mDNS、配对与安全存储路线。
+v0.1.0 已发布。v0.2.0 已完成需求计划；P2-002 静态 r1 设计候选已写入 docs/design/v0.2/，仍未修改业务代码。已确认范围：重构 Windows/Android UI、重做两端图标、两端首次默认简体中文并提供 English 设置、精简 Windows 操作、支持一台 Windows 同时连接至少两台 Android 手机。保持现有 Kotlin/WPF、HTTPS/WebDAV、rclone、WinFsp、mDNS、配对与安全存储路线。
 
-本轮只执行 P2-002：制作并冻结 Windows/Android 线框、控件状态、视觉变量和两到三个原创图标概念，供我确认。不要修改业务代码，不开始多设备重构，不增加多主题，不运行无关测试。完成后把决策、状态、未验证项和唯一下一任务写入仓库并提交推送。
+本轮只审阅并确认 P2-002：核对 Windows/Android 线框、控件状态、视觉变量和关键中英文文案，并在 A“桥接文件”、B“双端连接”、C“文件入口”中选择一个图标方向。不要修改业务代码，不开始 P2-003 多设备重构，不增加多主题，不运行无关测试。确认前唯一下一任务仍是 P2-002 用户确认。
 ```

@@ -1,0 +1,114 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="680" viewBox="0 0 1200 680" role="img" aria-labelledby="title desc">
+  <title id="title">PhoneBridge NG 三个原创图标候选</title>
+  <desc id="desc">A 桥接文件、B 双端连接、C 文件入口，以及各自 32 和 16 像素单色简化预览。</desc>
+  <defs>
+    <style>
+      .ink { fill:#172033; font-family:'Segoe UI','Microsoft YaHei UI',sans-serif; }
+      .body { fill:#354154; font-family:'Segoe UI','Microsoft YaHei UI',sans-serif; }
+      .muted { fill:#667487; font-family:'Segoe UI','Microsoft YaHei UI',sans-serif; }
+      .h1 { font-size:28px; font-weight:600; }
+      .h2 { font-size:20px; font-weight:600; }
+      .label { font-size:14px; font-weight:600; }
+      .small { font-size:13px; }
+      .card { fill:#FFFFFF; stroke:#D8E1EC; stroke-width:1.4; }
+      .tray { fill:none; stroke:#172033; stroke-width:3.8; stroke-linecap:round; stroke-linejoin:round; }
+    </style>
+  </defs>
+  <rect width="1200" height="680" fill="#F4F7FB"/>
+  <text x="42" y="52" class="ink h1">PhoneBridge NG · 原创图标候选 r1</text>
+  <text x="42" y="80" class="muted small">彩色主图标只展示方向；16 px 托盘使用单色、减线、无底板的独立变体。</text>
+
+  <!-- A -->
+  <g transform="translate(42 112)">
+    <rect class="card" width="350" height="492" rx="18"/>
+    <rect x="26" y="26" width="150" height="150" rx="42" fill="#1769E0"/>
+    <rect x="53" y="44" width="58" height="111" rx="18" fill="none" stroke="#FFFFFF" stroke-width="10"/>
+    <circle cx="82" cy="137" r="4.5" fill="#FFFFFF"/>
+    <path d="M111 63h23l17 17v44" fill="none" stroke="#FFFFFF" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M134 63v20h20" fill="none" stroke="#FFFFFF" stroke-width="10" stroke-linejoin="round"/>
+    <path d="M92 119c11-22 27-31 48-31 12 0 22 4 29 10" fill="none" stroke="#34D1DB" stroke-width="12" stroke-linecap="round"/>
+    <text x="202" y="58" class="ink h2">A · 桥接文件</text>
+    <text x="202" y="86" class="body small">手机 + 文件页角</text>
+    <text x="202" y="108" class="body small">+ 青色连接桥</text>
+    <rect x="202" y="130" width="100" height="28" rx="14" fill="#DDF5F7"/>
+    <text x="220" y="149" class="body small">本轮推荐</text>
+    <text x="26" y="218" class="ink label">语义</text>
+    <text x="26" y="243" class="body small">最直接表达“手机文件通过桥接进入 Windows”。</text>
+    <text x="26" y="276" class="ink label">小尺寸</text>
+    <text x="26" y="301" class="body small">32 px 保留手机 + 页角 + 桥；16 px 仅保留手机</text>
+    <text x="26" y="323" class="body small">轮廓和单段桥线，状态以右下附加标记表达。</text>
+    <text x="26" y="360" class="muted small">32 px 单色</text>
+    <g transform="translate(130 340) scale(.6)">
+      <rect x="8" y="5" width="24" height="46" rx="7" class="tray"/>
+      <path d="M27 39c6-11 15-15 27-12" class="tray"/>
+      <path d="M38 13h10l7 7v18" class="tray"/>
+    </g>
+    <text x="224" y="360" class="muted small">16 px 托盘</text>
+    <g transform="translate(282 340) scale(.45)">
+      <rect x="8" y="5" width="24" height="46" rx="7" class="tray"/>
+      <path d="M27 39c6-11 15-15 27-12" class="tray"/>
+    </g>
+    <text x="26" y="448" class="muted small">适配：Windows/安装器用彩色主图；托盘单色；</text>
+    <text x="26" y="470" class="muted small">Android adaptive icon 保留中心 66% 安全区。</text>
+  </g>
+
+  <!-- B -->
+  <g transform="translate(425 112)">
+    <rect class="card" width="350" height="492" rx="18"/>
+    <rect x="26" y="26" width="150" height="150" rx="42" fill="#1769E0"/>
+    <rect x="49" y="55" width="43" height="88" rx="13" fill="none" stroke="#FFFFFF" stroke-width="10"/>
+    <rect x="116" y="63" width="39" height="65" rx="8" fill="none" stroke="#FFFFFF" stroke-width="10"/>
+    <path d="M109 132h54M136 132v12" fill="none" stroke="#FFFFFF" stroke-width="9" stroke-linecap="round"/>
+    <path d="M86 90c13-13 23-13 36 0M86 108c13 13 23 13 36 0" fill="none" stroke="#34D1DB" stroke-width="9" stroke-linecap="round"/>
+    <text x="202" y="58" class="ink h2">B · 双端连接</text>
+    <text x="202" y="86" class="body small">手机端 + 电脑端</text>
+    <text x="202" y="108" class="body small">+ 双向连接</text>
+    <text x="26" y="218" class="ink label">语义</text>
+    <text x="26" y="243" class="body small">突出两端设备，不把“文件”作为第一视觉。</text>
+    <text x="26" y="276" class="ink label">小尺寸</text>
+    <text x="26" y="301" class="body small">32 px 保留双端；16 px 合并为两个竖框和一条桥线。</text>
+    <text x="26" y="360" class="muted small">32 px 单色</text>
+    <g transform="translate(130 340) scale(.6)">
+      <rect x="5" y="9" width="19" height="40" rx="6" class="tray"/>
+      <rect x="39" y="12" width="18" height="28" rx="4" class="tray"/>
+      <path d="M23 26h17M23 34h17" class="tray"/>
+    </g>
+    <text x="224" y="360" class="muted small">16 px 托盘</text>
+    <g transform="translate(282 340) scale(.45)">
+      <rect x="5" y="9" width="19" height="40" rx="6" class="tray"/>
+      <rect x="39" y="12" width="18" height="28" rx="4" class="tray"/>
+      <path d="M23 30h17" class="tray"/>
+    </g>
+    <text x="26" y="448" class="muted small">适配：大尺寸最易理解；16 px 需要较强描边，</text>
+    <text x="26" y="470" class="muted small">视觉更接近通用“设备连接”工具。</text>
+  </g>
+
+  <!-- C -->
+  <g transform="translate(808 112)">
+    <rect class="card" width="350" height="492" rx="18"/>
+    <rect x="26" y="26" width="150" height="150" rx="42" fill="#1769E0"/>
+    <path d="M59 45h52l26 26v78H59z" fill="none" stroke="#FFFFFF" stroke-width="10" stroke-linejoin="round"/>
+    <path d="M111 45v29h28" fill="none" stroke="#FFFFFF" stroke-width="10" stroke-linejoin="round"/>
+    <path d="M78 142v-27c0-16 11-27 24-27s24 11 24 27v27" fill="none" stroke="#34D1DB" stroke-width="12" stroke-linecap="round"/>
+    <text x="202" y="58" class="ink h2">C · 文件入口</text>
+    <text x="202" y="86" class="body small">文件页 + 桥形入口</text>
+    <text x="202" y="108" class="body small">抽象程度最高</text>
+    <text x="26" y="218" class="ink label">语义</text>
+    <text x="26" y="243" class="body small">突出“文件入口/盘符”，但手机含义较弱。</text>
+    <text x="26" y="276" class="ink label">小尺寸</text>
+    <text x="26" y="301" class="body small">32 px 保留页角；16 px 移除页角，仅保留门形轮廓。</text>
+    <text x="26" y="360" class="muted small">32 px 单色</text>
+    <g transform="translate(130 340) scale(.6)">
+      <path d="M12 7h28l12 12v37H12z" class="tray"/>
+      <path d="M21 53V37c0-10 6-17 13-17s13 7 13 17v16" class="tray"/>
+    </g>
+    <text x="224" y="360" class="muted small">16 px 托盘</text>
+    <g transform="translate(282 340) scale(.45)">
+      <path d="M12 53V34c0-13 9-22 20-22s20 9 20 22v19" class="tray"/>
+    </g>
+    <text x="26" y="448" class="muted small">适配：作为盘符/文件访问产品识别度强；</text>
+    <text x="26" y="470" class="muted small">需要搭配产品名才能明确手机场景。</text>
+  </g>
+
+  <text x="42" y="640" class="body small">共同约束：不使用字母缩写，不复制 Windows/Android 品牌标志；正式多尺寸、托盘状态、ICO 与 adaptive icon 留到 P2-006。</text>
+</svg>

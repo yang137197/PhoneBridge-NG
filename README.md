@@ -64,6 +64,7 @@
 | P1-044 正式对应源码交付包 | 已完成；默认交付包含逐文件核验的对应源码 ZIP、GPL、NOTICE 和第三方许可 | [完成记录](docs/tasks/completed/P1-044-corresponding-source-delivery.md)、[验收记录](docs/audit/P1-044-VALIDATION.md) |
 | P1-045 Windows 正式安装器元数据 | 已完成；移除 local preview/local installer 标签，当前机覆盖安装和配对保留通过 | [完成记录](docs/tasks/completed/P1-045-formal-windows-installer-metadata.md)、[验收记录](docs/audit/P1-045-VALIDATION.md) |
 | P1-046 Windows Sandbox 干净首装 | 已完成；无 WinFsp/PhoneBridge 的 Windows 11 隔离环境中，内置 WinFsp 和客户端安装检查全部通过 | [完成记录](docs/tasks/completed/P1-046-clean-windows-sandbox-install.md)、[验收记录](docs/audit/P1-046-VALIDATION.md) |
+| P2-001 v0.2.0 需求与开发计划 | 已完成需求同步；本轮未开发代码，线框和图标概念待下一任务确认 | [版本计划](docs/V0.2_PLAN.md)、[完成记录](docs/tasks/completed/P2-001-v0.2-requirements-and-ui-plan.md) |
 | Phase 1 新版 Windows 客户端 | 配对、挂载、文件操作、生命周期与本地安装交付主链路已验收 | [开发规则](DEVELOPMENT_RULES.md) |
 | MVP 验收 | 15 项通过 | [15 项产品验收](docs/PRODUCT.md)、[P1-030 最终需求验收](docs/audit/P1-030-VALIDATION.md) |
 
@@ -86,6 +87,7 @@ P0-001 的 107 个通过测试、1 个跳过用例及 7 项离线问题复现仅
 | --- | --- |
 | [AGENTS.md](AGENTS.md) | 用户原始项目约束，每次开始工作先读 |
 | [PRODUCT.md](docs/PRODUCT.md) | 用户、目标、非目标、MVP 与验收标准 |
+| [V0.2_PLAN.md](docs/V0.2_PLAN.md) | 下一版本的 UI、图标、语言、多设备范围、预期效果和开发顺序 |
 | [INSTALL_LOCAL.txt](docs/INSTALL_LOCAL.txt) | 第三方本地安装、首次配对和日常使用的最短步骤 |
 | [ARCHITECTURE.md](ARCHITECTURE.md) | 固定技术路线、职责、信任边界及未定方案 |
 | [DECISIONS.md](DECISIONS.md) | 已确定决策及未决问题，避免反复换方案 |

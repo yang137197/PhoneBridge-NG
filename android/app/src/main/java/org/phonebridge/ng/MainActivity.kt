@@ -26,6 +26,8 @@ import android.view.WindowManager
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Button
+import android.widget.ImageButton
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.RadioButton
 import android.widget.RadioGroup
@@ -36,7 +38,7 @@ import org.phonebridge.credentials.AccessMode
 import org.phonebridge.credentials.ClientState
 
 class MainActivity : Activity() {
-    private enum class Screen { HOME, PAIRING, CLIENT, SETTINGS }
+    private enum class Screen { HOME, PAIRING, CLIENT, SETTINGS, LANGUAGE }
 
     private val canvas = Color.rgb(244, 247, 251)
     private val surface = Color.WHITE
@@ -85,7 +87,7 @@ class MainActivity : Activity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        window.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
+        if (!resources.getBoolean(R.bool.allow_screenshots)) window.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
         content = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
             setPadding(dp(16), dp(18), dp(16), dp(32))
@@ -101,7 +103,11 @@ class MainActivity : Activity() {
             insets
         }
         setContentView(scroll)
-        if (savedInstanceState?.getString("screen") == Screen.SETTINGS.name) showSettings() else showHome()
+        when (savedInstanceState?.getString("screen")) {
+            Screen.SETTINGS.name -> showSettings()
+            Screen.LANGUAGE.name -> showLanguageSettings()
+            else -> showHome()
+        }
     }
 
     override fun onSaveInstanceState(outState: Bundle) { outState.putString("screen", screen.name); super.onSaveInstanceState(outState) }
@@ -127,10 +133,7 @@ class MainActivity : Activity() {
         label(top, getString(R.string.app_name), 28f, true).apply {
             layoutParams = LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f)
         }
-        button(top, R.string.settings, primary = false, compact = true) { showSettings() }.apply {
-            text = "⚙"
-            contentDescription = getString(R.string.settings)
-        }
+        iconButton(top, R.drawable.ic_settings, R.string.settings) { showSettings() }
 
         val statusCard = card(content, Color.rgb(229, 248, 249))
         val statusRow = row(statusCard)
@@ -207,6 +210,21 @@ class MainActivity : Activity() {
         screen = Screen.SETTINGS
         content.removeAllViews()
         topBar(R.string.settings) { showHome() }
+
+        sectionTitle(content, R.string.settings_general)
+        menuItem(
+            content,
+            R.drawable.ic_language,
+            R.string.language,
+            getString(if (AppLanguage.selected(this) == AppLanguage.CHINESE) R.string.language_zh else R.string.language_en),
+        ) { showLanguageSettings() }
+        label(content, getString(R.string.no_theme), 12f, false, muted).setPadding(dp(4), dp(18), 0, 0)
+    }
+
+    private fun showLanguageSettings() {
+        screen = Screen.LANGUAGE
+        content.removeAllViews()
+        topBar(R.string.language) { showSettings() }
         val language = card(content, surface)
         label(language, getString(R.string.language), 18f, true)
         val choices = RadioGroup(this).apply { orientation = RadioGroup.VERTICAL }
@@ -220,7 +238,6 @@ class MainActivity : Activity() {
         val note = card(content, subtle)
         label(note, getString(R.string.language_behavior), 16f, true)
         label(note, getString(R.string.language_note), 13f, false, muted)
-        label(content, getString(R.string.no_theme), 12f, false, muted).setPadding(dp(4), dp(18), 0, 0)
     }
 
     private fun render() {
@@ -229,6 +246,7 @@ class MainActivity : Activity() {
             Screen.PAIRING -> renderPairing()
             Screen.CLIENT -> renderClient()
             Screen.SETTINGS -> Unit
+            Screen.LANGUAGE -> Unit
         }
     }
 
@@ -328,8 +346,8 @@ class MainActivity : Activity() {
 
     private fun topBar(title: Int, back: () -> Unit) {
         val top = row(content)
-        button(top, R.string.back, primary = false, compact = true) { back() }.apply { text = "‹"; contentDescription = getString(R.string.back) }
-        label(top, getString(title), 24f, true).apply { setPadding(dp(10), 0, 0, 0) }
+        iconButton(top, R.drawable.ic_back, R.string.back) { back() }
+        label(top, getString(title), 24f, true).apply { setPadding(dp(12), 0, 0, 0) }
     }
 
     private fun sectionTitle(parent: LinearLayout, text: Int, color: Int = strong) = label(parent, getString(text), 18f, true, color).apply { setPadding(dp(2), dp(20), 0, dp(8)) }
@@ -373,6 +391,46 @@ class MainActivity : Activity() {
             topMargin = dp(10)
             if (parent.orientation == LinearLayout.HORIZONTAL) marginEnd = dp(8)
         })
+    }
+
+    private fun iconButton(parent: LinearLayout, iconResource: Int, descriptionResource: Int, click: () -> Unit): ImageButton = ImageButton(this).apply {
+        setImageResource(iconResource)
+        imageTintList = ColorStateList.valueOf(primary)
+        background = rounded(subtle, dp(14).toFloat())
+        contentDescription = getString(descriptionResource)
+        scaleType = ImageView.ScaleType.CENTER_INSIDE
+        setPadding(dp(11), dp(11), dp(11), dp(11))
+        setOnClickListener { click() }
+        parent.addView(this, LinearLayout.LayoutParams(dp(48), dp(48)).apply { marginEnd = dp(8) })
+    }
+
+    private fun menuItem(parent: LinearLayout, iconResource: Int, titleResource: Int, summary: String, click: () -> Unit) {
+        val item = card(parent, surface, compact = true).apply {
+            isClickable = true
+            isFocusable = true
+            minimumHeight = dp(72)
+            contentDescription = "${getString(titleResource)}, $summary"
+            setOnClickListener { click() }
+        }
+        val line = row(item)
+        ImageView(this).apply {
+            setImageResource(iconResource)
+            imageTintList = ColorStateList.valueOf(primary)
+            background = rounded(subtle, dp(12).toFloat())
+            setPadding(dp(10), dp(10), dp(10), dp(10))
+            line.addView(this, LinearLayout.LayoutParams(dp(44), dp(44)).apply { marginEnd = dp(12) })
+        }
+        val copy = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
+        line.addView(copy, LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f))
+        label(copy, getString(titleResource), 16f, true)
+        label(copy, summary, 13f, false, muted)
+        TextView(this).apply {
+            text = "›"
+            textSize = 28f
+            setTextColor(muted)
+            gravity = Gravity.CENTER
+            line.addView(this, LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT))
+        }
     }
 
     private fun rounded(fill: Int, radius: Float, stroke: Int? = null): GradientDrawable = GradientDrawable().apply {

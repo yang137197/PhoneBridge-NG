@@ -7,6 +7,7 @@ internal sealed class TrayController : IDisposable
 {
     private readonly Forms.NotifyIcon icon;
     private readonly Forms.ContextMenuStrip menu;
+    private readonly Icon? applicationIcon;
     internal event Action? OpenRequested;
     internal event Action? ExitRequested;
 
@@ -20,6 +21,7 @@ internal sealed class TrayController : IDisposable
         menu.Items.Add(open);
         menu.Items.Add(new Forms.ToolStripSeparator());
         menu.Items.Add(exit);
+        applicationIcon = Environment.ProcessPath is { } processPath ? Icon.ExtractAssociatedIcon(processPath) : null;
         icon = new Forms.NotifyIcon { ContextMenuStrip = menu, Visible = true };
         icon.MouseDoubleClick += (_, e) => { if (e.Button == Forms.MouseButtons.Left) OpenRequested?.Invoke(); };
         SetStatus(TrayStatus.Offline);
@@ -33,7 +35,7 @@ internal sealed class TrayController : IDisposable
             TrayStatus.Connecting => SystemIcons.Warning,
             TrayStatus.Mounted => SystemIcons.Shield,
             TrayStatus.Error => SystemIcons.Error,
-            _ => SystemIcons.Application
+            _ => applicationIcon ?? SystemIcons.Application
         };
         icon.Text = TextCatalog.Get("Tray" + status);
     }
@@ -42,6 +44,7 @@ internal sealed class TrayController : IDisposable
     {
         icon.Visible = false;
         icon.Dispose();
+        applicationIcon?.Dispose();
         menu.Dispose();
     }
 }

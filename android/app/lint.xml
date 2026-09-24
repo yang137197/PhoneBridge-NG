@@ -8,4 +8,9 @@
     <issue id="TrustAllX509TrustManager">
         <ignore path="**/bcpkix-jdk18on-1.86.jar" />
     </issue>
+    <!-- Adaptive icons require the v26 resource type even when minSdk is 26.
+         Android's current launcher-icon guidance still specifies mipmap-anydpi-v26. -->
+    <issue id="ObsoleteSdkInt">
+        <ignore regexp=".*mipmap-anydpi-v26.*" />
+    </issue>
 </lint>

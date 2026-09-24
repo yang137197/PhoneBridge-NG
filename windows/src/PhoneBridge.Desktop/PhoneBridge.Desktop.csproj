@@ -10,8 +10,13 @@
     <Product>PhoneBridge NG</Product>
     <Company>PhoneBridge NG contributors</Company>
     <Description>Wireless access to Android files from Windows</Description>
+    <ApplicationIcon>Assets\PhoneBridge.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup><InternalsVisibleTo Include="PhoneBridge.Desktop.Tests" /></ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\PhoneBridge.ico" />
+    <Resource Include="Assets\PhoneBridge.png" />
+  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="../PhoneBridge.Connection/PhoneBridge.Connection.csproj" />
     <ProjectReference Include="../PhoneBridge.Discovery.Windows/PhoneBridge.Discovery.Windows.csproj" />

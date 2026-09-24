@@ -210,4 +210,10 @@ P2-002 的 r1 静态设计基线采用冷灰页面、白色单层卡片、科技
 
 Windows 验收入口使用显式 `--ui-preview` 参数和独立单实例互斥体，使候选窗口可以与当前安装版同时显示；这不隔离 `%LOCALAPPDATA%` 中的配对、设置或缓存，所以并行期间只允许浏览 UI，不允许两个客户端同时连接或挂载。Android 使用 `uiPreview` build type、独立包名 `org.phonebridge.ng.uipreview` 和明确的“UI 验收”名称，避免覆盖正式包及其数据；该 APK 使用本地调试签名，不属于正式升级或发布链路。
 
-Android 保留现有 `FLAG_SECURE`，不为自动截图降低安全边界。Windows 六页通过实际窗口回读，Android 首页和设置页通过 Samsung 实际屏幕及 UI hierarchy 回读；用户视觉确认、Android 配对/电脑详情真实状态、Windows 语言切换和跨平台无障碍仍为未验证项。
+Android 正式 Debug/Release 保留现有 `FLAG_SECURE`。Windows 六页通过实际窗口回读，Android 首页和设置页通过 Samsung 实际屏幕及 UI hierarchy 回读；用户视觉确认、Android 配对/电脑详情真实状态、Windows 语言切换和跨平台无障碍仍为未验证项。
+
+## ADR-032 P2-003 首轮反馈使用验收身份定向修正，不改变正式安全边界
+
+用户在首轮实际视觉检查后指出：两端应用图标未使用已确认的 A 方案、Android 安全策略阻止验收截图、设置和返回图标过小、设置项需要独立菜单以便后续扩展。P2-003 r2 因此把 A“桥接文件”接入 Windows EXE/窗口及 Android adaptive/monochrome 启动器资源，把 Android 设置与返回改为 48dp 图标按钮，并把设置改为菜单、语言改为独立子页。
+
+截图策略只在独立包名和调试签名的 `uiPreview` build type 中放开；正式 Debug/Release 仍设置 `FLAG_SECURE`。这使当前验收可以保留像素证据，同时不把验收便利扩散到正式应用。安装器、完整托盘状态图标、正式签名与升级链路仍留给 P2-006。

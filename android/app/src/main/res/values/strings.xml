@@ -39,6 +39,7 @@
     <string name="development_limit">访问模式按已配对电脑分别设置；切换后 Windows 需要重新连接。</string>
     <string name="permission_missing">请先允许文件访问，并确认所选目录存在。</string>
     <string name="settings">设置</string>
+    <string name="settings_general">通用设置</string>
     <string name="back">返回</string>
     <string name="permission_card_title">需要文件访问权限</string>
     <string name="computer_details">电脑详情</string>

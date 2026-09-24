@@ -14,7 +14,8 @@
     <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" tools:ignore="BatteryLife" />
     <application android:allowBackup="false" android:fullBackupContent="@xml/pbng_backup_rules"
         android:dataExtractionRules="@xml/pbng_extraction_rules" android:usesCleartextTraffic="false"
-        android:label="@string/app_name" android:icon="@drawable/ic_app" android:theme="@style/AppTheme" android:supportsRtl="true"
+        android:label="@string/app_name" android:icon="@mipmap/ic_launcher" android:roundIcon="@mipmap/ic_launcher"
+        android:theme="@style/AppTheme" android:supportsRtl="true"
         android:requestLegacyExternalStorage="true" tools:targetApi="36">
         <activity android:name=".MainActivity" android:exported="true">
             <intent-filter><action android:name="android.intent.action.MAIN" /><category android:name="android.intent.category.LAUNCHER" /></intent-filter>

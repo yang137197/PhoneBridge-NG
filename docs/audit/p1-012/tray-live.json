@@ -1,0 +1,66 @@
+{
+  "task": "P1-012",
+  "date": "2026-09-21",
+  "host": "Windows 11 development PC",
+  "device": {
+    "model": "Samsung SM-S9180",
+    "androidApi": 36,
+    "adbSerial": "R5CW429DKDN"
+  },
+  "timeline": [
+    {
+      "time": "2026-09-21T14:49:32+08:00",
+      "event": "mounted",
+      "desktopPid": 30412,
+      "desktopWindowVisible": true,
+      "driveP": true,
+      "rclonePids": [28248],
+      "uiStatus": "手机会话正常。",
+      "uiConnection": "P:\\ · SM-S9180 · 安全模式",
+      "androidForegroundService": true,
+      "androidSharingWakeLock": true
+    },
+    {
+      "time": "2026-09-21T14:50:23+08:00",
+      "event": "window-hidden-by-close",
+      "desktopPid": 30412,
+      "desktopWindowVisible": false,
+      "driveP": true,
+      "rclonePids": [28248],
+      "userConfirmedTrayIconVisible": true
+    },
+    {
+      "time": "2026-09-21T14:51:23+08:00",
+      "event": "window-restored-from-tray",
+      "desktopPid": 30412,
+      "desktopWindowVisible": true,
+      "driveP": true,
+      "rclonePids": [28248],
+      "desktopInstanceCount": 1,
+      "rcloneInstanceCount": 1
+    },
+    {
+      "time": "2026-09-21T14:52:00+08:00",
+      "event": "explicit-tray-exit",
+      "desktopInstanceCount": 0,
+      "driveP": false,
+      "rcloneInstanceCount": 0,
+      "androidForegroundService": true
+    },
+    {
+      "time": "2026-09-21T14:52:44+08:00",
+      "event": "android-sharing-stopped",
+      "desktopInstanceCount": 0,
+      "driveP": false,
+      "rcloneInstanceCount": 0,
+      "androidSharingServicePresent": false,
+      "androidSharingWakeLock": false
+    }
+  ],
+  "result": "passed-limited-scope",
+  "limitations": [
+    "All tray status icon variants were not individually inspected.",
+    "The real pending-upload exit failure UI was not exercised.",
+    "English Windows layout was not exercised."
+  ]
+}

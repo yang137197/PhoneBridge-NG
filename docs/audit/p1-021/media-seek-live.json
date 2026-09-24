@@ -1,0 +1,151 @@
+{
+  "schema": 1,
+  "task": "P1-021",
+  "capturedDate": "2026-09-22",
+  "device": {
+    "model": "SM-S9180",
+    "androidApi": 36
+  },
+  "sample": {
+    "source": "https://download.blender.org/demo/movies/BBB/bbb_sunflower_1080p_30fps_normal.mp4.zip",
+    "license": "CC BY 3.0",
+    "bytes": 276134947,
+    "sha256": "ae51005850b0ff757fe60c3dd7a12d754d3cd2397d87d939b55235e457f97658",
+    "durationSeconds": 634.533,
+    "width": 1920,
+    "height": 1080,
+    "frameRate": 30,
+    "moovBeforeMdat": true,
+    "androidIndependentHashMatched": true
+  },
+  "directHttpsRanges": {
+    "rangeCount": 5,
+    "totalBytesRead": 5242880,
+    "allStatus206": true,
+    "allHashesMatched": true,
+    "ranges": [
+      {
+        "offset": 0,
+        "length": 1048576,
+        "status": 206,
+        "contentRange": "bytes 0-1048575/276134947",
+        "sha256": "fc9e84096ed7139b6243a3bf5101b2790400ffc556eb57ec390622dee860f117",
+        "match": true
+      },
+      {
+        "offset": 69211500,
+        "length": 1048576,
+        "status": 206,
+        "contentRange": "bytes 69211500-70260075/276134947",
+        "sha256": "a4169d473bc9e0a63c654627c3ed2bc77241ec8adb3199403b6dd69831d9b342",
+        "match": true
+      },
+      {
+        "offset": 138186000,
+        "length": 1048576,
+        "status": 206,
+        "contentRange": "bytes 138186000-139234575/276134947",
+        "sha256": "e75a013e8ec773cb63dd84af88c2dcf294038769ce8aa44809eb671c626e9536",
+        "match": true
+      },
+      {
+        "offset": 207160500,
+        "length": 1048576,
+        "status": 206,
+        "contentRange": "bytes 207160500-208209075/276134947",
+        "sha256": "654d1e2a56c08d22bc51526ac2c4064d193894d69e87114019002caa37a221af",
+        "match": true
+      },
+      {
+        "offset": 275086371,
+        "length": 1048576,
+        "status": 206,
+        "contentRange": "bytes 275086371-276134946/276134947",
+        "sha256": "cc7b56097d0a7186cd3c5ff425b2bb7389359a6b0b90d902cdff6a64e749cedd",
+        "match": true
+      }
+    ]
+  },
+  "mountedRanges": {
+    "elapsedSeconds": 0.892,
+    "rangeCount": 5,
+    "totalBytesRead": 5242880,
+    "allHashesMatched": true,
+    "drivePresentDuringProbe": true,
+    "rcloneProcessCount": 1,
+    "desktopProcessCount": 1
+  },
+  "mountedMediaSeek": {
+    "engine": "Windows.Media.Playback.MediaPlayer",
+    "elapsedSeconds": 10.786,
+    "durationSeconds": 634.533,
+    "width": 1920,
+    "height": 1080,
+    "canSeek": true,
+    "allAdvancedWithDecodedFrames": true,
+    "seeks": [
+      {
+        "requestedSeconds": 30,
+        "playbackStartSeconds": 30.089,
+        "playbackEndSeconds": 32.097,
+        "advancedSeconds": 2.009,
+        "decodedFrames": 337,
+        "state": "Playing"
+      },
+      {
+        "requestedSeconds": 180,
+        "playbackStartSeconds": 180.082,
+        "playbackEndSeconds": 182.09,
+        "advancedSeconds": 2.008,
+        "decodedFrames": 338,
+        "state": "Playing"
+      },
+      {
+        "requestedSeconds": 360,
+        "playbackStartSeconds": 360.023,
+        "playbackEndSeconds": 362.035,
+        "advancedSeconds": 2.012,
+        "decodedFrames": 328,
+        "state": "Playing"
+      },
+      {
+        "requestedSeconds": 540,
+        "playbackStartSeconds": 540.014,
+        "playbackEndSeconds": 542.021,
+        "advancedSeconds": 2.007,
+        "decodedFrames": 325,
+        "state": "Playing"
+      }
+    ],
+    "drivePresentDuringProbe": true,
+    "rcloneProcessCount": 1,
+    "desktopProcessCount": 1
+  },
+  "mediaProbeNetworkDelta": {
+    "source": "Android dumpsys netstats mAppUidStatsMap",
+    "probeElapsedSeconds": 11.272,
+    "rxBytes": 1173628,
+    "txBytes": 165704272,
+    "rxPackets": 28775,
+    "txPackets": 110001,
+    "caveat": "UID totals can include concurrent control traffic from the same application."
+  },
+  "cleanup": {
+    "normalUnmountConfirmedByUser": true,
+    "pDrivePresentAfterUnmount": false,
+    "rcloneProcessCountAfterUnmount": 0,
+    "androidTestFileAndDirectoryAbsent": true,
+    "localLargeSamplesAbsent": true,
+    "sharingServicePresentAfterStop": false,
+    "port8273ListeningAfterStop": false,
+    "currentSharingWakeLockPresentAfterStop": false,
+    "historicalWakeLockEventsIgnored": true,
+    "finalDesktopProcessCount": 0
+  },
+  "checks": {
+    "rangeProbeReleaseBuild": "passed, 0 warnings, 0 errors",
+    "mediaSeekProbeReleaseBuild": "passed, 0 warnings, 0 errors",
+    "randomRangeScriptParseErrors": 0,
+    "productCodeChanged": false
+  }
+}

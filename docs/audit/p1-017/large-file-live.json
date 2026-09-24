@@ -1,0 +1,57 @@
+{
+  "schema": 1,
+  "task": "P1-017",
+  "date": "2026-09-21",
+  "device": {
+    "model": "SM-S9180",
+    "androidApi": 36,
+    "shareRoot": "Music"
+  },
+  "sampleBytes": 5000000000,
+  "phoneToPc": {
+    "sha256": "041eb9931a3d9157533a743bb9cad82d1089e38a04adf5d38e81f1e9cea488a5",
+    "hashMatch": true,
+    "copyElapsedMs": 91711,
+    "desktopResponsive": true,
+    "rcloneCount": 1
+  },
+  "pcToPhone": {
+    "sha256": "e2558bd9d1fb5616b0a2370513335cf16d2f781039d6bc0f02c2a38df57a991b",
+    "hashMatch": true,
+    "cacheWriteElapsedMs": 7269,
+    "remoteCommitObservedMs": 78966,
+    "temporaryUploadCountDuringWrite": 1,
+    "temporaryUploadCountAfterCommit": 0,
+    "metadataDirtyAfterCommit": false,
+    "desktopResponsive": true,
+    "rcloneCount": 1
+  },
+  "cleanUnmount": {
+    "elapsedMs": 3789,
+    "driveAbsent": true,
+    "rcloneAbsent": true
+  },
+  "helperCorrections": {
+    "powershellLengthComparison": "explicit-int64-overload",
+    "androidOffset": "decimal-string-avoids-32-bit-shell-overflow"
+  },
+  "windows": {
+    "releaseBuildWarnings": 0,
+    "releaseBuildErrors": 0,
+    "testsPassed": 273,
+    "testsFailed": 0
+  },
+  "cleanup": {
+    "phoneTaskDirectoryRemoved": true,
+    "localLargeSamplesRemoved": true,
+    "taskCacheFilesRemoved": 2,
+    "drivePresent": false,
+    "rclonePresent": false,
+    "desktopPresent": false,
+    "androidServiceAbsent": true,
+    "androidActiveNotificationAbsent": true,
+    "androidWakeLockAbsent": true,
+    "androidPort8273Closed": true,
+    "androidAppProcessRetainedBySystem": true
+  }
+}

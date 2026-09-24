@@ -1,0 +1,56 @@
+{
+  "scope": "test launcher only; no application APK change",
+  "usb_connection": "restored after user reconnect; original disconnect cause unconfirmed",
+  "screen_before_reproduction": {
+    "wakefulness": "Awake",
+    "keyguard_showing": false
+  },
+  "observed_test_thread_stack": [
+    "android.app.Instrumentation.startActivitySync:633",
+    "androidx.test.core.app.InstrumentationActivityInvoker.startActivity:416",
+    "androidx.test.core.app.ActivityScenario.launchInternal:362",
+    "com.phonebridge.TlsServiceHost.hostAuthorizedExperiment:30"
+  ],
+  "observed_main_thread_stack": [
+    "android.os.MessageQueue.nativePollOnce",
+    "android.os.MessageQueue.nextLegacy",
+    "android.os.Looper.loopOnce"
+  ],
+  "system_denial": "MIUILOG- Permission Denied Activity; MainActivity start returned 102",
+  "policy_or_permission_changes": false,
+  "root_used": false,
+  "debugger_detached": true,
+  "debugger_adb_forward_removed": true,
+  "host_results": [
+    {
+      "host": "legacy",
+      "blocked_start_event": "I/ActivityTaskManager( 2205): START u0 {act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] flg=0x10008000 xflg=0x4 cmp=com.phonebridge/.MainActivity} with LAUNCH_MULTIPLE from uid 10297 from pid 23721 callingPackage com.phonebridge (BAL_ALLOW_PERMISSION) result code=102",
+      "explicit_adb_foreground_launch": "Status: ok",
+      "instrumentation_result": "OK (1 test)"
+    },
+    {
+      "host": "trusted",
+      "blocked_start_event": "I/ActivityTaskManager( 2205): START u0 {act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] flg=0x10008000 xflg=0x4 cmp=com.phonebridge/.MainActivity} with LAUNCH_MULTIPLE from uid 10297 from pid 23921 callingPackage com.phonebridge (BAL_ALLOW_PERMISSION) result code=102",
+      "explicit_adb_foreground_launch": "Status: ok",
+      "instrumentation_result": "OK (1 test)"
+    },
+    {
+      "host": "restart",
+      "blocked_start_event": "I/ActivityTaskManager( 2205): START u0 {act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] flg=0x10008000 xflg=0x4 cmp=com.phonebridge/.MainActivity} with LAUNCH_MULTIPLE from uid 10297 from pid 24140 callingPackage com.phonebridge (BAL_ALLOW_PERMISSION) result code=102",
+      "explicit_adb_foreground_launch": "Status: ok",
+      "instrumentation_result": "OK (1 test)"
+    },
+    {
+      "host": "corrupt",
+      "blocked_start_event": "I/ActivityTaskManager( 2205): START u0 {act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] flg=0x10008000 xflg=0x4 cmp=com.phonebridge/.MainActivity} with LAUNCH_MULTIPLE from uid 10297 from pid 24334 callingPackage com.phonebridge (BAL_ALLOW_PERMISSION) result code=102",
+      "explicit_adb_foreground_launch": "Status: ok",
+      "instrumentation_result": "OK (1 test)"
+    },
+    {
+      "host": "restore",
+      "blocked_start_event": "I/ActivityTaskManager( 2205): START u0 {act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] flg=0x10008000 xflg=0x4 cmp=com.phonebridge/.MainActivity} with LAUNCH_MULTIPLE from uid 10297 from pid 24518 callingPackage com.phonebridge (BAL_ALLOW_PERMISSION) result code=102",
+      "explicit_adb_foreground_launch": "Status: ok",
+      "instrumentation_result": "OK (1 test)"
+    }
+  ]
+}

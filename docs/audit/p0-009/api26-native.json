@@ -1,0 +1,52 @@
+{
+  "api": 26,
+  "target": "api26",
+  "apk_hashes": {
+    "com.phonebridge": "a4383ddac27dccc3f2cc46704f1c389c8ad961d1d8e8205894d8cc8aebb2b88a",
+    "com.phonebridge.test": "e6c62d4fd05367feecb61f8640cf5263bc14c8c4d3bef648b1a3c34178587a5d"
+  },
+  "tests": [
+    {
+      "test": "expiredStoredIdentityCannotBeReplacedSilently",
+      "result": "PASS",
+      "code": 0
+    },
+    {
+      "test": "missingPublicIdentityStopsWithoutRegeneratingKeys",
+      "result": "PASS",
+      "code": 0
+    },
+    {
+      "test": "corruptedPublicIdentityStopsWithoutOverwritingIt",
+      "result": "PASS",
+      "code": 0
+    },
+    {
+      "test": "wrongPairedAuthorityRejectsHandshakeBeforeApplicationData",
+      "result": "PASS",
+      "code": 0
+    },
+    {
+      "test": "missingTlsKeyStopsWithoutRegeneratingIt",
+      "result": "PASS",
+      "code": 0
+    },
+    {
+      "test": "addressChangeRefreshesLeafAndRejectsOldAddressBeforeApplicationData",
+      "result": "PASS",
+      "code": 0
+    },
+    {
+      "test": "identitySurvivesReloadAndBothKeysAreNonExportable",
+      "result": "PASS",
+      "code": 0
+    },
+    {
+      "test": "legacyIdentityRequiresExplicitMigration",
+      "result": "PASS",
+      "code": 0
+    }
+  ],
+  "shared_storage_access": false,
+  "default_identity_modified": false
+}

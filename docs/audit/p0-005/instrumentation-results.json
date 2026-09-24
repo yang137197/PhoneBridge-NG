@@ -1,0 +1,65 @@
+{
+  "tests": [
+    {
+      "name": "nestedCopyMoveDeleteAndOverwrite",
+      "result": "PASS",
+      "code": 0
+    },
+    {
+      "name": "openReadStreamSurvivesStorageClose",
+      "result": "PASS",
+      "code": 0
+    },
+    {
+      "name": "hardLinkedFilesAreRejected",
+      "result": "SKIP",
+      "code": -4
+    },
+    {
+      "name": "unknownReplacementOfTempIsRetained",
+      "result": "PASS",
+      "code": 0
+    },
+    {
+      "name": "shortAndFailingBodyPreserveOriginal",
+      "result": "PASS",
+      "code": 0
+    },
+    {
+      "name": "targetSwappedDuringUploadIsRejected",
+      "result": "PASS",
+      "code": 0
+    },
+    {
+      "name": "parentSwappedDuringUploadStaysOnHeldDirectory",
+      "result": "PASS",
+      "code": 0
+    },
+    {
+      "name": "exactLengthAndAtomicOverwrite",
+      "result": "PASS",
+      "code": 0
+    },
+    {
+      "name": "rootOperationsCannotDeleteSentinels",
+      "result": "PASS",
+      "code": 0
+    },
+    {
+      "name": "selectedRootCannotBeSymlink",
+      "result": "PASS",
+      "code": 0
+    },
+    {
+      "name": "retainedStagingBlocksRecursiveDeleteAndMove",
+      "result": "PASS",
+      "code": 0
+    },
+    {
+      "name": "ancestorAndFinalLinksNeverFollowed",
+      "result": "PASS",
+      "code": 0
+    }
+  ],
+  "skip_reason": "Android SELinux denied hard-link fixture creation (EACCES); runtime hard-link guard not verified"
+}

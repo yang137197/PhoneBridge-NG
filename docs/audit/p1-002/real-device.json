@@ -1,0 +1,165 @@
+{
+  "run": "real-bf9be356e258",
+  "checks": [
+    {
+      "test": "fingerprint-mismatch",
+      "passed": true,
+      "events": [
+        {
+          "kind": "error",
+          "result": {
+            "code": "identity-mismatch"
+          }
+        },
+        {
+          "kind": "stopped",
+          "result": {
+            "State": "Idle",
+            "ProcessId": null,
+            "ExitCode": null,
+            "ErrorCode": null,
+            "Forced": false
+          }
+        }
+      ]
+    },
+    {
+      "test": "occupied-drive",
+      "passed": true,
+      "events": [
+        {
+          "kind": "error",
+          "result": {
+            "code": "drive-occupied"
+          }
+        },
+        {
+          "kind": "stopped",
+          "result": {
+            "State": "Failed",
+            "ProcessId": null,
+            "ExitCode": null,
+            "ErrorCode": "drive-occupied",
+            "Forced": false
+          }
+        }
+      ]
+    },
+    {
+      "test": "executable-hash-mismatch",
+      "passed": true,
+      "events": [
+        {
+          "kind": "error",
+          "result": {
+            "code": "rclone-hash-mismatch"
+          }
+        },
+        {
+          "kind": "stopped",
+          "result": {
+            "State": "Failed",
+            "ProcessId": null,
+            "ExitCode": null,
+            "ErrorCode": "rclone-hash-mismatch",
+            "Forced": false
+          }
+        }
+      ]
+    },
+    {
+      "test": "real-readonly-read-and-write-rejection",
+      "passed": true,
+      "probe": {
+        "names": [
+          "pc-upload-100MB.bin",
+          "phone-100MB.bin",
+          "phone-origin.txt",
+          "renamed-folder"
+        ],
+        "bytes": 49,
+        "sha256": "7374185329b3a98d96e953d8ed38bfe1c528ca5dd6b8298bdead468f65c5251e",
+        "writeBlocked": true,
+        "writeError": 19
+      }
+    },
+    {
+      "test": "normal-unmount",
+      "passed": true,
+      "snapshot": {
+        "State": "Stopped",
+        "ProcessId": 18828,
+        "ExitCode": 0,
+        "ErrorCode": null,
+        "Forced": false
+      }
+    },
+    {
+      "test": "wrong-password",
+      "passed": true,
+      "events": [
+        {
+          "kind": "error",
+          "result": {
+            "code": "rclone-control-request-failed"
+          }
+        },
+        {
+          "kind": "stopped",
+          "result": {
+            "State": "Failed",
+            "ProcessId": 38908,
+            "ExitCode": 0,
+            "ErrorCode": "rclone-control-request-failed",
+            "Forced": false
+          }
+        }
+      ]
+    },
+    {
+      "test": "wrong-ca",
+      "passed": true,
+      "events": [
+        {
+          "kind": "error",
+          "result": {
+            "code": "rclone-control-request-failed"
+          }
+        },
+        {
+          "kind": "stopped",
+          "result": {
+            "State": "Failed",
+            "ProcessId": 36836,
+            "ExitCode": 0,
+            "ErrorCode": "rclone-control-request-failed",
+            "Forced": false
+          }
+        }
+      ]
+    },
+    {
+      "test": "active-ca-write-lock",
+      "passed": true
+    },
+    {
+      "test": "cross-process-drive-lease",
+      "passed": true
+    },
+    {
+      "test": "host-crash-removes-child-and-drive",
+      "passed": true,
+      "rclone_pid": 38224
+    },
+    {
+      "test": "phone-data-and-identity-preserved",
+      "passed": true
+    },
+    {
+      "test": "cleanup",
+      "passed": true
+    }
+  ],
+  "entry_exit_code": 0,
+  "host_instrumentation_ok": true
+}

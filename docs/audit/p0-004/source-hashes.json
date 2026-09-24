@@ -1,0 +1,22 @@
+[
+  {
+    "path": "android/app/src/main/java/com/phonebridge/server/HttpByteRange.kt",
+    "sha256": "dfb09682d427af0eff90e9b13078252a4ee2d6e2dd2d1dcc7459e10cbe0eba58"
+  },
+  {
+    "path": "android/app/src/main/java/com/phonebridge/server/RequestBody.kt",
+    "sha256": "6699e73882c7f226e8cf6e5691a600ac71d5f3d1bcebe73535f35b0c51aa91ac"
+  },
+  {
+    "path": "android/app/src/main/java/com/phonebridge/server/WebDavServer.kt",
+    "sha256": "a31c2bff3a551539967ea48fdbe85d4a37dc0a92ce3d4f7657f868067ecf1375"
+  },
+  {
+    "path": "android/app/src/test/java/com/phonebridge/server/HttpByteRangeTest.kt",
+    "sha256": "c26fc9bb7d6ae4e26ce3b2a9aadae0e815d660ec27f6a78a22f19ccf729ad603"
+  },
+  {
+    "path": "android/app/src/test/java/com/phonebridge/server/RequestBodyTest.kt",
+    "sha256": "5e8b14e04e7470c54278f279f2e49632a8c8e705e7b348d56c9751165c6310da"
+  }
+]

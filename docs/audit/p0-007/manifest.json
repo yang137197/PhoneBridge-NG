@@ -1,0 +1,49 @@
+{
+  "exit_code": 0,
+  "targets": [
+    "assembleDebug",
+    "testDebugUnitTest",
+    "assembleDebugAndroidTest",
+    "lintDebug"
+  ],
+  "apk_sha256": "3d96a0c4f5aecf1f68cedc522392e06f7e5197db78fba97e891e0f71c0e86100",
+  "apk_bytes": 9650923,
+  "test_apk_sha256": "69625c054bcc796c708d72eec65df1082b61f5de7d1edac441705062a76a385b",
+  "patch_sha256": "6334bd8f5d40246f878b7a6f31c20348c5bfb13d8c53f496fd9439aa6d40e24a",
+  "build_log_sha256": "fa70b5b1d00a97edce2f89187650a79a1ff72a2caa34120b1489a1dae870d1d3",
+  "baseline_apply_check_exit_code": 0,
+  "repair_reverse_apply_check_exit_code": 0,
+  "git_diff_check_exit_code": 0,
+  "minimum_api": 26,
+  "compile_sdk": 36,
+  "target_sdk": 36,
+  "baseline": "a378fec40561a4d18be2334f4de92ee02a0e7d0c",
+  "patch": "android/patches/P0-007-android-support-policy.patch",
+  "patch_type": "Cumulative against original baseline; includes P0-004 through P0-006; do not stack",
+  "unit_tests_passed": 20,
+  "lint_errors": 0,
+  "lint_warnings": 126,
+  "lint_added_issues": 0,
+  "apis": {
+    "26": {
+      "instrumentation_passed": 16,
+      "instrumentation_skipped": 1,
+      "runtime_checks_passed": 11,
+      "scope_cases_passed": 2,
+      "cleanup_confirmed": true
+    },
+    "36": {
+      "instrumentation_passed": 16,
+      "instrumentation_skipped": 1,
+      "runtime_checks_passed": 11,
+      "scope_cases_passed": 2,
+      "cleanup_confirmed": true
+    }
+  },
+  "whole_product_complete": false,
+  "api36_lifecycle_assertions_passed": 7,
+  "lifecycle_runner_exit_code": 1,
+  "lifecycle_independent_cleanup_verification_exit_code": 0,
+  "lifecycle_runner_failure": "Final redundant UI cleanup, null root; seven behavior assertions passed and finally restoration independently confirmed",
+  "transport": "Dedicated AOSP emulators and ADB loopback; TLS trust bypass for synthetic test data only"
+}

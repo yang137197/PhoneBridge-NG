@@ -1,0 +1,29 @@
+{
+  "result": "FAIL: verified rclone TLS rejected missing IP SANs",
+  "probe_runner_exit_code": 0,
+  "rclone_exit_code": 1,
+  "apk_sha256": "3d96a0c4f5aecf1f68cedc522392e06f7e5197db78fba97e891e0f71c0e86100",
+  "apk_changed_from_p0_007": false,
+  "certificate_sha256": "0af441d83cf97aa3606842d1c5eefb5f970fcab08f109f4e463ea988c6ef6841",
+  "mdns_discovered": true,
+  "mounted": false,
+  "copied": false,
+  "phone_apk_retained_force_stopped": true,
+  "no_app_fatal_exception_in_uid_filtered_log": true,
+  "whole_product_complete": false,
+  "local_evidence_hashes": {
+    "certificate.json": "c3a9e6a91fc7d3a27cb2f091b1be1e552be4d418a388bad7edcb26e3f99c0fd4",
+    "install-setup.json": "bc7f7ce78dce9dac4ad6d21c651604bcd4a5eda69412f5bd0ba0c416287a21ad",
+    "mdns.json": "8eff749f0d1a544deeb492bc7c5c00d15ea85142e1a9d3295507ae22e7cc3625",
+    "phone-app-log.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "phone-public-certificate.pem": "3eef03a9dffda0e233f4a40e542e0718a4ab4fe2e7b9de1eb3d488d707608119",
+    "preflight.json": "8c5f8ebc6c4493afff34dbd2c2a68d2635f6cb6026f0912169f94e9fb0f40334",
+    "probe-cleanup.json": "838049e68f95f4c010aa9528eb23246cb96a5f857aa3afa64242c76d65295a26",
+    "rclone-tls-probe.log": "1e5ace7ae6db90beef707252e2f6b9e60b067c3a2fab9710cb6578a9ad006d46",
+    "tls-probe.json": "656d9ce805ea6be2dbc0e82903223241652ff4087ddb0bfa6542a781645b64d7"
+  },
+  "rclone_version": "v1.75.1",
+  "rclone_go_version": "go1.26.8",
+  "rclone_executable_sha256": "033eee51c9ad47c2de2624b6674d355274bcd6cf0027a5f85db4437ba24ae81c",
+  "final_probe_source_sha256": "bcebfd1d8e74a15a3bbdaa41f3e143ae4fd86aa22983547f23fc0e57cfcd7071"
+}

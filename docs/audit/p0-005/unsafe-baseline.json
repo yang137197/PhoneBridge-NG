@@ -1,0 +1,33 @@
+{
+  "baseline": "P0-004 repair APK; P0-005 not applied",
+  "probes": [
+    {
+      "path": "/../Download-sibling/p0-outside.txt",
+      "status": 200,
+      "sibling_sentinel_returned": true,
+      "root_listing_returned": false
+    },
+    {
+      "path": "/%252e%252e/Download-sibling/p0-outside.txt",
+      "status": 200,
+      "sibling_sentinel_returned": true,
+      "root_listing_returned": false
+    },
+    {
+      "path": "/../../outside-missing",
+      "status": 200,
+      "sibling_sentinel_returned": false,
+      "root_listing_returned": true
+    }
+  ],
+  "incomplete_overwrite": {
+    "status": 500,
+    "declared_bytes": 65536,
+    "sent_bytes": 100,
+    "old_bytes": 32768,
+    "actual_bytes": 100,
+    "old_sha256": "307d1df2689659620b9e2f0de99a135da0866cb00d0a62335bc74b1bc0dac68c",
+    "actual_sha256": "09ecb6ebc8bcefc733f6f2ec44f791abeed6a99edf0cc31519637898aebd52d8",
+    "old_file_preserved": false
+  }
+}

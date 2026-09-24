@@ -1,0 +1,584 @@
+{
+  "observed_at": "2026-09-19T09:58:01.935037+00:00",
+  "total_native": 52,
+  "passed_native": 52,
+  "total_process_cases": 6,
+  "passed_process_cases": 6,
+  "runs": [
+    {
+      "api": 26,
+      "emulator": "PhoneBridgeP0Api26",
+      "apk_sha256": "49bc3a4ba19f6a6e8881a1538fa8eff13f212b7a74533cbab1e2e7de8933077e",
+      "tests": [
+        {
+          "test": "revokeAndAuthorizedCommitShareOneBarrier",
+          "passed": true,
+          "code": 0
+        },
+        {
+          "test": "wrongUnknownAndMalformedCredentialsAreUniformlyRefused",
+          "passed": true,
+          "code": 0
+        },
+        {
+          "test": "twoClientsRemainIndependent",
+          "passed": true,
+          "code": 0
+        },
+        {
+          "test": "unsafeModesAndLinksAreRejected",
+          "passed": true,
+          "code": 0
+        },
+        {
+          "test": "failedInitializationNeverBecomesFreshAutomatically",
+          "passed": true,
+          "code": 0
+        },
+        {
+          "test": "missingDatabaseDoesNotInitialize",
+          "passed": true,
+          "code": 0
+        },
+        {
+          "test": "keystoreIsNonExportableAndNonceChanges",
+          "passed": true,
+          "code": 0
+        },
+        {
+          "test": "revisionsProtectModeAndRevocationFromStaleCallers",
+          "passed": true,
+          "code": 0
+        },
+        {
+          "test": "sixteenActiveCapacityIsEnforcedWithoutEviction",
+          "passed": true,
+          "code": 0
+        },
+        {
+          "test": "missingKeyDoesNotRegenerate",
+          "passed": true,
+          "code": 0
+        },
+        {
+          "test": "verificationKnownAnswerAndBindings",
+          "passed": true,
+          "code": 0
+        },
+        {
+          "test": "protectedMalformedRecordCannotAuthorize",
+          "passed": true,
+          "code": 0
+        },
+        {
+          "test": "revocationPersistsAndCannotReactivateSameClient",
+          "passed": true,
+          "code": 0
+        },
+        {
+          "test": "failedRevocationPoisonsAllInstancesAndLeavesObservableDiskState",
+          "passed": true,
+          "code": 0
+        },
+        {
+          "test": "replacementKeyCannotReadOldCiphertext",
+          "passed": true,
+          "code": 0
+        },
+        {
+          "test": "deviceProtectedContextIsRefusedBeforeCreatingStore",
+          "passed": true,
+          "code": 0
+        },
+        {
+          "test": "hardlinkCreationIsBlockedByPlatformOrStore",
+          "passed": true,
+          "code": 0
+        },
+        {
+          "test": "incorrectCaBindingPoisonsAllLocalInstances",
+          "passed": true,
+          "code": 0
+        },
+        {
+          "test": "ownedDescriptorsAreAtomicallyCloseOnExec",
+          "passed": true,
+          "code": 0
+        },
+        {
+          "test": "invalidInputsNeverCreateStore",
+          "passed": true,
+          "code": 0
+        },
+        {
+          "test": "ciphertextTamperingTruncationAndOversizeFailClosed",
+          "passed": true,
+          "code": 0
+        },
+        {
+          "test": "nativeRoundTripDefaultModeAndNoRawToken",
+          "passed": true,
+          "code": 0
+        },
+        {
+          "test": "externalFileLockBlocksWithoutPoisoning",
+          "passed": true,
+          "code": 0
+        },
+        {
+          "test": "existingKeyOrDatabaseRefusesFreshInitialization",
+          "passed": true,
+          "code": 0
+        },
+        {
+          "test": "symlinkStoreRootRejected",
+          "passed": true,
+          "code": 0
+        },
+        {
+          "test": "totalRecordCapacityDoesNotDiscardRevocations",
+          "passed": true,
+          "code": 0
+        }
+      ],
+      "process_cases": [
+        {
+          "scenario": "normal-restart",
+          "passed": true,
+          "state": "REVOKED",
+          "distinct_processes": true,
+          "security_level": "api_unavailable",
+          "inside_secure_hardware": "false"
+        },
+        {
+          "scenario": "before-rename",
+          "passed": true,
+          "state": "ACTIVE",
+          "distinct_processes": true,
+          "security_level": "api_unavailable",
+          "inside_secure_hardware": "false"
+        },
+        {
+          "scenario": "after-rename",
+          "passed": true,
+          "state": "REVOKED",
+          "distinct_processes": true,
+          "security_level": "api_unavailable",
+          "inside_secure_hardware": "false"
+        }
+      ],
+      "real_phone_access": false,
+      "hardlink_coverage": [
+        "platform_denied_creation"
+      ],
+      "test_app_stopped": true,
+      "evidence": [
+        {
+          "path": ".audit/p1-006/api26-reviewed/after-rename-crash.log",
+          "sha256": "4107a6542d0c0778dd25e52b075d0893d433fcbcb6b90fbafe2019aca55c74f4"
+        },
+        {
+          "path": ".audit/p1-006/api26-reviewed/after-rename-prepare.log",
+          "sha256": "7fd96cd2db19c2600d81aca20d70790c874125946eafbed714c1387cabaa4ef9"
+        },
+        {
+          "path": ".audit/p1-006/api26-reviewed/after-rename-read.log",
+          "sha256": "87bd81af72895d156982b5592ff16ca9780b333e2608214c52835738b292eda9"
+        },
+        {
+          "path": ".audit/p1-006/api26-reviewed/before-rename-crash.log",
+          "sha256": "5741b180e470fdc9fffe6eb9432512d0da069801775a17e8b2278f0448252110"
+        },
+        {
+          "path": ".audit/p1-006/api26-reviewed/before-rename-prepare.log",
+          "sha256": "674a03aaf63152d5d3a0571f7371f1aaafcfec4f4a6d65d9685642486e36514c"
+        },
+        {
+          "path": ".audit/p1-006/api26-reviewed/before-rename-read.log",
+          "sha256": "8c1aa5d95fde47bd6f504f676af0291bd6ed3389ddd6117c5e749c6d14e39648"
+        },
+        {
+          "path": ".audit/p1-006/api26-reviewed/instrumentation.log",
+          "sha256": "511ca563808d7a316069aff75d9ceee3c90ca110b0444c266d76fcaeaab5aa3d"
+        },
+        {
+          "path": ".audit/p1-006/api26-reviewed/normal-restart-prepare.log",
+          "sha256": "faa1e852bbdc2dbcac480c20b10f484abfcb3f57ea02308af24f9e10ccdf5669"
+        },
+        {
+          "path": ".audit/p1-006/api26-reviewed/normal-restart-read.log",
+          "sha256": "b4e9b6a99ed754df77264fc527ef6457b65f70cac33f215ffaf892eef66a36dd"
+        },
+        {
+          "path": ".audit/p1-006/api26-reviewed/normal-restart-revoke.log",
+          "sha256": "1aa2c8f84680dab1314c023d6b63d28518ca5c5d8b32e199b6c2522153211b34"
+        },
+        {
+          "path": ".audit/p1-006/api26-reviewed/results.json",
+          "sha256": "c286ecaaff03fc03a541b0a372389315fdc3bb4a5a57382069a47685f52cddfe"
+        }
+      ]
+    },
+    {
+      "api": 36,
+      "emulator": "PhoneBridgeP0Api36",
+      "apk_sha256": "49bc3a4ba19f6a6e8881a1538fa8eff13f212b7a74533cbab1e2e7de8933077e",
+      "tests": [
+        {
+          "test": "revokeAndAuthorizedCommitShareOneBarrier",
+          "passed": true,
+          "code": 0
+        },
+        {
+          "test": "wrongUnknownAndMalformedCredentialsAreUniformlyRefused",
+          "passed": true,
+          "code": 0
+        },
+        {
+          "test": "twoClientsRemainIndependent",
+          "passed": true,
+          "code": 0
+        },
+        {
+          "test": "unsafeModesAndLinksAreRejected",
+          "passed": true,
+          "code": 0
+        },
+        {
+          "test": "failedInitializationNeverBecomesFreshAutomatically",
+          "passed": true,
+          "code": 0
+        },
+        {
+          "test": "missingDatabaseDoesNotInitialize",
+          "passed": true,
+          "code": 0
+        },
+        {
+          "test": "keystoreIsNonExportableAndNonceChanges",
+          "passed": true,
+          "code": 0
+        },
+        {
+          "test": "revisionsProtectModeAndRevocationFromStaleCallers",
+          "passed": true,
+          "code": 0
+        },
+        {
+          "test": "sixteenActiveCapacityIsEnforcedWithoutEviction",
+          "passed": true,
+          "code": 0
+        },
+        {
+          "test": "missingKeyDoesNotRegenerate",
+          "passed": true,
+          "code": 0
+        },
+        {
+          "test": "verificationKnownAnswerAndBindings",
+          "passed": true,
+          "code": 0
+        },
+        {
+          "test": "protectedMalformedRecordCannotAuthorize",
+          "passed": true,
+          "code": 0
+        },
+        {
+          "test": "revocationPersistsAndCannotReactivateSameClient",
+          "passed": true,
+          "code": 0
+        },
+        {
+          "test": "failedRevocationPoisonsAllInstancesAndLeavesObservableDiskState",
+          "passed": true,
+          "code": 0
+        },
+        {
+          "test": "replacementKeyCannotReadOldCiphertext",
+          "passed": true,
+          "code": 0
+        },
+        {
+          "test": "deviceProtectedContextIsRefusedBeforeCreatingStore",
+          "passed": true,
+          "code": 0
+        },
+        {
+          "test": "hardlinkCreationIsBlockedByPlatformOrStore",
+          "passed": true,
+          "code": 0
+        },
+        {
+          "test": "incorrectCaBindingPoisonsAllLocalInstances",
+          "passed": true,
+          "code": 0
+        },
+        {
+          "test": "ownedDescriptorsAreAtomicallyCloseOnExec",
+          "passed": true,
+          "code": 0
+        },
+        {
+          "test": "invalidInputsNeverCreateStore",
+          "passed": true,
+          "code": 0
+        },
+        {
+          "test": "ciphertextTamperingTruncationAndOversizeFailClosed",
+          "passed": true,
+          "code": 0
+        },
+        {
+          "test": "nativeRoundTripDefaultModeAndNoRawToken",
+          "passed": true,
+          "code": 0
+        },
+        {
+          "test": "externalFileLockBlocksWithoutPoisoning",
+          "passed": true,
+          "code": 0
+        },
+        {
+          "test": "existingKeyOrDatabaseRefusesFreshInitialization",
+          "passed": true,
+          "code": 0
+        },
+        {
+          "test": "symlinkStoreRootRejected",
+          "passed": true,
+          "code": 0
+        },
+        {
+          "test": "totalRecordCapacityDoesNotDiscardRevocations",
+          "passed": true,
+          "code": 0
+        }
+      ],
+      "process_cases": [
+        {
+          "scenario": "normal-restart",
+          "passed": true,
+          "state": "REVOKED",
+          "distinct_processes": true,
+          "security_level": "0",
+          "inside_secure_hardware": "false"
+        },
+        {
+          "scenario": "before-rename",
+          "passed": true,
+          "state": "ACTIVE",
+          "distinct_processes": true,
+          "security_level": "0",
+          "inside_secure_hardware": "false"
+        },
+        {
+          "scenario": "after-rename",
+          "passed": true,
+          "state": "REVOKED",
+          "distinct_processes": true,
+          "security_level": "0",
+          "inside_secure_hardware": "false"
+        }
+      ],
+      "real_phone_access": false,
+      "hardlink_coverage": [
+        "platform_denied_creation"
+      ],
+      "test_app_stopped": true,
+      "evidence": [
+        {
+          "path": ".audit/p1-006/api36-reviewed/after-rename-crash.log",
+          "sha256": "081d50f416933c9132c1f7df7a5d21037125ee3605d7db79375401f008c69dae"
+        },
+        {
+          "path": ".audit/p1-006/api36-reviewed/after-rename-prepare.log",
+          "sha256": "0d324a8413df2287a262762c22a06984636b41e97fc3ae6923c36b23b2dd24a4"
+        },
+        {
+          "path": ".audit/p1-006/api36-reviewed/after-rename-read.log",
+          "sha256": "384b05c6a68d72914308b0d1ac9cf137d1e693caa79da60275c18114364b7a0e"
+        },
+        {
+          "path": ".audit/p1-006/api36-reviewed/before-rename-crash.log",
+          "sha256": "c8029f511fcc163f857cc3034bf56d60e6f379d24151d55ba38a3cc1e0e28eac"
+        },
+        {
+          "path": ".audit/p1-006/api36-reviewed/before-rename-prepare.log",
+          "sha256": "d6a84d3915b6d99964b7a4b21b5f298e282848d0089778f45271dde11b7b90b7"
+        },
+        {
+          "path": ".audit/p1-006/api36-reviewed/before-rename-read.log",
+          "sha256": "df21cef84921e369ecb08dc20b728a15bdb20d501e6640c6c353d297647dbeac"
+        },
+        {
+          "path": ".audit/p1-006/api36-reviewed/instrumentation.log",
+          "sha256": "de384f61c7fe9b0739e8e66b8ab41159fff2b9f73ffe46f9b510e35f2a94a1dd"
+        },
+        {
+          "path": ".audit/p1-006/api36-reviewed/normal-restart-prepare.log",
+          "sha256": "a55bf366449632770e50572ab646ef72c0c4ea9b2d833e222d82ef4b7d8cd96c"
+        },
+        {
+          "path": ".audit/p1-006/api36-reviewed/normal-restart-read.log",
+          "sha256": "e6bd99234542b53c6f1be74fcba6fe8c002cc2ef3b865f01867f2d064bb842dd"
+        },
+        {
+          "path": ".audit/p1-006/api36-reviewed/normal-restart-revoke.log",
+          "sha256": "c02e27d99a745f6973b53ccd0a957d0275fd91a2312b306eeade595ab1d52a5c"
+        },
+        {
+          "path": ".audit/p1-006/api36-reviewed/results.json",
+          "sha256": "caa92d608e1edbf9b621fb79f6af893d63db9edb4a931c5de74ab9753909aabf"
+        }
+      ]
+    }
+  ],
+  "first_failure": {
+    "results": {
+      "api": 26,
+      "emulator": "PhoneBridgeP0Api26",
+      "apk_sha256": "66bdbcb86eb5eb74215b80c32741eb425bca74b6bf80a5bfae24fd562a669e08",
+      "tests": [
+        {
+          "test": "revokeAndAuthorizedCommitShareOneBarrier",
+          "passed": true,
+          "code": 0
+        },
+        {
+          "test": "wrongUnknownAndMalformedCredentialsAreUniformlyRefused",
+          "passed": true,
+          "code": 0
+        },
+        {
+          "test": "twoClientsRemainIndependent",
+          "passed": true,
+          "code": 0
+        },
+        {
+          "test": "unsafeModesAndLinksAreRejected",
+          "passed": false,
+          "code": -2
+        },
+        {
+          "test": "failedInitializationNeverBecomesFreshAutomatically",
+          "passed": true,
+          "code": 0
+        },
+        {
+          "test": "missingDatabaseDoesNotInitialize",
+          "passed": true,
+          "code": 0
+        },
+        {
+          "test": "keystoreIsNonExportableAndNonceChanges",
+          "passed": true,
+          "code": 0
+        },
+        {
+          "test": "revisionsProtectModeAndRevocationFromStaleCallers",
+          "passed": true,
+          "code": 0
+        },
+        {
+          "test": "sixteenActiveCapacityIsEnforcedWithoutEviction",
+          "passed": true,
+          "code": 0
+        },
+        {
+          "test": "missingKeyDoesNotRegenerate",
+          "passed": true,
+          "code": 0
+        },
+        {
+          "test": "verificationKnownAnswerAndBindings",
+          "passed": true,
+          "code": 0
+        },
+        {
+          "test": "protectedMalformedRecordCannotAuthorize",
+          "passed": true,
+          "code": 0
+        },
+        {
+          "test": "revocationPersistsAndCannotReactivateSameClient",
+          "passed": true,
+          "code": 0
+        },
+        {
+          "test": "failedRevocationPoisonsAllInstancesAndLeavesObservableDiskState",
+          "passed": true,
+          "code": 0
+        },
+        {
+          "test": "replacementKeyCannotReadOldCiphertext",
+          "passed": true,
+          "code": 0
+        },
+        {
+          "test": "deviceProtectedContextIsRefusedBeforeCreatingStore",
+          "passed": true,
+          "code": 0
+        },
+        {
+          "test": "incorrectCaBindingPoisonsAllLocalInstances",
+          "passed": true,
+          "code": 0
+        },
+        {
+          "test": "ownedDescriptorsAreAtomicallyCloseOnExec",
+          "passed": false,
+          "code": -2
+        },
+        {
+          "test": "invalidInputsNeverCreateStore",
+          "passed": true,
+          "code": 0
+        },
+        {
+          "test": "ciphertextTamperingTruncationAndOversizeFailClosed",
+          "passed": true,
+          "code": 0
+        },
+        {
+          "test": "nativeRoundTripDefaultModeAndNoRawToken",
+          "passed": true,
+          "code": 0
+        },
+        {
+          "test": "externalFileLockBlocksWithoutPoisoning",
+          "passed": true,
+          "code": 0
+        },
+        {
+          "test": "existingKeyOrDatabaseRefusesFreshInitialization",
+          "passed": true,
+          "code": 0
+        },
+        {
+          "test": "symlinkStoreRootRejected",
+          "passed": true,
+          "code": 0
+        },
+        {
+          "test": "totalRecordCapacityDoesNotDiscardRevocations",
+          "passed": true,
+          "code": 0
+        }
+      ],
+      "process_cases": [],
+      "real_phone_access": false
+    },
+    "evidence": [
+      {
+        "path": ".audit/p1-006/api26-first/instrumentation.log",
+        "sha256": "59ad451ef84dee45dfec281933fa7200bbd1e878bc53e9900c4482042f8ff363"
+      },
+      {
+        "path": ".audit/p1-006/api26-first/results.json",
+        "sha256": "b117f58cb27fb33cfed1328e33a65b60babdc7c4bd8dfd5209f37831dbb8e26a"
+      }
+    ]
+  },
+  "scope": "API 26 and API 36 dedicated emulators; real AndroidKeystore and app-private filesystem; not real-phone or HTTP tests"
+}

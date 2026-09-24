@@ -1,0 +1,5 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="../PhoneBridge.Discovery/PhoneBridge.Discovery.csproj" />
+  </ItemGroup>
+</Project>

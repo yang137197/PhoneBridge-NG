@@ -1,0 +1,50 @@
+{
+  "run_id": "P0-010-84926bfb5cd4",
+  "checks": [
+    {
+      "test": "readonly_explorer_ready",
+      "result": "PASS",
+      "drive": "P:",
+      "names": [
+        "pc-upload-100MB.bin",
+        "phone-100MB.bin",
+        "phone-origin.txt",
+        "renamed-folder"
+      ],
+      "readonly": true,
+      "observation_file": "C:\\Users\\yang1\\Documents\\ChatGPT\\samsung link windows\\PhoneBridge-NG\\.audit\\runs\\P0-010\\P0-010-84926bfb5cd4\\explorer-check-141209\\explorer-observation.json",
+      "pid": 39252
+    },
+    {
+      "test": "CHAIN-03-explorer",
+      "result": "PASS",
+      "drive": "P:",
+      "observed": true,
+      "observer": "user",
+      "method": "User confirmed all four named items visible in Windows Explorer during readonly remount",
+      "user_answer": "四个项目都可见",
+      "files": [
+        "phone-100MB.bin",
+        "phone-origin.txt",
+        "pc-upload-100MB.bin",
+        "renamed-folder"
+      ],
+      "manual_copy_or_drag_tested": false
+    },
+    {
+      "test": "CHAIN-06-readonly-unmount",
+      "result": "PASS",
+      "exit_code": 0,
+      "drive_absent": true
+    },
+    {
+      "test": "CHAIN-06-readonly-phone-cleanup",
+      "result": "PASS",
+      "original_metadata_unchanged": true,
+      "sharing_stopped": true,
+      "adb_forwards": 0
+    }
+  ],
+  "fixtures_retained": true,
+  "transport": "Phone Wi-Fi to PC Ethernet on same LAN"
+}

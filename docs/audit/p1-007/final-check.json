@@ -1,0 +1,21 @@
+{
+  "observed_at": "2026-09-19T15:25:54.046119+00:00",
+  "counts": {
+    "markdown": 68,
+    "links": 403,
+    "json": 169,
+    "python": 30,
+    "xml": 34
+  },
+  "errors": [],
+  "native_passed": 84,
+  "bridge_passed": 2,
+  "protocol_tests": 15,
+  "preserved_previous_counts": {
+    "p1-002": 56,
+    "p1-004": 28,
+    "p1-005": 16,
+    "p1-006": 21
+  },
+  "whole_product_complete": false
+}

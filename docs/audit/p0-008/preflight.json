@@ -1,0 +1,11 @@
+{
+  "apk_sha256": "3d96a0c4f5aecf1f68cedc522392e06f7e5197db78fba97e891e0f71c0e86100",
+  "device": "alioth",
+  "api": 36,
+  "shared_root": "/sdcard/Music",
+  "existing_regular_file_count": 2,
+  "existing_files_are_thumbnail_metadata_only": true,
+  "existing_files_modified": false,
+  "transport": "Phone Wi-Fi to PC Ethernet on same LAN",
+  "same_ipv4_subnet": true
+}

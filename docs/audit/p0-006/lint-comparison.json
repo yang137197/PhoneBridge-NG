@@ -1,0 +1,28 @@
+{
+  "baseline": {
+    "Warning": 128,
+    "Error": 2
+  },
+  "repair": {
+    "Warning": 128
+  },
+  "added_issues": [],
+  "removed_issues": [
+    [
+      "NewApi",
+      "Error",
+      "`android:windowLightNavigationBar` requires API level 27 (current min is 26)"
+    ],
+    [
+      "UnspecifiedRegisterReceiverFlag",
+      "Error",
+      "`statusReceiver` is missing `RECEIVER_EXPORTED` or `RECEIVER_NOT_EXPORTED` flag for unprotected broadcasts registered for com.phonebridge.broadcast.STATUS"
+    ]
+  ],
+  "comparison_key": [
+    "id",
+    "severity",
+    "message"
+  ],
+  "lint_exit_code": 0
+}

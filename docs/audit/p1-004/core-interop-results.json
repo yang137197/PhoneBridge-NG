@@ -1,0 +1,654 @@
+{
+  "scope": "full-core-wire-over-pipes-not-network",
+  "cases": [
+    {
+      "test": "full-handshake-0",
+      "passed": true,
+      "expected": "confirmed",
+      "exit_codes": [
+        0,
+        0
+      ],
+      "forced_cleanup": false,
+      "seconds": 0.578
+    },
+    {
+      "test": "full-handshake-1",
+      "passed": true,
+      "expected": "confirmed",
+      "exit_codes": [
+        0,
+        0
+      ],
+      "forced_cleanup": false,
+      "seconds": 0.641
+    },
+    {
+      "test": "full-handshake-2",
+      "passed": true,
+      "expected": "confirmed",
+      "exit_codes": [
+        0,
+        0
+      ],
+      "forced_cleanup": false,
+      "seconds": 0.578
+    },
+    {
+      "test": "leading-zero",
+      "passed": true,
+      "expected": "confirmed",
+      "exit_codes": [
+        0,
+        0
+      ],
+      "forced_cleanup": false,
+      "seconds": 0.594
+    },
+    {
+      "test": "wrong-code",
+      "passed": true,
+      "expected": "rejected",
+      "exit_codes": [
+        2,
+        2
+      ],
+      "forced_cleanup": false,
+      "seconds": 0.609
+    },
+    {
+      "test": "magic-frame-1",
+      "passed": true,
+      "expected": "rejected",
+      "exit_codes": [
+        2,
+        2
+      ],
+      "forced_cleanup": false,
+      "seconds": 0.25
+    },
+    {
+      "test": "type-frame-1",
+      "passed": true,
+      "expected": "rejected",
+      "exit_codes": [
+        2,
+        2
+      ],
+      "forced_cleanup": false,
+      "seconds": 0.235
+    },
+    {
+      "test": "length-frame-1",
+      "passed": true,
+      "expected": "rejected",
+      "exit_codes": [
+        2,
+        2
+      ],
+      "forced_cleanup": false,
+      "seconds": 0.25
+    },
+    {
+      "test": "trailing-frame-1",
+      "passed": true,
+      "expected": "rejected",
+      "exit_codes": [
+        2,
+        2
+      ],
+      "forced_cleanup": false,
+      "seconds": 0.25
+    },
+    {
+      "test": "truncated-frame-1",
+      "passed": true,
+      "expected": "rejected",
+      "exit_codes": [
+        2,
+        2
+      ],
+      "forced_cleanup": false,
+      "seconds": 0.234
+    },
+    {
+      "test": "magic-frame-2",
+      "passed": true,
+      "expected": "rejected",
+      "exit_codes": [
+        2,
+        2
+      ],
+      "forced_cleanup": false,
+      "seconds": 0.359
+    },
+    {
+      "test": "type-frame-2",
+      "passed": true,
+      "expected": "rejected",
+      "exit_codes": [
+        2,
+        2
+      ],
+      "forced_cleanup": false,
+      "seconds": 0.344
+    },
+    {
+      "test": "length-frame-2",
+      "passed": true,
+      "expected": "rejected",
+      "exit_codes": [
+        2,
+        2
+      ],
+      "forced_cleanup": false,
+      "seconds": 0.453
+    },
+    {
+      "test": "trailing-frame-2",
+      "passed": true,
+      "expected": "rejected",
+      "exit_codes": [
+        2,
+        2
+      ],
+      "forced_cleanup": false,
+      "seconds": 0.391
+    },
+    {
+      "test": "truncated-frame-2",
+      "passed": true,
+      "expected": "rejected",
+      "exit_codes": [
+        2,
+        2
+      ],
+      "forced_cleanup": false,
+      "seconds": 0.359
+    },
+    {
+      "test": "magic-frame-3",
+      "passed": true,
+      "expected": "rejected",
+      "exit_codes": [
+        2,
+        2
+      ],
+      "forced_cleanup": false,
+      "seconds": 0.422
+    },
+    {
+      "test": "type-frame-3",
+      "passed": true,
+      "expected": "rejected",
+      "exit_codes": [
+        2,
+        2
+      ],
+      "forced_cleanup": false,
+      "seconds": 0.438
+    },
+    {
+      "test": "length-frame-3",
+      "passed": true,
+      "expected": "rejected",
+      "exit_codes": [
+        2,
+        2
+      ],
+      "forced_cleanup": false,
+      "seconds": 0.406
+    },
+    {
+      "test": "trailing-frame-3",
+      "passed": true,
+      "expected": "rejected",
+      "exit_codes": [
+        2,
+        2
+      ],
+      "forced_cleanup": false,
+      "seconds": 0.422
+    },
+    {
+      "test": "truncated-frame-3",
+      "passed": true,
+      "expected": "rejected",
+      "exit_codes": [
+        2,
+        2
+      ],
+      "forced_cleanup": false,
+      "seconds": 0.469
+    },
+    {
+      "test": "magic-frame-4",
+      "passed": true,
+      "expected": "rejected",
+      "exit_codes": [
+        2,
+        2
+      ],
+      "forced_cleanup": false,
+      "seconds": 0.515
+    },
+    {
+      "test": "type-frame-4",
+      "passed": true,
+      "expected": "rejected",
+      "exit_codes": [
+        2,
+        2
+      ],
+      "forced_cleanup": false,
+      "seconds": 0.469
+    },
+    {
+      "test": "length-frame-4",
+      "passed": true,
+      "expected": "rejected",
+      "exit_codes": [
+        2,
+        2
+      ],
+      "forced_cleanup": false,
+      "seconds": 0.484
+    },
+    {
+      "test": "trailing-frame-4",
+      "passed": true,
+      "expected": "rejected",
+      "exit_codes": [
+        2,
+        2
+      ],
+      "forced_cleanup": false,
+      "seconds": 0.484
+    },
+    {
+      "test": "truncated-frame-4",
+      "passed": true,
+      "expected": "rejected",
+      "exit_codes": [
+        2,
+        2
+      ],
+      "forced_cleanup": false,
+      "seconds": 0.5
+    },
+    {
+      "test": "magic-frame-5",
+      "passed": true,
+      "expected": "rejected",
+      "exit_codes": [
+        2,
+        2
+      ],
+      "forced_cleanup": false,
+      "seconds": 0.547
+    },
+    {
+      "test": "type-frame-5",
+      "passed": true,
+      "expected": "rejected",
+      "exit_codes": [
+        2,
+        2
+      ],
+      "forced_cleanup": false,
+      "seconds": 0.531
+    },
+    {
+      "test": "length-frame-5",
+      "passed": true,
+      "expected": "rejected",
+      "exit_codes": [
+        2,
+        2
+      ],
+      "forced_cleanup": false,
+      "seconds": 0.516
+    },
+    {
+      "test": "trailing-frame-5",
+      "passed": true,
+      "expected": "rejected",
+      "exit_codes": [
+        2,
+        2
+      ],
+      "forced_cleanup": false,
+      "seconds": 0.5
+    },
+    {
+      "test": "truncated-frame-5",
+      "passed": true,
+      "expected": "rejected",
+      "exit_codes": [
+        2,
+        2
+      ],
+      "forced_cleanup": false,
+      "seconds": 0.531
+    },
+    {
+      "test": "magic-frame-6",
+      "passed": true,
+      "expected": "rejected",
+      "exit_codes": [
+        2,
+        2
+      ],
+      "forced_cleanup": false,
+      "seconds": 0.547
+    },
+    {
+      "test": "type-frame-6",
+      "passed": true,
+      "expected": "rejected",
+      "exit_codes": [
+        2,
+        2
+      ],
+      "forced_cleanup": false,
+      "seconds": 0.61
+    },
+    {
+      "test": "length-frame-6",
+      "passed": true,
+      "expected": "rejected",
+      "exit_codes": [
+        2,
+        2
+      ],
+      "forced_cleanup": false,
+      "seconds": 0.546
+    },
+    {
+      "test": "trailing-frame-6",
+      "passed": true,
+      "expected": "rejected",
+      "exit_codes": [
+        2,
+        2
+      ],
+      "forced_cleanup": false,
+      "seconds": 0.547
+    },
+    {
+      "test": "truncated-frame-6",
+      "passed": true,
+      "expected": "rejected",
+      "exit_codes": [
+        2,
+        2
+      ],
+      "forced_cleanup": false,
+      "seconds": 0.563
+    },
+    {
+      "test": "magic-frame-7",
+      "passed": true,
+      "expected": "rejected",
+      "exit_codes": [
+        2,
+        2
+      ],
+      "forced_cleanup": false,
+      "seconds": 0.562
+    },
+    {
+      "test": "type-frame-7",
+      "passed": true,
+      "expected": "rejected",
+      "exit_codes": [
+        2,
+        2
+      ],
+      "forced_cleanup": false,
+      "seconds": 0.578
+    },
+    {
+      "test": "length-frame-7",
+      "passed": true,
+      "expected": "rejected",
+      "exit_codes": [
+        2,
+        2
+      ],
+      "forced_cleanup": false,
+      "seconds": 0.625
+    },
+    {
+      "test": "trailing-frame-7",
+      "passed": true,
+      "expected": "rejected",
+      "exit_codes": [
+        2,
+        2
+      ],
+      "forced_cleanup": false,
+      "seconds": 0.563
+    },
+    {
+      "test": "truncated-frame-7",
+      "passed": true,
+      "expected": "rejected",
+      "exit_codes": [
+        2,
+        2
+      ],
+      "forced_cleanup": false,
+      "seconds": 0.609
+    },
+    {
+      "test": "magic-frame-8",
+      "passed": true,
+      "expected": "rejected",
+      "exit_codes": [
+        2,
+        0
+      ],
+      "forced_cleanup": false,
+      "seconds": 0.547
+    },
+    {
+      "test": "type-frame-8",
+      "passed": true,
+      "expected": "rejected",
+      "exit_codes": [
+        2,
+        0
+      ],
+      "forced_cleanup": false,
+      "seconds": 0.578
+    },
+    {
+      "test": "length-frame-8",
+      "passed": true,
+      "expected": "rejected",
+      "exit_codes": [
+        2,
+        0
+      ],
+      "forced_cleanup": false,
+      "seconds": 0.61
+    },
+    {
+      "test": "trailing-frame-8",
+      "passed": true,
+      "expected": "rejected",
+      "exit_codes": [
+        2,
+        0
+      ],
+      "forced_cleanup": false,
+      "seconds": 0.593
+    },
+    {
+      "test": "truncated-frame-8",
+      "passed": true,
+      "expected": "rejected",
+      "exit_codes": [
+        2,
+        0
+      ],
+      "forced_cleanup": false,
+      "seconds": 0.594
+    },
+    {
+      "test": "ca-bound",
+      "passed": true,
+      "expected": "rejected",
+      "exit_codes": [
+        2,
+        2
+      ],
+      "forced_cleanup": false,
+      "seconds": 0.438
+    },
+    {
+      "test": "port-bound",
+      "passed": true,
+      "expected": "rejected",
+      "exit_codes": [
+        2,
+        2
+      ],
+      "forced_cleanup": false,
+      "seconds": 0.453
+    },
+    {
+      "test": "attempt-bound",
+      "passed": true,
+      "expected": "rejected",
+      "exit_codes": [
+        2,
+        2
+      ],
+      "forced_cleanup": false,
+      "seconds": 0.531
+    },
+    {
+      "test": "suite-unknown",
+      "passed": true,
+      "expected": "rejected",
+      "exit_codes": [
+        2,
+        2
+      ],
+      "forced_cleanup": false,
+      "seconds": 0.266
+    },
+    {
+      "test": "window-mismatch",
+      "passed": true,
+      "expected": "rejected",
+      "exit_codes": [
+        2,
+        2
+      ],
+      "forced_cleanup": false,
+      "seconds": 0.234
+    },
+    {
+      "test": "client-mismatch",
+      "passed": true,
+      "expected": "rejected",
+      "exit_codes": [
+        2,
+        2
+      ],
+      "forced_cleanup": false,
+      "seconds": 0.375
+    },
+    {
+      "test": "reflection",
+      "passed": true,
+      "expected": "rejected",
+      "exit_codes": [
+        2,
+        2
+      ],
+      "forced_cleanup": false,
+      "seconds": 0.469
+    },
+    {
+      "test": "replay",
+      "passed": true,
+      "expected": "rejected",
+      "exit_codes": [
+        2,
+        2
+      ],
+      "forced_cleanup": false,
+      "seconds": 0.422
+    },
+    {
+      "test": "gx2-zero",
+      "passed": true,
+      "expected": "rejected",
+      "exit_codes": [
+        2,
+        2
+      ],
+      "forced_cleanup": false,
+      "seconds": 0.453
+    },
+    {
+      "test": "gx2-one",
+      "passed": true,
+      "expected": "rejected",
+      "exit_codes": [
+        2,
+        2
+      ],
+      "forced_cleanup": false,
+      "seconds": 0.453
+    },
+    {
+      "test": "scalar-out-of-range",
+      "passed": true,
+      "expected": "rejected",
+      "exit_codes": [
+        2,
+        2
+      ],
+      "forced_cleanup": false,
+      "seconds": 0.484
+    },
+    {
+      "test": "round2-proof",
+      "passed": true,
+      "expected": "rejected",
+      "exit_codes": [
+        2,
+        2
+      ],
+      "forced_cleanup": false,
+      "seconds": 0.532
+    },
+    {
+      "test": "client-mac",
+      "passed": true,
+      "expected": "rejected",
+      "exit_codes": [
+        2,
+        2
+      ],
+      "forced_cleanup": false,
+      "seconds": 0.562
+    },
+    {
+      "test": "server-mac",
+      "passed": true,
+      "expected": "rejected",
+      "exit_codes": [
+        2,
+        0
+      ],
+      "forced_cleanup": false,
+      "seconds": 0.594
+    }
+  ]
+}

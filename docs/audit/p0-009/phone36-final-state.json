@@ -1,0 +1,21 @@
+{
+  "result": "PASS",
+  "runtime_exit_code": 0,
+  "runtime_pass_rows": 18,
+  "host_runs_passed": 5,
+  "identity_certificate_sha256": "65b52a178912e36cc73dc820f4029e85efa75a3427c2a341902326a8d2480903",
+  "legacy_experiment_pkcs12_removed": true,
+  "sharing_stopped": true,
+  "adb_forwards": 0,
+  "host_control_files_remaining": false,
+  "music_files": [
+    "/sdcard/Music/.thumbnails/.database_uuid",
+    "/sdcard/Music/.thumbnails/.nomedia"
+  ],
+  "music_symlinks": 0,
+  "shared_folder": "music",
+  "auto_start_on_boot": false,
+  "shared_storage_writes": false,
+  "new_permissions_granted": false,
+  "system_policy_changed": false
+}

@@ -1,0 +1,23 @@
+{
+  "markdown_files": 65,
+  "local_links": 385,
+  "json_files": 162,
+  "python_files": 28,
+  "xml_files": 26,
+  "errors": [],
+  "preserved_previous_file_counts": {
+    "p1-002": 56,
+    "p1-004": 28,
+    "p1-005": 18
+  },
+  "product_core_sources_reviewed": 4,
+  "native_tests_passed": 52,
+  "process_recovery_cases_passed": 6,
+  "android_patch_apk_unchanged": true,
+  "upstream_clean": true,
+  "owned_emulators_remaining": 0,
+  "active_task": [
+    "P1-007-android-pairing-service.md"
+  ],
+  "whole_product_complete": false
+}

@@ -1,0 +1,13 @@
+{
+  "Baseline": "a378fec40561a4d18be2334f4de92ee02a0e7d0c",
+  "Patch": "android/patches/P0-004-webdav-stream-correctness.patch",
+  "PatchSHA256": "63ceba89b8637dbaf298563d9106b423f1d74a05aa4344ff2eac55d9a64c3ff8",
+  "ApkSHA256": "f666935cc788ba347400ff61e3e0b6266408bdcb440fabc75aaf6058ead835ea",
+  "ApkBytes": 9635123,
+  "LicenseSHA256": "fb981668c18a279e285fc4d83fba1e836cc84dd4daa73c9697d3cfd2d8aca6e0",
+  "UnitTests": 12,
+  "HTTPSRegressions": 34,
+  "LintErrors": 2,
+  "LintWarnings": 128,
+  "LintIssueDifferenceCount": 0
+}

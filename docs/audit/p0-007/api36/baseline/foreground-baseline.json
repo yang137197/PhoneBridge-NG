@@ -1,0 +1,17 @@
+{
+  "apk_sha256": "9373fa5e1e1d807f941a011d49cdb7552c82deb840e88fe0d05ee4905994e898",
+  "checks": [
+    {
+      "name": "sticky-process-restart-loses-sharing",
+      "expected_defect_reproduced": true,
+      "process_restarted": true,
+      "https_restored": false
+    },
+    {
+      "name": "data-sync-timeout-crashes",
+      "expected_defect_reproduced": true,
+      "official_compat_enabled": true,
+      "shortened_limit_ms": 5000
+    }
+  ]
+}

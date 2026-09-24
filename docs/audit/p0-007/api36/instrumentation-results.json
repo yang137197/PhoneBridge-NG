@@ -1,0 +1,109 @@
+{
+  "api": 36,
+  "apk_sha256": "3d96a0c4f5aecf1f68cedc522392e06f7e5197db78fba97e891e0f71c0e86100",
+  "test_apk_sha256": "69625c054bcc796c708d72eec65df1082b61f5de7d1edac441705062a76a385b",
+  "tests": [
+    {
+      "suite": "com.phonebridge.CompatibilityTest",
+      "name": "themeInflatesWithInheritedColorsOnThisApi",
+      "result": "PASS",
+      "code": 0
+    },
+    {
+      "suite": "com.phonebridge.CompatibilityTest",
+      "name": "externalShellCannotSpoofAppStatus",
+      "result": "PASS",
+      "code": 0
+    },
+    {
+      "suite": "com.phonebridge.CompatibilityTest",
+      "name": "ownStatusWorksAfterPauseResumeAndRecreation",
+      "result": "PASS",
+      "code": 0
+    },
+    {
+      "suite": "com.phonebridge.ServicePolicyTest",
+      "name": "notificationStopActionStopsSharingService",
+      "result": "PASS",
+      "code": 0
+    },
+    {
+      "suite": "com.phonebridge.ServicePolicyTest",
+      "name": "statusQueryDoesNotLeaveAStartedService",
+      "result": "PASS",
+      "code": 0
+    },
+    {
+      "suite": "com.phonebridge.server.SharedStorageTest",
+      "name": "nestedCopyMoveDeleteAndOverwrite",
+      "result": "PASS",
+      "code": 0
+    },
+    {
+      "suite": "com.phonebridge.server.SharedStorageTest",
+      "name": "openReadStreamSurvivesStorageClose",
+      "result": "PASS",
+      "code": 0
+    },
+    {
+      "suite": "com.phonebridge.server.SharedStorageTest",
+      "name": "hardLinkedFilesAreRejected",
+      "result": "SKIP",
+      "code": -4
+    },
+    {
+      "suite": "com.phonebridge.server.SharedStorageTest",
+      "name": "unknownReplacementOfTempIsRetained",
+      "result": "PASS",
+      "code": 0
+    },
+    {
+      "suite": "com.phonebridge.server.SharedStorageTest",
+      "name": "shortAndFailingBodyPreserveOriginal",
+      "result": "PASS",
+      "code": 0
+    },
+    {
+      "suite": "com.phonebridge.server.SharedStorageTest",
+      "name": "targetSwappedDuringUploadIsRejected",
+      "result": "PASS",
+      "code": 0
+    },
+    {
+      "suite": "com.phonebridge.server.SharedStorageTest",
+      "name": "parentSwappedDuringUploadStaysOnHeldDirectory",
+      "result": "PASS",
+      "code": 0
+    },
+    {
+      "suite": "com.phonebridge.server.SharedStorageTest",
+      "name": "exactLengthAndAtomicOverwrite",
+      "result": "PASS",
+      "code": 0
+    },
+    {
+      "suite": "com.phonebridge.server.SharedStorageTest",
+      "name": "rootOperationsCannotDeleteSentinels",
+      "result": "PASS",
+      "code": 0
+    },
+    {
+      "suite": "com.phonebridge.server.SharedStorageTest",
+      "name": "selectedRootCannotBeSymlink",
+      "result": "PASS",
+      "code": 0
+    },
+    {
+      "suite": "com.phonebridge.server.SharedStorageTest",
+      "name": "retainedStagingBlocksRecursiveDeleteAndMove",
+      "result": "PASS",
+      "code": 0
+    },
+    {
+      "suite": "com.phonebridge.server.SharedStorageTest",
+      "name": "ancestorAndFinalLinksNeverFollowed",
+      "result": "PASS",
+      "code": 0
+    }
+  ]
+}

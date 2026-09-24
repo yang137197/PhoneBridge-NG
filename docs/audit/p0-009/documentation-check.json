@@ -1,0 +1,14 @@
+{
+  "markdown_files": 37,
+  "markdown_local_links_checked": 229,
+  "json_files_parsed": 97,
+  "python_files_parsed": 18,
+  "broken_links": [],
+  "syntax_errors": 0,
+  "artifact_and_script_hashes_match": true,
+  "all_final_native_and_runtime_apk_hashes_match": true,
+  "one_next_task": [
+    "P0-010-real-device-chain.md"
+  ],
+  "source_patch_unchanged": true
+}

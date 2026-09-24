@@ -1,0 +1,29 @@
+[
+  {
+    "run": "unit-first",
+    "result": "failed",
+    "reason": "Job close exit-code assertion was stronger than the API contract",
+    "corrected": "Check live-before and terminated-after"
+  },
+  {
+    "run": "real-7f16e9946299",
+    "result": "failed",
+    "exit_code": 1,
+    "reason": "Test-only Python cryptography dependency absent",
+    "corrected": "Fixed synthetic public CA fixture; no additional package"
+  },
+  {
+    "run": "final-unit",
+    "result": "failed",
+    "reason": "PowerShell -File blocked by execution policy; reproduced UnauthorizedAccess",
+    "corrected": "Native .NET argv fixture; no policy change"
+  },
+  {
+    "run": "real-f4c413c0a1a0",
+    "result": "failed",
+    "exit_code": 1,
+    "reason": "Stop marker read-back raced Android host consumption/deletion",
+    "corrected": "touch signal plus final instrumentation OK acknowledgment",
+    "host_ok": true
+  }
+]

@@ -1,0 +1,7 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="../PhoneBridge.Pairing/PhoneBridge.Pairing.csproj" />
+    <ProjectReference Include="../PhoneBridge.Credentials/PhoneBridge.Credentials.csproj" />
+    <ProjectReference Include="../PhoneBridge.Mounting/PhoneBridge.Mounting.csproj" />
+  </ItemGroup>
+</Project>

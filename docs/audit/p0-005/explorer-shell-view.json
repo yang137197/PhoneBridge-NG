@@ -1,0 +1,27 @@
+{
+  "DrivePresent": true,
+  "Views": [
+    {
+      "Url": "file:///P:/",
+      "ItemCount": 15,
+      "Names": [
+        "new-folder-20260919-104812-renamed",
+        "new-folder-20260919-112907-renamed",
+        "p0-005-1789787934132538600",
+        "p0-005-1789788180891449400",
+        "p0-005-1789788508989432400",
+        "p0-005-death-1789788208995353400",
+        "p0-005-death-1789788535502276800",
+        "phone-origin",
+        "phone-origin-100MB.bin",
+        "range-empty.bin",
+        "range-fixture",
+        "uploaded-20260919-102758.bin",
+        "uploaded-20260919-104812.bin",
+        "uploaded-20260919-112907.bin",
+        "upload-preserve.bin"
+      ]
+    }
+  ],
+  "VisualOpeningManuallyConfirmed": false
+}

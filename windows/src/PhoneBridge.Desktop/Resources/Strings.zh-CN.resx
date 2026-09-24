@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <data name="TimedOut" xml:space="preserve"><value>请求超时，已保存的配对状态会保留。如果手机已批准，请使用“连接 / 恢复确认”。</value></data>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <data name="Introduction" xml:space="preserve"><value>手机和电脑连接同一 Wi-Fi，在手机上开始共享并打开配对。</value></data>
+  <data name="ReadOnlyNotice" xml:space="preserve"><value>访问模式由手机端按电脑设置；Windows 只使用手机会话确认的模式。安全模式不覆盖已有文件，删除须逐项确认。</value></data>
+  <data name="WinFspAttribution" xml:space="preserve"><value>WinFsp - Windows File System Proxy，Copyright (C) Bill Zissimopoulos · </value></data>
+  <data name="ConfirmedMode" xml:space="preserve"><value>手机确认模式</value></data>
+  <data name="NotPaired" xml:space="preserve"><value>未配对</value></data>
+  <data name="ConnectionChecking" xml:space="preserve"><value>正在检查手机会话…</value></data>
+  <data name="ConnectionHealthy" xml:space="preserve"><value>手机会话正常。</value></data>
+  <data name="ConnectionRetry" xml:space="preserve"><value>手机检查失败（{0}/{1}），确认故障前保持当前盘符。</value></data>
+  <data name="ConnectionLost" xml:space="preserve"><value>手机连接不可用，正在安全卸载后准备恢复…</value></data>
+  <data name="ReconnectWaiting" xml:space="preserve"><value>正在等待同一台已配对手机重新出现…</value></data>
+  <data name="Reconnecting" xml:space="preserve"><value>已发现配对手机，正在重新验证身份并连接…</value></data>
+  <data name="ReconnectComplete" xml:space="preserve"><value>已恢复同一台手机和原盘符。</value></data>
+  <data name="ReconnectBackoff" xml:space="preserve"><value>重连失败，将在 {0} 秒后重试。</value></data>
+  <data name="DeletePath" xml:space="preserve"><value>确认删除的手机路径（以 / 开头）</value></data>
+  <data name="DeleteConfirmed" xml:space="preserve"><value>确认删除…</value></data>
+  <data name="DeleteConfirm" xml:space="preserve"><value>永久删除以下手机项目？&#10;&#10;路径：{0}&#10;类型：{1}&#10;大小：{2} 字节&#10;&#10;确认仅在 30 秒内有效，项目变化后会拒绝。</value></data>
+  <data name="Directory" xml:space="preserve"><value>目录</value></data>
+  <data name="File" xml:space="preserve"><value>文件</value></data>
+  <data name="delete-cancelled" xml:space="preserve"><value>已取消删除，手机文件未改动。</value></data>
+  <data name="invalid-delete-path" xml:space="preserve"><value>请输入共享目录内以 / 开头的具体路径，不能选择共享根。</value></data>
+  <data name="Refresh" xml:space="preserve"><value>刷新</value></data>
+  <data name="Devices" xml:space="preserve"><value>附近手机与已保存配对</value></data>
+  <data name="DeviceName" xml:space="preserve"><value>设备</value></data>
+  <data name="DeviceState" xml:space="preserve"><value>状态</value></data>
+  <data name="Address" xml:space="preserve"><value>地址</value></data>
+  <data name="Drive" xml:space="preserve"><value>盘符</value></data>
+  <data name="PairingCode" xml:space="preserve"><value>手机上的 8 位配对码</value></data>
+  <data name="Pair" xml:space="preserve"><value>配对并连接</value></data>
+  <data name="Connect" xml:space="preserve"><value>连接 / 恢复确认</value></data>
+  <data name="Cancel" xml:space="preserve"><value>取消</value></data>
+  <data name="Open" xml:space="preserve"><value>打开盘符</value></data>
+  <data name="Unmount" xml:space="preserve"><value>卸载</value></data>
+  <data name="Revoke" xml:space="preserve"><value>撤销配对</value></data>
+  <data name="Forget" xml:space="preserve"><value>仅忘记本机…</value></data>
+  <data name="Ready" xml:space="preserve"><value>选择手机后开始。</value></data>
+  <data name="Completed" xml:space="preserve"><value>操作已完成。</value></data>
+  <data name="OperationCancelled" xml:space="preserve"><value>已取消。未确认的远端授权保持本地禁用，请查看配对状态。</value></data>
+  <data name="AlreadyRunning" xml:space="preserve"><value>当前用户已运行 PhoneBridge NG。</value></data>
+  <data name="DiscoveryFailed" xml:space="preserve"><value>设备发现已停止。请检查网络后重新打开客户端。</value></data>
+  <data name="StoreFailed" xml:space="preserve"><value>无法读取或更新受保护配对记录。连接已禁用，记录未被自动替换。</value></data>
+  <data name="OperationFailed" xml:space="preserve"><value>操作未完成。请检查手机共享和 Wi-Fi 后重试，已保存配对状态会保留。</value></data>
+  <data name="MountedAt" xml:space="preserve"><value>{0}:\ · {1} · {2}</value></data>
+  <data name="ReadOnly" xml:space="preserve"><value>只读</value></data>
+  <data name="Safe" xml:space="preserve"><value>安全模式</value></data>
+  <data name="ReadWrite" xml:space="preserve"><value>完全读写</value></data>
+  <data name="NoMount" xml:space="preserve"><value>当前无挂载盘符。</value></data>
+  <data name="Offline" xml:space="preserve"><value>离线</value></data>
+  <data name="InvalidCode" xml:space="preserve"><value>请输入手机显示的 8 位数字。</value></data>
+  <data name="OpenFailed" xml:space="preserve"><value>未能打开资源管理器，盘符可能仍已挂载。</value></data>
+  <data name="RevokeConfirm" xml:space="preserve"><value>禁用此配对、卸载对应盘符，并请求手机撤销授权？手机离线时会保留禁用记录供重试。</value></data>
+  <data name="ForgetConfirm" xml:space="preserve"><value>此操作仅删除本机记录，手机可能仍保留此电脑的授权。重新配对前，请在手机上撤销此电脑。是否继续？</value></data>
+  <data name="Closing" xml:space="preserve"><value>正在退出：取消操作并卸载本客户端盘符…</value></data>
+  <data name="TrayOpen" xml:space="preserve"><value>打开 PhoneBridge NG</value></data>
+  <data name="TrayExit" xml:space="preserve"><value>退出</value></data>
+  <data name="TrayOffline" xml:space="preserve"><value>PhoneBridge NG · 当前离线</value></data>
+  <data name="TrayDiscovered" xml:space="preserve"><value>PhoneBridge NG · 已发现手机</value></data>
+  <data name="TrayConnecting" xml:space="preserve"><value>PhoneBridge NG · 正在连接</value></data>
+  <data name="TrayMounted" xml:space="preserve"><value>PhoneBridge NG · 盘符已连接</value></data>
+  <data name="TrayError" xml:space="preserve"><value>PhoneBridge NG · 需要处理</value></data>
+  <data name="TrayUnavailable" xml:space="preserve"><value>无法创建系统托盘图标；本次关闭主窗口将直接安全退出。</value></data>
+  <data name="AutoStart" xml:space="preserve"><value>Windows 登录时自动运行 PhoneBridge NG</value></data>
+  <data name="AutoStartEnabled" xml:space="preserve"><value>已启用当前用户登录自启动；下次登录时会直接进入托盘。</value></data>
+  <data name="AutoStartDisabled" xml:space="preserve"><value>已关闭当前用户登录自启动。</value></data>
+  <data name="autostart-invalid-path" xml:space="preserve"><value>当前程序路径不能用于自启动。</value></data>
+  <data name="autostart-command-too-long" xml:space="preserve"><value>当前程序路径过长，Windows 登录启动命令无法安全注册。</value></data>
+  <data name="autostart-entry-conflict" xml:space="preserve"><value>同名启动项已被其他程序或外部修改。为避免误覆盖，PhoneBridge 未改动它。</value></data>
+  <data name="autostart-read-failed" xml:space="preserve"><value>无法读取当前用户启动设置，自启动开关已禁用。</value></data>
+  <data name="autostart-write-failed" xml:space="preserve"><value>未能确认自启动设置已保存，原有启动项不会被静默替换。</value></data>
+  <data name="Pending" xml:space="preserve"><value>待确认 · 可恢复确认或撤销</value></data>
+  <data name="Active" xml:space="preserve"><value>已配对</value></data>
+  <data name="RevocationPending" xml:space="preserve"><value>已禁用 · 远端撤销待确认</value></data>
+  <data name="NeedsRepair" xml:space="preserve"><value>配对存储需要修复</value></data>
+  <data name="Experimental" xml:space="preserve"><value>实验版 v2 · 不支持连接</value></data>
+  <data name="EnablePairing" xml:space="preserve"><value>请在手机打开配对</value></data>
+  <data name="PairingAvailable" xml:space="preserve"><value>可输入配对码</value></data>
+  <data name="ConfirmingCode" xml:space="preserve"><value>正在确认配对码与手机身份…</value></data>
+  <data name="SavingPending" xml:space="preserve"><value>正在保存受保护的待确认记录…</value></data>
+  <data name="WaitingApproval" xml:space="preserve"><value>请在手机上批准此电脑，并保持手机配对界面在前台。</value></data>
+  <data name="Validating" xml:space="preserve"><value>正在核对授权与共享状态…</value></data>
+  <data name="Mounting" xml:space="preserve"><value>正在连接盘符…</value></data>
+  <data name="RecoveringWrites" xml:space="preserve"><value>正在恢复中断前已缓存的文件…</value></data>
+  <data name="recovery-stalled-cache-retained" xml:space="preserve"><value>缓存文件恢复已停止前进，盘符和缓存均已保留。请保持手机共享及网络可用，然后重试卸载。</value></data>
+  <data name="recovery-timeout-cache-retained" xml:space="preserve"><value>缓存文件恢复达到最长时限，盘符和缓存均已保留。手机可用后请重试卸载。</value></data>
+  <data name="recovery-cancelled-cache-retained" xml:space="preserve"><value>已取消等待缓存文件恢复，盘符和缓存均已保留。请重试卸载以安全完成。</value></data>
+  <data name="Mounted" xml:space="preserve"><value>盘符已连接，点击“打开盘符”即可浏览。</value></data>
+  <data name="Revoking" xml:space="preserve"><value>正在撤销配对…</value></data>
+  <data name="unmount-not-confirmed" xml:space="preserve"><value>尚未确认卸载完成。请重试卸载或再次关闭，客户端仍保留进程归属。</value></data>
+  <data name="pending-writes-not-confirmed" xml:space="preserve"><value>仍有文件等待上传，已保留盘符和本地缓存。请保持手机共享和网络连接后重试卸载。</value></data>
+  <data name="invalid-endpoint" xml:space="preserve"><value>设备广播地址无效，请刷新发现。</value></data>
+  <data name="v3-required" xml:space="preserve"><value>此客户端仅支持 PhoneBridge NG v3。</value></data>
+  <data name="pairing-window-required" xml:space="preserve"><value>请在手机打开新的配对窗口后刷新。</value></data>
+  <data name="identity-mismatch" xml:space="preserve"><value>手机身份不匹配，连接已停止。</value></data>
+  <data name="invalid-response" xml:space="preserve"><value>手机响应不符合协议，连接未获授权。</value></data>
+  <data name="authorization-unconfirmed" xml:space="preserve"><value>已保存凭据尚未获授权。请在手机批准后恢复确认，或撤销此待处理配对。</value></data>
+  <data name="share-not-ready" xml:space="preserve"><value>手机共享未就绪，请检查共享目录和权限。</value></data>
+  <data name="record-changed" xml:space="preserve"><value>配对状态已改变，请刷新后重新连接。</value></data>
+  <data name="mode-changed" xml:space="preserve"><value>手机已更改访问模式。旧盘符已安全卸载，请重新连接以应用手机确认的新模式。</value></data>
+  <data name="mount-already-active" xml:space="preserve"><value>请先卸载当前盘符，再连接其他设备。</value></data>
+  <data name="operation-in-progress" xml:space="preserve"><value>当前仍有操作正在进行。</value></data>
+  <data name="revocation-unconfirmed" xml:space="preserve"><value>本机已禁用。远端撤销尚未确认，请联网后重试，或在手机上撤销。</value></data>
+  <data name="drive-occupied" xml:space="preserve"><value>请选择空闲盘符。</value></data>
+  <data name="drive-reserved" xml:space="preserve"><value>此盘符已被其他会话占用。</value></data>
+  <data name="winfsp-missing" xml:space="preserve"><value>连接需要 WinFsp，请先安装项目已核验的依赖。</value></data>
+  <data name="rclone-hash-mismatch" xml:space="preserve"><value>附带的 rclone 文件未通过完整性校验。</value></data>
+  <data name="unauthorized" xml:space="preserve"><value>授权已失效。请恢复已保存配对或打开新的配对窗口。</value></data>
+  <data name="rejected" xml:space="preserve"><value>手机拒绝了此操作；当前模式或目标不允许该请求。</value></data>
+  <data name="cancelled" xml:space="preserve"><value>手机配对窗口已取消。</value></data>
+  <data name="conflict" xml:space="preserve"><value>目标或状态已变化，本次操作未执行；请刷新后重试。</value></data>
+  <data name="capacity" xml:space="preserve"><value>手机配对容量或请求频率达到限制，请稍后重试。</value></data>
+  <data name="storage_failure" xml:space="preserve"><value>手机未能持久保存授权状态，共享已停止，撤销结果尚未确认。</value></data>
+  <data name="ExportDiagnostics" xml:space="preserve"><value>导出诊断包…</value></data>
+  <data name="DiagnosticsZipFilter" xml:space="preserve"><value>ZIP 诊断包 (*.zip)|*.zip</value></data>
+  <data name="DiagnosticsExported" xml:space="preserve"><value>已保存脱敏诊断包；文件未上传。</value></data>
+  <data name="DiagnosticsExportFailed" xml:space="preserve"><value>诊断包保存失败；现有本地日志已保留。</value></data>
+  <data name="ManualAddress" xml:space="preserve"><value>已配对设备的手动 IP</value></data>
+  <data name="ManualPort" xml:space="preserve"><value>HTTPS 端口</value></data>
+  <data name="UseManualAddress" xml:space="preserve"><value>使用手动地址</value></data>
+  <data name="ClearManualAddress" xml:space="preserve"><value>清除手动地址</value></data>
+  <data name="ManualEndpointInvalid" xml:space="preserve"><value>请输入 IPv4 或 IPv6 字面地址及 1–65535 端口；不接受网址或主机名。</value></data>
+  <data name="ManualEndpointAdded" xml:space="preserve"><value>已为这条配对记录选择临时地址；连接仍会验证设备身份。</value></data>
+  <data name="ManualEndpointCleared" xml:space="preserve"><value>临时地址已清除。</value></data>
+</root>

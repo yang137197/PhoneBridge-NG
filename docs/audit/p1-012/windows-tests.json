@@ -1,0 +1,32 @@
+{
+  "task": "P1-012",
+  "command": "scripts/Verify-Windows.ps1",
+  "configuration": "Release",
+  "completedAt": "2026-09-21T14:42:38+08:00",
+  "build": {
+    "warnings": 0,
+    "errors": 0
+  },
+  "tests": {
+    "total": 227,
+    "passed": 227,
+    "failed": 0,
+    "projects": {
+      "PhoneBridge.Desktop.Tests": 6,
+      "PhoneBridge.Discovery.Tests": 54,
+      "PhoneBridge.Mounting.Tests": 36,
+      "PhoneBridge.Pairing.Tests": 50,
+      "PhoneBridge.Connection.Tests": 18,
+      "PhoneBridge.Credentials.Tests": 63
+    }
+  },
+  "resultDirectory": ".audit/windows-verification/20260921-144224",
+  "trxSha256": [
+    "6f657bfd7db7906fa9c700fc7546d76647b0f6c82c2c2ed97132c0696f311e1c",
+    "5f3beec10a5c848f526fe87628e08f2de6efa8afede74d172074bd2de2f88959",
+    "4febc9d8632a1f91d573788f2097ea1e955edca2ac785003c69dfb3aa0551080",
+    "bcf3821cf9abce1036ee4a4741135c9627a5dcfeb83df0ae18a53b944986fcb7",
+    "501a135b1239e256a470c9767ea9e246d2a0efdb0a398e4744760bf05a68fcf3",
+    "bddcf5df8c3d08a00e202233ead913d36fe62c71f12869c727c52513b7c78108"
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "range": {
+    "request": "bytes=67108864-67109887",
+    "status": 200,
+    "content_length": "100000000",
+    "content_range": null,
+    "returned_sample_sha256": "98df52aa25cdb08b8e4b073b03e3a1b9da8b7e2d95b18407e2ed7d35988ba34d"
+  },
+  "keepalive_body": {
+    "propfind_status": 207,
+    "next_options_status": 400,
+    "next_response": "BAD REQUEST: Syntax error. HTTP verb <?xml unhandled."
+  },
+  "mdns": {
+    "duration_seconds": 30,
+    "phonebridge_services": [],
+    "scope": "Windows host observing isolated emulator NAT"
+  }
+}

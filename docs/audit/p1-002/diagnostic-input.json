@@ -1,0 +1,22 @@
+{
+  "checks": [
+    {
+      "test": "eof",
+      "passed": true
+    },
+    {
+      "test": "invalid-json",
+      "passed": true
+    },
+    {
+      "test": "oversized",
+      "passed": true
+    },
+    {
+      "test": "silent-stdin-deadline",
+      "passed": true,
+      "elapsed_seconds": 120.265
+    }
+  ],
+  "entry_exit_code": 0
+}

@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType><UseWPF>true</UseWPF><UseWindowsForms>true</UseWindowsForms>
+    <AssemblyName>PhoneBridge.Desktop</AssemblyName>
+    <RootNamespace>PhoneBridge.Desktop</RootNamespace>
+    <Version>0.1.0</Version>
+    <AssemblyVersion>0.1.0.0</AssemblyVersion>
+    <FileVersion>0.1.0.0</FileVersion>
+    <InformationalVersion>0.1.0-local</InformationalVersion>
+    <Product>PhoneBridge NG</Product>
+    <Company>PhoneBridge NG contributors</Company>
+    <Description>Wireless access to Android files from Windows</Description>
+  </PropertyGroup>
+  <ItemGroup><InternalsVisibleTo Include="PhoneBridge.Desktop.Tests" /></ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="../PhoneBridge.Connection/PhoneBridge.Connection.csproj" />
+    <ProjectReference Include="../PhoneBridge.Discovery.Windows/PhoneBridge.Discovery.Windows.csproj" />
+  </ItemGroup>
+</Project>

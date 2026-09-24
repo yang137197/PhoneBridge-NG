@@ -1,0 +1,56 @@
+{
+  "task": "P1-014",
+  "date": "2026-09-21",
+  "interaction": "User clicked the zh-CN WPF Export diagnostics button and completed the Save dialog.",
+  "auditCopy": ".audit/p1-014-live.zip",
+  "bytes": 622,
+  "sha256": "d30c1089a75287bac0c9e6a127e5583dc611349d1ac0fb680e3307adf357e8a7",
+  "entries": [
+    "manifest.json",
+    "logs/events-0.jsonl"
+  ],
+  "unexpectedEntries": [],
+  "manifest": {
+    "schema": 1,
+    "keys": [
+      "appVersion",
+      "generatedUtc",
+      "logFileCount",
+      "loggerAvailable",
+      "loggerHealth",
+      "osVersion",
+      "schema",
+      "uiCulture"
+    ],
+    "loggerAvailable": true,
+    "loggerHealth": "available",
+    "declaredLogCount": 1,
+    "actualLogCount": 1
+  },
+  "logs": {
+    "lines": 3,
+    "invalidJson": 0,
+    "keys": [
+      "appVersion",
+      "code",
+      "count",
+      "event",
+      "level",
+      "schema",
+      "sequence",
+      "state",
+      "utc"
+    ]
+  },
+  "forbiddenFieldOrSecretMatches": [],
+  "actualIdentityAndPathScan": {
+    "currentUser": false,
+    "computerName": false,
+    "deviceIdPrefix": false,
+    "windowsPath": false,
+    "uncPath": false
+  },
+  "temporaryFilesAfterExport": 0,
+  "continuedLoggingAfterExport": true,
+  "result": "passed-limited-scope"
+}

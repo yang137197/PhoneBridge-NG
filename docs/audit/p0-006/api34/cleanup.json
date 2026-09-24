@@ -1,0 +1,10 @@
+{
+  "previous_ui_status": "Running",
+  "stop_button_pressed": true,
+  "adb_forward_removed": true,
+  "emulator_shutdown_acknowledged": true,
+  "cache_and_avd_preserved": true,
+  "stopped_ui_confirmed": true,
+  "https_unavailable_after_stop": true,
+  "no_fatal_exception_in_service_log": true
+}

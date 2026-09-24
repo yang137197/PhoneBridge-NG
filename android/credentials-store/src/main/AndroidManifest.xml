@@ -1,0 +1,4 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools">
+    <application android:allowBackup="false" android:fullBackupContent="@xml/pbng_backup_rules"
+        android:dataExtractionRules="@xml/pbng_extraction_rules" tools:targetApi="31" />
+</manifest>

@@ -1,0 +1,20 @@
+{
+  "exit_code": 0,
+  "targets": [
+    "assembleDebug",
+    "testDebugUnitTest",
+    "assembleDebugAndroidTest",
+    "lintDebug"
+  ],
+  "apk_sha256": "3d96a0c4f5aecf1f68cedc522392e06f7e5197db78fba97e891e0f71c0e86100",
+  "apk_bytes": 9650923,
+  "test_apk_sha256": "69625c054bcc796c708d72eec65df1082b61f5de7d1edac441705062a76a385b",
+  "patch_sha256": "6334bd8f5d40246f878b7a6f31c20348c5bfb13d8c53f496fd9439aa6d40e24a",
+  "build_log_sha256": "fa70b5b1d00a97edce2f89187650a79a1ff72a2caa34120b1489a1dae870d1d3",
+  "baseline_apply_check_exit_code": 0,
+  "repair_reverse_apply_check_exit_code": 0,
+  "git_diff_check_exit_code": 0,
+  "minimum_api": 26,
+  "compile_sdk": 36,
+  "target_sdk": 36
+}

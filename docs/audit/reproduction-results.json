@@ -1,0 +1,41 @@
+{
+  "commit": "a378fec40561a4d18be2334f4de92ee02a0e7d0c",
+  "scope": "offline Python only",
+  "results": [
+    {
+      "probe": "plaintext_config",
+      "reproduced": true,
+      "evidence": "Synthetic credential survives as plaintext JSON; temp data removed"
+    },
+    {
+      "probe": "fingerprint_failure_allows",
+      "reproduced": true,
+      "evidence": "Actual helper returns (True, None) when probe fails"
+    },
+    {
+      "probe": "mount_without_tls_or_drive_proof",
+      "reproduced": true,
+      "evidence": "Mock process alive alone yields mounted state; TLS bypass present in argv; no real rclone launched"
+    },
+    {
+      "probe": "mdns_plain_http_accepted",
+      "reproduced": true,
+      "evidence": "Mock TXT protocol=http is accepted by actual resolver; no mDNS packets sent"
+    },
+    {
+      "probe": "ip_update_no_found_callback",
+      "reproduced": true,
+      "evidence": "Without on_updated wiring, changed IP updates discovery data only"
+    },
+    {
+      "probe": "duplicate_mount_race",
+      "reproduced": true,
+      "evidence": "Two mocked processes started for same device/drive; only one remains tracked"
+    },
+    {
+      "probe": "stale_mount_deadlock",
+      "reproduced": true,
+      "evidence": "mount holds Lock then _cleanup_mount blocks acquiring the same Lock; confirmed by live thread stack"
+    }
+  ]
+}

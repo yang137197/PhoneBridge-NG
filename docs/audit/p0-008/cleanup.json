@@ -1,0 +1,10 @@
+{
+  "service_absent": true,
+  "test_forward_removed": true,
+  "app_installed_but_force_stopped": true,
+  "shared_storage_writes_performed": false,
+  "phone_lan_port_unavailable_after_stop": true,
+  "no_test_forward": true,
+  "no_test_drive": true,
+  "files_or_credentials_transferred": false
+}

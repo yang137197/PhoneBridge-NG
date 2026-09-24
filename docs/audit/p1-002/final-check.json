@@ -1,0 +1,14 @@
+{
+  "markdown_files": 47,
+  "local_links_checked": 289,
+  "json_parsed": 129,
+  "python_parsed": 23,
+  "xml_parsed": 14,
+  "errors": [],
+  "source_binary_and_evidence_hashes_match": true,
+  "upstream_clean": true,
+  "active_task": [
+    "P1-003-pairing-contract.md"
+  ],
+  "whole_product_complete": false
+}

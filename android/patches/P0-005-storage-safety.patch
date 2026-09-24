@@ -1,0 +1,1536 @@
+diff --git a/android/app/src/androidTest/java/com/phonebridge/server/SharedStorageTest.kt b/android/app/src/androidTest/java/com/phonebridge/server/SharedStorageTest.kt
+new file mode 100644
+index 0000000..34ae2d5
+--- /dev/null
++++ b/android/app/src/androidTest/java/com/phonebridge/server/SharedStorageTest.kt
+@@ -0,0 +1,177 @@
++package com.phonebridge.server
++
++// PhoneBridge NG, 2026-09-19. SPDX-License-Identifier: GPL-3.0-or-later
++import android.system.Os
++import androidx.test.platform.app.InstrumentationRegistry
++import org.junit.After
++import org.junit.Before
++import org.junit.Test
++import org.junit.Assert.*
++import java.io.*
++import java.nio.file.*
++import java.nio.file.attribute.BasicFileAttributes
++import java.util.UUID
++
++class SharedStorageTest {
++    private lateinit var area: File
++    private lateinit var root: File
++    private lateinit var outside: File
++    private lateinit var storage: SharedStorage
++    private fun path(name: String) = SharedPath.parse("/$name")
++    private fun put(name: String, text: String) = storage.put(path(name), text.byteInputStream(), text.toByteArray().size.toLong())
++    private fun read(name: String) = storage.read(path(name)).use { it.readBytes().decodeToString() }
++    private fun rejected(block: () -> Unit) {
++        try { block(); fail("Expected rejection") } catch (_: IOException) { } catch (_: android.system.ErrnoException) { }
++    }
++
++    @Before fun setup() {
++        area = File(InstrumentationRegistry.getInstrumentation().targetContext.cacheDir, "p0-005-" + UUID.randomUUID())
++        root = File(area, "share").apply { mkdirs() }
++        outside = File(area, "outside").apply { mkdir() }
++        File(outside, "sentinel").writeText("outside unchanged")
++        storage = SharedStorage(root)
++    }
++    @After fun cleanup() {
++        storage.close()
++        // Only this test's UUID private-cache tree. walkFileTree does not follow symbolic links.
++        Files.walkFileTree(area.toPath(), object : SimpleFileVisitor<Path>() {
++            override fun visitFile(file: Path, attrs: BasicFileAttributes): FileVisitResult {
++                Files.delete(file); return FileVisitResult.CONTINUE
++            }
++            override fun postVisitDirectory(dir: Path, exc: IOException?): FileVisitResult {
++                Files.delete(dir); return FileVisitResult.CONTINUE
++            }
++        })
++    }
++
++    @Test fun exactLengthAndAtomicOverwrite() {
++        assertTrue(put("file", "old"))
++        val body = "newNEXT".byteInputStream()
++        assertFalse(storage.put(path("file"), body, 3))
++        assertEquals("new", read("file"))
++        assertEquals("NEXT", body.readBytes().decodeToString())
++        assertFalse(storage.put(path("file"), ByteArrayInputStream(byteArrayOf()), 0))
++        assertEquals("", read("file"))
++    }
++    @Test fun shortAndFailingBodyPreserveOriginal() {
++        put("file", "old")
++        rejected { storage.put(path("file"), "bad".byteInputStream(), 20) }
++        assertEquals("old", read("file"))
++        rejected { storage.put(path("new"), "bad".byteInputStream(), 20) }
++        assertFalse(File(root, "new").exists())
++        val stalled = object : InputStream() { override fun read() = 0; override fun read(b: ByteArray, o: Int, n: Int) = 0 }
++        rejected { storage.put(path("file"), stalled, 20) }
++        assertEquals("old", read("file"))
++        assertEquals(listOf("file"), root.list()!!.toList())
++    }
++    @Test fun rootOperationsCannotDeleteSentinels() {
++        put("file", "old")
++        rejected { storage.delete(path("")) }
++        rejected { put("", "bad") }
++        rejected { storage.mkdir(path("")) }
++        rejected { storage.move(path("file"), path(""), true) }
++        rejected { storage.copy(path(""), path("new"), true) }
++        assertEquals("old", read("file"))
++    }
++    @Test fun ancestorAndFinalLinksNeverFollowed() {
++        Os.symlink(outside.path, File(root, "alias").path)
++        Os.symlink(File(outside, "sentinel").path, File(root, "link").path)
++        rejected { storage.read(path("alias/sentinel")) }
++        rejected { put("alias/sentinel", "bad") }
++        rejected { storage.mkdir(path("alias/created")) }
++        rejected { storage.delete(path("alias")) }
++        rejected { storage.delete(path("link")) }
++        rejected { storage.copy(path("link"), path("copy"), true) }
++        rejected { storage.move(path("alias"), path("moved"), true) }
++        assertTrue(storage.list(path("")).isEmpty())
++        assertEquals("outside unchanged", File(outside, "sentinel").readText())
++    }
++    @Test fun hardLinkedFilesAreRejected() {
++        try { Os.link(File(outside, "sentinel").path, File(root, "hardlink").path) }
++        catch (error: android.system.ErrnoException) {
++            if (error.errno != android.system.OsConstants.EACCES && error.errno != android.system.OsConstants.EPERM) throw error
++            org.junit.Assume.assumeTrue("Platform denied hard-link fixture creation; runtime guard unverified", false)
++        }
++        rejected { storage.read(path("hardlink")) }
++        rejected { put("hardlink", "bad") }
++        assertEquals("outside unchanged", File(outside, "sentinel").readText())
++    }
++    @Test fun parentSwappedDuringUploadStaysOnHeldDirectory() {
++        storage.mkdir(path("parent"))
++        put("parent/file", "old")
++        val body = object : ByteArrayInputStream("new".toByteArray()) {
++            override fun read(b: ByteArray, o: Int, n: Int): Int {
++                Os.rename(File(root, "parent").path, File(root, "held").path)
++                Os.symlink(outside.path, File(root, "parent").path)
++                return super.read(b, o, n)
++            }
++        }
++        storage.put(path("parent/file"), body, 3)
++        assertEquals("new", File(root, "held/file").readText())
++        assertFalse(File(outside, "file").exists())
++    }
++    @Test fun targetSwappedDuringUploadIsRejected() {
++        put("file", "old")
++        val body = object : ByteArrayInputStream("new".toByteArray()) {
++            override fun read(b: ByteArray, o: Int, n: Int): Int {
++                Os.remove(File(root, "file").path)
++                Os.symlink(File(outside, "sentinel").path, File(root, "file").path)
++                return super.read(b, o, n)
++            }
++        }
++        rejected { storage.put(path("file"), body, 3) }
++        assertEquals("outside unchanged", File(outside, "sentinel").readText())
++    }
++    @Test fun unknownReplacementOfTempIsRetained() {
++        put("file", "old")
++        val body = object : ByteArrayInputStream("new".toByteArray()) {
++            override fun read(b: ByteArray, o: Int, n: Int): Int {
++                val temp = root.listFiles()!!.single { it.name.startsWith(SharedPath.STAGING_PREFIX) }
++                Os.remove(temp.path)
++                Os.symlink(File(outside, "sentinel").path, temp.path)
++                return super.read(b, o, n)
++            }
++        }
++        rejected { storage.put(path("file"), body, 3) }
++        assertEquals("old", read("file"))
++        assertEquals(1, root.list()!!.count { it.startsWith(SharedPath.STAGING_PREFIX) })
++        assertEquals("outside unchanged", File(outside, "sentinel").readText())
++    }
++    @Test fun retainedStagingBlocksRecursiveDeleteAndMove() {
++        storage.mkdir(path("folder"))
++        val retained = File(root, "folder/${SharedPath.STAGING_PREFIX}retained.part").apply { writeText("retain") }
++        rejected { storage.delete(path("folder")) }
++        rejected { storage.move(path("folder"), path("elsewhere"), true) }
++        rejected { storage.copy(path("folder"), path("elsewhere"), true) }
++        assertTrue(storage.list(path("folder")).isEmpty())
++        assertEquals("retain", retained.readText())
++    }
++    @Test fun nestedCopyMoveDeleteAndOverwrite() {
++        storage.mkdir(path("dir"))
++        storage.mkdir(path("dir/sub"))
++        put("dir/sub/中文+%.txt", "content")
++        assertTrue(storage.copy(path("dir"), path("copy"), true))
++        assertEquals("content", read("copy/sub/中文+%.txt"))
++        assertTrue(storage.move(path("copy"), path("moved"), true))
++        put("target", "old")
++        rejected { storage.copy(path("dir/sub/中文+%.txt"), path("target"), false) }
++        assertEquals("old", read("target"))
++        assertFalse(storage.copy(path("dir/sub/中文+%.txt"), path("target"), true))
++        assertEquals("content", read("target"))
++        storage.delete(path("moved"))
++        assertFalse(File(root, "moved").exists())
++        assertEquals("content", read("dir/sub/中文+%.txt"))
++    }
++    @Test fun selectedRootCannotBeSymlink() {
++        val alias = File(area, "root-alias")
++        Os.symlink(outside.path, alias.path)
++        rejected { SharedStorage(alias).close() }
++    }
++    @Test fun openReadStreamSurvivesStorageClose() {
++        put("file", "old")
++        storage.read(path("file")).use { stream ->
++            storage.close()
++            assertEquals("old", stream.readBytes().decodeToString())
++        }
++    }
++}
+diff --git a/android/app/src/main/java/com/phonebridge/server/HttpByteRange.kt b/android/app/src/main/java/com/phonebridge/server/HttpByteRange.kt
+new file mode 100644
+index 0000000..95b6ca4
+--- /dev/null
++++ b/android/app/src/main/java/com/phonebridge/server/HttpByteRange.kt
+@@ -0,0 +1,36 @@
++package com.phonebridge.server
++
++// PhoneBridge NG, 2026-09-19. SPDX-License-Identifier: GPL-3.0-or-later
++/** One byte range over the opened representation; unsupported units/multipart fall back to 200. */
++internal sealed class HttpByteRange {
++    data object Full : HttpByteRange()
++    data object Unsatisfiable : HttpByteRange()
++    data class Partial(val first: Long, val last: Long) : HttpByteRange() {
++        val length: Long get() = last - first + 1
++    }
++
++    companion object {
++        fun parse(header: String?, size: Long): HttpByteRange {
++            require(size >= 0)
++            if (header == null) return Full
++            val value = header.trim()
++            val separator = value.indexOf('=')
++            if (separator < 0 || !value.substring(0, separator).equals("bytes", ignoreCase = true)) return Full
++            val specification = value.substring(separator + 1)
++            if (',' in specification) return Full // Multipart is not implemented; RFC 9110 permits ignoring Range.
++            val match = Regex("([0-9]*)-([0-9]*)").matchEntire(specification) ?: return Unsatisfiable
++            val (firstText, lastText) = match.destructured
++            if (size == 0L || (firstText.isEmpty() && lastText.isEmpty())) return Unsatisfiable
++            if (firstText.isEmpty()) {
++                val suffix = lastText.toLongOrNull() ?: Long.MAX_VALUE
++                if (suffix == 0L) return Unsatisfiable
++                return Partial((size - suffix).coerceAtLeast(0), size - 1)
++            }
++            val first = firstText.toLongOrNull() ?: return Unsatisfiable
++            if (first >= size) return Unsatisfiable
++            val last = if (lastText.isEmpty()) size - 1 else (lastText.toLongOrNull() ?: Long.MAX_VALUE).coerceAtMost(size - 1)
++            if (last < first) return Unsatisfiable
++            return Partial(first, last)
++        }
++    }
++}
+diff --git a/android/app/src/main/java/com/phonebridge/server/RequestBody.kt b/android/app/src/main/java/com/phonebridge/server/RequestBody.kt
+new file mode 100644
+index 0000000..d311479
+--- /dev/null
++++ b/android/app/src/main/java/com/phonebridge/server/RequestBody.kt
+@@ -0,0 +1,23 @@
++package com.phonebridge.server
++
++import java.io.EOFException
++import java.io.IOException
++import java.io.InputStream
++import java.net.SocketTimeoutException
++
++// PhoneBridge NG, 2026-09-19. SPDX-License-Identifier: GPL-3.0-or-later
++internal object RequestBody {
++    /** Consume exactly the declared length; the next persistent request must remain unread. */
++    fun discard(input: InputStream, length: Long, deadlineNanos: Long) {
++        require(length >= 0)
++        val buffer = ByteArray(8192)
++        var remaining = length
++        while (remaining > 0) {
++            if (System.nanoTime() - deadlineNanos >= 0) throw SocketTimeoutException("Request body deadline exceeded")
++            val count = input.read(buffer, 0, minOf(remaining, buffer.size.toLong()).toInt())
++            if (count < 0) throw EOFException("Incomplete request body")
++            if (count == 0) throw IOException("Request body made no progress")
++            remaining -= count
++        }
++    }
++}
+diff --git a/android/app/src/main/java/com/phonebridge/server/SharedPath.kt b/android/app/src/main/java/com/phonebridge/server/SharedPath.kt
+new file mode 100644
+index 0000000..b89954b
+--- /dev/null
++++ b/android/app/src/main/java/com/phonebridge/server/SharedPath.kt
+@@ -0,0 +1,54 @@
++package com.phonebridge.server
++
++import java.io.IOException
++import java.net.URI
++
++// PhoneBridge NG, 2026-09-19. SPDX-License-Identifier: GPL-3.0-or-later
++internal class StorageFailure(val status: Int, message: String) : IOException(message)
++
++/** NanoHTTPD has already decoded request paths. Never decode them again. */
++internal class SharedPath private constructor(val parts: List<String>) {
++    val isRoot get() = parts.isEmpty()
++    val name get() = parts.lastOrNull() ?: ""
++    val path get() = "/" + parts.joinToString("/")
++    override fun equals(other: Any?) = other is SharedPath && parts == other.parts
++    override fun hashCode() = parts.hashCode()
++    fun child(name: String): SharedPath = parse((if (isRoot) "" else path) + "/" + name)
++    fun requireChild() {
++        if (isRoot) throw StorageFailure(403, "The shared root cannot be modified")
++    }
++
++    companion object {
++        const val STAGING_PREFIX = ".phonebridge-upload-"
++
++        fun parse(decoded: String): SharedPath {
++            if (!decoded.startsWith('/') || decoded.any { it < ' ' || it == '\u007f' || it == '\\' }) {
++                throw StorageFailure(403, "Invalid shared path")
++            }
++            if (decoded == "/") return SharedPath(emptyList())
++            val parts = decoded.removeSuffix("/").substring(1).split('/')
++            if (parts.any { it.isEmpty() || it == "." || it == ".." || it.startsWith(STAGING_PREFIX) }) {
++                throw StorageFailure(403, "Invalid shared path")
++            }
++            return SharedPath(parts)
++        }
++
++        /** Destination is a raw header, so URI.path decodes it once and preserves literal '+'. */
++        fun destination(raw: String?, host: String?): SharedPath {
++            if (raw == null) throw StorageFailure(400, "Destination is required")
++            val uri = try { URI(raw) } catch (_: Exception) { throw StorageFailure(400, "Invalid Destination") }
++            if (uri.rawQuery != null || uri.rawFragment != null || uri.rawUserInfo != null || uri.isOpaque) {
++                throw StorageFailure(400, "Invalid Destination")
++            }
++            if (uri.isAbsolute) {
++                if (uri.scheme !in listOf("https", "http") || host == null ||
++                    !uri.rawAuthority.equals(host, ignoreCase = true)) {
++                    throw StorageFailure(403, "Destination must use this server")
++                }
++            } else if (uri.rawAuthority != null) {
++                throw StorageFailure(403, "Destination must be a local absolute path")
++            }
++            return parse(uri.path ?: throw StorageFailure(400, "Invalid Destination"))
++        }
++    }
++}
+diff --git a/android/app/src/main/java/com/phonebridge/server/SharedStorage.kt b/android/app/src/main/java/com/phonebridge/server/SharedStorage.kt
+new file mode 100644
+index 0000000..4b1aab3
+--- /dev/null
++++ b/android/app/src/main/java/com/phonebridge/server/SharedStorage.kt
+@@ -0,0 +1,303 @@
++package com.phonebridge.server
++
++import android.os.ParcelFileDescriptor
++import android.system.ErrnoException
++import android.system.Os
++import android.system.OsConstants.*
++import android.system.StructStat
++import java.io.*
++import java.util.UUID
++
++// PhoneBridge NG, 2026-09-19. SPDX-License-Identifier: GPL-3.0-or-later
++internal data class SharedEntry(val path: SharedPath, val directory: Boolean, val size: Long, val modified: Long)
++
++/**
++ * All names are validated single components below held directory descriptors. Public Android Os
++ * APIs do not expose openat/mkdirat; /proc/self/fd provides the descriptor-relative parent on Android.
++ * Every untrusted component is opened O_NOFOLLOW. Unsupported filesystems fail closed.
++ * Operations are serialized, including upload commit; open GET streams retain independent file FDs.
++ * External apps can still edit ordinary files. This is not a transaction across other apps or power loss.
++ */
++internal class SharedStorage(rootDir: File) : Closeable {
++    // Android's trusted external-storage prefix contains platform aliases; reject a symlink at
++    // the selected folder itself instead of resolving it to a different shared root.
++    private val root = openDirectory(File(rootDir.absoluteFile.parentFile!!.canonicalFile, rootDir.name).path)
++    private var closed = false
++
++    @Synchronized override fun close() {
++        if (!closed) { closed = true; root.close() }
++    }
++
++    private fun fdPath(fd: ParcelFileDescriptor) = "/proc/self/fd/${fd.fd}"
++    private fun child(fd: ParcelFileDescriptor, name: String) = "${fdPath(fd)}/$name"
++
++    private fun open(path: String, flags: Int, mode: Int = 0): ParcelFileDescriptor {
++        // The public O_CLOEXEC constant starts at API 27; do not access it on API 26.
++        val closeOnExec = if (android.os.Build.VERSION.SDK_INT >= 27) O_CLOEXEC else 0
++        val fd = Os.open(path, flags or O_NOFOLLOW or closeOnExec or O_NONBLOCK, mode)
++        try { return ParcelFileDescriptor.dup(fd) } finally { Os.close(fd) }
++    }
++
++    private fun openDirectory(path: String): ParcelFileDescriptor {
++        val handle = open(path, O_RDONLY)
++        try {
++            if (!S_ISDIR(Os.fstat(handle.fileDescriptor).st_mode)) {
++                throw StorageFailure(403, "A directory is required")
++            }
++            return handle
++        } catch (error: Exception) { handle.close(); throw error }
++    }
++
++    private fun directory(parts: List<String>): ParcelFileDescriptor {
++        check(!closed) { "Storage closed" }
++        var current = ParcelFileDescriptor.dup(root.fileDescriptor)
++        try {
++            for (name in parts) {
++                val next = openDirectory(child(current, name))
++                current.close()
++                current = next
++            }
++            return current
++        } catch (error: Exception) { current.close(); throw error }
++    }
++
++    private fun statOrNull(path: String): StructStat? = try { Os.lstat(path) } catch (error: ErrnoException) {
++        if (error.errno == ENOENT) null else throw error
++    }
++
++    private fun regularOrDirectory(stat: StructStat) {
++        if (!S_ISDIR(stat.st_mode) && (!S_ISREG(stat.st_mode) || stat.st_nlink != 1L)) {
++            throw StorageFailure(403, "Links and special files are not shared")
++        }
++    }
++
++    private fun required(path: String): StructStat = (statOrNull(path)
++        ?: throw StorageFailure(404, "Not found")).also { regularOrDirectory(it) }
++
++    private fun entry(path: SharedPath, stat: StructStat) =
++        SharedEntry(path, S_ISDIR(stat.st_mode), stat.st_size, stat.st_mtime * 1000)
++
++    @Synchronized fun info(path: SharedPath): SharedEntry {
++        if (path.isRoot) return entry(path, Os.fstat(root.fileDescriptor))
++        return directory(path.parts.dropLast(1)).use { entry(path, required(child(it, path.name))) }
++    }
++
++    @Synchronized fun list(path: SharedPath): List<SharedEntry> = directory(path.parts).use { dir ->
++        val names = File(fdPath(dir)).list() ?: throw IOException("Cannot list directory")
++        names.sorted().mapNotNull { name ->
++            if (name.startsWith(SharedPath.STAGING_PREFIX)) return@mapNotNull null
++            val item = try { path.child(name) } catch (_: StorageFailure) { return@mapNotNull null }
++            val stat = statOrNull(child(dir, name)) ?: return@mapNotNull null
++            try { regularOrDirectory(stat) } catch (_: StorageFailure) { return@mapNotNull null }
++            entry(item, stat)
++        }
++    }
++
++    @Synchronized fun read(path: SharedPath): FileInputStream {
++        path.requireChild()
++        return directory(path.parts.dropLast(1)).use { parent -> readFile(child(parent, path.name)) }
++    }
++
++    private fun readFile(path: String): FileInputStream {
++        val handle = open(path, O_RDONLY)
++        try {
++            val stat = Os.fstat(handle.fileDescriptor)
++            regularOrDirectory(stat)
++            if (!S_ISREG(stat.st_mode)) throw StorageFailure(409, "A regular file is required")
++            return ParcelFileDescriptor.AutoCloseInputStream(handle)
++        } catch (error: Exception) { handle.close(); throw error }
++    }
++
++    private fun snapshot(path: String): StructStat? = statOrNull(path)?.also { regularOrDirectory(it) }
++    private fun same(left: StructStat?, right: StructStat?): Boolean =
++        if (left == null || right == null) left == right else
++            left.st_dev == right.st_dev && left.st_ino == right.st_ino && left.st_mode == right.st_mode &&
++                left.st_size == right.st_size && left.st_mtime == right.st_mtime && left.st_ctime == right.st_ctime
++
++    private fun sameInode(left: StructStat, right: StructStat?) = right != null &&
++        left.st_dev == right.st_dev && left.st_ino == right.st_ino && left.st_mode == right.st_mode
++
++    private fun unchanged(path: String, before: StructStat?) {
++        if (!same(before, snapshot(path))) throw StorageFailure(409, "Destination changed during transfer")
++    }
++
++    /** No O_TRUNC on the destination. Short bodies and I/O failures leave the old file intact. */
++    @Synchronized fun put(path: SharedPath, input: InputStream, length: Long, received: (Long) -> Unit = {}): Boolean {
++        path.requireChild()
++        require(length >= 0)
++        return directory(path.parts.dropLast(1)).use { parent ->
++            val destination = child(parent, path.name)
++            val before = snapshot(destination)
++            if (before != null && S_ISDIR(before.st_mode)) throw StorageFailure(409, "Cannot replace a directory with a file")
++            stageFile(parent, destination, before, input, length, received)
++            before == null
++        }
++    }
++
++    private fun stageFile(parent: ParcelFileDescriptor, destination: String, before: StructStat?,
++                          input: InputStream, length: Long, received: (Long) -> Unit = {}) {
++        val temp = child(parent, SharedPath.STAGING_PREFIX + UUID.randomUUID() + ".part")
++        var owned: StructStat? = null
++        try {
++            val output = open(temp, O_WRONLY or O_CREAT or O_EXCL, 384) // 0600
++            ParcelFileDescriptor.AutoCloseOutputStream(output).use { stream ->
++                owned = Os.fstat(stream.fd)
++                copyExact(input, stream, length, received)
++                stream.flush()
++                Os.fsync(stream.fd)
++                unchanged(destination, before)
++                // Commit only the inode we wrote, even if another local app replaced the temp name.
++                if (!same(Os.fstat(stream.fd), snapshot(temp))) throw StorageFailure(409, "Staging file changed")
++                Os.rename(temp, destination)
++                owned = null
++            }
++        } finally {
++            // Only our freshly-created temporary name; no wildcard/startup cleanup or unknown cache deletion.
++            owned?.let { original ->
++                try { if (sameInode(original, statOrNull(temp))) Os.remove(temp) }
++                catch (_: Exception) { /* Retain on failure for diagnosis. */ }
++            }
++        }
++    }
++
++    private fun copyExact(input: InputStream, output: OutputStream, length: Long, received: (Long) -> Unit) {
++        val buffer = ByteArray(256 * 1024)
++        var remaining = length
++        while (remaining > 0) {
++            val count = input.read(buffer, 0, minOf(remaining, buffer.size.toLong()).toInt())
++            if (count < 0) throw EOFException("Incomplete upload")
++            if (count == 0) throw IOException("Upload made no progress")
++            output.write(buffer, 0, count)
++            remaining -= count
++            received(count.toLong())
++        }
++    }
++
++    @Synchronized fun mkdir(path: SharedPath) {
++        path.requireChild()
++        directory(path.parts.dropLast(1)).use { parent ->
++            if (statOrNull(child(parent, path.name)) != null) throw StorageFailure(405, "Already exists")
++            Os.mkdir(child(parent, path.name), 448) // 0700; no implicit parent creation.
++        }
++    }
++
++    @Synchronized fun delete(path: SharedPath) {
++        path.requireChild()
++        directory(path.parts.dropLast(1)).use { parent ->
++            inspectTree(parent, path.name, 0)
++            deleteTree(parent, path.name, 0)
++        }
++    }
++
++    private fun names(dir: ParcelFileDescriptor): Array<String> =
++        File(fdPath(dir)).list() ?: throw IOException("Cannot list directory")
++
++    private fun inspectTree(parent: ParcelFileDescriptor, name: String, depth: Int) {
++        if (depth > 128) throw StorageFailure(409, "Directory tree is too deep")
++        if (name.startsWith(SharedPath.STAGING_PREFIX)) throw StorageFailure(409, "Directory contains retained staging data")
++        val stat = required(child(parent, name))
++        if (S_ISDIR(stat.st_mode)) openDirectory(child(parent, name)).use { dir ->
++            for (item in names(dir)) inspectTree(dir, item, depth + 1)
++        }
++    }
++
++    private fun deleteTree(parent: ParcelFileDescriptor, name: String, depth: Int) {
++        if (depth > 128) throw StorageFailure(409, "Directory tree is too deep")
++        val target = child(parent, name)
++        val stat = required(target)
++        if (S_ISDIR(stat.st_mode)) {
++            openDirectory(target).use { dir ->
++                for (item in names(dir)) {
++                    if (item.startsWith(SharedPath.STAGING_PREFIX)) throw StorageFailure(409, "Retained staging data")
++                    deleteTree(dir, item, depth + 1)
++                }
++            }
++            Os.remove(target)
++        } else Os.remove(target)
++    }
++
++    private fun transferPaths(source: SharedPath, dest: SharedPath) {
++        source.requireChild()
++        dest.requireChild()
++        if (source == dest || dest.parts.take(source.parts.size) == source.parts ||
++            source.parts.take(dest.parts.size) == dest.parts) {
++            throw StorageFailure(403, "Source and Destination overlap")
++        }
++    }
++
++    private fun checkOverwrite(before: StructStat?, overwrite: Boolean) {
++        if (before != null && !overwrite) throw StorageFailure(412, "Destination already exists")
++        if (before != null && S_ISDIR(before.st_mode)) {
++            throw StorageFailure(409, "Replacing an existing collection is not supported")
++        }
++    }
++
++    @Synchronized fun move(source: SharedPath, dest: SharedPath, overwrite: Boolean): Boolean {
++        transferPaths(source, dest)
++        return directory(source.parts.dropLast(1)).use { from ->
++            directory(dest.parts.dropLast(1)).use { to ->
++                inspectTree(from, source.name, 0)
++                val target = child(to, dest.name)
++                val before = snapshot(target)
++                checkOverwrite(before, overwrite)
++                Os.rename(child(from, source.name), target)
++                before == null
++            }
++        }
++    }
++
++    @Synchronized fun copy(source: SharedPath, dest: SharedPath, overwrite: Boolean): Boolean {
++        transferPaths(source, dest)
++        return directory(source.parts.dropLast(1)).use { from ->
++            directory(dest.parts.dropLast(1)).use { to ->
++                inspectTree(from, source.name, 0)
++                val target = child(to, dest.name)
++                val before = snapshot(target)
++                checkOverwrite(before, overwrite)
++                val stat = required(child(from, source.name))
++                if (!S_ISDIR(stat.st_mode)) {
++                    readFile(child(from, source.name)).use { input ->
++                        stageFile(to, target, before, input, input.channel.size())
++                    }
++                } else {
++                    if (before != null) throw StorageFailure(409, "Cannot replace a file with a directory")
++                    val tempName = SharedPath.STAGING_PREFIX + UUID.randomUUID() + ".part"
++                    val temp = child(to, tempName)
++                    Os.mkdir(temp, 448)
++                    try {
++                        openDirectory(child(from, source.name)).use { src ->
++                            openDirectory(temp).use { dst ->
++                                copyTree(src, dst, 0)
++                                unchanged(target, before)
++                                if (!sameInode(Os.fstat(dst.fileDescriptor), statOrNull(temp))) {
++                                    throw StorageFailure(409, "Staging directory changed")
++                                }
++                                Os.rename(temp, target)
++                            }
++                        }
++                    } catch (error: Exception) {
++                        // Failed directory copies remain hidden for recovery; never recursively erase unknown data.
++                        throw error
++                    }
++                }
++                before == null
++            }
++        }
++    }
++
++    private fun copyTree(from: ParcelFileDescriptor, to: ParcelFileDescriptor, depth: Int) {
++        if (depth > 128) throw StorageFailure(409, "Directory tree is too deep")
++        for (name in names(from)) {
++            if (name.startsWith(SharedPath.STAGING_PREFIX)) throw StorageFailure(409, "Retained staging data")
++            val source = child(from, name)
++            val stat = required(source)
++            val target = child(to, name)
++            if (S_ISDIR(stat.st_mode)) {
++                Os.mkdir(target, 448)
++                openDirectory(source).use { src ->
++                    openDirectory(target).use { dst -> copyTree(src, dst, depth + 1) }
++                }
++            } else readFile(source).use { input -> stageFile(to, target, null, input, input.channel.size()) }
++        }
++    }
++}
+diff --git a/android/app/src/main/java/com/phonebridge/server/WebDavServer.kt b/android/app/src/main/java/com/phonebridge/server/WebDavServer.kt
+index 1badd48..6e9d85f 100644
+--- a/android/app/src/main/java/com/phonebridge/server/WebDavServer.kt
++++ b/android/app/src/main/java/com/phonebridge/server/WebDavServer.kt
+@@ -1,10 +1,14 @@
+ package com.phonebridge.server
+ 
++// Modified by PhoneBridge NG, 2026-09-19: stream correctness and confined, staged storage operations.
++// Based on ysachin26/PhoneBridge a378fec40561a4d18be2334f4de92ee02a0e7d0c; GPL-3.0-or-later.
++
+ import android.util.Base64
+ import android.util.Log
+ import fi.iki.elonen.NanoHTTPD
+ import java.io.*
+-import java.net.URLDecoder
++import android.system.ErrnoException
++import android.system.OsConstants
+ import java.util.concurrent.atomic.AtomicLong
+ import java.util.concurrent.atomic.AtomicInteger
+ 
+@@ -51,6 +55,12 @@ class WebDavServer(
+         private const val TAG = "WebDavServer"
+     }
+ 
++    private val storage = SharedStorage(rootDir)
++
++    override fun stop() {
++        try { super.stop() } finally { storage.close() }
++    }
++
+     /** Update the password at runtime (e.g. when user regenerates it). Thread-safe via @Volatile. */
+     fun updatePassword(newPassword: String) {
+         authPassword = newPassword
+@@ -78,12 +88,6 @@ class WebDavServer(
+         super.start()
+     }
+ 
+-    init {
+-        require(rootDir.exists() && rootDir.isDirectory) {
+-            "Root directory must exist and be a directory: ${rootDir.absolutePath}"
+-        }
+-    }
+-
+     override fun serve(session: IHTTPSession): Response {
+         _totalRequests.incrementAndGet()
+         _activeConnections.incrementAndGet()
+@@ -103,10 +107,12 @@ class WebDavServer(
+                 "Authentication required"
+             )
+             response.addHeader("WWW-Authenticate", "Basic realm=\"PhoneBridge\"")
++            response.closeConnection(true) // An unauthenticated request may have an unread body.
+             return response
+         }
+ 
+         return try {
++            validateAndConsumeBody(session)?.let { return it }
+             // ─── PhoneBridge Status API ──────────────────────
+             if (uri == "/phonebridge/status" && method == "GET") {
+                 return handleStatusApi()
+@@ -129,18 +135,70 @@ class WebDavServer(
+                 )
+             }
+             result
++        } catch (e: StorageFailure) {
++            requestError(Response.Status.lookup(e.status), e.message ?: "Storage operation rejected")
++        } catch (_: java.net.SocketTimeoutException) {
++            requestError(Response.Status.REQUEST_TIMEOUT, "Upload timed out; no incomplete file committed")
++        } catch (_: EOFException) {
++            requestError(Response.Status.BAD_REQUEST, "Incomplete upload; no file committed")
++        } catch (e: ErrnoException) {
++            val status = when (e.errno) {
++                OsConstants.ENOENT -> Response.Status.NOT_FOUND
++                OsConstants.ELOOP, OsConstants.ENOTDIR, OsConstants.EACCES, OsConstants.EPERM -> Response.Status.FORBIDDEN
++                OsConstants.EEXIST -> Response.Status.PRECONDITION_FAILED
++                else -> Response.Status.INTERNAL_ERROR
++            }
++            Log.w(TAG, "Storage operation failed, errno=${e.errno}")
++            requestError(status, "Storage operation failed")
+         } catch (e: Exception) {
+             Log.e(TAG, "Error handling $method $uri", e)
+             newFixedLengthResponse(
+                 Response.Status.INTERNAL_ERROR,
+                 "text/plain",
+-                "Internal server error: ${e.message}"
+-            )
++                "Storage operation failed"
++            ).also { it.closeConnection(true) }
+         } finally {
+             _activeConnections.decrementAndGet()
+         }
+     }
+ 
++    private fun requestError(status: Response.Status, message: String): Response =
++        newFixedLengthResponse(status, "text/plain", message).also { it.closeConnection(true) }
++
++    private fun validateAndConsumeBody(session: IHTTPSession): Response? {
++        // NanoHTTPD 2.3.1 exposes the raw socket stream, not a decoded chunked body.
++        if (session.headers.containsKey("transfer-encoding")) {
++            return requestError(Response.Status.NOT_IMPLEMENTED, "Transfer-Encoding is not supported")
++        }
++        val declaredLength = session.headers["content-length"]
++        if (declaredLength == null && session.method == Method.PUT) {
++            return requestError(Response.Status.LENGTH_REQUIRED, "Content-Length is required")
++        }
++        val length = if (declaredLength == null) 0L else {
++            if (declaredLength.isEmpty() || declaredLength.any { it !in '0'..'9' }) {
++                return requestError(Response.Status.BAD_REQUEST, "Invalid Content-Length")
++            }
++            declaredLength.toLongOrNull()
++                ?: return requestError(Response.Status.BAD_REQUEST, "Invalid Content-Length")
++        }
++        if (session.method == Method.PUT) return null // Streaming PUT consumes its body separately.
++        if (length > ServerConfig.MAX_PROPFIND_BODY) {
++            return requestError(Response.Status.PAYLOAD_TOO_LARGE, "Request body is too large")
++        }
++        return try {
++            // Socket reads also have NanoHTTPD's 5-second timeout. No unbounded allocation or drain.
++            RequestBody.discard(session.inputStream, length, System.nanoTime() + 5_000_000_000L)
++            null
++        } catch (_: java.net.SocketTimeoutException) {
++            requestError(Response.Status.REQUEST_TIMEOUT, "Request body timed out")
++        } catch (_: IOException) {
++            requestError(Response.Status.BAD_REQUEST, "Incomplete request body")
++        }
++    }
++
++    override fun useGzipWhenAccepted(response: Response): Boolean =
++        response.getHeader("accept-ranges") == null && super.useGzipWhenAccepted(response)
++
+     /**
+      * Validate HTTP Basic Auth credentials from the request.
+      */
+@@ -240,303 +298,112 @@ class WebDavServer(
+         return response
+     }
+ 
+-    // ─── PROPFIND ────────────────────────────────────────────────
+-
+     private fun handlePropfind(session: IHTTPSession): Response {
+-        val file = resolveFile(session.uri)
+-
+-        if (!file.exists()) {
+-            return newFixedLengthResponse(Response.Status.NOT_FOUND, "text/plain", "Not Found")
+-        }
+-
++        val path = SharedPath.parse(session.uri)
++        val target = storage.info(path)
+         val depth = session.headers["depth"] ?: "1"
+-
+-        val xmlBody = XmlResponseBuilder.buildPropfindResponse(rootDir, file, depth)
+-        val bodyBytes = xmlBody.toByteArray(Charsets.UTF_8)
+-
+-        val response = newFixedLengthResponse(
+-            Response.Status.lookup(207),
+-            "application/xml; charset=\"utf-8\"",
+-            ByteArrayInputStream(bodyBytes),
+-            bodyBytes.size.toLong()
+-        )
+-        response.addHeader("DAV", "1, 2")
+-        return response
++        if (depth !in listOf("0", "1")) throw StorageFailure(403, "Only Depth 0 or 1 is supported")
++        val entries = listOf(target) + if (depth == "1" && target.directory) storage.list(path) else emptyList()
++        val bytes = XmlResponseBuilder.buildPropfindResponse(entries).toByteArray(Charsets.UTF_8)
++        return newFixedLengthResponse(Response.Status.MULTI_STATUS, "application/xml; charset=utf-8",
++            ByteArrayInputStream(bytes), bytes.size.toLong()).also { it.addHeader("DAV", "1") }
+     }
+ 
+-    // ─── GET ─────────────────────────────────────────────────────
+-
+     private fun handleGet(session: IHTTPSession): Response {
+-        val file = resolveFile(session.uri)
++        val path = SharedPath.parse(session.uri)
++        val item = storage.info(path)
++        if (item.directory) return serveDirectoryListing(path)
+ 
+-        if (!file.exists()) {
+-            return newFixedLengthResponse(Response.Status.NOT_FOUND, "text/plain", "Not Found")
+-        }
+-
+-        if (file.isDirectory) {
+-            // Return HTML directory listing for browser access
+-            return serveDirectoryListing(file)
++        // Obtain length and offset from the same open file. NanoHTTPD closes the response stream.
++        val fis = storage.read(path)
++        try {
++            val fileSize = fis.channel.size()
++            // There are no strong validators yet. If-Range cannot authorize a partial representation.
++            val range = HttpByteRange.parse(
++                if (session.headers.containsKey("if-range")) null else session.headers["range"], fileSize
++            )
++            if (range == HttpByteRange.Unsatisfiable) {
++                fis.close()
++                return newFixedLengthResponse(Response.Status.RANGE_NOT_SATISFIABLE, "text/plain", "")
++                    .also {
++                        it.addHeader("Content-Range", "bytes */$fileSize")
++                        it.addHeader("Accept-Ranges", "bytes")
++                    }
++            }
++            val partial = range as? HttpByteRange.Partial
++            if (partial != null) fis.channel.position(partial.first)
++            val length = partial?.length ?: fileSize
++            val response = newFixedLengthResponse(
++                if (partial == null) Response.Status.OK else Response.Status.PARTIAL_CONTENT,
++                XmlResponseBuilder.guessMimeType(path.name), fis, length
++            )
++            response.addHeader("Accept-Ranges", "bytes")
++            if (partial != null) response.addHeader("Content-Range", "bytes ${partial.first}-${partial.last}/$fileSize")
++            _bytesServed.addAndGet(length)
++            return response
++        } catch (error: Exception) {
++            fis.close()
++            throw error
+         }
+-
+-        // Serve file with streaming + track bytes
+-        val fileSize = file.length()
+-        val mimeType = XmlResponseBuilder.guessMimeType(file)
+-        val fis = FileInputStream(file)
+-        val response = newFixedLengthResponse(
+-            Response.Status.OK, mimeType, fis, fileSize
+-        )
+-        response.addHeader("Accept-Ranges", "bytes")
+-        _bytesServed.addAndGet(fileSize)
+-        return response
+     }
+ 
+-    // ─── HEAD ────────────────────────────────────────────────────
+-
+     private fun handleHead(session: IHTTPSession): Response {
+-        val file = resolveFile(session.uri)
+-
+-        if (!file.exists()) {
+-            return newFixedLengthResponse(Response.Status.NOT_FOUND, "text/plain", "")
+-        }
+-
+-        val mimeType = if (file.isDirectory) "httpd/unix-directory" else XmlResponseBuilder.guessMimeType(file)
+-        val response = newFixedLengthResponse(Response.Status.OK, mimeType, "")
+-        if (file.isFile) {
+-            response.addHeader("Content-Length", file.length().toString())
++        val item = storage.info(SharedPath.parse(session.uri))
++        val mime = if (item.directory) "httpd/unix-directory" else XmlResponseBuilder.guessMimeType(item.path.name)
++        return newFixedLengthResponse(Response.Status.OK, mime, "").also {
++            if (!item.directory) it.addHeader("Content-Length", item.size.toString())
+         }
+-        return response
+     }
+ 
+-    // ─── PUT ─────────────────────────────────────────────────────
+-
+     private fun handlePut(session: IHTTPSession): Response {
+-        val file = resolveFile(session.uri)
+-
+-        // Create parent directories if needed
+-        file.parentFile?.mkdirs()
+-
+-        val contentLength = session.headers["content-length"]?.toLongOrNull() ?: 0L
+-        val isNew = !file.exists()
+-
+-        try {
+-            FileOutputStream(file).use { fos ->
+-                val input = session.inputStream
+-                val buffer = ByteArray(ServerConfig.UPLOAD_CHUNK_SIZE)
+-                var remaining = contentLength
+-                while (remaining > 0) {
+-                    val toRead = minOf(remaining, buffer.size.toLong()).toInt()
+-                    val bytesRead = input.read(buffer, 0, toRead)
+-                    if (bytesRead == -1) break
+-                    fos.write(buffer, 0, bytesRead)
+-                    remaining -= bytesRead
+-                    _bytesReceived.addAndGet(bytesRead.toLong())
+-                }
+-                fos.flush()
+-            }
+-
+-            Log.i(TAG, "File ${if (isNew) "created" else "updated"}: ${file.absolutePath} ($contentLength bytes)")
+-
+-            return newFixedLengthResponse(
+-                if (isNew) Response.Status.CREATED else Response.Status.NO_CONTENT,
+-                "text/plain",
+-                ""
+-            )
+-        } catch (e: IOException) {
+-            Log.e(TAG, "PUT error: ${e.message}", e)
+-            return newFixedLengthResponse(
+-                Response.Status.INTERNAL_ERROR,
+-                "text/plain",
+-                "Write error: ${e.message}"
+-            )
+-        }
++        val created = storage.put(SharedPath.parse(session.uri), session.inputStream,
++            session.headers.getValue("content-length").toLong()) { _bytesReceived.addAndGet(it) }
++        return mutationResponse(created)
+     }
+ 
+-    // ─── DELETE ──────────────────────────────────────────────────
+-
+     private fun handleDelete(session: IHTTPSession): Response {
+-        val file = resolveFile(session.uri)
+-
+-        if (!file.exists()) {
+-            return newFixedLengthResponse(Response.Status.NOT_FOUND, "text/plain", "Not Found")
+-        }
+-
+-        val deleted = if (file.isDirectory) {
+-            file.deleteRecursively()
+-        } else {
+-            file.delete()
+-        }
+-
+-        return if (deleted) {
+-            Log.i(TAG, "Deleted: ${file.absolutePath}")
+-            newFixedLengthResponse(Response.Status.NO_CONTENT, "text/plain", "")
+-        } else {
+-            newFixedLengthResponse(
+-                Response.Status.INTERNAL_ERROR,
+-                "text/plain",
+-                "Could not delete"
+-            )
+-        }
++        storage.delete(SharedPath.parse(session.uri))
++        return mutationResponse(false)
+     }
+ 
+-    // ─── MKCOL ───────────────────────────────────────────────────
+-
+     private fun handleMkcol(session: IHTTPSession): Response {
+-        val file = resolveFile(session.uri)
+-
+-        if (file.exists()) {
+-            return newFixedLengthResponse(
+-                Response.Status.METHOD_NOT_ALLOWED,
+-                "text/plain",
+-                "Already exists"
+-            )
+-        }
+-
+-        return if (file.mkdirs()) {
+-            Log.i(TAG, "Directory created: ${file.absolutePath}")
+-            newFixedLengthResponse(Response.Status.CREATED, "text/plain", "")
+-        } else {
+-            newFixedLengthResponse(
+-                Response.Status.INTERNAL_ERROR,
+-                "text/plain",
+-                "Could not create directory"
+-            )
++        if ((session.headers["content-length"]?.toLongOrNull() ?: 0) != 0L) {
++            throw StorageFailure(415, "MKCOL bodies are not supported")
+         }
++        storage.mkdir(SharedPath.parse(session.uri))
++        return mutationResponse(true)
+     }
+ 
+-    // ─── MOVE ────────────────────────────────────────────────────
+-
+-    private fun handleMove(session: IHTTPSession): Response {
+-        val src = resolveFile(session.uri)
+-
+-        if (!src.exists()) {
+-            return newFixedLengthResponse(Response.Status.NOT_FOUND, "text/plain", "Source not found")
+-        }
+-
+-        val destHeader = session.headers["destination"] ?: return newFixedLengthResponse(
+-            Response.Status.BAD_REQUEST, "text/plain", "No Destination header"
+-        )
+-
+-        val destUri = extractPathFromUrl(destHeader)
+-        val dest = resolveFile(destUri)
+-
+-        dest.parentFile?.mkdirs()
+-
+-        return if (src.renameTo(dest)) {
+-            Log.i(TAG, "Moved: ${src.absolutePath} → ${dest.absolutePath}")
+-            newFixedLengthResponse(Response.Status.CREATED, "text/plain", "")
+-        } else {
+-            newFixedLengthResponse(
+-                Response.Status.INTERNAL_ERROR,
+-                "text/plain",
+-                "Move failed"
+-            )
+-        }
++    private fun overwrite(session: IHTTPSession): Boolean = when (session.headers["overwrite"] ?: "T") {
++        "T" -> true
++        "F" -> false
++        else -> throw StorageFailure(400, "Invalid Overwrite header")
+     }
+ 
+-    // ─── COPY ────────────────────────────────────────────────────
+-
+-    private fun handleCopy(session: IHTTPSession): Response {
+-        val src = resolveFile(session.uri)
+-
+-        if (!src.exists()) {
+-            return newFixedLengthResponse(Response.Status.NOT_FOUND, "text/plain", "Source not found")
+-        }
+-
+-        val destHeader = session.headers["destination"] ?: return newFixedLengthResponse(
+-            Response.Status.BAD_REQUEST, "text/plain", "No Destination header"
+-        )
++    private fun destination(session: IHTTPSession) =
++        SharedPath.destination(session.headers["destination"], session.headers["host"])
+ 
+-        val destUri = extractPathFromUrl(destHeader)
+-        val dest = resolveFile(destUri)
++    private fun handleMove(session: IHTTPSession): Response = mutationResponse(
++        storage.move(SharedPath.parse(session.uri), destination(session), overwrite(session)))
+ 
+-        dest.parentFile?.mkdirs()
+-
+-        return try {
+-            if (src.isDirectory) {
+-                src.copyRecursively(dest, overwrite = true)
+-            } else {
+-                src.copyTo(dest, overwrite = true)
+-            }
+-            Log.i(TAG, "Copied: ${src.absolutePath} → ${dest.absolutePath}")
+-            newFixedLengthResponse(Response.Status.CREATED, "text/plain", "")
+-        } catch (e: Exception) {
+-            newFixedLengthResponse(
+-                Response.Status.INTERNAL_ERROR,
+-                "text/plain",
+-                "Copy failed: ${e.message}"
+-            )
+-        }
+-    }
+-
+-    // ─── Helpers ─────────────────────────────────────────────────
+-
+-    /**
+-     * Resolve a URI path to a local file, preventing path traversal attacks.
+-     */
+-    private fun resolveFile(uri: String): File {
+-        val decoded = URLDecoder.decode(uri, "UTF-8").trimStart('/')
+-        val resolved = File(rootDir, decoded).canonicalFile
+-
+-        // Security: ensure resolved path is within root
+-        if (!resolved.absolutePath.startsWith(rootDir.canonicalPath)) {
+-            return rootDir
+-        }
+-        return resolved
+-    }
+-
+-    /**
+-     * Extract the path component from a full URL (used for Destination headers).
+-     */
+-    private fun extractPathFromUrl(url: String): String {
+-        return try {
+-            val uri = java.net.URI(url)
+-            uri.path ?: "/"
+-        } catch (e: Exception) {
+-            url
+-        }
++    private fun handleCopy(session: IHTTPSession): Response {
++        val depth = session.headers["depth"] ?: "infinity"
++        if (depth != "infinity") throw StorageFailure(400, "Only full COPY is supported")
++        return mutationResponse(storage.copy(SharedPath.parse(session.uri), destination(session), overwrite(session)))
+     }
+ 
+-    /**
+-     * Serve a simple HTML directory listing for browser access.
+-     */
+-    private fun serveDirectoryListing(dir: File): Response {
+-        val relativePath = "/" + dir.toRelativeString(rootDir).replace("\\", "/")
+-        val sb = StringBuilder()
+-        sb.append("<!DOCTYPE html><html><head><meta charset='utf-8'>")
+-        sb.append("<title>PhoneBridge — $relativePath</title>")
+-        sb.append("<style>")
+-        sb.append("body{font-family:system-ui,sans-serif;margin:2em;background:#1a1a2e;color:#e0e0e0;}")
+-        sb.append("h1{color:#4CAF50;} a{color:#64B5F6;text-decoration:none;}")
+-        sb.append("a:hover{text-decoration:underline;} li{margin:0.3em 0;}")
+-        sb.append("</style></head><body>")
+-        sb.append("<h1>📁 $relativePath</h1><ul>")
+-
+-        if (dir != rootDir) {
+-            sb.append("<li>⬆️ <a href=\"..\">..</a></li>")
+-        }
+-
+-        val children = dir.listFiles()?.sortedBy { it.name.lowercase() } ?: emptyList()
+-        for (child in children) {
+-            if (child.name.startsWith(".")) continue
+-            val icon = if (child.isDirectory) "📁" else "📄"
+-            val name = child.name + if (child.isDirectory) "/" else ""
+-            val size = if (child.isFile) " (${formatSize(child.length())})" else ""
+-            sb.append("<li>$icon <a href=\"${child.name}${if (child.isDirectory) "/" else ""}\">$name</a>$size</li>")
+-        }
+-
+-        sb.append("</ul><hr><p style='color:#888;'>PhoneBridge v${ServerConfig.VERSION}</p>")
+-        sb.append("</body></html>")
+-
+-        return newFixedLengthResponse(Response.Status.OK, "text/html", sb.toString())
+-    }
++    private fun mutationResponse(created: Boolean) = newFixedLengthResponse(
++        if (created) Response.Status.CREATED else Response.Status.NO_CONTENT, "text/plain", "")
+ 
+-    private fun formatSize(bytes: Long): String {
+-        val units = arrayOf("B", "KB", "MB", "GB")
+-        var size = bytes.toDouble()
+-        for (unit in units) {
+-            if (size < 1024) return "%.1f %s".format(size, unit)
+-            size /= 1024
++    private fun serveDirectoryListing(path: SharedPath): Response {
++        val sb = StringBuilder("<!DOCTYPE html><html><head><meta charset='utf-8'><title>PhoneBridge</title></head><body>")
++        sb.append("<h1>${XmlResponseBuilder.escapeXml(path.path)}</h1><ul>")
++        for (entry in storage.list(path)) {
++            val href = XmlResponseBuilder.href(entry)
++            val name = XmlResponseBuilder.escapeXml(entry.path.name) + if (entry.directory) "/" else ""
++            sb.append("<li><a href=\"$href\">$name</a></li>")
+         }
+-        return "%.1f TB".format(size)
++        sb.append("</ul></body></html>")
++        return newFixedLengthResponse(Response.Status.OK, "text/html; charset=utf-8", sb.toString())
+     }
+ }
+diff --git a/android/app/src/main/java/com/phonebridge/server/XmlResponseBuilder.kt b/android/app/src/main/java/com/phonebridge/server/XmlResponseBuilder.kt
+index 7128f55..4559d0e 100644
+--- a/android/app/src/main/java/com/phonebridge/server/XmlResponseBuilder.kt
++++ b/android/app/src/main/java/com/phonebridge/server/XmlResponseBuilder.kt
+@@ -1,126 +1,40 @@
+ package com.phonebridge.server
+ 
+-import java.io.File
+-import java.net.URLDecoder
++// Modified by PhoneBridge NG, 2026-09-19: descriptor-backed metadata and escaped, thread-safe output.
++// Based on ysachin26/PhoneBridge a378fec40561a4d18be2334f4de92ee02a0e7d0c; GPL-3.0-or-later.
++
+ import java.net.URLEncoder
+ import java.text.SimpleDateFormat
+ import java.util.*
+ 
+-/**
+- * Builds WebDAV-compliant XML responses for PROPFIND requests.
+- */
+-object XmlResponseBuilder {
+-
+-    private val httpDateFormat = SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss 'GMT'", Locale.US).apply {
+-        timeZone = TimeZone.getTimeZone("GMT")
+-    }
+-
+-    /**
+-     * Build a complete multistatus XML response for a PROPFIND request.
+-     *
+-     * @param rootDir The root directory being served
+-     * @param targetFile The file/directory requested
+-     * @param depth The Depth header value ("0" or "1")
+-     * @return Complete XML string for the 207 Multi-Status response
+-     */
+-    fun buildPropfindResponse(rootDir: File, targetFile: File, depth: String): String {
+-        val sb = StringBuilder()
+-        sb.append("<?xml version=\"1.0\" encoding=\"utf-8\" ?>\n")
+-        sb.append("<D:multistatus xmlns:D=\"DAV:\">\n")
+-
+-        // Always include the target itself
+-        sb.append(buildResponseElement(rootDir, targetFile))
+-
+-        // If depth is "1" and target is a directory, include children
+-        if (depth != "0" && targetFile.isDirectory) {
+-            val children = targetFile.listFiles()
+-            if (children != null) {
+-                children.sortBy { it.name.lowercase() }
+-                for (child in children) {
+-                    // Skip hidden files
+-                    if (child.name.startsWith(".")) continue
+-                    sb.append(buildResponseElement(rootDir, child))
+-                }
+-            }
++internal object XmlResponseBuilder {
++    fun buildPropfindResponse(entries: List<SharedEntry>): String = buildString {
++        append("<?xml version=\"1.0\" encoding=\"utf-8\"?><D:multistatus xmlns:D=\"DAV:\">")
++        val format = SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss 'GMT'", Locale.US).apply {
++            timeZone = TimeZone.getTimeZone("GMT")
+         }
+-
+-        sb.append("</D:multistatus>")
+-        return sb.toString()
+-    }
+-
+-    /**
+-     * Build a single <D:response> element for a file or directory.
+-     */
+-    private fun buildResponseElement(rootDir: File, file: File): String {
+-        val relativePath = file.toRelativeString(rootDir).replace("\\", "/")
+-        val href = if (relativePath.isEmpty()) {
+-            "/"
+-        } else {
+-            "/" + encodePath(relativePath) + if (file.isDirectory) "/" else ""
+-        }
+-
+-        val lastModified = httpDateFormat.format(Date(file.lastModified()))
+-
+-        return if (file.isDirectory) {
+-            """
+-            |<D:response>
+-            |  <D:href>$href</D:href>
+-            |  <D:propstat>
+-            |    <D:prop>
+-            |      <D:displayname>${escapeXml(file.name)}</D:displayname>
+-            |      <D:getlastmodified>$lastModified</D:getlastmodified>
+-            |      <D:resourcetype><D:collection/></D:resourcetype>
+-            |    </D:prop>
+-            |    <D:status>HTTP/1.1 200 OK</D:status>
+-            |  </D:propstat>
+-            |</D:response>
+-            """.trimMargin() + "\n"
+-        } else {
+-            """
+-            |<D:response>
+-            |  <D:href>$href</D:href>
+-            |  <D:propstat>
+-            |    <D:prop>
+-            |      <D:displayname>${escapeXml(file.name)}</D:displayname>
+-            |      <D:getcontentlength>${file.length()}</D:getcontentlength>
+-            |      <D:getlastmodified>$lastModified</D:getlastmodified>
+-            |      <D:getcontenttype>${guessMimeType(file)}</D:getcontenttype>
+-            |      <D:resourcetype/>
+-            |    </D:prop>
+-            |    <D:status>HTTP/1.1 200 OK</D:status>
+-            |  </D:propstat>
+-            |</D:response>
+-            """.trimMargin() + "\n"
++        for (item in entries) {
++            append("<D:response><D:href>${href(item)}</D:href><D:propstat><D:prop>")
++            append("<D:displayname>${escapeXml(item.path.name)}</D:displayname>")
++            append("<D:getlastmodified>${format.format(Date(item.modified))}</D:getlastmodified>")
++            if (item.directory) append("<D:resourcetype><D:collection/></D:resourcetype>") else {
++                append("<D:getcontentlength>${item.size}</D:getcontentlength>")
++                append("<D:getcontenttype>${guessMimeType(item.path.name)}</D:getcontenttype><D:resourcetype/>")
++            }
++            append("</D:prop><D:status>HTTP/1.1 200 OK</D:status></D:propstat></D:response>")
+         }
++        append("</D:multistatus>")
+     }
+ 
+-    /**
+-     * URL-encode each segment of the path, preserving "/" separators.
+-     */
+-    private fun encodePath(path: String): String {
+-        return path.split("/").joinToString("/") { segment ->
+-            URLEncoder.encode(segment, "UTF-8")
+-                .replace("+", "%20")
+-        }
+-    }
++    fun href(item: SharedEntry): String = "/" + item.path.parts.joinToString("/") {
++        URLEncoder.encode(it, "UTF-8").replace("+", "%20")
++    } + if (item.directory && !item.path.isRoot) "/" else ""
+ 
+-    /**
+-     * Escape special XML characters.
+-     */
+-    private fun escapeXml(text: String): String {
+-        return text
+-            .replace("&", "&amp;")
+-            .replace("<", "&lt;")
+-            .replace(">", "&gt;")
+-            .replace("\"", "&quot;")
+-            .replace("'", "&apos;")
+-    }
++    fun escapeXml(text: String): String = text.replace("&", "&amp;").replace("<", "&lt;")
++        .replace(">", "&gt;").replace("\"", "&quot;").replace("'", "&apos;")
+ 
+-    /**
+-     * Guess MIME type from file extension.
+-     */
+-    fun guessMimeType(file: File): String {
+-        val ext = file.extension.lowercase()
++    fun guessMimeType(name: String): String {
++        val ext = name.substringAfterLast('.', "").lowercase(Locale.ROOT)
+         return when (ext) {
+             "txt" -> "text/plain"
+             "html", "htm" -> "text/html"
+diff --git a/android/app/src/main/java/com/phonebridge/service/PhoneBridgeService.kt b/android/app/src/main/java/com/phonebridge/service/PhoneBridgeService.kt
+index b5a6829..84a1431 100644
+--- a/android/app/src/main/java/com/phonebridge/service/PhoneBridgeService.kt
++++ b/android/app/src/main/java/com/phonebridge/service/PhoneBridgeService.kt
+@@ -1,5 +1,7 @@
+ package com.phonebridge.service
+ 
++// Modified by PhoneBridge NG, 2026-09-19: unavailable selections fail closed (GPL-3.0-or-later).
++
+ import android.app.*
+ import android.content.Context
+ import android.content.Intent
+@@ -115,11 +117,13 @@ class PhoneBridgeService : Service() {
+         }
+ 
+         try {
++            // Honor startForegroundService before any storage/TLS work, including failure paths.
++            startForeground(NOTIFICATION_ID, buildNotification(getLocalIpAddress(), ServerConfig.DEFAULT_PORT))
+             // Get the storage root
+             val storageRoot = getStorageRoot()
+-            if (!storageRoot.exists()) {
+-                Log.e(TAG, "Storage root does not exist: ${storageRoot.absolutePath}")
+-                stopSelf()
++            if (storageRoot == null || !storageRoot.isDirectory) {
++                Log.e(TAG, "Selected storage root is unavailable; sharing stopped")
++                stopServer()
+                 return
+             }
+ 
+@@ -173,9 +177,6 @@ class PhoneBridgeService : Service() {
+             Log.i(TAG, "   Device: $deviceName")
+             Log.i(TAG, "   Auth: Basic (user=${ServerConfig.AUTH_USERNAME})")
+ 
+-            // Show foreground notification
+-            startForeground(NOTIFICATION_ID, buildNotification(ip, port))
+-
+             broadcastStatus()
+ 
+             // Start periodic stats broadcasting
+@@ -289,9 +290,9 @@ class PhoneBridgeService : Service() {
+             putExtra(EXTRA_UPTIME_SECONDS, stats?.uptimeSeconds ?: 0L)
+ 
+             // Storage info
+-            putExtra(EXTRA_STORAGE_TOTAL, storageRoot.totalSpace)
+-            putExtra(EXTRA_STORAGE_USED, storageRoot.totalSpace - storageRoot.freeSpace)
+-            putExtra(EXTRA_STORAGE_FREE, storageRoot.freeSpace)
++            putExtra(EXTRA_STORAGE_TOTAL, (storageRoot?.totalSpace ?: 0L))
++            putExtra(EXTRA_STORAGE_USED, (storageRoot?.totalSpace ?: 0L) - (storageRoot?.freeSpace ?: 0L))
++            putExtra(EXTRA_STORAGE_FREE, (storageRoot?.freeSpace ?: 0L))
+ 
+             // Remote access
+             putExtra(EXTRA_TAILSCALE_IP, tailscaleIp ?: "")
+@@ -387,7 +388,7 @@ class PhoneBridgeService : Service() {
+ 
+     // ─── Helpers ───────────────────────────────────────────────
+ 
+-    private fun getStorageRoot(): File {
++    private fun getStorageRoot(): File? {
+         val prefs = getSharedPreferences("phonebridge_prefs", Context.MODE_PRIVATE)
+         val folderPref = prefs.getString("shared_folder", "all") ?: "all"
+         val externalRoot = Environment.getExternalStorageDirectory()
+@@ -396,17 +397,12 @@ class PhoneBridgeService : Service() {
+             "dcim" -> File(externalRoot, "DCIM")
+             "downloads" -> File(externalRoot, "Download")
+             "music" -> File(externalRoot, "Music")
+-            else -> externalRoot  // "all" = full storage
++            "all" -> externalRoot
++            else -> return null // Unknown selection must never broaden access.
+         }
+ 
+-        // Fall back to full storage if the subfolder doesn't exist
+-        return if (targetDir.exists() && targetDir.isDirectory) {
+-            Log.i(TAG, "Sharing folder: ${targetDir.absolutePath}")
+-            targetDir
+-        } else {
+-            Log.w(TAG, "Folder ${targetDir.absolutePath} not found, falling back to full storage")
+-            externalRoot
+-        }
++        // Keep the user's selection even when it is unavailable. Never fall back to full storage.
++        return targetDir
+     }
+ 
+     private fun getDeviceName(): String {
+diff --git a/android/app/src/test/java/com/phonebridge/server/HttpByteRangeTest.kt b/android/app/src/test/java/com/phonebridge/server/HttpByteRangeTest.kt
+new file mode 100644
+index 0000000..d946ec7
+--- /dev/null
++++ b/android/app/src/test/java/com/phonebridge/server/HttpByteRangeTest.kt
+@@ -0,0 +1,38 @@
++package com.phonebridge.server
++
++import org.junit.Assert.*
++import org.junit.Test
++
++class HttpByteRangeTest {
++    @Test fun fullRepresentationWhenAbsentOrUnsupported() {
++        for (header in listOf(null, "items=0-1", "bytes=0-1,3-4")) {
++            assertEquals(HttpByteRange.Full, HttpByteRange.parse(header, 100))
++        }
++    }
++    @Test fun middleRangeAndClippedEnd() {
++        assertEquals(HttpByteRange.Partial(20, 29), HttpByteRange.parse("bytes=20-29", 100))
++        assertEquals(HttpByteRange.Partial(90, 99), HttpByteRange.parse("bytes=90-1000", 100))
++    }
++    @Test fun openRangeAndSuffix() {
++        assertEquals(HttpByteRange.Partial(30, 99), HttpByteRange.parse("bytes=30-", 100))
++        assertEquals(HttpByteRange.Partial(90, 99), HttpByteRange.parse("bytes=-10", 100))
++        assertEquals(HttpByteRange.Partial(0, 99), HttpByteRange.parse("bytes=-1000", 100))
++    }
++    @Test fun invalidAndUnsatisfiableRanges() {
++        for (header in listOf("bytes=100-", "bytes=20-19", "bytes=-0", "bytes=-", "bytes=x-3", "bytes=+1-3", "bytes=1- 3")) {
++            assertEquals(header, HttpByteRange.Unsatisfiable, HttpByteRange.parse(header, 100))
++        }
++        assertEquals(HttpByteRange.Unsatisfiable, HttpByteRange.parse("bytes=0-", 0))
++    }
++    @Test fun hugeDecimalOffsetsDoNotOverflow() {
++        val huge = "9".repeat(100)
++        assertEquals(HttpByteRange.Unsatisfiable, HttpByteRange.parse("bytes=$huge-", 100))
++        assertEquals(HttpByteRange.Partial(0, 99), HttpByteRange.parse("bytes=-$huge", 100))
++        assertEquals(HttpByteRange.Partial(90, 99), HttpByteRange.parse("bytes=90-$huge", 100))
++    }
++    @Test fun supportsFilesLargerThanIntMax() {
++        val range = HttpByteRange.parse("bytes=10000000000-19999999999", 20_000_000_000) as HttpByteRange.Partial
++        assertEquals(10_000_000_000, range.length)
++        assertEquals(HttpByteRange.Partial(99, 99), HttpByteRange.parse("BYTES=99-99", 100))
++    }
++}
+diff --git a/android/app/src/test/java/com/phonebridge/server/RequestBodyTest.kt b/android/app/src/test/java/com/phonebridge/server/RequestBodyTest.kt
+new file mode 100644
+index 0000000..fc15b33
+--- /dev/null
++++ b/android/app/src/test/java/com/phonebridge/server/RequestBodyTest.kt
+@@ -0,0 +1,40 @@
++package com.phonebridge.server
++
++import java.io.ByteArrayInputStream
++import java.io.EOFException
++import java.io.InputStream
++import java.io.IOException
++import java.net.SocketTimeoutException
++import org.junit.Assert.*
++import org.junit.Test
++
++class RequestBodyTest {
++    private fun deadline() = System.nanoTime() + 5_000_000_000L
++    @Test fun leavesNextPipelinedRequestUntouched() {
++        val input = ByteArrayInputStream("bodyOPTIONS / HTTP/1.1\r\n".toByteArray())
++        RequestBody.discard(input, 4, deadline())
++        assertEquals("OPTIONS / HTTP/1.1\r\n", input.readBytes().toString(Charsets.UTF_8))
++    }
++    @Test fun zeroBodyDoesNotRead() {
++        val input = ByteArrayInputStream(byteArrayOf(7))
++        RequestBody.discard(input, 0, deadline())
++        assertEquals(7, input.read())
++    }
++    @Test(expected = EOFException::class) fun rejectsTruncatedBody() {
++        RequestBody.discard(ByteArrayInputStream(byteArrayOf(1)), 2, deadline())
++    }
++    @Test(expected = SocketTimeoutException::class) fun deadlineIsEnforced() {
++        RequestBody.discard(ByteArrayInputStream(byteArrayOf(1)), 1, System.nanoTime() - 1)
++    }
++    @Test(expected = IOException::class) fun noProgressCannotSpinForever() {
++        RequestBody.discard(object : InputStream() {
++            override fun read() = 0
++            override fun read(bytes: ByteArray, offset: Int, length: Int) = 0
++        }, 1, deadline())
++    }
++    @Test fun drainsMultipleBuffersExactly() {
++        val input = ByteArrayInputStream(ByteArray(20_001) { 5 })
++        RequestBody.discard(input, 20_000, deadline())
++        assertEquals(1, input.available())
++    }
++}
+diff --git a/android/app/src/test/java/com/phonebridge/server/SharedPathTest.kt b/android/app/src/test/java/com/phonebridge/server/SharedPathTest.kt
+new file mode 100644
+index 0000000..fe337a4
+--- /dev/null
++++ b/android/app/src/test/java/com/phonebridge/server/SharedPathTest.kt
+@@ -0,0 +1,41 @@
++package com.phonebridge.server
++
++// PhoneBridge NG, 2026-09-19. SPDX-License-Identifier: GPL-3.0-or-later
++import org.junit.Assert.*
++import org.junit.Test
++
++class SharedPathTest {
++    private fun rejected(block: () -> Unit) {
++        try { block(); fail("Expected path rejection") } catch (_: StorageFailure) { }
++    }
++
++    @Test fun rootAndOrdinaryNames() {
++        assertTrue(SharedPath.parse("/").isRoot)
++        assertEquals(listOf("中文", "a + %25.txt"), SharedPath.parse("/中文/a + %25.txt").parts)
++        assertEquals("/child", SharedPath.parse("/child/").path)
++    }
++    @Test fun traversalRejectedInsteadOfRootFallback() {
++        listOf("/..", "/../Download-sibling/a", "/a/../../b", "/.", "/a/./b", "/a\\b", "relative",
++            "//", "/a//b", "/a\u0000b", "/a\r\nb", "/.phonebridge-upload-owned.part").forEach {
++            rejected { SharedPath.parse(it) }
++        }
++    }
++    @Test fun requestAlreadyDecodedExactlyOnce() {
++        assertEquals("%2e%2e", SharedPath.parse("/%2e%2e/file").parts.first())
++        assertEquals("plus+file", SharedPath.parse("/plus+file").name)
++    }
++    @Test fun destinationDecodedExactlyOnce() {
++        assertEquals("a+b %.txt", SharedPath.destination("https://host:8273/a+b%20%25.txt", "host:8273").name)
++        assertEquals("%2e%2e", SharedPath.destination("/%252e%252e", null).name)
++        rejected { SharedPath.destination("/%2e%2e/outside", null) }
++        rejected { SharedPath.destination("/a%5cb", null) }
++    }
++    @Test fun destinationAuthorityAndSyntaxValidated() {
++        listOf(null, "", "relative", "//host/path", "https://elsewhere/path", "https://user@host/path",
++            "https://host/path?q=1", "/path#fragment", "/invalid%", "file:///path", "mailto:a@host").forEach {
++            rejected { SharedPath.destination(it, "host") }
++        }
++        assertEquals("/ok", SharedPath.destination("https://HOST/ok", "host").path)
++    }
++    @Test fun rootMutationRejected() { rejected { SharedPath.parse("/").requireChild() } }
++}
+diff --git a/android/app/src/test/java/com/phonebridge/server/XmlResponseBuilderTest.kt b/android/app/src/test/java/com/phonebridge/server/XmlResponseBuilderTest.kt
+new file mode 100644
+index 0000000..2235ce7
+--- /dev/null
++++ b/android/app/src/test/java/com/phonebridge/server/XmlResponseBuilderTest.kt
+@@ -0,0 +1,19 @@
++package com.phonebridge.server
++
++// PhoneBridge NG, 2026-09-19. SPDX-License-Identifier: GPL-3.0-or-later
++import org.junit.Assert.*
++import org.junit.Test
++
++class XmlResponseBuilderTest {
++    @Test fun metacharactersAreEscapedAndHrefIsEncoded() {
++        val item = SharedEntry(SharedPath.parse("/<script>&\"' + %.txt"), false, 10, 0)
++        val xml = XmlResponseBuilder.buildPropfindResponse(listOf(item))
++        assertFalse(xml.contains("<script>"))
++        assertTrue(xml.contains("&lt;script&gt;&amp;&quot;&apos;"))
++        assertEquals("/%3Cscript%3E%26%22%27%20%2B%20%25.txt", XmlResponseBuilder.href(item))
++    }
++    @Test fun rootCollectionUsesOneSlash() {
++        assertEquals("/", XmlResponseBuilder.href(SharedEntry(SharedPath.parse("/"), true, 0, 0)))
++        assertEquals("/dir/", XmlResponseBuilder.href(SharedEntry(SharedPath.parse("/dir"), true, 0, 0)))
++    }
++}

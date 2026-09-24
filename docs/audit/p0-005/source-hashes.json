@@ -1,0 +1,50 @@
+[
+  {
+    "path": "android/app/src/androidTest/java/com/phonebridge/server/SharedStorageTest.kt",
+    "sha256": "fe06e5d2a2788fc47e711ba64d219ff9ed01fccbb90e38a69eb97429129a5525"
+  },
+  {
+    "path": "android/app/src/main/java/com/phonebridge/server/HttpByteRange.kt",
+    "sha256": "4d677c31f0a6eb6891a1b5f30ec63f4741366030ef73f4664e44b4a11af72ac1"
+  },
+  {
+    "path": "android/app/src/main/java/com/phonebridge/server/RequestBody.kt",
+    "sha256": "2d1a37ad49318be1f34d83712e6e1e15f035d03b37fcf22d5bc101d6b29f008f"
+  },
+  {
+    "path": "android/app/src/main/java/com/phonebridge/server/SharedPath.kt",
+    "sha256": "0aaa5750fcb803c7542953ae52227366f1397bc6a5ee4a4874b5a0321f199602"
+  },
+  {
+    "path": "android/app/src/main/java/com/phonebridge/server/SharedStorage.kt",
+    "sha256": "c84fb38a5d6c4311ac1d6dea69e3c940457bcd97d22b85e9935bb24bfa385ade"
+  },
+  {
+    "path": "android/app/src/main/java/com/phonebridge/server/WebDavServer.kt",
+    "sha256": "7c7894435f691f48a9230d23e5c20f5792f8dcc66ce3b76b785250aafc5efe1e"
+  },
+  {
+    "path": "android/app/src/main/java/com/phonebridge/server/XmlResponseBuilder.kt",
+    "sha256": "9cbd49c3b090ae3b8c955ad68c3953c3ec7c14c67a840d999b15469aaa667400"
+  },
+  {
+    "path": "android/app/src/main/java/com/phonebridge/service/PhoneBridgeService.kt",
+    "sha256": "c0fe86af976f2268c3373be50ab085e1a14058ca7e2a3f9d687e89e2d32a3fd5"
+  },
+  {
+    "path": "android/app/src/test/java/com/phonebridge/server/HttpByteRangeTest.kt",
+    "sha256": "80f4d2bf2062640ae875178a93d55e2013f9022b9c590f0337377311ec54d13b"
+  },
+  {
+    "path": "android/app/src/test/java/com/phonebridge/server/RequestBodyTest.kt",
+    "sha256": "47d4170168a8f9479b56243b5d8d2c8f1fa003a01e08b89ea31763be8f8a3845"
+  },
+  {
+    "path": "android/app/src/test/java/com/phonebridge/server/SharedPathTest.kt",
+    "sha256": "27940447348b866aabc26fd359f8cf437bc47e67e60482e6be644ea5b0835fd7"
+  },
+  {
+    "path": "android/app/src/test/java/com/phonebridge/server/XmlResponseBuilderTest.kt",
+    "sha256": "54f2c6417720eaa4e755742ce963a2550a05342be7ac34c5f40f55f83b409d32"
+  }
+]

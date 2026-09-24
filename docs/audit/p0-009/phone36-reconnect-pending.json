@@ -1,0 +1,14 @@
+{
+  "user_unlock_confirmed": true,
+  "windows_device": "Redmi K40",
+  "windows_device_status": "OK",
+  "windows_driver_service": "WINUSB",
+  "adb_version": "37.0.1",
+  "before_restart": "no devices",
+  "after_single_server_restart": "offline",
+  "after_reconnect_offline": "no devices",
+  "root_cause": "unconfirmed",
+  "requested_next_physical_action": "reconnect USB while unlocked and confirm debugging prompt if shown",
+  "app_last_verified_stopped": true,
+  "no_test_forwards_or_rclone_or_drive_p": true
+}

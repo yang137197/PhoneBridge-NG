@@ -1,0 +1,57 @@
+{
+  "schema": 1,
+  "task": "P1-018",
+  "date": "2026-09-22",
+  "device": {
+    "model": "SM-S9180",
+    "androidApi": 36,
+    "shareRoot": "Music"
+  },
+  "sampleBytes": 10000000000,
+  "phoneToPc": {
+    "sha256": "b535a5b0072feff9259a8af8e60c68cea180679c8d8abb58ab36dae2f22f336c",
+    "hashMatch": true,
+    "copyElapsedMs": 237373,
+    "desktopResponsive": true,
+    "rcloneCount": 1
+  },
+  "pcToPhone": {
+    "sha256": "3ba013d4185d6b0448b49222e91b9bebe1377b90ec5b2fd1c108e69b1491a224",
+    "hashMatch": true,
+    "postFixCacheWriteElapsedMs": 75177,
+    "androidFinalBytes": 10000000000,
+    "temporaryUploadCountAfterCleanup": 0,
+    "metadataDirtyAfterCommit": false,
+    "metadataFingerprint": "10000000000"
+  },
+  "defectsFixed": {
+    "uploadLimit": "8-GiB-to-20-billion-decimal-bytes",
+    "uploadDeadline": "120-second-idle-timeout-refreshed-every-30-seconds-on-progress"
+  },
+  "recoveryObservation": {
+    "pcRestartOccurred": true,
+    "persistentCacheRecoveredAndCommitted": true,
+    "firstMountReportedTimeout": true,
+    "secondMountSucceeded": true,
+    "followUpTask": "P1-019"
+  },
+  "androidVerification": {
+    "gradleTasksSuccessful": 123,
+    "unitTestsPassed": 17,
+    "unitTestsFailed": 0,
+    "lintDebugPassed": true,
+    "lintReleasePassed": true
+  },
+  "cleanup": {
+    "phoneTaskDirectoryRemoved": true,
+    "localLargeSamplesRemoved": true,
+    "taskCacheFilesRemoved": 2,
+    "drivePresent": false,
+    "rclonePresent": false,
+    "desktopPresent": false,
+    "androidServiceAbsent": true,
+    "androidActiveNotificationAbsent": true,
+    "androidWakeLockAbsent": true,
+    "androidPort8273Closed": true
+  }
+}

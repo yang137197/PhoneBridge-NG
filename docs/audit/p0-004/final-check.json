@@ -1,0 +1,12 @@
+{
+  "patch_matches_tested_worktree": true,
+  "baseline_clean": true,
+  "changed_kotlin_files": 5,
+  "unit_tests": 12,
+  "https_regressions": 34,
+  "lint_added_issues": 0,
+  "local_links": 96,
+  "python_files_parsed": 7,
+  "p0_004_verified_scope": true,
+  "whole_product_complete": false
+}

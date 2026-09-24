@@ -1,0 +1,32 @@
+{
+  "baseline": "a378fec40561a4d18be2334f4de92ee02a0e7d0c",
+  "patch": "android/patches/P0-006-android-compatibility.patch",
+  "patch_sha256": "e87c82015010ec776025babc95358fb98a9eb0b4ef2c3169843a44988e46fa5c",
+  "patch_type": "Cumulative against original baseline; includes P0-004 and P0-005; do not stack",
+  "apk_sha256": "9373fa5e1e1d807f941a011d49cdb7552c82deb840e88fe0d05ee4905994e898",
+  "apk_bytes": 9649827,
+  "test_apk_sha256": "ba0ec129e60010b0df023c48f7be504d18f0f188d41db3402caefc399995b394",
+  "unit_tests_passed": 20,
+  "lint_errors": 0,
+  "lint_warnings": 128,
+  "lint_added_issues": 0,
+  "lint_removed_errors": 2,
+  "apis": {
+    "26": {
+      "instrumentation_passed": 14,
+      "instrumentation_skipped": 1,
+      "runtime_checks_passed": 11,
+      "scope_start_cases_passed": 2,
+      "cleanup_confirmed": true
+    },
+    "34": {
+      "instrumentation_passed": 14,
+      "instrumentation_skipped": 1,
+      "runtime_checks_passed": 11,
+      "scope_start_cases_passed": 2,
+      "cleanup_confirmed": true
+    }
+  },
+  "transport": "Dedicated AOSP emulators; ADB loopback; experimental TLS trust bypass",
+  "whole_product_complete": false
+}

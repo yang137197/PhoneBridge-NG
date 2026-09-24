@@ -1,0 +1,12 @@
+{
+  "seven_behavior_assertions_passed": true,
+  "initial_runner_exit_code": 1,
+  "runner_failure": "Final redundant UI cleanup: null root node; finally restored settings",
+  "independent_cleanup_verification_exit_code": 0,
+  "auto_start_false_read_back": true,
+  "data_sync_limit_restored_to_null": true,
+  "service_absent": true,
+  "package_force_stopped": true,
+  "no_fatal_exception": true,
+  "final_harness_removes_redundant_ui_cleanup_full_sequence_not_rerun": true
+}

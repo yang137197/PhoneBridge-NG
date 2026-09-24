@@ -1,0 +1,26 @@
+<root>
+  <data name="Added">
+    <value>Added</value>
+  </data>
+  <data name="Failed">
+    <value>Discovery failed</value>
+  </data>
+  <data name="Notice">
+    <value>Discovery of unverified candidates only. No pairing, authentication or mounting. Ctrl+C stops.</value>
+  </data>
+  <data name="Rejected">
+    <value>Rejected</value>
+  </data>
+  <data name="Removed">
+    <value>Removed</value>
+  </data>
+  <data name="Status">
+    <value>Status</value>
+  </data>
+  <data name="Updated">
+    <value>Updated</value>
+  </data>
+  <data name="Usage">
+    <value>Usage: --seconds 1..300 [--json] [--en-US] [--manual IP PORT]</value>
+  </data>
+</root>

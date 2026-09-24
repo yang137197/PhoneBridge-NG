@@ -1,0 +1,29 @@
+{
+  "task": "P1-010",
+  "date": "2026-09-21",
+  "windows": {
+    "verification": ".audit/windows-verification/20260921-111641",
+    "buildWarnings": 0,
+    "buildErrors": 0,
+    "tests": {
+      "discovery": 54,
+      "mounting": 36,
+      "pairing": 50,
+      "connection": 18,
+      "credentials": 63,
+      "total": 221
+    },
+    "passed": true
+  },
+  "android": {
+    "gradleTasks": 123,
+    "executed": 49,
+    "upToDate": 74,
+    "buildAndLintPassed": true,
+    "api36TargetedInstrumentationPassed": 2
+  },
+  "retainedFailures": [
+    "Windows新增测试首轮使用无效client ID，修正测试数据后全量通过",
+    "Android授权流程首轮Lint失败4项，逐项修正后全量通过"
+  ]
+}

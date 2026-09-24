@@ -1,0 +1,46 @@
+{
+  "task": "P1-023",
+  "date": "2026-09-22",
+  "device": {
+    "model": "SM-S9180",
+    "api": 36,
+    "sharedFolder": "Music"
+  },
+  "results": {
+    "safe": {
+      "createdFileSha256": "574b690c1b420b87f36012ad2b9f90d268cba80e3767a2b1f5d492170c43d38d",
+      "overwriteCallReportedSuccess": true,
+      "targetPreservedSha256": "ed6ec5cc4d9ab490ad1ec830738afdb6ae20aa2bfd45c8032705f9c2d20f28d6"
+    },
+    "readOnly": {
+      "windowsCreateRejected": true,
+      "androidTargetAbsent": true
+    },
+    "readWrite": {
+      "overwriteCommitted": true,
+      "targetSha256": "8f70c445073cc060e105c9ff37cd977f18d4a0831e50ce053cd1875fb8867ac5"
+    },
+    "modeChange": {
+      "oldDriveUnmounted": true,
+      "windowsDisplayedPhoneConfirmedMode": true,
+      "finalMode": "safe"
+    }
+  },
+  "verification": {
+    "androidBuildLint": "passed",
+    "targetedAndroidInstrumentation": "1/1",
+    "windowsConnectionTests": "18/18",
+    "windowsDesktopTests": "50/50",
+    "windowsFullTests": "279/279",
+    "windowsBuildWarnings": 0,
+    "windowsBuildErrors": 0
+  },
+  "cleanup": {
+    "phoneSampleDirectoryAbsent": true,
+    "sharingServiceAbsent": true,
+    "listeningPortAbsent": true,
+    "driveAbsent": true,
+    "rcloneProcessCount": 0,
+    "desktopProcessCount": 0
+  }
+}

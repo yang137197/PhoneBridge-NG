@@ -1,0 +1,21 @@
+{
+  "exit_code": 0,
+  "targets": [
+    "assembleDebug",
+    "testDebugUnitTest",
+    "assembleDebugAndroidTest",
+    "lintDebug"
+  ],
+  "log": "local .audit/runs/P0-006/build.log",
+  "log_sha256": "09d26bbaf7eb76d3fa5ba61269efd74ffaf862012c3a11eef38f442ff25e1864",
+  "apk_sha256": "9373fa5e1e1d807f941a011d49cdb7552c82deb840e88fe0d05ee4905994e898",
+  "apk_bytes": 9649827,
+  "test_apk_sha256": "ba0ec129e60010b0df023c48f7be504d18f0f188d41db3402caefc399995b394",
+  "patch_sha256": "e87c82015010ec776025babc95358fb98a9eb0b4ef2c3169843a44988e46fa5c",
+  "patch_has_cr": false,
+  "baseline_apply_check_exit_code": 0,
+  "repaired_reverse_apply_check_exit_code": 0,
+  "git_diff_check_exit_code": 0,
+  "final_test_build_exit_code": 0,
+  "final_test_build_log_sha256": "3ea32dda5a852b68b425365c686d8225b317d0bd00e79aadfe0fe84e84de59f7"
+}

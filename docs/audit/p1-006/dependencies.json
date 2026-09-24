@@ -1,0 +1,58 @@
+{
+  "runtime": [
+    {
+      "coordinate": "org.jetbrains.kotlin:kotlin-stdlib:2.2.10",
+      "licenses": [
+        "The Apache License, Version 2.0"
+      ],
+      "cache_artifacts": [
+        {
+          "path": ".audit/gradle-user/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-stdlib/2.2.10/2011d055243f3ac8845b6b6bba8e4300f1b75602/kotlin-stdlib-2.2.10.module",
+          "sha256": "db78df08283591cb67c8b9d2796109eb52b6088d4dfe102b545f20118249713f"
+        },
+        {
+          "path": ".audit/gradle-user/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-stdlib/2.2.10/2f34b52588b445a17411fd383cdba240a5f6c4fe/kotlin-stdlib-2.2.10.pom",
+          "sha256": "454ba507a3d36b4ac253df6df96f8739bd26ea19df3f332b10b13f2c5715f787"
+        },
+        {
+          "path": ".audit/gradle-user/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-stdlib/2.2.10/30de6faa127a4a012db8e71bf1b9c0a99b1402b2/kotlin-stdlib-2.2.10.jar",
+          "sha256": "9c67cc79efd6b9215b49d2a4308f5f3433537376c7c88e89bdd6729bd096e61a"
+        }
+      ]
+    },
+    {
+      "coordinate": "org.jetbrains:annotations:13.0",
+      "licenses": [
+        "The Apache Software License, Version 2.0"
+      ],
+      "cache_artifacts": [
+        {
+          "path": ".audit/gradle-user/caches/modules-2/files-2.1/org.jetbrains/annotations/13.0/919f0dfe192fb4e063e7dacadee7f8bb9a2672a9/annotations-13.0.jar",
+          "sha256": "ace2a10dc8e2d5fd34925ecac03e4988b2c0f851650c94b8cef49ba1bd111478"
+        },
+        {
+          "path": ".audit/gradle-user/caches/modules-2/files-2.1/org.jetbrains/annotations/13.0/fa7d3d07cc80547e2d15bf4839d3267c637c642f/annotations-13.0.pom",
+          "sha256": "965aeb2bedff369819bdde1bf7a0b3b89b8247dd69c88b86375d76163bb8c397"
+        }
+      ]
+    }
+  ],
+  "lockfile": {
+    "path": "android/credentials-store/gradle.lockfile",
+    "sha256": "6a43ce0d8d9470c8563ed84ebb538d0716b149823b5eca7ee472e59b3ca0a2d8"
+  },
+  "verification": {
+    "path": "android/credentials-store/gradle/verification-metadata.xml",
+    "sha256": "74cad02144433df301afe4dd3143c16c45868ec31b22569316da82779b2ae550"
+  },
+  "kotlin_license": {
+    "path": "licenses/credentials-kotlin-LICENSE.txt",
+    "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+  },
+  "kotlin_license_source": "https://raw.githubusercontent.com/JetBrains/kotlin/v2.2.10/license/LICENSE.txt",
+  "android_test_only": [
+    "androidx.test.ext:junit:1.1.5",
+    "androidx.test:runner:1.5.2"
+  ],
+  "no_external_crypto_library": true
+}

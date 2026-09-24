@@ -1,0 +1,10 @@
+{
+  "no_test_emulator_in_adb": true,
+  "no_test_adb_forward": true,
+  "emulator_process_count": 0,
+  "drive_p_absent": true,
+  "spare_phone_still_connected": false,
+  "cache_and_avd_preserved": true,
+  "user_phone_not_modified": true,
+  "spare_phone_reconnected_after_cleanup_snapshot": true
+}

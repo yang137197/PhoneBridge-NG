@@ -1,0 +1,22 @@
+{
+  "baseline": {
+    "Warning": 128
+  },
+  "repair": {
+    "Warning": 126
+  },
+  "added": [],
+  "removed": [
+    [
+      "OldTargetApi",
+      "Warning",
+      "Not targeting the latest versions of Android; compatibility modes apply. Consider testing and updating this version. Consult the `android.os.Build.VERSION_CODES` javadoc for details."
+    ],
+    [
+      "GradleDependency",
+      "Warning",
+      "A newer version of `compileSdk` than 34 is available: 36"
+    ]
+  ],
+  "lint_exit_code": 0
+}

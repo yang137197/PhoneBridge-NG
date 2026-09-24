@@ -1,0 +1,151 @@
+{
+  "run_id": "P0-010-84926bfb5cd4",
+  "checks": [
+    {
+      "test": "preflight",
+      "result": "PASS",
+      "apk_sha256": "a4383ddac27dccc3f2cc46704f1c389c8ad961d1d8e8205894d8cc8aebb2b88a",
+      "rclone_sha256": "033eee51c9ad47c2de2624b6674d355274bcd6cf0027a5f85db4437ba24ae81c",
+      "identity_certificate_sha256": "65b52a178912e36cc73dc820f4029e85efa75a3427c2a341902326a8d2480903",
+      "phone_wifi_ip": "192.168.100.197",
+      "pc_ethernet_ip": "192.168.100.216",
+      "adb_file_transfer": false
+    },
+    {
+      "test": "fixtures",
+      "result": "PASS",
+      "phone_directory": "/sdcard/Music/P0-010-84926bfb5cd4",
+      "phone": {
+        "phone-100MB.bin": {
+          "sha256": "a00685541c25a9585dcfbef6b66884cd3fbb88cb3932da03b248647b2b7af71f",
+          "bytes": 100000000
+        },
+        "phone-origin.txt": {
+          "sha256": "7374185329b3a98d96e953d8ed38bfe1c528ca5dd6b8298bdead468f65c5251e",
+          "bytes": 49
+        }
+      },
+      "pc": {
+        "bytes": 100000000,
+        "sha256": "3d498edc7bba04f6c094dd49811ceee4a7912b9292bd4aaa6b251965da065fad"
+      }
+    },
+    {
+      "test": "CHAIN-01-discovery",
+      "result": "PASS",
+      "observation_limit_seconds": 30,
+      "service": {
+        "name": "Xiaomi M2012K11AC._phonebridge._tcp.local.",
+        "addresses": [
+          "192.168.100.197",
+          "fe80::6d3f:62cd:65b:25ea"
+        ],
+        "port": 8273,
+        "elapsed_seconds": 3.469
+      },
+      "listener_started_before_service": true
+    },
+    {
+      "test": "CHAIN-02-https-auth",
+      "result": "PASS",
+      "unauthenticated": 401,
+      "authenticated": 200,
+      "identity_unchanged": true,
+      "tls_verification_disabled": false
+    },
+    {
+      "test": "rclone_started",
+      "result": "PASS",
+      "pid": 42252,
+      "tls_verification_disabled": false,
+      "mount_scope": "/sdcard/Music/P0-010-84926bfb5cd4"
+    },
+    {
+      "test": "CHAIN-03-mount",
+      "result": "PASS",
+      "drive": "P:",
+      "names": [
+        "phone-100MB.bin",
+        "phone-origin.txt"
+      ]
+    },
+    {
+      "test": "CHAIN-04-phone-to-pc",
+      "result": "PASS",
+      "file": "phone-100MB.bin",
+      "bytes": 100000000,
+      "sha256": "a00685541c25a9585dcfbef6b66884cd3fbb88cb3932da03b248647b2b7af71f",
+      "android": {
+        "sha256": "a00685541c25a9585dcfbef6b66884cd3fbb88cb3932da03b248647b2b7af71f",
+        "bytes": 100000000
+      },
+      "elapsed_seconds": 1.547,
+      "through": "P: / WinFsp / rclone / LAN"
+    },
+    {
+      "test": "CHAIN-04-phone-to-pc",
+      "result": "PASS",
+      "file": "phone-origin.txt",
+      "bytes": 49,
+      "sha256": "7374185329b3a98d96e953d8ed38bfe1c528ca5dd6b8298bdead468f65c5251e",
+      "android": {
+        "sha256": "7374185329b3a98d96e953d8ed38bfe1c528ca5dd6b8298bdead468f65c5251e",
+        "bytes": 49
+      },
+      "elapsed_seconds": 0.078,
+      "through": "P: / WinFsp / rclone / LAN"
+    },
+    {
+      "test": "CHAIN-05-pc-to-phone",
+      "result": "PASS",
+      "file": "pc-upload-100MB.bin",
+      "bytes": 100000000,
+      "sha256": "3d498edc7bba04f6c094dd49811ceee4a7912b9292bd4aaa6b251965da065fad",
+      "android": {
+        "sha256": "3d498edc7bba04f6c094dd49811ceee4a7912b9292bd4aaa6b251965da065fad",
+        "bytes": 100000000
+      },
+      "elapsed_seconds": 3.61,
+      "through": "P: / WinFsp / rclone / LAN"
+    },
+    {
+      "test": "upload_fresh_lan_readback",
+      "result": "PASS",
+      "bytes": 100000000,
+      "sha256": "3d498edc7bba04f6c094dd49811ceee4a7912b9292bd4aaa6b251965da065fad",
+      "pc_vfs_cache_used": false
+    },
+    {
+      "test": "mkdir_and_rename",
+      "result": "PASS",
+      "android_directory_verified": true
+    },
+    {
+      "test": "explorer_ready",
+      "result": "PASS",
+      "evidence_file": "C:\\Users\\yang1\\Documents\\ChatGPT\\samsung link windows\\PhoneBridge-NG\\.audit\\runs\\P0-010\\P0-010-84926bfb5cd4\\explorer-observation.json"
+    },
+    {
+      "test": "failure_unmount",
+      "result": "PASS",
+      "exit_code": 0,
+      "cache_retained": true
+    },
+    {
+      "test": "failure",
+      "result": "FAIL",
+      "kind": "AssertionError",
+      "fixtures_and_cache_retained": true
+    },
+    {
+      "test": "CHAIN-06-phone-cleanup",
+      "result": "PASS",
+      "sharing_stopped": true,
+      "existing_metadata_unchanged": true,
+      "adb_forwards": 0,
+      "fixtures_retained": true
+    }
+  ],
+  "fixtures_retained": true,
+  "transport": "Phone Wi-Fi to PC Ethernet on same LAN"
+}

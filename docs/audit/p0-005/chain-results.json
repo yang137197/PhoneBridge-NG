@@ -1,0 +1,91 @@
+{
+  "transport": "Android 14 emulator via ADB loopback",
+  "tls_mode": "unverified isolated upstream experiment",
+  "checks": [
+    {
+      "name": "mount",
+      "result": "PASS",
+      "drive": "P:",
+      "directory": [
+        "new-folder-20260919-104812-renamed",
+        "p0-005-1789787934132538600",
+        "p0-005-1789788180891449400",
+        "p0-005-1789788508989432400",
+        "p0-005-death-1789788208995353400",
+        "p0-005-death-1789788535502276800",
+        "phone-origin-100MB.bin",
+        "phone-origin.txt",
+        "range-empty.bin",
+        "range-fixture.txt",
+        "upload-preserve.bin",
+        "uploaded-20260919-102758.bin",
+        "uploaded-20260919-104812.bin"
+      ]
+    },
+    {
+      "name": "download-hash",
+      "result": "PASS",
+      "file": "phone-origin-100MB.bin",
+      "bytes": 100000000,
+      "android_sha256": "9b3b9896c7296fba874dd1289d94a4689bf3845a5e4cfac63962655985477007",
+      "pc_sha256": "9b3b9896c7296fba874dd1289d94a4689bf3845a5e4cfac63962655985477007"
+    },
+    {
+      "name": "phone-to-pc",
+      "result": "PASS",
+      "file": "phone-origin-100MB.bin",
+      "bytes": 100000000,
+      "android_sha256": "9b3b9896c7296fba874dd1289d94a4689bf3845a5e4cfac63962655985477007",
+      "pc_sha256": "9b3b9896c7296fba874dd1289d94a4689bf3845a5e4cfac63962655985477007"
+    },
+    {
+      "name": "download-hash",
+      "result": "PASS",
+      "file": "phone-origin.txt",
+      "bytes": 50,
+      "android_sha256": "d3d60f0a294eeee652a96efdef1f8b5650077c18dc80730167ba401eb3d594cf",
+      "pc_sha256": "d3d60f0a294eeee652a96efdef1f8b5650077c18dc80730167ba401eb3d594cf"
+    },
+    {
+      "name": "phone-to-pc",
+      "result": "PASS",
+      "file": "phone-origin.txt",
+      "bytes": 50,
+      "android_sha256": "d3d60f0a294eeee652a96efdef1f8b5650077c18dc80730167ba401eb3d594cf",
+      "pc_sha256": "d3d60f0a294eeee652a96efdef1f8b5650077c18dc80730167ba401eb3d594cf"
+    },
+    {
+      "name": "pc-to-phone",
+      "result": "PASS",
+      "file": "uploaded-20260919-112907.bin",
+      "bytes": 100000000,
+      "pc_sha256": "949427b22e9c22df6500cf65c951dd8ba9c89eb752a21c5bbb675955207ac58c",
+      "android_sha256": "949427b22e9c22df6500cf65c951dd8ba9c89eb752a21c5bbb675955207ac58c"
+    },
+    {
+      "name": "mkdir-rename",
+      "result": "PASS",
+      "directory": "new-folder-20260919-112907-renamed"
+    },
+    {
+      "name": "explorer",
+      "result": "UNVERIFIED",
+      "detail": "Opened P: for user observation; no visual assertion"
+    },
+    {
+      "name": "pending-writes",
+      "result": "PASS",
+      "uploadsInProgress": 0,
+      "uploadsQueued": 0,
+      "erroredFiles": 0
+    },
+    {
+      "name": "unmount",
+      "result": "PASS",
+      "exit_code": 0,
+      "drive_present": false
+    }
+  ],
+  "rclone_pid": 12436,
+  "data_directory": "C:\\Users\\yang1\\Documents\\ChatGPT\\samsung link windows\\PhoneBridge-NG\\.audit\\runs\\P0-005\\data-20260919-112907"
+}

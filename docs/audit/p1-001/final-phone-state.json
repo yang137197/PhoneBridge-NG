@@ -1,0 +1,15 @@
+{
+  "identity_unchanged": true,
+  "sample_hashes_unchanged": true,
+  "sample_sha256": {
+    "phone-100MB.bin": "a00685541c25a9585dcfbef6b66884cd3fbb88cb3932da03b248647b2b7af71f",
+    "pc-upload-100MB.bin": "3d498edc7bba04f6c094dd49811ceee4a7912b9292bd4aaa6b251965da065fad",
+    "phone-origin.txt": "7374185329b3a98d96e953d8ed38bfe1c528ca5dd6b8298bdead468f65c5251e"
+  },
+  "app_stopped": true,
+  "foreground_service_stopped": true,
+  "adb_forwards_empty": true,
+  "host_control_files_absent": true,
+  "auto_start_on_boot": "false",
+  "shared_folder": "music"
+}

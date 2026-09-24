@@ -1,0 +1,56 @@
+{
+  "review_type": "implementer code review, not independent security audit",
+  "reviewed_core_sources": [
+    {
+      "path": "android/credentials-store/src/main/java/org/phonebridge/credentials/KeystoreProtection.kt",
+      "sha256": "aa1ceaefcd9a23936f244f100e3e3a0137686c6a963918ab11f107584a8e628a"
+    },
+    {
+      "path": "android/credentials-store/src/main/java/org/phonebridge/credentials/PairingStore.kt",
+      "sha256": "5820044465a97949a150d2c5d906f411e17907af75d446e34af1311015545e7b"
+    },
+    {
+      "path": "android/credentials-store/src/main/java/org/phonebridge/credentials/PrivateFiles.kt",
+      "sha256": "4d4e2076de63435a3e0ca0da40ba7446b9810037b60434e57dfb809da515cc40"
+    },
+    {
+      "path": "android/credentials-store/src/main/java/org/phonebridge/credentials/Records.kt",
+      "sha256": "24d0bfd3c8ea699011d99656c0816b94608e00c9a56759568dca8de3d146bfcf"
+    }
+  ],
+  "reviewed_areas": [
+    "bounded strict record encoding, CA/client/token binding and metadata-only public snapshots",
+    "platform-generated AES-GCM nonce and non-exportable AndroidKeyStore key",
+    "credential-protected noBackup and explicit new-identity precondition",
+    "private modes, UID/type/link checks, atomic CLOEXEC and descriptor ownership",
+    "ciphertext sync/rename/directory-sync/readback and same-process poisoning",
+    "revision, capacity, retained revocation, per-request checks and shared commit barrier",
+    "fixed public errors, no production logging/network, synthetic tests excluded from AAR"
+  ],
+  "test_hooks": "internal checkpoint hooks remain in library; public factories always use null; internal is not a same-UID security boundary",
+  "aar_test_classes_absent": true,
+  "aar_permissions": [],
+  "synthetic_token_scan": {
+    "scope": "known synthetic token in raw instrumentation, harness and build logs only",
+    "files": 34,
+    "matches": [],
+    "encodings": [
+      "raw32",
+      "base64",
+      "base64url-no-padding",
+      "lower-hex"
+    ]
+  },
+  "limitations": [
+    "no Android host HTTP/PAKE/UI or activity-stream cancellation integration",
+    "no real phone, OEM backup migration or before-first-unlock boot test",
+    "no power loss or disk-full test",
+    "no simultaneous cross-process lock contention test",
+    "platform refused hardlinks before store nlink>1 branch",
+    "no hardware protection guarantee on emulators",
+    "same-UID malicious code/root and valid ciphertext rollback outside protection",
+    "host must prove CA was freshly generated",
+    "ciphertext temporary files can remain after process death",
+    "managed/provider memory not fully erasable"
+  ]
+}

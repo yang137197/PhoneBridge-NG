@@ -1,0 +1,83 @@
+{
+  "final_exit_codes": {
+    "dotnet_restore": 0,
+    "dotnet_build": 0,
+    "dotnet_test": 0,
+    "gradle_test": 0,
+    "core_interop": 0
+  },
+  "dotnet_warnings": 0,
+  "dotnet_errors": 0,
+  "kotlin_own_classes": 8,
+  "kotlin_own_class_major_versions": [
+    52
+  ],
+  "final_logs": [
+    {
+      "path": ".audit/p1-004/gradle-dependencies.log",
+      "sha256": "04bdd61f830e906ba680d77a09e550886fd128461275233711c068a7a173b8e9"
+    },
+    {
+      "path": ".audit/p1-004/gradle-compile.log",
+      "sha256": "6b3291d9556899af1adc0ecf27764cabea92a12de31e808f6d0e3f5f52a8009b"
+    },
+    {
+      "path": ".audit/p1-004/gradle-test-first.log",
+      "sha256": "48e9b5bd63b533e01bf100154a39c8070ef4228c06d2d21313733d6b9959303b"
+    },
+    {
+      "path": ".audit/p1-004/gradle-final.log",
+      "sha256": "b8a68c72a0995462f8df9f69219ab470b79633e333e383c356f046960c61a5d0"
+    },
+    {
+      "path": ".audit/p1-004/dotnet-build.log",
+      "sha256": "ea5ca3512ecbdba428600142873903e0ccb28a1ac19518737ecea95d001b8090"
+    },
+    {
+      "path": ".audit/p1-004/dotnet-test-first.log",
+      "sha256": "ac0b587fbe43aa9fc12aae36e2c8d24578441e32e75ed39199b8890ea27e94df"
+    },
+    {
+      "path": ".audit/p1-004/dotnet-restore-final.log",
+      "sha256": "c625329798de1f0b9f1187203cf366d9116fb23efc3137542b0e0d8818c7ec8e"
+    },
+    {
+      "path": ".audit/p1-004/dotnet-build-final.log",
+      "sha256": "8050d79317c17e2e9c0711e3631a98fa0d6591cdc00d56ff419a507fff8381b4"
+    },
+    {
+      "path": ".audit/p1-004/dotnet-test-final.log",
+      "sha256": "3b24962fb6c2b91e57388f7239b4d0f044aa8276f639f7405ff642bc4b6b1250"
+    },
+    {
+      "path": ".audit/p1-004/core-interop-first.log",
+      "sha256": "be9f93637036c6d52b138c144489f35945078339b112e15e312bf93cfa34f2ee"
+    },
+    {
+      "path": ".audit/p1-004/core-interop-final.log",
+      "sha256": "2ef7be6cc4f79f72288211648b2d483e2d9171d00c2586b1e389c64436ae740e"
+    }
+  ],
+  "failures": [
+    {
+      "stage": "first-gradle",
+      "exit_code": 1,
+      "cause": "Empty kotlin.build.report.output rejected; removed invalid configuration"
+    },
+    {
+      "stage": "first-dotnet-build",
+      "exit_code": 1,
+      "cause": "MSTEST0001; declared DoNotParallelize"
+    },
+    {
+      "stage": "dependency-material-helper",
+      "exit_code": 1,
+      "cause": "Kotlin jar .sha256 absent; inspected official index and checked published SHA-1 plus recorded SHA-256; filename filter also corrected to metadata text only"
+    }
+  ],
+  "sdk": "10.0.401",
+  "gradle": "9.3.1",
+  "kotlin": "2.4.0",
+  "jdk": "21.0.10",
+  "python": "3.12.14"
+}

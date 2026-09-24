@@ -1,0 +1,77 @@
+{
+  "imports": [
+    {
+      "path": "android/app/src/main/java/com/phonebridge/server/DeviceCertificates.kt",
+      "source": ".audit/p0-009-worktree/android/app/src/main/java/com/phonebridge/server/DeviceCertificates.kt",
+      "import_sha256": "31b6efd1f951b514c74122174761a55c11b998b00ebb30b6e43d46b42c7fdbbe",
+      "current_sha256": "31b6efd1f951b514c74122174761a55c11b998b00ebb30b6e43d46b42c7fdbbe"
+    },
+    {
+      "path": "android/app/src/main/java/com/phonebridge/server/TlsIdentityStore.kt",
+      "source": ".audit/p0-009-worktree/android/app/src/main/java/com/phonebridge/server/TlsIdentityStore.kt",
+      "import_sha256": "1c8417fdb34524d34bdfa958e7aacd4536b8fd2e0c5a3aee06af03e2fdb044f2",
+      "current_sha256": "1970f1db473fec0ab0462da6bbb8693ce651fd1ecdead2305fa5ea398aa3a836"
+    },
+    {
+      "path": "android/app/src/main/java/com/phonebridge/server/TlsHelper.kt",
+      "source": ".audit/p0-009-worktree/android/app/src/main/java/com/phonebridge/server/TlsHelper.kt",
+      "import_sha256": "90fc4175a07b176f9b5f9886402d1113f41e72da339121ad7da8790b948659e1",
+      "current_sha256": "c61ed8d2a680bebc9464bcaef2c882b28994203251e4abe60423a4c9d4e22dff"
+    },
+    {
+      "path": "android/app/src/main/java/com/phonebridge/server/SharedPath.kt",
+      "source": ".audit/p0-009-worktree/android/app/src/main/java/com/phonebridge/server/SharedPath.kt",
+      "import_sha256": "a9cc3c04475fa4174dffb46407001f69f393627048c8412619caec254ace302d",
+      "current_sha256": "a9cc3c04475fa4174dffb46407001f69f393627048c8412619caec254ace302d"
+    },
+    {
+      "path": "android/app/src/main/java/com/phonebridge/server/SharedStorage.kt",
+      "source": ".audit/p0-009-worktree/android/app/src/main/java/com/phonebridge/server/SharedStorage.kt",
+      "import_sha256": "df6a7eedc1ae1ce8dffed2a6693b6576f699cacb6bc4999228bfdd431b40e260",
+      "current_sha256": "df6a7eedc1ae1ce8dffed2a6693b6576f699cacb6bc4999228bfdd431b40e260"
+    },
+    {
+      "path": "android/app/src/main/java/com/phonebridge/server/HttpByteRange.kt",
+      "source": ".audit/p0-009-worktree/android/app/src/main/java/com/phonebridge/server/HttpByteRange.kt",
+      "import_sha256": "4d677c31f0a6eb6891a1b5f30ec63f4741366030ef73f4664e44b4a11af72ac1",
+      "current_sha256": "4d677c31f0a6eb6891a1b5f30ec63f4741366030ef73f4664e44b4a11af72ac1"
+    },
+    {
+      "path": "android/app/src/main/java/com/phonebridge/server/XmlResponseBuilder.kt",
+      "source": ".audit/p0-009-worktree/android/app/src/main/java/com/phonebridge/server/XmlResponseBuilder.kt",
+      "import_sha256": "31c7d758e7f5520cd512e993b56fc3fdb27b28d78290c6cb3e396849f2567d40",
+      "current_sha256": "31c7d758e7f5520cd512e993b56fc3fdb27b28d78290c6cb3e396849f2567d40"
+    },
+    {
+      "path": "android/app/src/main/java/com/phonebridge/server/RequestBody.kt",
+      "source": ".audit/p0-009-worktree/android/app/src/main/java/com/phonebridge/server/RequestBody.kt",
+      "import_sha256": "2d1a37ad49318be1f34d83712e6e1e15f035d03b37fcf22d5bc101d6b29f008f",
+      "current_sha256": "2d1a37ad49318be1f34d83712e6e1e15f035d03b37fcf22d5bc101d6b29f008f"
+    }
+  ],
+  "nanohttpd": {
+    "version": "2.3.1",
+    "license": "BSD-3-Clause",
+    "source_url": "https://repo.maven.apache.org/maven2/org/nanohttpd/nanohttpd/2.3.1/nanohttpd-2.3.1-sources.jar",
+    "original_java_sha256": "d326e45ee0ed1e465af59510fbffc044413a9c05bede470d83d8ba2b0b37c923",
+    "patch": {
+      "path": "docs/audit/p1-007/nanohttpd.patch",
+      "sha256": "2a0709c982aa9590e1019495204269735ea41f20b1e3735d3cb158b7037f6227"
+    }
+  },
+  "runtime": [
+    "bcprov-jdk18on:1.86",
+    "bcpkix-jdk18on:1.86",
+    "bcutil-jdk18on:1.86",
+    "kotlin-stdlib:2.2.10",
+    "annotations:13.0"
+  ],
+  "lock": {
+    "path": "android/app/gradle.lockfile",
+    "sha256": "6764307b3c4f35b0fcb85d0e593a33246e32f57b625157cc9afcfbe335a5c5d7"
+  },
+  "verification": {
+    "path": "android/gradle/verification-metadata.xml",
+    "sha256": "b5cdc2128d4a2d0dacdbd59209abee46f627862069a680d94626b51f6343abdf"
+  }
+}

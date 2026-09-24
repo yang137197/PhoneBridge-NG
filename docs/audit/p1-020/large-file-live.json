@@ -1,0 +1,61 @@
+{
+  "schema": 1,
+  "task": "P1-020",
+  "date": "2026-09-22",
+  "environment": {
+    "phone": "Samsung SM-S9180",
+    "androidApi": 36,
+    "sharedRoot": "Music",
+    "drive": "P:",
+    "rcloneVersion": "1.75.1"
+  },
+  "phoneToPc": {
+    "bytes": 20000000000,
+    "sha256": "f0149f07ccd93b301883c0e7e93ab662705f06dbd177651b9c9d75dae3ce7d82",
+    "copySeconds": 437.841,
+    "windowsHashSeconds": 32.706,
+    "hashMatched": true
+  },
+  "pcToPhone": {
+    "bytes": 20000000000,
+    "seed": 5251120,
+    "sha256": "e80a39bfe8e81342407323c668406e5c8815995c1886dde1f6e1ab875f9a1e8d",
+    "sourceGenerationSeconds": 266.871,
+    "vfsWriteSeconds": 473.964,
+    "backgroundUploadSeconds": 212.628,
+    "androidHashSeconds": 49.378,
+    "dirtyBeforeUpload": true,
+    "dirtyAfterUpload": false,
+    "temporaryPartBeforeCommit": true,
+    "temporaryPartAfterCommit": false,
+    "finalExactLength": true,
+    "hashMatched": true
+  },
+  "runtime": {
+    "driveStayedPresentDuringTransfers": true,
+    "maximumRcloneProcesses": 1,
+    "maximumDesktopProcesses": 1
+  },
+  "cleanup": {
+    "safeUnmountUtc": "2026-09-22T05:04:12.4845933Z",
+    "drivePresent": false,
+    "rcloneProcesses": 0,
+    "androidStopVerifiedUtc": "2026-09-22T05:09:11.5494634Z",
+    "androidSharingServicePresent": false,
+    "androidPort8273Present": false,
+    "androidCurrentWakeLockPresent": false,
+    "localLargeFilesRemoved": true,
+    "cleanTaskCacheRemoved": true,
+    "androidTaskDirectoryRemoved": true,
+    "androidHelperRemoved": true,
+    "desktopProcessesAfterFinalCleanup": 0
+  },
+  "notCovered": [
+    "manual Explorer drag and drop",
+    "video playback",
+    "random seek",
+    "disk full",
+    "transfer during reboot or sleep",
+    "simultaneous multi-device mounts"
+  ]
+}

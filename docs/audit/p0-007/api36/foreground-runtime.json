@@ -1,0 +1,47 @@
+{
+  "apk_sha256": "3d96a0c4f5aecf1f68cedc522392e06f7e5197db78fba97e891e0f71c0e86100",
+  "api": 36,
+  "checks": [
+    {
+      "name": "connected-device-service",
+      "result": "PASS",
+      "type_hex": "0x10",
+      "https": true
+    },
+    {
+      "name": "correct-type-survives-data-sync-test-limit",
+      "result": "PASS",
+      "shortened_data_sync_limit_ms": 5000,
+      "observed_background_seconds": 20
+    },
+    {
+      "name": "system-process-recreation-restores-sharing",
+      "result": "PASS",
+      "new_process": true,
+      "same_certificate": true,
+      "observed_seconds": 2.66
+    },
+    {
+      "name": "explicit-stop-remains-stopped",
+      "result": "PASS",
+      "observed_seconds": 10
+    },
+    {
+      "name": "auto-start-disabled",
+      "result": "PASS",
+      "method": "Actual reboot with new kernel boot ID"
+    },
+    {
+      "name": "actual-reboot-with-auto-start-enabled",
+      "result": "PASS",
+      "new_kernel_boot_id": true,
+      "https": true,
+      "same_certificate": null
+    },
+    {
+      "name": "user-force-stop-respected-across-reboot",
+      "result": "PASS",
+      "auto_start_preference_remained_enabled": true
+    }
+  ]
+}

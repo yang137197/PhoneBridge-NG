@@ -1,0 +1,22 @@
+{
+  "schema": 1,
+  "date": "2026-09-21",
+  "configuration": "Release",
+  "sdk": "10.0.401",
+  "build": {
+    "warnings": 0,
+    "errors": 0,
+    "evidence": ".audit/windows-verification/20260921-161755"
+  },
+  "tests": {
+    "desktop": 50,
+    "discovery": 54,
+    "mounting": 36,
+    "pairing": 50,
+    "connection": 18,
+    "credentials": 63,
+    "total": 271,
+    "failed": 0,
+    "skipped": 0
+  }
+}

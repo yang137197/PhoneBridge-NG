@@ -1,0 +1,18 @@
+{
+  "target": "phone36",
+  "tests": [
+    {
+      "test": "preflight",
+      "result": "PASS",
+      "apk_sha256": "a4383ddac27dccc3f2cc46704f1c389c8ad961d1d8e8205894d8cc8aebb2b88a",
+      "shared_storage_writes": false
+    },
+    {
+      "test": "cleanup",
+      "result": "PASS",
+      "sharing_stopped": true,
+      "adb_forward_removed": true,
+      "shared_storage_writes": false
+    }
+  ]
+}

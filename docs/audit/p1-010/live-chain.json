@@ -1,0 +1,41 @@
+{
+  "task": "P1-010",
+  "device": "Redmi K40",
+  "android": "16 / API 36",
+  "sharedFolder": "Music",
+  "beforeFix": {
+    "batteryOptimizationExempt": false,
+    "screen": "off, keyguard showing, dozing",
+    "wakeLock": "disabled by system",
+    "tcp8273FromWindows": false,
+    "driveAfterThreeHealthFailures": "absent",
+    "rcloneAfterThreeHealthFailures": 0
+  },
+  "afterFix": {
+    "batteryOptimizationExempt": true,
+    "screen": "off, keyguard showing, dozing",
+    "wakeLock": "held",
+    "tcp8273FromWindows": true,
+    "drive": "P:",
+    "existingFileRead": "passed",
+    "newFile": "/phonebridge-p1-010-lockscreen.txt",
+    "sha256OnWindows": "d56efab04e7ccb6a3ebec8726a49e636a9353eb92690d9fe3ce5ace41594906b",
+    "sha256OnAndroid": "d56efab04e7ccb6a3ebec8726a49e636a9353eb92690d9fe3ce5ace41594906b"
+  },
+  "wifiInterruption": {
+    "safeUnmount": true,
+    "driveWhileOffline": "absent",
+    "rcloneWhileOffline": 0,
+    "sameDeviceAutoReconnect": true,
+    "driveAfterRecovery": "P:",
+    "rcloneAfterRecovery": 1,
+    "readAfterRecovery": "passed while still locked"
+  },
+  "cleanup": {
+    "drivePresent": false,
+    "rcloneProcesses": 0,
+    "desktopProcesses": 0,
+    "androidService": "stopped",
+    "activeWakeLock": false
+  }
+}

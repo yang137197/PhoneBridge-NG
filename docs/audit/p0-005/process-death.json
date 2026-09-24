@@ -1,0 +1,10 @@
+{
+  "result": "PASS",
+  "old_bytes": 32768,
+  "old_sha256": "7723cfd6a625c987336492e22a3b1f19bfe71ed8c4496e5714b3855f2915a97d",
+  "after_death_sha256": "7723cfd6a625c987336492e22a3b1f19bfe71ed8c4496e5714b3855f2915a97d",
+  "after_restart_matches": true,
+  "retained_temporary_bytes": 100,
+  "temporary_not_published": true,
+  "scope": "Android app force-stop before complete body, not physical device power loss"
+}

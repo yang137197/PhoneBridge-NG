@@ -1,0 +1,55 @@
+{
+  "upstream_commit": "a378fec40561a4d18be2334f4de92ee02a0e7d0c",
+  "changed_from_p0_007": [
+    "android/app/src/androidTest/java/com/phonebridge/TlsServiceHost.kt",
+    "android/app/src/androidTest/java/com/phonebridge/server/TlsIdentityTest.kt",
+    "android/app/src/main/java/com/phonebridge/server/DeviceCertificates.kt",
+    "android/app/src/main/java/com/phonebridge/server/TlsHelper.kt",
+    "android/app/src/main/java/com/phonebridge/server/TlsIdentityStore.kt",
+    "android/app/src/main/java/com/phonebridge/server/WebDavServer.kt",
+    "android/app/src/main/java/com/phonebridge/service/PhoneBridgeService.kt",
+    "android/app/src/main/res/values-en/strings.xml",
+    "android/app/src/main/res/values/strings.xml",
+    "android/app/src/test/java/com/phonebridge/server/DeviceCertificatesTest.kt"
+  ],
+  "artifacts": [
+    {
+      "path": "android/patches/P0-009-tls-identity.patch",
+      "bytes": 131488,
+      "sha256": "35e9311827ebea8d4d49e2b94739b2be1d7f6c9ca0742d95b4b99bb8e95b94e6"
+    },
+    {
+      "path": ".audit/p0-009-worktree/android/app/build/outputs/apk/debug/app-debug.apk",
+      "bytes": 9706870,
+      "sha256": "a4383ddac27dccc3f2cc46704f1c389c8ad961d1d8e8205894d8cc8aebb2b88a"
+    },
+    {
+      "path": ".audit/p0-009-worktree/android/app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk",
+      "bytes": 658019,
+      "sha256": "e6c62d4fd05367feecb61f8640cf5263bc14c8c4d3bef648b1a3c34178587a5d"
+    }
+  ],
+  "build_exit_code": 0,
+  "unit_tests_passed": 25,
+  "lint_errors": 0,
+  "lint_warnings": 117,
+  "patch_forward_check": 0,
+  "patch_reverse_check": 0,
+  "diff_check": 0,
+  "phone_lan_result": "PASS",
+  "phone_runtime_exit_code": 0,
+  "phone_runtime_pass_rows": 18,
+  "phone_runtime_host_passes": 5,
+  "decision": "ADR-014",
+  "phase_0_complete": false,
+  "verification_scripts": [
+    {
+      "path": "tests/integration/upstream_chain/tls_runtime.py",
+      "sha256": "7ef882bf05825cf19eaf0a945a2dbb24feaf9eed83867fd2729a81ada712b852"
+    },
+    {
+      "path": "tests/integration/upstream_chain/tls_instrumentation.py",
+      "sha256": "ed1c07d0344d99ddabbf8574940a8392f27b9b550ce6640066bf3bb71958a5c6"
+    }
+  ]
+}

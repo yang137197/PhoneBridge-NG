@@ -1,0 +1,31 @@
+{
+  "target": "api26",
+  "tests": [
+    {
+      "test": "preflight",
+      "result": "PASS",
+      "apk_sha256": "ca406cc03874f88a1b318ea900689079a06db4c567b5693fa678aa8bc6257fd9",
+      "shared_storage_writes": false
+    },
+    {
+      "test": "legacy_identity_stops_sharing",
+      "result": "PASS",
+      "plaintext_http_response_bytes": 0,
+      "foreground_service": false
+    },
+    {
+      "test": "explicit_experiment_identity_migration",
+      "result": "PASS",
+      "retired_pkcs12_sha256": "0004f72099330bba36f0da5345e2997bf2e642f583532ed3b06809b55b292c93",
+      "reset_formal_pairing": false,
+      "removed_only": "files/phonebridge_keystore.p12"
+    },
+    {
+      "test": "cleanup",
+      "result": "PASS",
+      "sharing_stopped": true,
+      "adb_forward_removed": true,
+      "shared_storage_writes": false
+    }
+  ]
+}

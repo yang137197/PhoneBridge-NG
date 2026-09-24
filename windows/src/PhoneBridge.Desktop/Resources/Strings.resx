@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <data name="TimedOut" xml:space="preserve"><value>Request timed out. Saved pairing state is retained; if approval succeeded on the phone, use Connect / recover.</value></data>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <data name="Introduction" xml:space="preserve"><value>Connect your phone on the same Wi-Fi. Start sharing and open pairing on the phone.</value></data>
+  <data name="ReadOnlyNotice" xml:space="preserve"><value>Set access mode per computer on the phone. Windows uses only the mode confirmed by the phone session. Safe mode never replaces existing files and requires confirmation for deletion.</value></data>
+  <data name="WinFspAttribution" xml:space="preserve"><value>WinFsp - Windows File System Proxy, Copyright (C) Bill Zissimopoulos · </value></data>
+  <data name="ConfirmedMode" xml:space="preserve"><value>Phone-confirmed mode</value></data>
+  <data name="NotPaired" xml:space="preserve"><value>Not paired</value></data>
+  <data name="ConnectionChecking" xml:space="preserve"><value>Checking the active phone session…</value></data>
+  <data name="ConnectionHealthy" xml:space="preserve"><value>Phone session is healthy.</value></data>
+  <data name="ConnectionRetry" xml:space="preserve"><value>Phone check failed ({0}/{1}); the drive remains mounted while the failure is confirmed.</value></data>
+  <data name="ConnectionLost" xml:space="preserve"><value>Phone connection is unavailable. Safely unmounting before recovery…</value></data>
+  <data name="ReconnectWaiting" xml:space="preserve"><value>Waiting for the same paired phone to reappear…</value></data>
+  <data name="Reconnecting" xml:space="preserve"><value>The paired phone is available. Verifying identity and reconnecting…</value></data>
+  <data name="ReconnectComplete" xml:space="preserve"><value>The paired phone and original drive were reconnected.</value></data>
+  <data name="ReconnectBackoff" xml:space="preserve"><value>Reconnect failed. Retrying in {0} seconds.</value></data>
+  <data name="DeletePath" xml:space="preserve"><value>Phone path to delete (starts with /)</value></data>
+  <data name="DeleteConfirmed" xml:space="preserve"><value>Confirm deletion…</value></data>
+  <data name="DeleteConfirm" xml:space="preserve"><value>Permanently delete this phone item?&#10;&#10;Path: {0}&#10;Type: {1}&#10;Size: {2} bytes&#10;&#10;Confirmation expires after 30 seconds and is rejected if the item changes.</value></data>
+  <data name="Directory" xml:space="preserve"><value>Folder</value></data>
+  <data name="File" xml:space="preserve"><value>File</value></data>
+  <data name="delete-cancelled" xml:space="preserve"><value>Deletion cancelled. The phone item was not changed.</value></data>
+  <data name="invalid-delete-path" xml:space="preserve"><value>Enter a specific path inside the share beginning with /. The share root cannot be deleted.</value></data>
+  <data name="Refresh" xml:space="preserve"><value>Refresh</value></data>
+  <data name="Devices" xml:space="preserve"><value>Nearby phones and saved pairings</value></data>
+  <data name="DeviceName" xml:space="preserve"><value>Phone</value></data>
+  <data name="DeviceState" xml:space="preserve"><value>Status</value></data>
+  <data name="Address" xml:space="preserve"><value>Address</value></data>
+  <data name="Drive" xml:space="preserve"><value>Drive</value></data>
+  <data name="PairingCode" xml:space="preserve"><value>8-digit code on phone</value></data>
+  <data name="Pair" xml:space="preserve"><value>Pair and connect</value></data>
+  <data name="Connect" xml:space="preserve"><value>Connect / recover</value></data>
+  <data name="Cancel" xml:space="preserve"><value>Cancel</value></data>
+  <data name="Open" xml:space="preserve"><value>Open drive</value></data>
+  <data name="Unmount" xml:space="preserve"><value>Unmount</value></data>
+  <data name="Revoke" xml:space="preserve"><value>Revoke pairing</value></data>
+  <data name="Forget" xml:space="preserve"><value>Forget locally…</value></data>
+  <data name="Ready" xml:space="preserve"><value>Select a phone to begin.</value></data>
+  <data name="Completed" xml:space="preserve"><value>Operation completed.</value></data>
+  <data name="OperationCancelled" xml:space="preserve"><value>Cancelled. Any unconfirmed remote authorization remains disabled locally; check the saved pairing status.</value></data>
+  <data name="AlreadyRunning" xml:space="preserve"><value>PhoneBridge NG is already running for this user.</value></data>
+  <data name="DiscoveryFailed" xml:space="preserve"><value>Discovery stopped. Check the network, then restart the app.</value></data>
+  <data name="StoreFailed" xml:space="preserve"><value>Protected pairing records could not be read or updated. Connections are disabled; no records were replaced.</value></data>
+  <data name="OperationFailed" xml:space="preserve"><value>Operation did not complete. Check phone sharing and Wi-Fi, then retry. Saved pairing state is retained.</value></data>
+  <data name="MountedAt" xml:space="preserve"><value>{0}:\ · {1} · {2}</value></data>
+  <data name="ReadOnly" xml:space="preserve"><value>read-only</value></data>
+  <data name="Safe" xml:space="preserve"><value>safe mode</value></data>
+  <data name="ReadWrite" xml:space="preserve"><value>full read/write</value></data>
+  <data name="NoMount" xml:space="preserve"><value>No drive mounted.</value></data>
+  <data name="Offline" xml:space="preserve"><value>Offline</value></data>
+  <data name="InvalidCode" xml:space="preserve"><value>Enter the 8 digits displayed on the phone.</value></data>
+  <data name="OpenFailed" xml:space="preserve"><value>Could not open File Explorer. The drive may still be mounted.</value></data>
+  <data name="RevokeConfirm" xml:space="preserve"><value>Disable this pairing, unmount its drive, and request revocation on the phone? If the phone is offline, a disabled record will remain for retry.</value></data>
+  <data name="ForgetConfirm" xml:space="preserve"><value>This removes only the local record. The phone may still authorize this computer. Revoke this computer on the phone before pairing again. Continue?</value></data>
+  <data name="Closing" xml:space="preserve"><value>Closing: cancelling work and unmounting the owned drive…</value></data>
+  <data name="TrayOpen" xml:space="preserve"><value>Open PhoneBridge NG</value></data>
+  <data name="TrayExit" xml:space="preserve"><value>Exit</value></data>
+  <data name="TrayOffline" xml:space="preserve"><value>PhoneBridge NG · offline</value></data>
+  <data name="TrayDiscovered" xml:space="preserve"><value>PhoneBridge NG · phone discovered</value></data>
+  <data name="TrayConnecting" xml:space="preserve"><value>PhoneBridge NG · connecting</value></data>
+  <data name="TrayMounted" xml:space="preserve"><value>PhoneBridge NG · drive connected</value></data>
+  <data name="TrayError" xml:space="preserve"><value>PhoneBridge NG · action required</value></data>
+  <data name="TrayUnavailable" xml:space="preserve"><value>The system tray icon could not be created. Closing the main window will safely exit this session.</value></data>
+  <data name="AutoStart" xml:space="preserve"><value>Run PhoneBridge NG when I sign in to Windows</value></data>
+  <data name="AutoStartEnabled" xml:space="preserve"><value>Startup at sign-in is enabled for this user. PhoneBridge NG will start in the tray.</value></data>
+  <data name="AutoStartDisabled" xml:space="preserve"><value>Startup at sign-in is disabled for this user.</value></data>
+  <data name="autostart-invalid-path" xml:space="preserve"><value>The current application path cannot be used for startup.</value></data>
+  <data name="autostart-command-too-long" xml:space="preserve"><value>The application path is too long to register a safe Windows startup command.</value></data>
+  <data name="autostart-entry-conflict" xml:space="preserve"><value>The startup entry was changed externally or belongs to another command. PhoneBridge NG did not overwrite it.</value></data>
+  <data name="autostart-read-failed" xml:space="preserve"><value>The current-user startup setting could not be read, so this option is disabled.</value></data>
+  <data name="autostart-write-failed" xml:space="preserve"><value>The startup setting could not be confirmed. An existing entry was not silently replaced.</value></data>
+  <data name="Pending" xml:space="preserve"><value>Awaiting confirmation — recover or revoke</value></data>
+  <data name="Active" xml:space="preserve"><value>Paired</value></data>
+  <data name="RevocationPending" xml:space="preserve"><value>Disabled — remote revocation unconfirmed</value></data>
+  <data name="NeedsRepair" xml:space="preserve"><value>Pairing storage needs repair</value></data>
+  <data name="Experimental" xml:space="preserve"><value>Experimental v2 — unsupported</value></data>
+  <data name="EnablePairing" xml:space="preserve"><value>Open pairing on phone</value></data>
+  <data name="PairingAvailable" xml:space="preserve"><value>Ready for code</value></data>
+  <data name="ConfirmingCode" xml:space="preserve"><value>Confirming the code and phone identity…</value></data>
+  <data name="SavingPending" xml:space="preserve"><value>Saving a protected pending record…</value></data>
+  <data name="WaitingApproval" xml:space="preserve"><value>Approve this computer on the phone. Keep the phone pairing screen open.</value></data>
+  <data name="Validating" xml:space="preserve"><value>Verifying authorization and share readiness…</value></data>
+  <data name="Mounting" xml:space="preserve"><value>Connecting the drive…</value></data>
+  <data name="RecoveringWrites" xml:space="preserve"><value>Recovering files cached before the interruption…</value></data>
+  <data name="recovery-stalled-cache-retained" xml:space="preserve"><value>Cached-file recovery stopped making progress. The drive and cache were retained; keep phone sharing and the network available, then retry Unmount.</value></data>
+  <data name="recovery-timeout-cache-retained" xml:space="preserve"><value>Cached-file recovery reached its maximum duration. The drive and cache were retained; retry Unmount when the phone is available.</value></data>
+  <data name="recovery-cancelled-cache-retained" xml:space="preserve"><value>Waiting was cancelled while cached files were recovering. The drive and cache were retained; retry Unmount to finish safely.</value></data>
+  <data name="Mounted" xml:space="preserve"><value>Drive connected. Select Open drive to browse.</value></data>
+  <data name="Revoking" xml:space="preserve"><value>Revoking this pairing…</value></data>
+  <data name="unmount-not-confirmed" xml:space="preserve"><value>Unmounting was not confirmed. Retry Unmount or close again; ownership is retained.</value></data>
+  <data name="pending-writes-not-confirmed" xml:space="preserve"><value>Files are still waiting to upload. The drive and local cache were retained. Keep phone sharing and the network available, then retry Unmount.</value></data>
+  <data name="invalid-endpoint" xml:space="preserve"><value>The advertised address is invalid. Refresh discovery.</value></data>
+  <data name="v3-required" xml:space="preserve"><value>This client requires PhoneBridge NG v3.</value></data>
+  <data name="pairing-window-required" xml:space="preserve"><value>Open a new pairing window on the phone, then refresh.</value></data>
+  <data name="identity-mismatch" xml:space="preserve"><value>Phone identity did not match. Connection stopped.</value></data>
+  <data name="invalid-response" xml:space="preserve"><value>The phone returned an invalid response. No connection was authorized.</value></data>
+  <data name="authorization-unconfirmed" xml:space="preserve"><value>The saved token is not authorized yet. Approve on the phone, then recover; otherwise revoke this pending pairing.</value></data>
+  <data name="share-not-ready" xml:space="preserve"><value>Phone sharing is not ready. Check its selected folder and permissions.</value></data>
+  <data name="record-changed" xml:space="preserve"><value>Pairing state changed. Refresh before reconnecting.</value></data>
+  <data name="mode-changed" xml:space="preserve"><value>The phone changed this computer’s access mode. The old drive was safely unmounted; reconnect to apply the new phone-confirmed mode.</value></data>
+  <data name="mount-already-active" xml:space="preserve"><value>Unmount the current drive before connecting another.</value></data>
+  <data name="operation-in-progress" xml:space="preserve"><value>Another operation is still running.</value></data>
+  <data name="revocation-unconfirmed" xml:space="preserve"><value>Disabled locally. Remote revocation is not confirmed; retry when online, or revoke on the phone.</value></data>
+  <data name="drive-occupied" xml:space="preserve"><value>Choose an available drive letter.</value></data>
+  <data name="drive-reserved" xml:space="preserve"><value>This drive letter is reserved by another session.</value></data>
+  <data name="winfsp-missing" xml:space="preserve"><value>WinFsp is required. Install the verified project dependency before connecting.</value></data>
+  <data name="rclone-hash-mismatch" xml:space="preserve"><value>The bundled rclone file did not pass integrity verification.</value></data>
+  <data name="unauthorized" xml:space="preserve"><value>Authorization is no longer valid. Recover the saved pairing or open a new pairing window.</value></data>
+  <data name="rejected" xml:space="preserve"><value>The phone rejected this operation because the current mode or target does not allow it.</value></data>
+  <data name="cancelled" xml:space="preserve"><value>The phone pairing window was cancelled.</value></data>
+  <data name="conflict" xml:space="preserve"><value>The target or state changed, so the operation was not performed. Refresh and try again.</value></data>
+  <data name="capacity" xml:space="preserve"><value>Phone pairing capacity or request limit reached. Wait before retrying.</value></data>
+  <data name="storage_failure" xml:space="preserve"><value>The phone could not persist authorization. Sharing stopped; revocation is not confirmed.</value></data>
+  <data name="ExportDiagnostics" xml:space="preserve"><value>Export diagnostics…</value></data>
+  <data name="DiagnosticsZipFilter" xml:space="preserve"><value>ZIP diagnostic bundle (*.zip)|*.zip</value></data>
+  <data name="DiagnosticsExported" xml:space="preserve"><value>The redacted diagnostic bundle was saved. It was not uploaded.</value></data>
+  <data name="DiagnosticsExportFailed" xml:space="preserve"><value>The diagnostic bundle could not be saved. Existing local logs were retained.</value></data>
+  <data name="ManualAddress" xml:space="preserve"><value>Manual IP for saved pairing</value></data>
+  <data name="ManualPort" xml:space="preserve"><value>HTTPS port</value></data>
+  <data name="UseManualAddress" xml:space="preserve"><value>Use manual address</value></data>
+  <data name="ClearManualAddress" xml:space="preserve"><value>Clear manual address</value></data>
+  <data name="ManualEndpointInvalid" xml:space="preserve"><value>Enter a literal IPv4 or IPv6 address and a port from 1 to 65535. URLs and host names are not accepted.</value></data>
+  <data name="ManualEndpointAdded" xml:space="preserve"><value>The temporary address is selected for this saved pairing. Identity verification remains required.</value></data>
+  <data name="ManualEndpointCleared" xml:space="preserve"><value>The temporary address was cleared.</value></data>
+</root>

@@ -1,0 +1,60 @@
+{
+  "schema": 1,
+  "date": "2026-09-21",
+  "device": {
+    "model": "Samsung SM-S9180",
+    "android": "16",
+    "pairing": "existing protected record"
+  },
+  "inputLifecycle": {
+    "wrongPortRejectedWithoutMount": true,
+    "correctEndpointMounted": true,
+    "clearPreservedActiveMount": true,
+    "addressEmptyAfterRestart": true,
+    "clearDisabledAfterRestart": true
+  },
+  "mdnsBlocked": {
+    "method": "temporary Windows inbound and outbound UDP 5353 block",
+    "tcpFilePortRemainedReachable": true,
+    "savedOfflineRows": 2,
+    "mdnsCandidateRows": 0,
+    "manualMountSucceeded": true,
+    "rootReadSucceeded": true
+  },
+  "recovery": {
+    "wifiDisabled": true,
+    "safeUnmountObserved": true,
+    "unmountSecondsApproximate": 34,
+    "rcloneStopped": true,
+    "wifiRestored": true,
+    "addressUnchanged": true,
+    "remountedWithoutMdns": true,
+    "sameDrive": "P"
+  },
+  "diagnostics": {
+    "files": 1,
+    "jsonLines": 101,
+    "validJsonLines": 101,
+    "manualEndpointEvents": 5,
+    "manualIpMatches": 0,
+    "wrongPortMatches": 0,
+    "authorizationPatternMatches": 0
+  },
+  "cleanup": {
+    "windowsDriveAbsent": true,
+    "windowsDesktopAbsent": true,
+    "rcloneAbsent": true,
+    "firewallRulesAbsent": true,
+    "autostartAbsent": true,
+    "androidServiceAbsent": true,
+    "androidNotificationAbsent": true,
+    "androidWakeLockAbsent": true,
+    "androidPortClosed": true
+  },
+  "notTested": [
+    "real IPv6 manual connection",
+    "manual update after DHCP address change",
+    "first pairing without mDNS",
+    "enterprise VLAN and third-party firewall variants"
+  ]
+}

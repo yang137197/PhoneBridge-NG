@@ -1,0 +1,19 @@
+{
+  "unchanged_protocol_and_storage_files": [
+    "android/app/src/main/java/com/phonebridge/server/SharedStorage.kt",
+    "android/app/src/main/java/com/phonebridge/server/SharedPath.kt",
+    "android/app/src/main/java/com/phonebridge/server/RequestBody.kt",
+    "android/app/src/main/java/com/phonebridge/server/HttpByteRange.kt",
+    "android/app/src/main/java/com/phonebridge/server/WebDavServer.kt",
+    "android/app/src/main/java/com/phonebridge/server/XmlResponseBuilder.kt"
+  ],
+  "dependency_versions_unchanged": true,
+  "new_or_modified_relative_to_p0_006": [
+    "android/app/build.gradle.kts",
+    "android/app/src/main/AndroidManifest.xml",
+    "android/app/src/main/java/com/phonebridge/MainActivity.kt",
+    "android/app/src/main/java/com/phonebridge/receiver/BootReceiver.kt",
+    "android/app/src/main/java/com/phonebridge/service/PhoneBridgeService.kt",
+    "android/app/src/androidTest/java/com/phonebridge/ServicePolicyTest.kt"
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "checkedAt": "2026-09-19T09:49:26.5845510+08:00",
+  "upstream": "https://github.com/ysachin26/PhoneBridge",
+  "commit": "a378fec40561a4d18be2334f4de92ee02a0e7d0c",
+  "commitDate": "2026-04-25T16:36:45+05:30",
+  "branch": "main",
+  "trackedFiles": 83,
+  "issuesIncludingPullRequests": 0,
+  "releases": 0,
+  "tags": 0,
+  "githubLicense": "NOASSERTION",
+  "trackedSourceChanges": 0,
+  "installerSignature": "NotSigned",
+  "hashes": [
+    {
+      "file": "LICENSE",
+      "sha256": "65E827BC94B56F1AF927B7DC99AEF5F172B0FA358B5B671A197755B51AB64E43"
+    },
+    {
+      "file": "PhoneBridge_Setup.exe",
+      "sha256": "93CD9853257B36E203E00963AB35CC0E477039B1879A177AEE8901E46CAA3694"
+    },
+    {
+      "file": "NanoHTTPD-2.3.1.java",
+      "sha256": "D326E45EE0ED1E465AF59510FBFFC044413A9C05BEDE470D83D8BA2B0B37C923"
+    }
+  ],
+  "dotnetSdks": [],
+  "dotnetRuntimes": [
+    "Microsoft.NETCore.App 9.0.19 [C:\\Program Files\\dotnet\\shared\\Microsoft.NETCore.App]",
+    "Microsoft.NETCore.App 10.0.11 [C:\\Program Files\\dotnet\\shared\\Microsoft.NETCore.App]",
+    "Microsoft.WindowsDesktop.App 9.0.19 [C:\\Program Files\\dotnet\\shared\\Microsoft.WindowsDesktop.App]",
+    "Microsoft.WindowsDesktop.App 10.0.11 [C:\\Program Files\\dotnet\\shared\\Microsoft.WindowsDesktop.App]"
+  ]
+}

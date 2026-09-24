@@ -1,0 +1,26 @@
+{
+  "sha256": "0af441d83cf97aa3606842d1c5eefb5f970fcab08f109f4e463ea988c6ef6841",
+  "subject": [
+    [
+      [
+        "commonName",
+        "PhoneBridge Server"
+      ]
+    ],
+    [
+      [
+        "organizationName",
+        "PhoneBridge"
+      ]
+    ],
+    [
+      [
+        "localityName",
+        "Local"
+      ]
+    ]
+  ],
+  "subject_alt_names": [],
+  "bootstrap": "Public certificate only, USB ADB",
+  "private_key_exported": false
+}

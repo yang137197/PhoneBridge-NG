@@ -1,0 +1,76 @@
+{
+  "target": "api26",
+  "tests": [
+    {
+      "test": "preflight",
+      "result": "PASS",
+      "apk_sha256": "a4383ddac27dccc3f2cc46704f1c389c8ad961d1d8e8205894d8cc8aebb2b88a",
+      "shared_storage_writes": false
+    },
+    {
+      "test": "rclone_correct_identity_loopback",
+      "result": "PASS",
+      "exit_code": 0,
+      "tls_verification_disabled": false,
+      "error": null,
+      "url": "https://127.0.0.1:18275/"
+    },
+    {
+      "test": "stable_identity_metadata",
+      "result": "PASS",
+      "identity_certificate_sha256": "ac9f142e0f4ef49aaeb93beffffcb52eee2289fb9d89ca5d31997794d98ae8ca",
+      "verified_status_tls_version": "TLSv1.2"
+    },
+    {
+      "test": "rclone_wrong_identity_rejected",
+      "result": "PASS",
+      "exit_code": 1,
+      "tls_verification_disabled": false,
+      "error": "2026/09/19 13:39:41 ERROR : error listing: couldn't list files: Propfind \"https://127.0.0.1:18275/\": tls: failed to verify certificate: x509: certificate signed by unknown authority",
+      "url": "https://127.0.0.1:18275/"
+    },
+    {
+      "test": "rclone_wrong_address_rejected",
+      "result": "PASS",
+      "exit_code": 1,
+      "tls_verification_disabled": false,
+      "error": "2026/09/19 13:39:42 ERROR : error listing: couldn't list files: Propfind \"https://localhost:18275/\": tls: failed to verify certificate: x509: certificate is not valid for any names, but wanted to match localhost",
+      "url": "https://localhost:18275/"
+    },
+    {
+      "test": "negative_tls_sent_no_http_requests",
+      "result": "PASS",
+      "request_count_difference": 1,
+      "expected_status_probe_requests": 1
+    },
+    {
+      "test": "process_restart_preserves_paired_identity",
+      "result": "PASS",
+      "exit_code": 0,
+      "tls_verification_disabled": false,
+      "error": null,
+      "url": "https://127.0.0.1:18275/"
+    },
+    {
+      "test": "corrupt_identity_stops_sharing",
+      "result": "PASS",
+      "plaintext_http_response_bytes": 0,
+      "foreground_service": false
+    },
+    {
+      "test": "same_identity_recovers_after_public_metadata_restore",
+      "result": "PASS",
+      "exit_code": 0,
+      "tls_verification_disabled": false,
+      "error": null,
+      "url": "https://127.0.0.1:18275/"
+    },
+    {
+      "test": "cleanup",
+      "result": "PASS",
+      "sharing_stopped": true,
+      "adb_forward_removed": true,
+      "shared_storage_writes": false
+    }
+  ]
+}

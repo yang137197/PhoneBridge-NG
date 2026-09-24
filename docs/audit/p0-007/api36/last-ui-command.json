@@ -1,0 +1,7 @@
+{
+  "launch": "Starting: Intent { cmp=com.phonebridge/.MainActivity }\r\n",
+  "dump": "",
+  "dump_stderr": "ERROR: null root node returned by UiTestAutomationBridge.\r\n",
+  "exit_code": 0,
+  "path": "/sdcard/p0-007-window-1789792614789858000.xml"
+}

@@ -1,0 +1,66 @@
+{
+  "schema": 1,
+  "task": "P1-019",
+  "date": "2026-09-22",
+  "environment": {
+    "phoneModel": "SM-S9180",
+    "androidRelease": "16",
+    "api": 36,
+    "shareRoot": "Music",
+    "drive": "P:",
+    "rclone": "1.75.1"
+  },
+  "sample": {
+    "bytes": 4000000000,
+    "sha256": "ddd45e35df0b676747319e4da247e7dc78b53cb99cba1411f1db51ebf4202efb"
+  },
+  "failedReproductions": [
+    {
+      "variant": "remote-validation-before-recovery-state",
+      "connectionStartedUtc": "2026-09-22T03:09:17.0274997Z",
+      "timeoutUtc": "2026-09-22T03:09:47.0311520Z",
+      "result": "upload completed later; second connection mounted"
+    },
+    {
+      "variant": "drive-check-moved-after-vfs-rc",
+      "connectionStartedUtc": "2026-09-22T03:14:45.6043201Z",
+      "timeoutUtc": "2026-09-22T03:15:15.5971749Z",
+      "result": "VFS RC call remained behind recovery upload"
+    }
+  ],
+  "finalAcceptance": {
+    "copyMilliseconds": 4114,
+    "dirtyEntriesBeforeInterruption": 1,
+    "connectionStartedUtc": "2026-09-22T03:23:02.6280916Z",
+    "recoveringUtc": "2026-09-22T03:23:04.6338511Z",
+    "mountedUtc": "2026-09-22T03:24:18.9062462Z",
+    "connectionToMountedMilliseconds": 76278,
+    "recoveryStateMilliseconds": 74272,
+    "timeoutOrStoppingBetweenStartAndMounted": false,
+    "maximumRcloneCount": 1,
+    "driveAbsentDuringRecovery": true,
+    "dirtyAfterMounted": false,
+    "androidBytes": 4000000000,
+    "androidSha256": "ddd45e35df0b676747319e4da247e7dc78b53cb99cba1411f1db51ebf4202efb"
+  },
+  "windowsVerification": {
+    "sdk": "10.0.401",
+    "configuration": "Release",
+    "warnings": 0,
+    "errors": 0,
+    "testsPassed": 279,
+    "testsFailed": 0
+  },
+  "cleanup": {
+    "phoneTaskDirectoryPresent": false,
+    "localSamplePresent": false,
+    "taskCacheDataPresent": false,
+    "taskCacheMetadataPresent": false,
+    "drivePresent": false,
+    "rcloneCount": 0,
+    "desktopCount": 0,
+    "androidSharingServicePresent": false,
+    "androidPort8273Listening": false,
+    "phoneBridgeWakeLockPresent": false
+  }
+}

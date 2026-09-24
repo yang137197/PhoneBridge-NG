@@ -1,0 +1,28 @@
+{
+  "run_id": "P0-010-b6c1a9b15c6e",
+  "checks": [
+    {
+      "test": "regression_background_state",
+      "result": "PASS",
+      "resumed_activity": [
+        "ResumedActivity: ActivityRecord{247283876 u0 com.miui.home/.launcher.Launcher t2}"
+      ],
+      "launcher_foreground": true
+    },
+    {
+      "test": "test_teardown_foreground",
+      "result": "PASS",
+      "system_policy_changed": false
+    },
+    {
+      "test": "background_shutdown_regression",
+      "result": "PASS",
+      "native_host_result": "OK (1 test)",
+      "sharing_stopped": true,
+      "control_files_removed": true,
+      "adb_forwards": 0
+    }
+  ],
+  "fixtures_retained": true,
+  "transport": "Phone Wi-Fi to PC Ethernet on same LAN"
+}

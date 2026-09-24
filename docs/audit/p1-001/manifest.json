@@ -1,0 +1,141 @@
+{
+  "sdk": "10.0.401",
+  "runtime": "10.0.12",
+  "windows_sdk_pack": "10.0.19041.57",
+  "build": {
+    "exit_code": 0,
+    "warnings": 0,
+    "errors": 0
+  },
+  "locked_restore_exit": 0,
+  "package_signature_verification_exit": 0,
+  "sources": [
+    {
+      "path": "scripts/Verify-Windows.ps1",
+      "sha256": "060d742caf4e95604b09ade2cbfcb036794badc04656ff260c5d7ec50e6e31bf"
+    },
+    {
+      "path": "tests/integration/windows_discovery/real_device_discovery.py",
+      "sha256": "d2586f0dfda092e4312a83c76b5b86e2b5ad87d37f6462c3f0710afff26967a6"
+    },
+    {
+      "path": "windows/Directory.Build.props",
+      "sha256": "c9e99ee033cbfae6d16c435c2c85e510f32f5c2787ef03db0e61658c4a898af7"
+    },
+    {
+      "path": "windows/global.json",
+      "sha256": "81f3badff5b53299a8b2bbab7bd5834763c05f4b7d7c045d80127446354d54c5"
+    },
+    {
+      "path": "windows/NuGet.Config",
+      "sha256": "f545a7e2ea14ac53cdfb91217cae67b8ff14275313f6298f9a3331d205b6c948"
+    },
+    {
+      "path": "windows/PhoneBridge.Windows.slnx",
+      "sha256": "b70b8c007a4e99db08bf35443bf8bd71d63264872dc7bb810b0a0ff57c7cb736"
+    },
+    {
+      "path": "windows/src/PhoneBridge.Discovery/CandidateRegistry.cs",
+      "sha256": "cb8f328be8a8f31e95228d6a840cd643f22a5ffb2cd51fa5dc0ff12ae209ac70"
+    },
+    {
+      "path": "windows/src/PhoneBridge.Discovery/DeviceCandidate.cs",
+      "sha256": "7a591fd0391a1cfedcba8c568a2fd79e94d2b726b2058adfc1b4c3aaf80c24d8"
+    },
+    {
+      "path": "windows/src/PhoneBridge.Discovery/packages.lock.json",
+      "sha256": "6d68a9226aeef5493d7459517549d4973f96e781be1d4a31dc29963e13f505fc"
+    },
+    {
+      "path": "windows/src/PhoneBridge.Discovery/PhoneBridge.Discovery.csproj",
+      "sha256": "8d654c44b7bebb6b31a9f2f606927f45b5072193adc4eef8cce3f3cf3b278df3"
+    },
+    {
+      "path": "windows/src/PhoneBridge.Discovery.Diagnostics/packages.lock.json",
+      "sha256": "e612abe343a65ff6dea829bb79b95edbc24bf05c4f795e4549cc3c67f57a3661"
+    },
+    {
+      "path": "windows/src/PhoneBridge.Discovery.Diagnostics/PhoneBridge.Discovery.Diagnostics.csproj",
+      "sha256": "845dfd9281c1302ab927282e9145593cd5ac02ccb6336cc50b842c9a8fad69d8"
+    },
+    {
+      "path": "windows/src/PhoneBridge.Discovery.Diagnostics/Program.cs",
+      "sha256": "23fa16d299665b6b5814eafafb05325ff617a7a8178fd0bff84e56fdc5d0de86"
+    },
+    {
+      "path": "windows/src/PhoneBridge.Discovery.Diagnostics/Resources/Strings.en-US.resx",
+      "sha256": "2369558e8a2313275a2e3735702b1832d68115670c226140adf8ffc496217387"
+    },
+    {
+      "path": "windows/src/PhoneBridge.Discovery.Diagnostics/Resources/Strings.resx",
+      "sha256": "48c6d9669536539843f289ffafd6b665904dd64edbd3eb1486717bdfc005c6e1"
+    },
+    {
+      "path": "windows/src/PhoneBridge.Discovery.Diagnostics/Resources/Strings.zh-CN.resx",
+      "sha256": "48c6d9669536539843f289ffafd6b665904dd64edbd3eb1486717bdfc005c6e1"
+    },
+    {
+      "path": "windows/src/PhoneBridge.Discovery.Windows/DiscoveryService.cs",
+      "sha256": "28d3e0c38835406f0afb28f4478458a7e4285b2c192f4d124050ce5a0dd59ffb"
+    },
+    {
+      "path": "windows/src/PhoneBridge.Discovery.Windows/packages.lock.json",
+      "sha256": "f566fd54129c58eb14d36195d1422cb9d9e2478ca9934be03fa79b7d3f8080ec"
+    },
+    {
+      "path": "windows/src/PhoneBridge.Discovery.Windows/PhoneBridge.Discovery.Windows.csproj",
+      "sha256": "3d7323ff2248039e17e46990659cb7edbb520b03d6e36bb52c8d5f155c5259a0"
+    },
+    {
+      "path": "windows/src/PhoneBridge.Discovery.Windows/WatcherProperties.cs",
+      "sha256": "9e6deaf46e02a146c345cbd68ecc9a9fca3e0da32c26840175d435a1a602b4ff"
+    },
+    {
+      "path": "windows/src/PhoneBridge.Discovery.Windows/WindowsDeviceWatcher.cs",
+      "sha256": "72a82eb95980cf02db5460b54221a05811bed37e4cbb565a7a6148d5d7bb9f90"
+    },
+    {
+      "path": "windows/tests/PhoneBridge.Discovery.Tests/CandidateTests.cs",
+      "sha256": "7a6d6cbe5ce26144cc331c59d1247df4b502b51b7dd68d322e53e102a8422567"
+    },
+    {
+      "path": "windows/tests/PhoneBridge.Discovery.Tests/MSTestSettings.cs",
+      "sha256": "68322dad2588cbdf4ac1c615b3f13ba90795f843c10cbd4476fec1ca64d8fccc"
+    },
+    {
+      "path": "windows/tests/PhoneBridge.Discovery.Tests/packages.lock.json",
+      "sha256": "768c0656967c2952b41294ffa645b2b3010e346f1fe3911b20a4ed3d48af8118"
+    },
+    {
+      "path": "windows/tests/PhoneBridge.Discovery.Tests/PhoneBridge.Discovery.Tests.csproj",
+      "sha256": "73372797040dbf4acced7048bed4dade609cc62cf57e528922bb2803212b1b79"
+    },
+    {
+      "path": "windows/tests/PhoneBridge.Discovery.Tests/ServiceTests.cs",
+      "sha256": "eaa29e99295fc8615c34cb8e2f9b1f9d287209d3eb7a396b844a2b01f0690150"
+    }
+  ],
+  "binaries": [
+    {
+      "file": "Microsoft.Windows.SDK.NET.dll",
+      "sha256": "0ec371d93798852e36461c8adddbeadce0f963a04752f0b64e54fe19c1c834a7"
+    },
+    {
+      "file": "PhoneBridge.Discovery.Diagnostics.dll",
+      "sha256": "38bb91a175cc8deac22069c97833ac5251f80523a35299b01afcaf907dbab703"
+    },
+    {
+      "file": "PhoneBridge.Discovery.dll",
+      "sha256": "f9262d20865ca79bceeb196d8f9870e27bc461e3b6251e11586ebe482bc4decb"
+    },
+    {
+      "file": "PhoneBridge.Discovery.Windows.dll",
+      "sha256": "e385817235c9de867d410b8a0d4324fc3c7c6ac9675647bbdb96ad2fec9b4a4e"
+    },
+    {
+      "file": "WinRT.Runtime.dll",
+      "sha256": "bcf3a14e8712a90837fc5c0d8c8a24696af2bd7f74e9767597ec81ededfb23db"
+    }
+  ],
+  "sdk_pack_content_hash": "TI9FqukRZSFfSZ6fLh0cjO0X0OIAn5vZKGU/iNzINt3IZeK7o9Y1Dmtp+xwEv696XO1cHMB7aUqTjql3/KY9xg=="
+}

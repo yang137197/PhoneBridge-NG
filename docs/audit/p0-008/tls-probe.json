@@ -1,0 +1,8 @@
+{
+  "rclone_exit_code": 1,
+  "certificate_verification_enabled": true,
+  "credentials_sent": false,
+  "tls_identity_rejected": true,
+  "status": "FAIL",
+  "file_transfer_attempted": false
+}

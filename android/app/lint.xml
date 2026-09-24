@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lint>
+    <!-- bcpkix 1.86 includes unused EST bootstrap JcaJceUtils.getTrustAllTrustManager().
+         PhoneBridge imports cert/operator builders only and never calls EST or registers a BC TLS provider.
+         Keep this check enabled for application/test sources and all other dependency versions.
+         Source: bcgit/bc-java r1rv86 pkix/src/main/java/org/bouncycastle/est/jcajce/JcaJceUtils.java.
+         Wrong CA and wrong hostname must also fail in native TLS tests. -->
+    <issue id="TrustAllX509TrustManager">
+        <ignore path="**/bcpkix-jdk18on-1.86.jar" />
+    </issue>
+</lint>

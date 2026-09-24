@@ -1,0 +1,57 @@
+{
+  "scope": "offline-probe-only",
+  "java": {
+    "version": "1.86",
+    "tag": "r1rv86",
+    "commit": "eacda831fbe15b272933e40841d8b0827b556fae",
+    "artifact": {
+      "path": ".audit/p1-003/bcprov-jdk18on-1.86.jar",
+      "sha256": "2af190b300cbb0b35e248ccf5f4a06b6072030aeb3da7a98ec73abe5b4cb371f"
+    },
+    "source": "https://repo.maven.apache.org/maven2/org/bouncycastle/bcprov-jdk18on/1.86/bcprov-jdk18on-1.86.jar",
+    "publisher_checksum_matches": true,
+    "pgp_verified": false
+  },
+  "csharp": {
+    "version": "2.7.0",
+    "tag": "release-2.7.0",
+    "commit": "4007498b13582d90ee1eda5d9920c324428b98b3",
+    "artifact": {
+      "path": ".audit/nuget-packages/bouncycastle.cryptography/2.7.0/bouncycastle.cryptography.2.7.0.nupkg",
+      "sha256": "f091ffccab4d03993e660bace277659a79dee0972f54d7f1f4bd46d680966241"
+    },
+    "source": "https://www.nuget.org/packages/BouncyCastle.Cryptography/2.7.0",
+    "author_and_repository_signatures_verified": true,
+    "verify_exit_code": 0,
+    "locked_restore_exit_code": 0
+  },
+  "license": "MIT; preserve third-party notice upon formal import/distribution",
+  "inspected_sources": [
+    {
+      "path": ".audit/p1-003/references/JPakeParticipant.cs",
+      "sha256": "3d48e6fcea1a1fe608f4bbc53dafd53a0a8838cf13db71cf2f7726f53f1a8fd5"
+    },
+    {
+      "path": ".audit/p1-003/references/JPAKEParticipant.java",
+      "sha256": "e114ec004d04f7172e9b05dd0319ab1e7387a3b53245fdb768cff00cc4d5911e"
+    },
+    {
+      "path": ".audit/p1-003/references/JPAKEUtil.java",
+      "sha256": "d4e6aa630fba928f9cb76050bd1d6027267445721e8984d3b75b97acc7a6f2bb"
+    },
+    {
+      "path": ".audit/p1-003/references/JPakeUtilities.cs",
+      "sha256": "c081616f41c4e01430852ce3b92ddb36aa72a919bceb0f82728ff7911886e8d3"
+    }
+  ],
+  "verification_logs": [
+    {
+      "path": ".audit/p1-003/nuget-verify.log",
+      "sha256": "7a24d6365ea19a8587304197ff8e61e0ff8a1a98b162a7c78850c199410d89ae"
+    },
+    {
+      "path": ".audit/p1-003/locked-restore.log",
+      "sha256": "8d19788fdb56a568350f16aa12ab8da6cb237a848f5c10d60b105d83e2d323ee"
+    }
+  ]
+}

@@ -1,0 +1,62 @@
+{
+  "schema": 1,
+  "task": "P1-016",
+  "date": "2026-09-21",
+  "device": {
+    "model": "SM-S9180",
+    "androidApi": 36,
+    "shareRoot": "Music"
+  },
+  "sampleBytes": 1000000000,
+  "phoneToPc": {
+    "sha256": "0513693b8f68aa30e918794c05e923ac889e9574b8bb47b78e7081fbd59b69dd",
+    "hashMatch": true,
+    "copyElapsedMs": 20532
+  },
+  "pcToPhone": {
+    "sha256": "4067b246c9621df11603a78e2b820f25b3499fc77b1be352e9c33db2a497ee60",
+    "hashMatch": true,
+    "cacheWriteElapsedMs": 1842,
+    "remoteCommitObservedMs": 8865,
+    "cleanUnmount": true
+  },
+  "interruptionBeforeFix": {
+    "clientCrashed": false,
+    "falseRemoteSuccess": false,
+    "dirtyCacheRetained": true,
+    "automaticResume": false,
+    "rootCause": "ephemeral-rclone-remote-cache-namespace"
+  },
+  "interruptionAfterFix": {
+    "wifiDisabledAfterCacheWriteMs": 644,
+    "offlineDesktopResponsive": true,
+    "offlineRcloneRetained": true,
+    "offlineDriveRetained": true,
+    "offlineRemoteFinalAbsent": true,
+    "offlineMetadataDirty": true,
+    "recoveryCommitObservedMs": 24994,
+    "recoveredBytes": 1000000000,
+    "sha256": "4067b246c9621df11603a78e2b820f25b3499fc77b1be352e9c33db2a497ee60",
+    "hashMatch": true,
+    "metadataDirtyAfterCommit": false,
+    "finalCleanUnmountMs": 3631
+  },
+  "windows": {
+    "releaseBuildWarnings": 0,
+    "releaseBuildErrors": 0,
+    "testsPassed": 273,
+    "testsFailed": 0
+  },
+  "cleanup": {
+    "phoneTaskDirectoryRemoved": true,
+    "localLargeSamplesRemoved": true,
+    "taskCacheFilesRemoved": 8,
+    "androidServiceAbsent": true,
+    "androidActiveNotificationAbsent": true,
+    "androidWakeLockAbsent": true,
+    "androidPort8273Closed": true,
+    "drivePresent": false,
+    "rclonePresent": false,
+    "desktopPresent": false
+  }
+}

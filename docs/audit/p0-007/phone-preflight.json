@@ -1,0 +1,16 @@
+{
+  "ro.product.manufacturer": "Xiaomi",
+  "ro.product.model": "M2012K11AC",
+  "ro.product.device": "alioth",
+  "ro.build.version.release": "16",
+  "ro.build.version.sdk": "36",
+  "ro.build.version.security_patch": "2025-10-01",
+  "ro.build.display.id": "BP2A.250605.031.A3",
+  "ro.build.flavor": "missi-user",
+  "ro.kernel.qemu": "",
+  "user_confirmed_cleared_and_authorized": true,
+  "read_only_adb_identity_check": true,
+  "phone_apk_installed_in_this_task": false,
+  "rom_provenance_verified": false,
+  "reconnected_and_same_identity_confirmed": true
+}

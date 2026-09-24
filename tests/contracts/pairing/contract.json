@@ -1,0 +1,360 @@
+{
+  "profile": "PBNG-PAIR-1",
+  "status": "partial-real-product-integration",
+  "suite": 1,
+  "group": "BC-NIST_3072",
+  "digest": "SHA-256",
+  "libraries": {
+    "csharp": "BouncyCastle.Cryptography 2.7.0",
+    "java": "org.bouncycastle:bcprov-jdk18on:1.86"
+  },
+  "limits": {
+    "window_seconds": 120,
+    "attempts": 5,
+    "concurrent_handshakes": 1,
+    "handshake_seconds": 30,
+    "frame_io_seconds": 5,
+    "frame_payload_bytes": 8192,
+    "session_bytes": 32768,
+    "ca_der_bytes": 4096,
+    "active_clients": 16,
+    "encrypted_record_bytes": 65536
+  },
+  "frames": [
+    {
+      "type": 1,
+      "direction": "W-A",
+      "bytes": 33
+    },
+    {
+      "type": 2,
+      "direction": "A-W",
+      "bytes": "53+ca_der"
+    },
+    {
+      "type": 17,
+      "direction": "W-A",
+      "bytes": 1600
+    },
+    {
+      "type": 18,
+      "direction": "A-W",
+      "bytes": 1600
+    },
+    {
+      "type": 33,
+      "direction": "W-A",
+      "bytes": 800
+    },
+    {
+      "type": 34,
+      "direction": "A-W",
+      "bytes": 800
+    },
+    {
+      "type": 49,
+      "direction": "W-A",
+      "bytes": 32
+    },
+    {
+      "type": 50,
+      "direction": "A-W",
+      "bytes": 32
+    }
+  ],
+  "hello_vector": {
+    "synthetic": true,
+    "ca_der_base64": "MIIB6jCCAUugAwIBAgIJANPMJwCYmXE4MAoGCCqGSM49BAMCMCQxIjAgBgNVBAMTGVAxLTAwMiBzeW50aGV0aWMgd3JvbmcgQ0EwHhcNMjYwOTE4MDcxOTA3WhcNNDYwOTE5MDcxOTA3WjAkMSIwIAYDVQQDExlQMS0wMDIgc3ludGhldGljIHdyb25nIENBMIGbMBAGByqGSM49AgEGBSuBBAAjA4GGAAQAbvggqdLwupdFkHr9nyE0aarA2o/7tO6Y63rhS6Y/epSD6Gt8k9CJC2uZFB5KkNtxVrFgZ8xybFVSBZzYv794RJwB6YqGBjS+K1UpYBBdgvfnzXZcJuDiwyIhw1ZVbc1ph05ITtnu6M14x2aj1z2UXSEyGE45q7aY6QuICdtPQi30OBajIzAhMA8GA1UdEwEB/wQFMAMBAf8wDgYDVR0PAQH/BAQDAgIEMAoGCCqGSM49BAMCA4GMADCBiAJCAeBZtgO/rOWtwikiVvo0lBs3x9+UBSZILKJtwqD883K+MmK28apnUgkNlBia2ih0/f7LvVOpjpEf40K+YOmn97ajAkIAjOkGqN/M8UV3WM5YfFX3/QldDOEuzp4vtnMinqSXgmOnS+C3sSBhYkM12YAMca9taCMuZudcBSKY8O221ND0FSw=",
+    "client_frame_hex": "50425031010000002101000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f",
+    "server_frame_hex": "50425031020000022301000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f202122232425262728292a2b2c2d2e2f205101ee308201ea3082014ba003020102020900d3cc270098997138300a06082a8648ce3d0403023024312230200603550403131950312d3030322073796e7468657469632077726f6e67204341301e170d3236303931383037313930375a170d3436303931393037313930375a3024312230200603550403131950312d3030322073796e7468657469632077726f6e6720434130819b301006072a8648ce3d020106052b810400230381860004006ef820a9d2f0ba9745907afd9f213469aac0da8ffbb4ee98eb7ae14ba63f7a9483e86b7c93d0890b6b99141e4a90db7156b16067cc726c5552059cd8bfbf78449c01e98a860634be2b552960105d82f7e7cd765c26e0e2c32221c356556dcd69874e484ed9eee8cd78c766a3d73d945d2132184e39abb698e90b8809db4f422df43816a3233021300f0603551d130101ff040530030101ff300e0603551d0f0101ff040403020204300a06082a8648ce3d04030203818c00308188024201e059b603bface5adc2292256fa34941b37c7df940526482ca26dc2a0fcf372be3262b6f1aa6752090d94189ada2874fdfecbbd53a98e911fe342be60e9a7f7b6a30242008ce906a8dfccf1457758ce587c55f7fd095d0ce12ece9e2fb673229ea4978263a74be0b7b12061624335d9800c71af6d68232e66e75c052298f0edb6d4d0f4152c",
+    "context_sha256": "2e43bcee2d02ac6be7b5ffa9fa0959a03ce4625066e1372f6a0fa787b4fbb43a",
+    "windows_participant_id": "pbng-pair-v1:W:2e43bcee2d02ac6be7b5ffa9fa0959a03ce4625066e1372f6a0fa787b4fbb43a",
+    "android_participant_id": "pbng-pair-v1:A:2e43bcee2d02ac6be7b5ffa9fa0959a03ce4625066e1372f6a0fa787b4fbb43a"
+  },
+  "signed_mac_vectors": [
+    {
+      "bytes_hex": "0000000000000000000000000000000000000000000000000000000000000000",
+      "signed_integer": "0"
+    },
+    {
+      "bytes_hex": "7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+      "signed_integer": "57896044618658097711785492504343953926634992332820282019728792003956564819967"
+    },
+    {
+      "bytes_hex": "8000000000000000000000000000000000000000000000000000000000000000",
+      "signed_integer": "-57896044618658097711785492504343953926634992332820282019728792003956564819968"
+    },
+    {
+      "bytes_hex": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+      "signed_integer": "-1"
+    }
+  ],
+  "rfc5869_case1": {
+    "ikm_hex": "0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b",
+    "salt_hex": "000102030405060708090a0b0c",
+    "info_hex": "f0f1f2f3f4f5f6f7f8f9",
+    "length": 42,
+    "expected_okm_hex": "3cb25f25faacd57a90434f64d0362f2a2d2d0a90cf1a5a4c5db02d56ecc4c5bf34007208d5b887185865"
+  },
+  "grant_kdf_vector": {
+    "scope": "KDF only; synthetic IKM is not a valid PAKE session",
+    "ikm_hex": "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f202122232425262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e3f404142434445464748494a4b4c4d4e4f505152535455565758595a5b5c5d5e5f606162636465666768696a6b6c6d6e6f707172737475767778797a7b7c7d7e7f808182838485868788898a8b8c8d8e8f909192939495969798999a9b9c9d9e9fa0a1a2a3a4a5a6a7a8a9aaabacadaeafb0b1b2b3b4b5b6b7b8b9babbbcbdbebfc0c1c2c3c4c5c6c7c8c9cacbcccdcecfd0d1d2d3d4d5d6d7d8d9dadbdcdddedfe0e1e2e3e4e5e6e7e8e9eaebecedeeeff0f1f2f3f4f5f6f7f8f9fafbfcfdfeff000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f202122232425262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e3f404142434445464748494a4b4c4d4e4f505152535455565758595a5b5c5d5e5f606162636465666768696a6b6c6d6e6f707172737475767778797a7b7c7d7e7f",
+    "salt_hex": "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f",
+    "info_ascii": "PhoneBridge NG|pairing-grant|v1",
+    "length": 32,
+    "expected_okm_hex": "46c70a792127aed3c831522228d9d0982cf88767c9e77b988bec1d506a7dfa9d"
+  },
+  "acceptance": [
+    {
+      "id": "PAIR-01",
+      "category": "positive",
+      "requirement": "Real Windows and Android same 8-digit code, including leading zeros, approve and mount with new token",
+      "status": "partial-real-product-tested",
+      "evidence": {
+        "task": "P1-008",
+        "report": "docs/audit/P1-008-VALIDATION.md",
+        "observed": "Actual Windows WPF and Redmi K40 complete code entry, phone approval, identity-bound session and read-only rclone mount"
+      },
+      "remaining": "Leading-zero real network run and Samsung target-device coverage"
+    },
+    {
+      "id": "PAIR-02",
+      "category": "negative",
+      "requirement": "Wrong code and forged/mutated CA or Hello field cannot create trust or send a long-term token",
+      "status": "partial-android-app-tested",
+      "evidence": {
+        "task": "P1-007",
+        "report": "docs/audit/P1-007-VALIDATION.md",
+        "observed": "Wrong short code fails actual Android exchange"
+      },
+      "remaining": "Mutated Hello/CA via product network client and zero-token-send instrumentation"
+    },
+    {
+      "id": "PAIR-03",
+      "category": "negative",
+      "requirement": "Invalid group elements, proofs, MAC, reflection and cross-window replay terminate once",
+      "status": "required-not-run-on-product"
+    },
+    {
+      "id": "PAIR-04",
+      "category": "negative",
+      "requirement": "Oversized, duplicate, reordered, truncated or fragmented frames obey exact bounds and deadline",
+      "status": "partial-android-app-tested",
+      "evidence": {
+        "task": "P1-007",
+        "report": "docs/audit/P1-007-VALIDATION.md",
+        "observed": "Actual trailing frame and incomplete frame deadline rejected"
+      },
+      "remaining": "All fragmentation/reorder/oversize cases through final product network client"
+    },
+    {
+      "id": "PAIR-05",
+      "category": "lifecycle",
+      "requirement": "Five global attempts, one concurrent handshake, 120-second monotonic expiry, no automatic reopen",
+      "status": "partial-android-app-tested",
+      "evidence": {
+        "task": "P1-007",
+        "report": "docs/audit/P1-007-VALIDATION.md",
+        "observed": "Actual five-connection budget and 120-second expiry with polling"
+      },
+      "remaining": "Concurrent hostile peers and broader lifecycle stress"
+    },
+    {
+      "id": "PAIR-06",
+      "category": "lifecycle",
+      "requirement": "Stop, leave pairing page, restart, interface/IP change invalidate pending code and grants",
+      "status": "partial-android-app-tested",
+      "evidence": {
+        "task": "P1-007",
+        "report": "docs/audit/P1-007-VALIDATION.md",
+        "observed": "Real Activity pause, stop and different app PID invalidate grant"
+      },
+      "remaining": "Interface/IP change callback and network transitions"
+    },
+    {
+      "id": "PAIR-07",
+      "category": "negative",
+      "requirement": "Grant cannot authorize files, another attempt or another client; duplicate Authorization rejected",
+      "status": "partial-android-app-tested",
+      "evidence": {
+        "task": "P1-007",
+        "report": "docs/audit/P1-007-VALIDATION.md",
+        "observed": "Grant denied file route and duplicate Authorization rejected"
+      },
+      "remaining": "Other-attempt/client malicious network combinations"
+    },
+    {
+      "id": "PAIR-08",
+      "category": "negative",
+      "requirement": "Strict HTTPS rejects wrong CA, expired cert, wrong IP SAN, redirect and identity replacement",
+      "status": "partial-android-app-tested",
+      "evidence": {
+        "task": "P1-007",
+        "report": "docs/audit/P1-007-VALIDATION.md",
+        "observed": "Real TLS wrong CA and wrong SAN denied; C# strict chain policy used"
+      },
+      "remaining": "Expired certificate, redirects and all product UI paths"
+    },
+    {
+      "id": "PAIR-09",
+      "category": "storage",
+      "requirement": "DPAPI write failure sends no token; mutation, wrong user and decryption failure prohibit mount",
+      "status": "partial-product-tested",
+      "evidence": {
+        "task": "P1-008",
+        "report": "docs/audit/P1-008-VALIDATION.md",
+        "observed": "Product Connection tests require DPAPI Pending before POST; real WPF mount used the protected Active record"
+      },
+      "remaining": "Power-loss boundary and user-facing repair flow"
+    },
+    {
+      "id": "PAIR-10",
+      "category": "storage",
+      "requirement": "Keystore key loss or corrupted/missing registry fails closed; no SharedPreferences fallback",
+      "status": "partial-android-app-tested",
+      "evidence": {
+        "task": "P1-007",
+        "report": "docs/audit/P1-007-VALIDATION.md",
+        "observed": "Corrupt actual registry stops real Service; store tests cover key/file loss"
+      },
+      "remaining": "OEM behavior and complete product recovery UI"
+    },
+    {
+      "id": "PAIR-11",
+      "category": "lifecycle",
+      "requirement": "Same POST is idempotent; changed token/name/client conflicts without replacement",
+      "status": "partial-android-app-tested",
+      "evidence": {
+        "task": "P1-007",
+        "report": "docs/audit/P1-007-VALIDATION.md",
+        "observed": "Same POST retry retains state; changed name conflicts"
+      },
+      "remaining": "Network changed-client/token combinations through final Windows client"
+    },
+    {
+      "id": "PAIR-12",
+      "category": "lifecycle",
+      "requirement": "Approval and cancel race leaves one observable state; lost response reconciles using saved token",
+      "status": "partial-android-app-tested",
+      "evidence": {
+        "task": "P1-007",
+        "report": "docs/audit/P1-007-VALIDATION.md",
+        "observed": "Approval/cancel race and persisted token session reconciliation tested"
+      },
+      "remaining": "Deliberate response loss and Windows UI cancellation paths"
+    },
+    {
+      "id": "PAIR-13",
+      "category": "lifecycle",
+      "requirement": "Crash before send, before Android commit, after Android commit and before Windows Active commit",
+      "status": "partial-android-app-tested",
+      "evidence": {
+        "task": "P1-007",
+        "report": "docs/audit/P1-007-VALIDATION.md",
+        "observed": "Active and Revoked remain correct across three app PIDs"
+      },
+      "remaining": "Each transaction crash boundary across both real product processes"
+    },
+    {
+      "id": "PAIR-14",
+      "category": "negative",
+      "requirement": "Unapproved or expired attempt never grants file access, and old experimental Basic is rejected",
+      "status": "partial-android-app-tested",
+      "evidence": {
+        "task": "P1-007",
+        "report": "docs/audit/P1-007-VALIDATION.md",
+        "observed": "Unapproved/expired requests denied; formal app has no old-password fallback"
+      },
+      "remaining": "Final Windows product compatibility refusal tests"
+    },
+    {
+      "id": "PAIR-15",
+      "category": "lifecycle",
+      "requirement": "Two computers have independent tokens; revoking one preserves the other; duplicate client cannot overwrite",
+      "status": "partial-android-app-tested",
+      "evidence": {
+        "task": "P1-007",
+        "report": "docs/audit/P1-007-VALIDATION.md",
+        "observed": "Two actual network credentials remain independent when one is revoked"
+      },
+      "remaining": "Duplicate client across independent product processes"
+    },
+    {
+      "id": "PAIR-16",
+      "category": "lifecycle",
+      "requirement": "Revoke blocks new requests and active write commit; old file remains intact; storage failure stops sharing without claiming durable revocation; acknowledged revocation survives restart",
+      "status": "partial-android-app-tested",
+      "evidence": {
+        "task": "P1-007",
+        "report": "docs/audit/P1-007-VALIDATION.md",
+        "observed": "Revoke interrupts 64 MiB active read, write failures never acknowledge; revoked state survives process restart"
+      },
+      "remaining": "Upload commit barrier and old-file preservation under safe write mode"
+    },
+    {
+      "id": "PAIR-17",
+      "category": "storage",
+      "requirement": "Offline revoke stays pending; forgetting locally does not claim remote revocation",
+      "status": "partial-product-tested",
+      "evidence": {
+        "task": "P1-008",
+        "report": "docs/audit/P1-008-VALIDATION.md",
+        "observed": "Product Connection tests retain RevocationPending while offline and expose local forget as a separate warned action"
+      },
+      "remaining": "Real offline device and subsequent remote reconciliation"
+    },
+    {
+      "id": "PAIR-18",
+      "category": "storage",
+      "requirement": "No cloud/D2D restoration of pairing materials; reboot first-unlock and app reinstallation boundaries",
+      "status": "required-not-run-on-product"
+    },
+    {
+      "id": "PAIR-19",
+      "category": "negative",
+      "requirement": "Config, URL, command line, logs, dumps and diagnostics do not contain synthetic secrets",
+      "status": "partial-android-app-tested",
+      "evidence": {
+        "task": "P1-007",
+        "report": "docs/audit/P1-007-VALIDATION.md",
+        "observed": "Transient PIN absent from bridge logs; no product raw-request logging"
+      },
+      "remaining": "Whole-product token/URL/process/diagnostics scan"
+    },
+    {
+      "id": "PAIR-20",
+      "category": "authorization",
+      "requirement": "Server enforces safe/default and per-device permission independently of rclone flags",
+      "status": "partial-android-app-tested",
+      "evidence": {
+        "task": "P1-007",
+        "report": "docs/audit/P1-007-VALIDATION.md",
+        "observed": "SAFE persisted default and all file writes refused server-side"
+      },
+      "remaining": "Complete safe/read-write modes and deletion confirmation"
+    },
+    {
+      "id": "PAIR-21",
+      "category": "limits",
+      "requirement": "At most 16 Active clients, 64 KiB encrypted record set and strict JSON/UTF-8 limits",
+      "status": "partial-android-app-tested",
+      "evidence": {
+        "task": "P1-007",
+        "report": "docs/audit/P1-007-VALIDATION.md",
+        "observed": "Strict HTTP JSON limits plus same-source Keystore capacity tests in app"
+      },
+      "remaining": "End-to-end client-capacity UX and all hostile combinations"
+    },
+    {
+      "id": "PAIR-22",
+      "category": "compatibility",
+      "requirement": "Version 2 discovery stays experimental; v3 cannot silently downgrade or import old credentials",
+      "status": "passed-p1-008",
+      "evidence": {
+        "task": "P1-008",
+        "report": "docs/audit/P1-008-VALIDATION.md",
+        "observed": "Windows parses v2 as ExperimentalV2, enables pairing only for strict v3, imports no old password, and discovered the real NG v3 advertisement"
+      }
+    }
+  ]
+}

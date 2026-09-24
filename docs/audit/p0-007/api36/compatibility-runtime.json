@@ -1,0 +1,68 @@
+{
+  "api": 36,
+  "apk_sha256": "3d96a0c4f5aecf1f68cedc522392e06f7e5197db78fba97e891e0f71c0e86100",
+  "checks": [
+    {
+      "name": "stop-1",
+      "result": "PASS",
+      "ui_status": "Tap to start",
+      "server_unavailable": true
+    },
+    {
+      "name": "start-1",
+      "result": "PASS",
+      "https": true,
+      "unauthenticated_status": 401
+    },
+    {
+      "name": "home-resume-1",
+      "result": "PASS",
+      "sharing_continues": true
+    },
+    {
+      "name": "stop-2",
+      "result": "PASS",
+      "ui_status": "Tap to start",
+      "server_unavailable": true
+    },
+    {
+      "name": "start-2",
+      "result": "PASS",
+      "https": true,
+      "unauthenticated_status": 401
+    },
+    {
+      "name": "home-resume-2",
+      "result": "PASS",
+      "sharing_continues": true
+    },
+    {
+      "name": "stop-3",
+      "result": "PASS",
+      "ui_status": "Tap to start",
+      "server_unavailable": true
+    },
+    {
+      "name": "start-3",
+      "result": "PASS",
+      "https": true,
+      "unauthenticated_status": 401
+    },
+    {
+      "name": "home-resume-3",
+      "result": "PASS",
+      "sharing_continues": true
+    },
+    {
+      "name": "small-transfer-smoke",
+      "result": "PASS",
+      "bytes": 1000000,
+      "sha256": "1bf9fd40df4e777d63f6110f9137357b7f86c46f654d9cf6127b3275c071ec5b",
+      "note": "Not a large-file acceptance test"
+    },
+    {
+      "name": "no-android-runtime-crash",
+      "result": "PASS"
+    }
+  ]
+}

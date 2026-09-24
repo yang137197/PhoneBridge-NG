@@ -1,0 +1,17 @@
+{
+  "markdown_files": 44,
+  "local_links_checked": 276,
+  "json_parsed": 118,
+  "python_parsed": 21,
+  "xml_parsed": 10,
+  "errors": [],
+  "source_binary_hashes_match": true,
+  "resources_zh_en_keys_match": true,
+  "product_output_has_no_test_or_telemetry_dll": true,
+  "p0_patch_and_scripts_unchanged": true,
+  "upstream_clean": true,
+  "active_task": [
+    "P1-002-windows-readonly-mount.md"
+  ],
+  "whole_product_complete": false
+}

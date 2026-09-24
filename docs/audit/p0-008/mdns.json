@@ -1,0 +1,11 @@
+{
+  "observation_limit_seconds": 30,
+  "raw_field_observation_seconds_was_budget_not_elapsed": true,
+  "application_was_started_before_listener": true,
+  "matching_service_count": 1,
+  "first_discovery_seconds": 0.218,
+  "protocol": "https",
+  "port": 8273,
+  "phone_wifi_pc_ethernet_same_lan": true,
+  "personal_network_addresses_omitted": true
+}

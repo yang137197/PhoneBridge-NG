@@ -1,0 +1,101 @@
+{
+  "task": "P1-011",
+  "recorded_at": "2026-09-21T14:31:34.7115056+08:00",
+  "device": {
+    "manufacturer": "Samsung",
+    "model": "SM-S9180",
+    "android": "16",
+    "api": 36,
+    "shared_folder": "Music"
+  },
+  "preflight": {
+    "apk_sha256": "2550b45d2e2802e1075c8a5cc2fec8053933289a9c82cd53aeb13cc84696381b",
+    "battery_optimization_exempt": true,
+    "notification_permission": true,
+    "tcp_8273": true,
+    "wake_lock": "held"
+  },
+  "pairing": {
+    "completed": true,
+    "drive": "P:",
+    "rclone_processes": 1,
+    "foreground_service": true
+  },
+  "unlocked_baseline": {
+    "phone_to_pc": {
+      "bytes": 1048576,
+      "sha256": "31912056f4b0fdff4170409cb51b36cc9ded5e16285a8d9bd87b8a23a7ff42b6"
+    },
+    "pc_to_phone": {
+      "bytes": 1048576,
+      "sha256": "7df0071ecd70494b2222f7b85d0913073015145485f06d84f8a2e591634fdfec"
+    },
+    "directory_create_rename": true,
+    "personal_files_enumerated": false
+  },
+  "lockscreen": {
+    "state": "Dozing, keyguard showing",
+    "health_cycles": 3,
+    "wake_lock": "held",
+    "tcp_8273": true,
+    "drive": "P:",
+    "rclone_processes": 1,
+    "read": {
+      "bytes": 1048576,
+      "sha256": "31912056f4b0fdff4170409cb51b36cc9ded5e16285a8d9bd87b8a23a7ff42b6"
+    },
+    "write": {
+      "bytes": 2097152,
+      "sha256": "24a6fa606ef17bbc651dd624779cde0d78adf19deec824ceb3d5b29573c81fa4",
+      "independently_verified_on_phone": true
+    }
+  },
+  "explicit_exit": {
+    "method": "removed from Android recent tasks",
+    "sharing_preference": false,
+    "foreground_service": false,
+    "active_notification": false,
+    "tcp_listener_8273": false,
+    "wake_lock": false,
+    "windows_drive": false,
+    "rclone_processes": 0,
+    "android_process": {
+      "present": true,
+      "uid_state": "CACHED_EMPTY",
+      "oom_score_adj": 905,
+      "active_component_types": 0,
+      "cpu_tick_delta_over_5s": 0,
+      "interpretation": "system-managed memory cache, not active background work"
+    }
+  },
+  "cleanup": {
+    "synthetic_phone_files_removed": true,
+    "local_payload_files_removed": true,
+    "drive_present": false,
+    "rclone_processes": 0,
+    "desktop_processes": 0,
+    "android_service": false,
+    "active_notification": false,
+    "tcp_listener_8273": false,
+    "wake_lock": false,
+    "pairing_record_retained": true
+  },
+  "manual_restart": {
+    "sharing_preference": true,
+    "foreground_service": true,
+    "saved_pairing_reused": true,
+    "drive": "P:",
+    "rclone_processes": 1,
+    "read_sha256": "31912056f4b0fdff4170409cb51b36cc9ded5e16285a8d9bd87b8a23a7ff42b6",
+    "wake_lock": "held"
+  },
+  "notification_stop": {
+    "sharing_preference": false,
+    "foreground_service": false,
+    "active_notification": false,
+    "tcp_listener_8273": false,
+    "wake_lock": false,
+    "drive_after_health_cycles": false,
+    "rclone_processes": 0
+  }
+}

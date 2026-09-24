@@ -1,0 +1,317 @@
+[
+  {
+    "name": "GET-parent-rejected",
+    "result": "PASS",
+    "seconds": 0.031
+  },
+  {
+    "name": "GET-encoded-parent-rejected",
+    "result": "PASS",
+    "seconds": 0.047
+  },
+  {
+    "name": "GET-root-fallback-rejected",
+    "result": "PASS",
+    "seconds": 0.063
+  },
+  {
+    "name": "GET-backslash-rejected",
+    "result": "PASS",
+    "seconds": 0.062
+  },
+  {
+    "name": "HEAD-parent-rejected",
+    "result": "PASS",
+    "seconds": 0.063
+  },
+  {
+    "name": "HEAD-encoded-parent-rejected",
+    "result": "PASS",
+    "seconds": 0.031
+  },
+  {
+    "name": "HEAD-root-fallback-rejected",
+    "result": "PASS",
+    "seconds": 0.047
+  },
+  {
+    "name": "HEAD-backslash-rejected",
+    "result": "PASS",
+    "seconds": 0.047
+  },
+  {
+    "name": "PROPFIND-parent-rejected",
+    "result": "PASS",
+    "seconds": 0.062
+  },
+  {
+    "name": "PROPFIND-encoded-parent-rejected",
+    "result": "PASS",
+    "seconds": 0.063
+  },
+  {
+    "name": "PROPFIND-root-fallback-rejected",
+    "result": "PASS",
+    "seconds": 0.031
+  },
+  {
+    "name": "PROPFIND-backslash-rejected",
+    "result": "PASS",
+    "seconds": 0.063
+  },
+  {
+    "name": "PUT-parent-rejected",
+    "result": "PASS",
+    "seconds": 0.046
+  },
+  {
+    "name": "PUT-encoded-parent-rejected",
+    "result": "PASS",
+    "seconds": 0.047
+  },
+  {
+    "name": "PUT-root-fallback-rejected",
+    "result": "PASS",
+    "seconds": 0.047
+  },
+  {
+    "name": "PUT-backslash-rejected",
+    "result": "PASS",
+    "seconds": 0.125
+  },
+  {
+    "name": "DELETE-parent-rejected",
+    "result": "PASS",
+    "seconds": 0.094
+  },
+  {
+    "name": "DELETE-encoded-parent-rejected",
+    "result": "PASS",
+    "seconds": 0.062
+  },
+  {
+    "name": "DELETE-root-fallback-rejected",
+    "result": "PASS",
+    "seconds": 0.047
+  },
+  {
+    "name": "DELETE-backslash-rejected",
+    "result": "PASS",
+    "seconds": 0.047
+  },
+  {
+    "name": "MKCOL-parent-rejected",
+    "result": "PASS",
+    "seconds": 0.047
+  },
+  {
+    "name": "MKCOL-encoded-parent-rejected",
+    "result": "PASS",
+    "seconds": 0.047
+  },
+  {
+    "name": "MKCOL-root-fallback-rejected",
+    "result": "PASS",
+    "seconds": 0.031
+  },
+  {
+    "name": "MKCOL-backslash-rejected",
+    "result": "PASS",
+    "seconds": 0.047
+  },
+  {
+    "name": "MOVE-parent-rejected",
+    "result": "PASS",
+    "seconds": 0.047
+  },
+  {
+    "name": "MOVE-encoded-parent-rejected",
+    "result": "PASS",
+    "seconds": 0.047
+  },
+  {
+    "name": "MOVE-root-fallback-rejected",
+    "result": "PASS",
+    "seconds": 0.047
+  },
+  {
+    "name": "MOVE-backslash-rejected",
+    "result": "PASS",
+    "seconds": 0.047
+  },
+  {
+    "name": "COPY-parent-rejected",
+    "result": "PASS",
+    "seconds": 0.062
+  },
+  {
+    "name": "COPY-encoded-parent-rejected",
+    "result": "PASS",
+    "seconds": 0.047
+  },
+  {
+    "name": "COPY-root-fallback-rejected",
+    "result": "PASS",
+    "seconds": 0.047
+  },
+  {
+    "name": "COPY-backslash-rejected",
+    "result": "PASS",
+    "seconds": 0.062
+  },
+  {
+    "name": "PUT-root-rejected",
+    "result": "PASS",
+    "seconds": 0.047
+  },
+  {
+    "name": "DELETE-root-rejected",
+    "result": "PASS",
+    "seconds": 0.063
+  },
+  {
+    "name": "MKCOL-root-rejected",
+    "result": "PASS",
+    "seconds": 0.078
+  },
+  {
+    "name": "MOVE-root-rejected",
+    "result": "PASS",
+    "seconds": 0.078
+  },
+  {
+    "name": "COPY-root-rejected",
+    "result": "PASS",
+    "seconds": 0.078
+  },
+  {
+    "name": "double-encoding-is-literal-not-traversal",
+    "result": "PASS",
+    "seconds": 0.078
+  },
+  {
+    "name": "MOVE-destination-/",
+    "result": "PASS",
+    "seconds": 0.266
+  },
+  {
+    "name": "COPY-destination-/",
+    "result": "PASS",
+    "seconds": 0.172
+  },
+  {
+    "name": "MOVE-destination-/../Download-sibling/new",
+    "result": "PASS",
+    "seconds": 0.171
+  },
+  {
+    "name": "COPY-destination-/../Download-sibling/new",
+    "result": "PASS",
+    "seconds": 0.172
+  },
+  {
+    "name": "MOVE-destination-/%2e%2e/Download-sibling/new",
+    "result": "PASS",
+    "seconds": 0.203
+  },
+  {
+    "name": "COPY-destination-/%2e%2e/Download-sibling/new",
+    "result": "PASS",
+    "seconds": 0.141
+  },
+  {
+    "name": "MOVE-destination-//host/name",
+    "result": "PASS",
+    "seconds": 0.14
+  },
+  {
+    "name": "COPY-destination-//host/name",
+    "result": "PASS",
+    "seconds": 0.203
+  },
+  {
+    "name": "MOVE-destination-https://elsewhere/name",
+    "result": "PASS",
+    "seconds": 0.203
+  },
+  {
+    "name": "COPY-destination-https://elsewhere/name",
+    "result": "PASS",
+    "seconds": 0.203
+  },
+  {
+    "name": "MOVE-destination-https://user@127.0.0.1:18273/name",
+    "result": "PASS",
+    "seconds": 0.141
+  },
+  {
+    "name": "COPY-destination-https://user@127.0.0.1:18273/name",
+    "result": "PASS",
+    "seconds": 0.172
+  },
+  {
+    "name": "MOVE-destination-/name?query",
+    "result": "PASS",
+    "seconds": 0.172
+  },
+  {
+    "name": "COPY-destination-/name?query",
+    "result": "PASS",
+    "seconds": 0.218
+  },
+  {
+    "name": "MOVE-destination-/name#fragment",
+    "result": "PASS",
+    "seconds": 0.141
+  },
+  {
+    "name": "COPY-destination-/name#fragment",
+    "result": "PASS",
+    "seconds": 0.14
+  },
+  {
+    "name": "MOVE-destination-/bad%",
+    "result": "PASS",
+    "seconds": 0.172
+  },
+  {
+    "name": "COPY-destination-/bad%",
+    "result": "PASS",
+    "seconds": 0.156
+  },
+  {
+    "name": "unicode-percent-plus-hidden-and-escaped-listing",
+    "result": "PASS",
+    "seconds": 2.063
+  },
+  {
+    "name": "timeout-preserves-existing-independent-android-bytes",
+    "result": "PASS",
+    "seconds": 5.328
+  },
+  {
+    "name": "disconnected-new-upload-does-not-create-target",
+    "result": "PASS",
+    "seconds": 0.406
+  },
+  {
+    "name": "concurrent-read-sees-complete-version-not-partial-upload",
+    "result": "PASS",
+    "seconds": 0.532
+  },
+  {
+    "name": "retained-staging-hidden-inaccessible-and-not-recursively-deleted",
+    "result": "PASS",
+    "seconds": 0.953
+  },
+  {
+    "name": "mkdir-recursive-copy-move-delete-overwrite-and-empty-upload",
+    "result": "PASS",
+    "seconds": 1.703
+  },
+  {
+    "name": "outside-sentinel-and-shared-root-survive-all-probes",
+    "result": "PASS",
+    "seconds": 0.204
+  }
+]

@@ -1,0 +1,15 @@
+.audit/
+__pycache__/
+*.py[cod]
+
+**/bin/
+**/obj/
+.vs/
+**/TestResults/
+**/.gradle/
+**/.kotlin/
+android/pairing-core/build/
+
+android/credentials-store/build/
+android/app/build/
+android/build/

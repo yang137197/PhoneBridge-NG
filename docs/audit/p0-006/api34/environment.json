@@ -1,0 +1,11 @@
+{
+  "avd": "PhoneBridgeP0",
+  "properties": {
+    "ro.build.version.sdk": "34",
+    "ro.build.version.release": "14",
+    "ro.build.fingerprint": "Android/sdk_phone64_x86_64/emu64x:14/UE1A.230829.036.A1/11228894:userdebug/test-keys",
+    "ro.product.cpu.abi": "x86_64",
+    "ro.kernel.qemu": "1",
+    "sys.boot_completed": "1"
+  }
+}

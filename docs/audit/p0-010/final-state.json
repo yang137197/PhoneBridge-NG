@@ -1,0 +1,24 @@
+{
+  "result": "PASS",
+  "visual_recheck_entry_exit_code": 1,
+  "visual_recheck_rclone_exit_code": 0,
+  "shutdown_regression_exit_code": 0,
+  "shutdown_regression_native_host": "OK (1 test)",
+  "drive_absent": true,
+  "sharing_stopped": true,
+  "app_process_absent": true,
+  "adb_forwards": 0,
+  "host_control_files_remaining": false,
+  "identity_certificate_sha256": "65b52a178912e36cc73dc820f4029e85efa75a3427c2a341902326a8d2480903",
+  "retained_phone_files": [
+    "/sdcard/Music/.thumbnails/.database_uuid",
+    "/sdcard/Music/.thumbnails/.nomedia",
+    "/sdcard/Music/P0-010-84926bfb5cd4/phone-100MB.bin",
+    "/sdcard/Music/P0-010-84926bfb5cd4/phone-origin.txt",
+    "/sdcard/Music/P0-010-84926bfb5cd4/pc-upload-100MB.bin"
+  ],
+  "test_samples_bytes": 200000049,
+  "actual_user_explorer_confirmation": true,
+  "data_copy_via": "Windows filesystem API through P: / WinFsp / rclone / LAN",
+  "manual_explorer_copy_tested": false
+}

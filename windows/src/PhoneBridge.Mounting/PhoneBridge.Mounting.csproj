@@ -1,0 +1,6 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="../PhoneBridge.Discovery/PhoneBridge.Discovery.csproj" />
+    <InternalsVisibleTo Include="PhoneBridge.Mounting.Tests" />
+  </ItemGroup>
+</Project>

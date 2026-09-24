@@ -1,0 +1,285 @@
+diff --git a/android/app/src/main/java/com/phonebridge/server/HttpByteRange.kt b/android/app/src/main/java/com/phonebridge/server/HttpByteRange.kt
+new file mode 100644
+index 0000000..c9e4272
+--- /dev/null
++++ b/android/app/src/main/java/com/phonebridge/server/HttpByteRange.kt
+@@ -0,0 +1,36 @@
++package com.phonebridge.server
++
++// PhoneBridge NG, 2026-09-19. SPDX-License-Identifier: GPL-3.0-or-later
++/** One byte range over the opened representation; unsupported units/multipart fall back to 200. */
++internal sealed class HttpByteRange {
++    data object Full : HttpByteRange()
++    data object Unsatisfiable : HttpByteRange()
++    data class Partial(val first: Long, val last: Long) : HttpByteRange() {
++        val length: Long get() = last - first + 1
++    }
++
++    companion object {
++        fun parse(header: String?, size: Long): HttpByteRange {
++            require(size >= 0)
++            if (header == null) return Full
++            val value = header.trim()
++            val separator = value.indexOf('=')
++            if (separator < 0 || !value.substring(0, separator).equals("bytes", ignoreCase = true)) return Full
++            val specification = value.substring(separator + 1)
++            if (',' in specification) return Full // Multipart is not implemented; RFC 9110 permits ignoring Range.
++            val match = Regex("([0-9]*)-([0-9]*)").matchEntire(specification) ?: return Unsatisfiable
++            val (firstText, lastText) = match.destructured
++            if (size == 0L || (firstText.isEmpty() && lastText.isEmpty())) return Unsatisfiable
++            if (firstText.isEmpty()) {
++                val suffix = lastText.toLongOrNull() ?: Long.MAX_VALUE
++                if (suffix == 0L) return Unsatisfiable
++                return Partial((size - suffix).coerceAtLeast(0), size - 1)
++            }
++            val first = firstText.toLongOrNull() ?: return Unsatisfiable
++            if (first >= size) return Unsatisfiable
++            val last = if (lastText.isEmpty()) size - 1 else (lastText.toLongOrNull() ?: Long.MAX_VALUE).coerceAtMost(size - 1)
++            if (last < first) return Unsatisfiable
++            return Partial(first, last)
++        }
++    }
++}
+diff --git a/android/app/src/main/java/com/phonebridge/server/RequestBody.kt b/android/app/src/main/java/com/phonebridge/server/RequestBody.kt
+new file mode 100644
+index 0000000..1e6f5cf
+--- /dev/null
++++ b/android/app/src/main/java/com/phonebridge/server/RequestBody.kt
+@@ -0,0 +1,23 @@
++package com.phonebridge.server
++
++import java.io.EOFException
++import java.io.IOException
++import java.io.InputStream
++import java.net.SocketTimeoutException
++
++// PhoneBridge NG, 2026-09-19. SPDX-License-Identifier: GPL-3.0-or-later
++internal object RequestBody {
++    /** Consume exactly the declared length; the next persistent request must remain unread. */
++    fun discard(input: InputStream, length: Long, deadlineNanos: Long) {
++        require(length >= 0)
++        val buffer = ByteArray(8192)
++        var remaining = length
++        while (remaining > 0) {
++            if (System.nanoTime() - deadlineNanos >= 0) throw SocketTimeoutException("Request body deadline exceeded")
++            val count = input.read(buffer, 0, minOf(remaining, buffer.size.toLong()).toInt())
++            if (count < 0) throw EOFException("Incomplete request body")
++            if (count == 0) throw IOException("Request body made no progress")
++            remaining -= count
++        }
++    }
++}
+diff --git a/android/app/src/main/java/com/phonebridge/server/WebDavServer.kt b/android/app/src/main/java/com/phonebridge/server/WebDavServer.kt
+index 1badd48..3e66d4f 100644
+--- a/android/app/src/main/java/com/phonebridge/server/WebDavServer.kt
++++ b/android/app/src/main/java/com/phonebridge/server/WebDavServer.kt
+@@ -1,5 +1,8 @@
+ package com.phonebridge.server
+ 
++// Modified by PhoneBridge NG, 2026-09-19: byte ranges and bounded HTTP request-body handling.
++// Based on ysachin26/PhoneBridge a378fec40561a4d18be2334f4de92ee02a0e7d0c; GPL-3.0-or-later.
++
+ import android.util.Base64
+ import android.util.Log
+ import fi.iki.elonen.NanoHTTPD
+@@ -103,10 +106,12 @@ class WebDavServer(
+                 "Authentication required"
+             )
+             response.addHeader("WWW-Authenticate", "Basic realm=\"PhoneBridge\"")
++            response.closeConnection(true) // An unauthenticated request may have an unread body.
+             return response
+         }
+ 
+         return try {
++            validateAndConsumeBody(session)?.let { return it }
+             // ─── PhoneBridge Status API ──────────────────────
+             if (uri == "/phonebridge/status" && method == "GET") {
+                 return handleStatusApi()
+@@ -135,12 +140,49 @@ class WebDavServer(
+                 Response.Status.INTERNAL_ERROR,
+                 "text/plain",
+                 "Internal server error: ${e.message}"
+-            )
++            ).also { it.closeConnection(true) }
+         } finally {
+             _activeConnections.decrementAndGet()
+         }
+     }
+ 
++    private fun requestError(status: Response.Status, message: String): Response =
++        newFixedLengthResponse(status, "text/plain", message).also { it.closeConnection(true) }
++
++    private fun validateAndConsumeBody(session: IHTTPSession): Response? {
++        // NanoHTTPD 2.3.1 exposes the raw socket stream, not a decoded chunked body.
++        if (session.headers.containsKey("transfer-encoding")) {
++            return requestError(Response.Status.NOT_IMPLEMENTED, "Transfer-Encoding is not supported")
++        }
++        val declaredLength = session.headers["content-length"]
++        if (declaredLength == null && session.method == Method.PUT) {
++            return requestError(Response.Status.LENGTH_REQUIRED, "Content-Length is required")
++        }
++        val length = if (declaredLength == null) 0L else {
++            if (declaredLength.isEmpty() || declaredLength.any { it !in '0'..'9' }) {
++                return requestError(Response.Status.BAD_REQUEST, "Invalid Content-Length")
++            }
++            declaredLength.toLongOrNull()
++                ?: return requestError(Response.Status.BAD_REQUEST, "Invalid Content-Length")
++        }
++        if (session.method == Method.PUT) return null // Streaming PUT consumes its body separately.
++        if (length > ServerConfig.MAX_PROPFIND_BODY) {
++            return requestError(Response.Status.PAYLOAD_TOO_LARGE, "Request body is too large")
++        }
++        return try {
++            // Socket reads also have NanoHTTPD's 5-second timeout. No unbounded allocation or drain.
++            RequestBody.discard(session.inputStream, length, System.nanoTime() + 5_000_000_000L)
++            null
++        } catch (_: java.net.SocketTimeoutException) {
++            requestError(Response.Status.REQUEST_TIMEOUT, "Request body timed out")
++        } catch (_: IOException) {
++            requestError(Response.Status.BAD_REQUEST, "Incomplete request body")
++        }
++    }
++
++    override fun useGzipWhenAccepted(response: Response): Boolean =
++        response.getHeader("accept-ranges") == null && super.useGzipWhenAccepted(response)
++
+     /**
+      * Validate HTTP Basic Auth credentials from the request.
+      */
+@@ -278,16 +320,37 @@ class WebDavServer(
+             return serveDirectoryListing(file)
+         }
+ 
+-        // Serve file with streaming + track bytes
+-        val fileSize = file.length()
+-        val mimeType = XmlResponseBuilder.guessMimeType(file)
++        // Obtain length and offset from the same open file. NanoHTTPD closes the response stream.
+         val fis = FileInputStream(file)
+-        val response = newFixedLengthResponse(
+-            Response.Status.OK, mimeType, fis, fileSize
+-        )
+-        response.addHeader("Accept-Ranges", "bytes")
+-        _bytesServed.addAndGet(fileSize)
+-        return response
++        try {
++            val fileSize = fis.channel.size()
++            // There are no strong validators yet. If-Range cannot authorize a partial representation.
++            val range = HttpByteRange.parse(
++                if (session.headers.containsKey("if-range")) null else session.headers["range"], fileSize
++            )
++            if (range == HttpByteRange.Unsatisfiable) {
++                fis.close()
++                return newFixedLengthResponse(Response.Status.RANGE_NOT_SATISFIABLE, "text/plain", "")
++                    .also {
++                        it.addHeader("Content-Range", "bytes */$fileSize")
++                        it.addHeader("Accept-Ranges", "bytes")
++                    }
++            }
++            val partial = range as? HttpByteRange.Partial
++            if (partial != null) fis.channel.position(partial.first)
++            val length = partial?.length ?: fileSize
++            val response = newFixedLengthResponse(
++                if (partial == null) Response.Status.OK else Response.Status.PARTIAL_CONTENT,
++                XmlResponseBuilder.guessMimeType(file), fis, length
++            )
++            response.addHeader("Accept-Ranges", "bytes")
++            if (partial != null) response.addHeader("Content-Range", "bytes ${partial.first}-${partial.last}/$fileSize")
++            _bytesServed.addAndGet(length)
++            return response
++        } catch (error: Exception) {
++            fis.close()
++            throw error
++        }
+     }
+ 
+     // ─── HEAD ────────────────────────────────────────────────────
+diff --git a/android/app/src/test/java/com/phonebridge/server/HttpByteRangeTest.kt b/android/app/src/test/java/com/phonebridge/server/HttpByteRangeTest.kt
+new file mode 100644
+index 0000000..ede8325
+--- /dev/null
++++ b/android/app/src/test/java/com/phonebridge/server/HttpByteRangeTest.kt
+@@ -0,0 +1,38 @@
++package com.phonebridge.server
++
++import org.junit.Assert.*
++import org.junit.Test
++
++class HttpByteRangeTest {
++    @Test fun fullRepresentationWhenAbsentOrUnsupported() {
++        for (header in listOf(null, "items=0-1", "bytes=0-1,3-4")) {
++            assertEquals(HttpByteRange.Full, HttpByteRange.parse(header, 100))
++        }
++    }
++    @Test fun middleRangeAndClippedEnd() {
++        assertEquals(HttpByteRange.Partial(20, 29), HttpByteRange.parse("bytes=20-29", 100))
++        assertEquals(HttpByteRange.Partial(90, 99), HttpByteRange.parse("bytes=90-1000", 100))
++    }
++    @Test fun openRangeAndSuffix() {
++        assertEquals(HttpByteRange.Partial(30, 99), HttpByteRange.parse("bytes=30-", 100))
++        assertEquals(HttpByteRange.Partial(90, 99), HttpByteRange.parse("bytes=-10", 100))
++        assertEquals(HttpByteRange.Partial(0, 99), HttpByteRange.parse("bytes=-1000", 100))
++    }
++    @Test fun invalidAndUnsatisfiableRanges() {
++        for (header in listOf("bytes=100-", "bytes=20-19", "bytes=-0", "bytes=-", "bytes=x-3", "bytes=+1-3", "bytes=1- 3")) {
++            assertEquals(header, HttpByteRange.Unsatisfiable, HttpByteRange.parse(header, 100))
++        }
++        assertEquals(HttpByteRange.Unsatisfiable, HttpByteRange.parse("bytes=0-", 0))
++    }
++    @Test fun hugeDecimalOffsetsDoNotOverflow() {
++        val huge = "9".repeat(100)
++        assertEquals(HttpByteRange.Unsatisfiable, HttpByteRange.parse("bytes=$huge-", 100))
++        assertEquals(HttpByteRange.Partial(0, 99), HttpByteRange.parse("bytes=-$huge", 100))
++        assertEquals(HttpByteRange.Partial(90, 99), HttpByteRange.parse("bytes=90-$huge", 100))
++    }
++    @Test fun supportsFilesLargerThanIntMax() {
++        val range = HttpByteRange.parse("bytes=10000000000-19999999999", 20_000_000_000) as HttpByteRange.Partial
++        assertEquals(10_000_000_000, range.length)
++        assertEquals(HttpByteRange.Partial(99, 99), HttpByteRange.parse("BYTES=99-99", 100))
++    }
++}
+diff --git a/android/app/src/test/java/com/phonebridge/server/RequestBodyTest.kt b/android/app/src/test/java/com/phonebridge/server/RequestBodyTest.kt
+new file mode 100644
+index 0000000..18b8369
+--- /dev/null
++++ b/android/app/src/test/java/com/phonebridge/server/RequestBodyTest.kt
+@@ -0,0 +1,40 @@
++package com.phonebridge.server
++
++import java.io.ByteArrayInputStream
++import java.io.EOFException
++import java.io.InputStream
++import java.io.IOException
++import java.net.SocketTimeoutException
++import org.junit.Assert.*
++import org.junit.Test
++
++class RequestBodyTest {
++    private fun deadline() = System.nanoTime() + 5_000_000_000L
++    @Test fun leavesNextPipelinedRequestUntouched() {
++        val input = ByteArrayInputStream("bodyOPTIONS / HTTP/1.1\r\n".toByteArray())
++        RequestBody.discard(input, 4, deadline())
++        assertEquals("OPTIONS / HTTP/1.1\r\n", input.readBytes().toString(Charsets.UTF_8))
++    }
++    @Test fun zeroBodyDoesNotRead() {
++        val input = ByteArrayInputStream(byteArrayOf(7))
++        RequestBody.discard(input, 0, deadline())
++        assertEquals(7, input.read())
++    }
++    @Test(expected = EOFException::class) fun rejectsTruncatedBody() {
++        RequestBody.discard(ByteArrayInputStream(byteArrayOf(1)), 2, deadline())
++    }
++    @Test(expected = SocketTimeoutException::class) fun deadlineIsEnforced() {
++        RequestBody.discard(ByteArrayInputStream(byteArrayOf(1)), 1, System.nanoTime() - 1)
++    }
++    @Test(expected = IOException::class) fun noProgressCannotSpinForever() {
++        RequestBody.discard(object : InputStream() {
++            override fun read() = 0
++            override fun read(bytes: ByteArray, offset: Int, length: Int) = 0
++        }, 1, deadline())
++    }
++    @Test fun drainsMultipleBuffersExactly() {
++        val input = ByteArrayInputStream(ByteArray(20_001) { 5 })
++        RequestBody.discard(input, 20_000, deadline())
++        assertEquals(1, input.available())
++    }
++}

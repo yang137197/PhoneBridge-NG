@@ -1,0 +1,9 @@
+{
+  "avd": "PhoneBridgeP0Api36",
+  "properties": {
+    "ro.build.version.sdk": "36",
+    "ro.build.version.release": "16",
+    "ro.build.fingerprint": "Android/sdk_phone64_x86_64/emu64x:16/BE2A.250530.026.D1/13818094:userdebug/test-keys",
+    "ro.product.cpu.abi": "x86_64"
+  }
+}

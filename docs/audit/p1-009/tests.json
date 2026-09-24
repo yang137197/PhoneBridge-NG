@@ -1,0 +1,43 @@
+{
+  "task": "P1-009",
+  "date": "2026-09-21",
+  "windows": {
+    "configuration": "Release",
+    "warnings": 0,
+    "errors": 0,
+    "total": 218,
+    "passed": 218,
+    "failed": 0,
+    "groups": {
+      "discovery": 54,
+      "mounting": 36,
+      "pairing": 50,
+      "connection": 15,
+      "credentials": 63
+    },
+    "trxRoot": ".audit/windows-verification/20260921-103205"
+  },
+  "androidBuild": {
+    "result": "passed",
+    "tasks": 123,
+    "executed": 30,
+    "upToDate": 93,
+    "outputs": [
+      "debug-apk",
+      "unsigned-release-apk",
+      "android-test-apk",
+      "debug-unit-tests",
+      "debug-lint",
+      "release-lint"
+    ]
+  },
+  "androidInstrumentation": {
+    "device": "Redmi K40",
+    "api": 36,
+    "storageCasesPassed": 26,
+    "serviceCasesPassed": 19,
+    "allCasesIndividuallyPassed": true,
+    "singleUninterruptedRun": false,
+    "limitation": "The first 44 cases completed in the combined run; phone sleep interrupted the final 120-second case, which passed separately in 121.109 seconds."
+  }
+}

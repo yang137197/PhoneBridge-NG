@@ -1,0 +1,14 @@
+[
+  {
+    "name": "instrumentation.log",
+    "sha256": "d0fe76dcb2f858754232dbbb35c3b3e67ba94c83d17ee95035a443da60049597"
+  },
+  {
+    "name": "android-service.log",
+    "sha256": "99c8efbd80491855432e7cb3856cb34fe33f71a8b8b4a009ac6cd36a5c775486"
+  },
+  {
+    "name": "crash-log.txt",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+]

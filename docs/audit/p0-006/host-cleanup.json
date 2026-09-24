@@ -1,0 +1,7 @@
+{
+  "local_emulator_process_count": 0,
+  "p_drive_present": false,
+  "cache_and_avd_preserved": true,
+  "test_emulators_absent_from_adb": true,
+  "test_forwards_absent": true
+}

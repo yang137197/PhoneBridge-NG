@@ -1,0 +1,33 @@
+{
+  "run": "real-6ee55d4c1371",
+  "checks": [
+    {
+      "test": "real-phone-appearance",
+      "passed": true,
+      "seconds_from_host_launch": 3.89
+    },
+    {
+      "test": "live-candidate-no-flicker",
+      "passed": true,
+      "observed_seconds": 32
+    },
+    {
+      "test": "real-phone-removal",
+      "passed": true,
+      "seconds_after_host_stop": 35.937
+    },
+    {
+      "test": "diagnostic-exit",
+      "passed": true,
+      "exit_code": 0
+    },
+    {
+      "test": "phone-preserved",
+      "passed": true
+    },
+    {
+      "test": "service-stopped",
+      "passed": true
+    }
+  ]
+}

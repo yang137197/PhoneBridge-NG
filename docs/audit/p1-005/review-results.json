@@ -1,0 +1,56 @@
+{
+  "review_type": "implementer code review, not independent security audit",
+  "reviewed_core_sources": [
+    {
+      "path": "windows/src/PhoneBridge.Credentials/AssemblyInfo.cs",
+      "sha256": "640715a97138c9e30f5fbb7c031bb7131e73ddd0c70d68fc135bbf778e37ed83"
+    },
+    {
+      "path": "windows/src/PhoneBridge.Credentials/CurrentUserProtection.cs",
+      "sha256": "a136d55eeaf3256c794c08c72d489f321cf5c93da1039d44eb8a786240a8b650"
+    },
+    {
+      "path": "windows/src/PhoneBridge.Credentials/PairingRecord.cs",
+      "sha256": "27a3710fe140ad834fea350e04b563950d4ca554669ca20b476888bc7bff5842"
+    },
+    {
+      "path": "windows/src/PhoneBridge.Credentials/PairingStore.cs",
+      "sha256": "b91e500adbbd7356a96e2e6ac5145e4cd18e090f95222e50f4d6e98c3a8dfaf5"
+    },
+    {
+      "path": "windows/src/PhoneBridge.Credentials/PrivateFiles.cs",
+      "sha256": "9744e0f6bc488d76b4e58691441492da3205b6b6842fa6b5703e009923b0f636"
+    },
+    {
+      "path": "windows/src/PhoneBridge.Credentials/RecordCodec.cs",
+      "sha256": "9750e329697bb56cb25dde5a7c28d56c8eeabf7e40121b47ea5a266ae3f4c443"
+    }
+  ],
+  "areas": [
+    "CA canonical DER, self-signature, purpose, algorithms, validity and bound hash",
+    "DPAPI CurrentUser only, bounded buffer and memory release",
+    "Protected ACL, reparse/hardlink refusal and pinned ancestor handles",
+    "Ciphertext-only atomic commit, bounded contention retry and uncertain-write refusal",
+    "Revision/state comparison, no late activation, verified mode refresh",
+    "No product HTTP, console or test/telemetry dependency; test helper owned process cleanup"
+  ],
+  "synthetic_secret_scan": {
+    "decrypted_record_files": 168,
+    "scanned_text_reports_and_sources": 330,
+    "matches": [],
+    "encodings": [
+      "raw32",
+      "base64",
+      "base64url-no-padding",
+      "lower-hex"
+    ]
+  },
+  "limitations": [
+    "same-user malicious code or administrator",
+    "malicious replay of a prior valid DPAPI blob",
+    "different normal Windows login user not tested",
+    "power loss and full disk not tested",
+    "exact external lock holder unidentified",
+    "not an HTTP authorization or complete pairing implementation"
+  ]
+}

@@ -1,0 +1,78 @@
+{
+  "task": "P1-013",
+  "date": "2026-09-21",
+  "host": "Windows 11 development PC",
+  "registry": {
+    "hive": "HKEY_CURRENT_USER",
+    "key": "Software\\Microsoft\\Windows\\CurrentVersion\\Run",
+    "valueName": "PhoneBridge-NG",
+    "kind": "REG_SZ",
+    "commandLength": 176,
+    "argument": "--startup"
+  },
+  "checks": [
+    {
+      "time": "2026-09-21T15:06:22+08:00",
+      "event": "default-state",
+      "checkbox": "off",
+      "runEntryPresent": false
+    },
+    {
+      "time": "2026-09-21T15:07:38+08:00",
+      "event": "user-enabled",
+      "checkbox": "on",
+      "runEntryPresent": true,
+      "exactCommandMatch": true
+    },
+    {
+      "time": "2026-09-21T15:12:53+08:00",
+      "event": "stored-command-launched",
+      "desktopPid": 26456,
+      "windowVisible": false,
+      "duplicateLaunchDesktopCount": 1,
+      "duplicateLaunchKeptSamePid": true
+    },
+    {
+      "time": "2026-09-21T15:13:47+08:00",
+      "event": "user-disabled",
+      "checkbox": "off",
+      "runEntryPresent": false
+    },
+    {
+      "time": "2026-09-21T15:14:38+08:00",
+      "event": "startup-without-external-window-hiding",
+      "desktopPid": 29312,
+      "windowVisible": false,
+      "runEntryPresent": false
+    },
+    {
+      "time": "2026-09-21T15:19:51+08:00",
+      "event": "startup-auto-connect",
+      "device": "Samsung SM-S9180",
+      "elapsedSeconds": 6.86,
+      "desktopPid": 32252,
+      "windowVisible": false,
+      "driveP": true,
+      "rclonePids": [32016],
+      "androidForegroundService": true,
+      "userConfirmedMountedStatus": true
+    },
+    {
+      "time": "2026-09-21T15:21:18+08:00",
+      "event": "final-cleanup",
+      "desktopCount": 0,
+      "driveP": false,
+      "rcloneCount": 0,
+      "runEntryPresent": false,
+      "androidSharingServicePresent": false,
+      "androidSharingWakeLock": false
+    }
+  ],
+  "result": "passed-limited-scope",
+  "limitations": [
+    "Windows sign-out, sign-in and reboot were not performed.",
+    "The temporary Run entry referenced the development build and was removed after acceptance.",
+    "An installed application path and installer uninstall cleanup were not tested.",
+    "Multiple simultaneously available paired phones were covered by policy tests, not a two-phone live test."
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  "task": "P1-009",
+  "date": "2026-09-21",
+  "device": {
+    "model": "Redmi K40",
+    "reportedName": "M2012K11AC",
+    "androidApi": 36,
+    "sharedRoot": "Music"
+  },
+  "connection": {
+    "savedPairingReconnected": true,
+    "strictSession": true,
+    "drive": "P:",
+    "mode": "SAFE"
+  },
+  "mount": {
+    "vfsCacheMode": "writes",
+    "writeBack": "0s",
+    "maxSize": "32Gi",
+    "minFreeSpace": "2Gi",
+    "maxAge": "168h",
+    "pollInterval": "5s",
+    "readOnlyFlagPresent": false
+  },
+  "operations": {
+    "createDirectory": "passed",
+    "renameDirectory": "passed",
+    "uploadSevenByteFile": "passed",
+    "renameFile": "passed",
+    "expiredDeleteRejectedAndTargetRetained": "passed",
+    "freshFileDeleteConfirmed": "passed",
+    "freshDirectoryDeleteConfirmed": "passed"
+  },
+  "independentPhoneReadback": {
+    "/p1-009-explorer-upload.rtf.rtf": "absent-after-confirmed-delete",
+    "/p1-009-safe-folder": "absent-after-confirmed-delete"
+  },
+  "cleanup": {
+    "drivePresent": false,
+    "rclonePresent": false,
+    "desktopPresent": false,
+    "androidSharingServicePresent": false,
+    "adbForwardings": 0,
+    "stableDeviceCacheRetained": true
+  }
+}

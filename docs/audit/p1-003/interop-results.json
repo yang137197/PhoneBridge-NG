@@ -1,0 +1,227 @@
+{
+  "scope": "offline-library-interop-not-network-or-product",
+  "java_bc": "1.86",
+  "csharp_bc": "2.7.0",
+  "cases": [
+    {
+      "test": "same-code-0",
+      "passed": true,
+      "expected": "confirmed",
+      "completed_rounds": [
+        1,
+        2,
+        3
+      ],
+      "seconds": 0.438,
+      "exit_codes": [
+        0,
+        0
+      ],
+      "forced_cleanup": false
+    },
+    {
+      "test": "same-code-1",
+      "passed": true,
+      "expected": "confirmed",
+      "completed_rounds": [
+        1,
+        2,
+        3
+      ],
+      "seconds": 0.406,
+      "exit_codes": [
+        0,
+        0
+      ],
+      "forced_cleanup": false
+    },
+    {
+      "test": "same-code-2",
+      "passed": true,
+      "expected": "confirmed",
+      "completed_rounds": [
+        1,
+        2,
+        3
+      ],
+      "seconds": 0.391,
+      "exit_codes": [
+        0,
+        0
+      ],
+      "forced_cleanup": false
+    },
+    {
+      "test": "same-code-3",
+      "passed": true,
+      "expected": "confirmed",
+      "completed_rounds": [
+        1,
+        2,
+        3
+      ],
+      "seconds": 0.406,
+      "exit_codes": [
+        0,
+        0
+      ],
+      "forced_cleanup": false
+    },
+    {
+      "test": "same-code-4",
+      "passed": true,
+      "expected": "confirmed",
+      "completed_rounds": [
+        1,
+        2,
+        3
+      ],
+      "seconds": 0.421,
+      "exit_codes": [
+        0,
+        0
+      ],
+      "forced_cleanup": false
+    },
+    {
+      "test": "same-code-5",
+      "passed": true,
+      "expected": "confirmed",
+      "completed_rounds": [
+        1,
+        2,
+        3
+      ],
+      "seconds": 0.438,
+      "exit_codes": [
+        0,
+        0
+      ],
+      "forced_cleanup": false
+    },
+    {
+      "test": "same-code-6",
+      "passed": true,
+      "expected": "confirmed",
+      "completed_rounds": [
+        1,
+        2,
+        3
+      ],
+      "seconds": 0.406,
+      "exit_codes": [
+        0,
+        0
+      ],
+      "forced_cleanup": false
+    },
+    {
+      "test": "same-code-7",
+      "passed": true,
+      "expected": "confirmed",
+      "completed_rounds": [
+        1,
+        2,
+        3
+      ],
+      "seconds": 0.391,
+      "exit_codes": [
+        0,
+        0
+      ],
+      "forced_cleanup": false
+    },
+    {
+      "test": "leading-zero-code",
+      "passed": true,
+      "expected": "confirmed",
+      "completed_rounds": [
+        1,
+        2,
+        3
+      ],
+      "seconds": 0.422,
+      "exit_codes": [
+        0,
+        0
+      ],
+      "forced_cleanup": false
+    },
+    {
+      "test": "wrong-code",
+      "passed": true,
+      "expected": "rejected",
+      "completed_rounds": [
+        1,
+        2,
+        3
+      ],
+      "seconds": 0.421,
+      "exit_codes": [
+        2,
+        2
+      ],
+      "forced_cleanup": false
+    },
+    {
+      "test": "context-ca-or-window-altered",
+      "passed": true,
+      "expected": "rejected",
+      "completed_rounds": [
+        1
+      ],
+      "seconds": 0.391,
+      "exit_codes": [
+        2,
+        2
+      ],
+      "forced_cleanup": false
+    },
+    {
+      "test": "zero-group-element",
+      "passed": true,
+      "expected": "rejected",
+      "completed_rounds": [
+        1
+      ],
+      "seconds": 0.407,
+      "exit_codes": [
+        2,
+        2
+      ],
+      "forced_cleanup": false
+    },
+    {
+      "test": "modified-proof",
+      "passed": true,
+      "expected": "rejected",
+      "completed_rounds": [
+        1,
+        2
+      ],
+      "seconds": 0.5,
+      "exit_codes": [
+        2,
+        2
+      ],
+      "forced_cleanup": false
+    },
+    {
+      "test": "modified-server-confirmation",
+      "passed": true,
+      "expected": "rejected",
+      "completed_rounds": [
+        1,
+        2,
+        3
+      ],
+      "seconds": 0.437,
+      "exit_codes": [
+        2,
+        0
+      ],
+      "forced_cleanup": false
+    }
+  ],
+  "signed_negative_mac_values": 9
+}

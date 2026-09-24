@@ -1,0 +1,41 @@
+[
+  {
+    "run": "discovery-143558",
+    "result": "FAILED",
+    "reason": "Incorrect System.Devices.Dnssd.IpAddress property; COM 0x8002802B; corrected to documented System.Devices.IpAddress before retest."
+  },
+  {
+    "run": "discovery-143644",
+    "result": "FAILED",
+    "appearance_seconds": 3.875,
+    "reason": "No native Removed within 35 seconds; diagnostic exit 0 does not mean all checks passed."
+  },
+  {
+    "run": "removal-investigation-143928",
+    "result": "DIAGNOSTIC",
+    "independent_python_remove_received": true,
+    "native_remove_events": 0,
+    "native_observation_seconds": 175,
+    "native_ttl_value": null,
+    "fresh_offline_watcher_candidates": 0
+  },
+  {
+    "run": "unit-initial-first-build",
+    "result": "FAILED",
+    "reason": "Duplicate template Parallelize assembly attribute; removed duplicate and all subsequent tests passed."
+  },
+  {
+    "run": "discovery-144504",
+    "result": "PASS",
+    "appearance_seconds": 3.344,
+    "removal_after_host_stop_seconds": 24.0,
+    "script": ".audit/p1-001/real_discovery_final.py"
+  },
+  {
+    "run": "real-6ee55d4c1371",
+    "result": "PASS",
+    "appearance_seconds": 3.89,
+    "removal_after_host_stop_seconds": 35.937,
+    "script": "tests/integration/windows_discovery/real_device_discovery.py"
+  }
+]

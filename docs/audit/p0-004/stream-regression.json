@@ -1,0 +1,172 @@
+[
+  {
+    "name": "range-full",
+    "result": "PASS",
+    "seconds": 0.094
+  },
+  {
+    "name": "range-middle",
+    "result": "PASS",
+    "seconds": 0.125
+  },
+  {
+    "name": "range-first-byte",
+    "result": "PASS",
+    "seconds": 0.093
+  },
+  {
+    "name": "range-last-byte",
+    "result": "PASS",
+    "seconds": 0.079
+  },
+  {
+    "name": "range-open-end",
+    "result": "PASS",
+    "seconds": 0.093
+  },
+  {
+    "name": "range-suffix",
+    "result": "PASS",
+    "seconds": 0.094
+  },
+  {
+    "name": "range-oversized-suffix",
+    "result": "PASS",
+    "seconds": 0.125
+  },
+  {
+    "name": "range-clipped-end",
+    "result": "PASS",
+    "seconds": 0.078
+  },
+  {
+    "name": "range-past-end",
+    "result": "PASS",
+    "seconds": 0.031
+  },
+  {
+    "name": "range-reversed",
+    "result": "PASS",
+    "seconds": 0.031
+  },
+  {
+    "name": "range-zero-suffix",
+    "result": "PASS",
+    "seconds": 0.063
+  },
+  {
+    "name": "range-malformed",
+    "result": "PASS",
+    "seconds": 0.031
+  },
+  {
+    "name": "range-huge-first",
+    "result": "PASS",
+    "seconds": 0.031
+  },
+  {
+    "name": "range-huge-end",
+    "result": "PASS",
+    "seconds": 0.078
+  },
+  {
+    "name": "range-huge-suffix",
+    "result": "PASS",
+    "seconds": 0.094
+  },
+  {
+    "name": "range-unsupported-unit",
+    "result": "PASS",
+    "seconds": 0.141
+  },
+  {
+    "name": "range-unsupported-multiple",
+    "result": "PASS",
+    "seconds": 0.078
+  },
+  {
+    "name": "if-range-without-validator-full",
+    "result": "PASS",
+    "seconds": 0.109
+  },
+  {
+    "name": "gzip-does-not-change-byte-offsets",
+    "result": "PASS",
+    "seconds": 0.078
+  },
+  {
+    "name": "empty-full",
+    "result": "PASS",
+    "seconds": 0.032
+  },
+  {
+    "name": "empty-range",
+    "result": "PASS",
+    "seconds": 0.047
+  },
+  {
+    "name": "head-ignores-range",
+    "result": "PASS",
+    "seconds": 0.046
+  },
+  {
+    "name": "propfind-get-same-connection-three-times",
+    "result": "PASS",
+    "seconds": 0.438
+  },
+  {
+    "name": "pipelined-body-does-not-consume-next-request",
+    "result": "PASS",
+    "seconds": 0.031
+  },
+  {
+    "name": "oversized-body",
+    "result": "PASS",
+    "seconds": 0.047
+  },
+  {
+    "name": "negative-length",
+    "result": "PASS",
+    "seconds": 0.047
+  },
+  {
+    "name": "invalid-length",
+    "result": "PASS",
+    "seconds": 0.062
+  },
+  {
+    "name": "overflow-length",
+    "result": "PASS",
+    "seconds": 0.032
+  },
+  {
+    "name": "chunked-body-rejected",
+    "result": "PASS",
+    "seconds": 0.031
+  },
+  {
+    "name": "ambiguous-transfer-encoding-and-length",
+    "result": "PASS",
+    "seconds": 0.062
+  },
+  {
+    "name": "missing-put-length",
+    "result": "PASS",
+    "seconds": 0.031
+  },
+  {
+    "name": "unauthenticated-body-closes",
+    "result": "PASS",
+    "seconds": 0.047
+  },
+  {
+    "name": "stalled-short-body-times-out",
+    "result": "PASS",
+    "seconds": 5.047
+  },
+  {
+    "name": "multi-buffer-body",
+    "result": "PASS",
+    "seconds": 0.094
+  }
+]

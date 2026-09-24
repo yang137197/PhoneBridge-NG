@@ -1,0 +1,18 @@
+{
+  "baseline": {
+    "Warning": 128,
+    "Error": 2
+  },
+  "repair": {
+    "Warning": 128,
+    "Error": 2
+  },
+  "added_issues": 0,
+  "removed_issues": 0,
+  "comparison_key": [
+    "id",
+    "severity",
+    "message"
+  ],
+  "lint_exit_code": 1
+}

@@ -1,0 +1,2006 @@
+{
+  "observed_at": "2026-09-19T15:25:54.046119+00:00",
+  "native": [
+    {
+      "api": 26,
+      "avd": "PhoneBridgeP0Api26",
+      "apk_hashes": {
+        "org.phonebridge.ng": "3fb1dc2c72949b6a0c8624bad6ea02d579e1a86a7b5f44e1983ee999ef85b3c3",
+        "org.phonebridge.ng.test": "4ccd6df205848ba6d498b32816fa561a45e1a79b3da6036c278770fd76afe74f"
+      },
+      "adb_exit": 0,
+      "expected": 42,
+      "tests": [
+        {
+          "test": "revokeAndAuthorizedCommitShareOneBarrier",
+          "code": 0,
+          "passed": true
+        },
+        {
+          "test": "wrongUnknownAndMalformedCredentialsAreUniformlyRefused",
+          "code": 0,
+          "passed": true
+        },
+        {
+          "test": "twoClientsRemainIndependent",
+          "code": 0,
+          "passed": true
+        },
+        {
+          "test": "unsafeModesAndLinksAreRejected",
+          "code": 0,
+          "passed": true
+        },
+        {
+          "test": "failedInitializationNeverBecomesFreshAutomatically",
+          "code": 0,
+          "passed": true
+        },
+        {
+          "test": "missingDatabaseDoesNotInitialize",
+          "code": 0,
+          "passed": true
+        },
+        {
+          "test": "keystoreIsNonExportableAndNonceChanges",
+          "code": 0,
+          "passed": true
+        },
+        {
+          "test": "revisionsProtectModeAndRevocationFromStaleCallers",
+          "code": 0,
+          "passed": true
+        },
+        {
+          "test": "sixteenActiveCapacityIsEnforcedWithoutEviction",
+          "code": 0,
+          "passed": true
+        },
+        {
+          "test": "missingKeyDoesNotRegenerate",
+          "code": 0,
+          "passed": true
+        },
+        {
+          "test": "verificationKnownAnswerAndBindings",
+          "code": 0,
+          "passed": true
+        },
+        {
+          "test": "protectedMalformedRecordCannotAuthorize",
+          "code": 0,
+          "passed": true
+        },
+        {
+          "test": "revocationPersistsAndCannotReactivateSameClient",
+          "code": 0,
+          "passed": true
+        },
+        {
+          "test": "failedRevocationPoisonsAllInstancesAndLeavesObservableDiskState",
+          "code": 0,
+          "passed": true
+        },
+        {
+          "test": "replacementKeyCannotReadOldCiphertext",
+          "code": 0,
+          "passed": true
+        },
+        {
+          "test": "deviceProtectedContextIsRefusedBeforeCreatingStore",
+          "code": 0,
+          "passed": true
+        },
+        {
+          "test": "hardlinkCreationIsBlockedByPlatformOrStore",
+          "code": 0,
+          "passed": true
+        },
+        {
+          "test": "incorrectCaBindingPoisonsAllLocalInstances",
+          "code": 0,
+          "passed": true
+        },
+        {
+          "test": "ownedDescriptorsAreAtomicallyCloseOnExec",
+          "code": 0,
+          "passed": true
+        },
+        {
+          "test": "invalidInputsNeverCreateStore",
+          "code": 0,
+          "passed": true
+        },
+        {
+          "test": "ciphertextTamperingTruncationAndOversizeFailClosed",
+          "code": 0,
+          "passed": true
+        },
+        {
+          "test": "nativeRoundTripDefaultModeAndNoRawToken",
+          "code": 0,
+          "passed": true
+        },
+        {
+          "test": "externalFileLockBlocksWithoutPoisoning",
+          "code": 0,
+          "passed": true
+        },
+        {
+          "test": "existingKeyOrDatabaseRefusesFreshInitialization",
+          "code": 0,
+          "passed": true
+        },
+        {
+          "test": "symlinkStoreRootRejected",
+          "code": 0,
+          "passed": true
+        },
+        {
+          "test": "totalRecordCapacityDoesNotDiscardRevocations",
+          "code": 0,
+          "passed": true
+        },
+        {
+          "test": "revokeWriteFailureClosesConnectionWithoutSuccessAcknowledgment",
+          "code": 0,
+          "passed": true
+        },
+        {
+          "test": "revokeCancelsAnAlreadyStreamingDownload",
+          "code": 0,
+          "passed": true
+        },
+        {
+          "test": "fifthAcceptedFailureClosesWindowAndDoesNotReopen",
+          "code": 0,
+          "passed": true
+        },
+        {
+          "test": "approvalWriteFailureCannotAcknowledgeActivation",
+          "code": 0,
+          "passed": true
+        },
+        {
+          "test": "strictJsonAndHeadersRejectAmbiguousRequests",
+          "code": 0,
+          "passed": true
+        },
+        {
+          "test": "temporaryGrantDiesWhenControllerRestartsButTokenRemains",
+          "code": 0,
+          "passed": true
+        },
+        {
+          "test": "storedCorruptionFailsClosedForAllRequests",
+          "code": 0,
+          "passed": true
+        },
+        {
+          "test": "slowHeadersAndIncompletePairingHaveAbsoluteDeadlines",
+          "code": 0,
+          "passed": true
+        },
+        {
+          "test": "revokingOneComputerKeepsTheOtherAuthorized",
+          "code": 0,
+          "passed": true
+        },
+        {
+          "test": "cancellationAndApprovalHaveOneWinningState",
+          "code": 0,
+          "passed": true
+        },
+        {
+          "test": "wrongCodeAndTrailingFrameCannotObtainGrant",
+          "code": 0,
+          "passed": true
+        },
+        {
+          "test": "approvalPersistsBeforeReadAndWritesStayUnavailable",
+          "code": 0,
+          "passed": true
+        },
+        {
+          "test": "rejectCancelAndClosedGrantCannotActivate",
+          "code": 0,
+          "passed": true
+        },
+        {
+          "test": "strictTlsRejectsWrongIdentityAndHostname",
+          "code": 0,
+          "passed": true
+        },
+        {
+          "test": "selfRevocationPersistsAndInvalidatesOwnToken",
+          "code": 0,
+          "passed": true
+        },
+        {
+          "test": "realWindowExpiresAndCannotBeExtendedByPolling",
+          "code": 0,
+          "passed": true
+        }
+      ],
+      "passed": 42,
+      "total": 42,
+      "real_phone_access": false
+    },
+    {
+      "api": 36,
+      "avd": "PhoneBridgeP0Api36",
+      "apk_hashes": {
+        "org.phonebridge.ng": "3fb1dc2c72949b6a0c8624bad6ea02d579e1a86a7b5f44e1983ee999ef85b3c3",
+        "org.phonebridge.ng.test": "4ccd6df205848ba6d498b32816fa561a45e1a79b3da6036c278770fd76afe74f"
+      },
+      "adb_exit": 0,
+      "expected": 42,
+      "tests": [
+        {
+          "test": "revokeAndAuthorizedCommitShareOneBarrier",
+          "code": 0,
+          "passed": true
+        },
+        {
+          "test": "wrongUnknownAndMalformedCredentialsAreUniformlyRefused",
+          "code": 0,
+          "passed": true
+        },
+        {
+          "test": "twoClientsRemainIndependent",
+          "code": 0,
+          "passed": true
+        },
+        {
+          "test": "unsafeModesAndLinksAreRejected",
+          "code": 0,
+          "passed": true
+        },
+        {
+          "test": "failedInitializationNeverBecomesFreshAutomatically",
+          "code": 0,
+          "passed": true
+        },
+        {
+          "test": "missingDatabaseDoesNotInitialize",
+          "code": 0,
+          "passed": true
+        },
+        {
+          "test": "keystoreIsNonExportableAndNonceChanges",
+          "code": 0,
+          "passed": true
+        },
+        {
+          "test": "revisionsProtectModeAndRevocationFromStaleCallers",
+          "code": 0,
+          "passed": true
+        },
+        {
+          "test": "sixteenActiveCapacityIsEnforcedWithoutEviction",
+          "code": 0,
+          "passed": true
+        },
+        {
+          "test": "missingKeyDoesNotRegenerate",
+          "code": 0,
+          "passed": true
+        },
+        {
+          "test": "verificationKnownAnswerAndBindings",
+          "code": 0,
+          "passed": true
+        },
+        {
+          "test": "protectedMalformedRecordCannotAuthorize",
+          "code": 0,
+          "passed": true
+        },
+        {
+          "test": "revocationPersistsAndCannotReactivateSameClient",
+          "code": 0,
+          "passed": true
+        },
+        {
+          "test": "failedRevocationPoisonsAllInstancesAndLeavesObservableDiskState",
+          "code": 0,
+          "passed": true
+        },
+        {
+          "test": "replacementKeyCannotReadOldCiphertext",
+          "code": 0,
+          "passed": true
+        },
+        {
+          "test": "deviceProtectedContextIsRefusedBeforeCreatingStore",
+          "code": 0,
+          "passed": true
+        },
+        {
+          "test": "hardlinkCreationIsBlockedByPlatformOrStore",
+          "code": 0,
+          "passed": true
+        },
+        {
+          "test": "incorrectCaBindingPoisonsAllLocalInstances",
+          "code": 0,
+          "passed": true
+        },
+        {
+          "test": "ownedDescriptorsAreAtomicallyCloseOnExec",
+          "code": 0,
+          "passed": true
+        },
+        {
+          "test": "invalidInputsNeverCreateStore",
+          "code": 0,
+          "passed": true
+        },
+        {
+          "test": "ciphertextTamperingTruncationAndOversizeFailClosed",
+          "code": 0,
+          "passed": true
+        },
+        {
+          "test": "nativeRoundTripDefaultModeAndNoRawToken",
+          "code": 0,
+          "passed": true
+        },
+        {
+          "test": "externalFileLockBlocksWithoutPoisoning",
+          "code": 0,
+          "passed": true
+        },
+        {
+          "test": "existingKeyOrDatabaseRefusesFreshInitialization",
+          "code": 0,
+          "passed": true
+        },
+        {
+          "test": "symlinkStoreRootRejected",
+          "code": 0,
+          "passed": true
+        },
+        {
+          "test": "totalRecordCapacityDoesNotDiscardRevocations",
+          "code": 0,
+          "passed": true
+        },
+        {
+          "test": "revokeWriteFailureClosesConnectionWithoutSuccessAcknowledgment",
+          "code": 0,
+          "passed": true
+        },
+        {
+          "test": "revokeCancelsAnAlreadyStreamingDownload",
+          "code": 0,
+          "passed": true
+        },
+        {
+          "test": "fifthAcceptedFailureClosesWindowAndDoesNotReopen",
+          "code": 0,
+          "passed": true
+        },
+        {
+          "test": "approvalWriteFailureCannotAcknowledgeActivation",
+          "code": 0,
+          "passed": true
+        },
+        {
+          "test": "strictJsonAndHeadersRejectAmbiguousRequests",
+          "code": 0,
+          "passed": true
+        },
+        {
+          "test": "temporaryGrantDiesWhenControllerRestartsButTokenRemains",
+          "code": 0,
+          "passed": true
+        },
+        {
+          "test": "storedCorruptionFailsClosedForAllRequests",
+          "code": 0,
+          "passed": true
+        },
+        {
+          "test": "slowHeadersAndIncompletePairingHaveAbsoluteDeadlines",
+          "code": 0,
+          "passed": true
+        },
+        {
+          "test": "revokingOneComputerKeepsTheOtherAuthorized",
+          "code": 0,
+          "passed": true
+        },
+        {
+          "test": "cancellationAndApprovalHaveOneWinningState",
+          "code": 0,
+          "passed": true
+        },
+        {
+          "test": "wrongCodeAndTrailingFrameCannotObtainGrant",
+          "code": 0,
+          "passed": true
+        },
+        {
+          "test": "approvalPersistsBeforeReadAndWritesStayUnavailable",
+          "code": 0,
+          "passed": true
+        },
+        {
+          "test": "rejectCancelAndClosedGrantCannotActivate",
+          "code": 0,
+          "passed": true
+        },
+        {
+          "test": "strictTlsRejectsWrongIdentityAndHostname",
+          "code": 0,
+          "passed": true
+        },
+        {
+          "test": "selfRevocationPersistsAndInvalidatesOwnToken",
+          "code": 0,
+          "passed": true
+        },
+        {
+          "test": "realWindowExpiresAndCannotBeExtendedByPolling",
+          "code": 0,
+          "passed": true
+        }
+      ],
+      "passed": 42,
+      "total": 42,
+      "real_phone_access": false
+    }
+  ],
+  "bridge": [
+    {
+      "api": 26,
+      "avd": "PhoneBridgeP0Api26",
+      "passed": true,
+      "stage": "ui_stop",
+      "events": [
+        {
+          "event_name": "pending",
+          "client_id": "ca3c31a0525766813af1863dfffc8275",
+          "attempt_id": "fa691a0cdb5e4962cd3d05134ab48f17",
+          "ca_sha256": "711aa1d33b939b75aec2e1def6f5e3931ca18517763aeae6afc22321dfe1f250",
+          "windows_state": "Pending"
+        },
+        {
+          "event_name": "session",
+          "status": 401,
+          "windows_state": "Pending"
+        },
+        {
+          "event_name": "session",
+          "status": 200,
+          "windows_state": "Active"
+        },
+        {
+          "event_name": "read",
+          "status": 200,
+          "sha256": "fa8b5d354c49279ebe3603dd73d91bcad1472fbf1e2c8467e07b43408b529a5f"
+        },
+        {
+          "event_name": "grant",
+          "status": 401
+        },
+        {
+          "event_name": "session",
+          "status": 200,
+          "windows_state": "Active"
+        },
+        {
+          "event_name": "grant",
+          "status": 401
+        },
+        {
+          "event_name": "session",
+          "status": 200,
+          "windows_state": "Active"
+        },
+        {
+          "event_name": "read",
+          "status": 200,
+          "sha256": "fa8b5d354c49279ebe3603dd73d91bcad1472fbf1e2c8467e07b43408b529a5f"
+        },
+        {
+          "event_name": "revoke",
+          "status": 204,
+          "windows_can_mount": false
+        },
+        {
+          "event_name": "session",
+          "status": 401,
+          "windows_state": "RevocationPending"
+        },
+        {
+          "event_name": "session",
+          "status": 401,
+          "windows_state": "RevocationPending"
+        },
+        {
+          "event_name": "failure",
+          "status": 0,
+          "closed": true
+        }
+      ],
+      "native_runs": [
+        {
+          "pid": "2872",
+          "resume": false,
+          "log": "instrumentation-0.log"
+        },
+        {
+          "pid": "2950",
+          "resume": true,
+          "log": "instrumentation-1.log"
+        },
+        {
+          "pid": "3012",
+          "resume": true,
+          "log": "instrumentation-2.log"
+        }
+      ],
+      "real_phone_access": false,
+      "transport": "emulator TCP redirection for PAKE; ADB loopback for TLS and test control",
+      "secret_log_checked": true
+    },
+    {
+      "api": 36,
+      "avd": "PhoneBridgeP0Api36",
+      "passed": true,
+      "stage": "ui_stop",
+      "events": [
+        {
+          "event_name": "pending",
+          "client_id": "c34bcf8f8fa18ce4e4556f2d7df504c8",
+          "attempt_id": "dbfba0f67014a43c0978966cca2abf07",
+          "ca_sha256": "0ea00a3aa2d28c2acea83e0dfbed1e8b06dc04853772db01c4a39dcd04bb45c3",
+          "windows_state": "Pending"
+        },
+        {
+          "event_name": "session",
+          "status": 401,
+          "windows_state": "Pending"
+        },
+        {
+          "event_name": "session",
+          "status": 200,
+          "windows_state": "Active"
+        },
+        {
+          "event_name": "read",
+          "status": 200,
+          "sha256": "fa8b5d354c49279ebe3603dd73d91bcad1472fbf1e2c8467e07b43408b529a5f"
+        },
+        {
+          "event_name": "grant",
+          "status": 401
+        },
+        {
+          "event_name": "session",
+          "status": 200,
+          "windows_state": "Active"
+        },
+        {
+          "event_name": "grant",
+          "status": 401
+        },
+        {
+          "event_name": "session",
+          "status": 200,
+          "windows_state": "Active"
+        },
+        {
+          "event_name": "read",
+          "status": 200,
+          "sha256": "fa8b5d354c49279ebe3603dd73d91bcad1472fbf1e2c8467e07b43408b529a5f"
+        },
+        {
+          "event_name": "revoke",
+          "status": 204,
+          "windows_can_mount": false
+        },
+        {
+          "event_name": "session",
+          "status": 401,
+          "windows_state": "RevocationPending"
+        },
+        {
+          "event_name": "session",
+          "status": 401,
+          "windows_state": "RevocationPending"
+        },
+        {
+          "event_name": "failure",
+          "status": 503,
+          "closed": false
+        }
+      ],
+      "native_runs": [
+        {
+          "pid": "2818",
+          "resume": false,
+          "log": "instrumentation-0.log"
+        },
+        {
+          "pid": "2899",
+          "resume": true,
+          "log": "instrumentation-1.log"
+        },
+        {
+          "pid": "2956",
+          "resume": true,
+          "log": "instrumentation-2.log"
+        }
+      ],
+      "real_phone_access": false,
+      "transport": "emulator TCP redirection for PAKE; ADB loopback for TLS and test control",
+      "secret_log_checked": true
+    }
+  ],
+  "native_passed": 84,
+  "bridge_passed": 2,
+  "history": [
+    {
+      "directory": "api26-bridge-diagnostic",
+      "results": {
+        "api": 26,
+        "avd": "PhoneBridgeP0Api26",
+        "passed": false,
+        "stage": "csharp_pair",
+        "events": [
+          {
+            "event_name": "failed",
+            "stage": "pake_frame_32",
+            "error_type": "EndOfStreamException"
+          },
+          {
+            "event_name": "driver_failed",
+            "stage": "csharp_pair",
+            "error_type": "RuntimeError"
+          }
+        ],
+        "real_phone_access": false,
+        "transport": "emulator ADB loopback forwarding",
+        "secret_log_checked": false
+      }
+    },
+    {
+      "directory": "api26-bridge-ethernet",
+      "results": {
+        "api": 26,
+        "avd": "PhoneBridgeP0Api26",
+        "passed": true,
+        "stage": "ui_stop",
+        "events": [
+          {
+            "event_name": "pending",
+            "client_id": "2b854773da7eeb62672ea8777445c639",
+            "attempt_id": "9779760a1a85cb2f8effa56daaaee1a5",
+            "ca_sha256": "711aa1d33b939b75aec2e1def6f5e3931ca18517763aeae6afc22321dfe1f250",
+            "windows_state": "Pending"
+          },
+          {
+            "event_name": "session",
+            "status": 401,
+            "windows_state": "Pending"
+          },
+          {
+            "event_name": "session",
+            "status": 200,
+            "windows_state": "Active"
+          },
+          {
+            "event_name": "read",
+            "status": 200,
+            "sha256": "fa8b5d354c49279ebe3603dd73d91bcad1472fbf1e2c8467e07b43408b529a5f"
+          },
+          {
+            "event_name": "grant",
+            "status": 401
+          },
+          {
+            "event_name": "session",
+            "status": 200,
+            "windows_state": "Active"
+          },
+          {
+            "event_name": "revoke",
+            "status": 204,
+            "windows_can_mount": false
+          },
+          {
+            "event_name": "session",
+            "status": 401,
+            "windows_state": "RevocationPending"
+          }
+        ],
+        "real_phone_access": false,
+        "transport": "emulator TCP redirection for PAKE; ADB loopback for TLS and test control",
+        "secret_log_checked": true
+      }
+    },
+    {
+      "directory": "api26-bridge-final",
+      "results": {
+        "api": 26,
+        "avd": "PhoneBridgeP0Api26",
+        "passed": false,
+        "stage": "revoked_process_restart",
+        "events": [
+          {
+            "event_name": "pending",
+            "client_id": "63b1d23f68df41efdc4155b299be2ec8",
+            "attempt_id": "dfc56c2583c9e08fce978f036ef77eae",
+            "ca_sha256": "711aa1d33b939b75aec2e1def6f5e3931ca18517763aeae6afc22321dfe1f250",
+            "windows_state": "Pending"
+          },
+          {
+            "event_name": "session",
+            "status": 401,
+            "windows_state": "Pending"
+          },
+          {
+            "event_name": "session",
+            "status": 200,
+            "windows_state": "Active"
+          },
+          {
+            "event_name": "read",
+            "status": 200,
+            "sha256": "fa8b5d354c49279ebe3603dd73d91bcad1472fbf1e2c8467e07b43408b529a5f"
+          },
+          {
+            "event_name": "grant",
+            "status": 401
+          },
+          {
+            "event_name": "session",
+            "status": 200,
+            "windows_state": "Active"
+          },
+          {
+            "event_name": "grant",
+            "status": 401
+          },
+          {
+            "event_name": "session",
+            "status": 200,
+            "windows_state": "Active"
+          },
+          {
+            "event_name": "read",
+            "status": 200,
+            "sha256": "fa8b5d354c49279ebe3603dd73d91bcad1472fbf1e2c8467e07b43408b529a5f"
+          },
+          {
+            "event_name": "revoke",
+            "status": 204,
+            "windows_can_mount": false
+          },
+          {
+            "event_name": "session",
+            "status": 401,
+            "windows_state": "RevocationPending"
+          },
+          {
+            "event_name": "driver_failed",
+            "stage": "revoked_process_restart",
+            "error_type": "TimeoutError"
+          }
+        ],
+        "native_runs": [
+          {
+            "pid": "3078",
+            "resume": false,
+            "log": "instrumentation-0.log"
+          },
+          {
+            "pid": "3155",
+            "resume": true,
+            "log": "instrumentation-1.log"
+          }
+        ],
+        "real_phone_access": false,
+        "transport": "emulator TCP redirection for PAKE; ADB loopback for TLS and test control",
+        "secret_log_checked": false
+      }
+    },
+    {
+      "directory": "api26-bridge-first",
+      "results": {
+        "api": 26,
+        "avd": "PhoneBridgeP0Api26",
+        "passed": false,
+        "stage": "csharp_pair",
+        "events": [
+          {
+            "event_name": "failed",
+            "stage": "pake"
+          },
+          {
+            "event_name": "driver_failed",
+            "stage": "csharp_pair",
+            "error_type": "RuntimeError"
+          }
+        ],
+        "real_phone_access": false,
+        "transport": "emulator ADB loopback forwarding",
+        "secret_log_checked": false
+      }
+    },
+    {
+      "directory": "api26-bridge-reviewed",
+      "results": {
+        "api": 26,
+        "avd": "PhoneBridgeP0Api26",
+        "passed": true,
+        "stage": "ui_stop",
+        "events": [
+          {
+            "event_name": "pending",
+            "client_id": "b9696a7641ae1ad3147207d966ccb493",
+            "attempt_id": "89a2682fc9b0be6c35f7e434aa836bb3",
+            "ca_sha256": "711aa1d33b939b75aec2e1def6f5e3931ca18517763aeae6afc22321dfe1f250",
+            "windows_state": "Pending"
+          },
+          {
+            "event_name": "session",
+            "status": 401,
+            "windows_state": "Pending"
+          },
+          {
+            "event_name": "session",
+            "status": 200,
+            "windows_state": "Active"
+          },
+          {
+            "event_name": "read",
+            "status": 200,
+            "sha256": "fa8b5d354c49279ebe3603dd73d91bcad1472fbf1e2c8467e07b43408b529a5f"
+          },
+          {
+            "event_name": "grant",
+            "status": 401
+          },
+          {
+            "event_name": "session",
+            "status": 200,
+            "windows_state": "Active"
+          },
+          {
+            "event_name": "grant",
+            "status": 401
+          },
+          {
+            "event_name": "session",
+            "status": 200,
+            "windows_state": "Active"
+          },
+          {
+            "event_name": "read",
+            "status": 200,
+            "sha256": "fa8b5d354c49279ebe3603dd73d91bcad1472fbf1e2c8467e07b43408b529a5f"
+          },
+          {
+            "event_name": "revoke",
+            "status": 204,
+            "windows_can_mount": false
+          },
+          {
+            "event_name": "session",
+            "status": 401,
+            "windows_state": "RevocationPending"
+          },
+          {
+            "event_name": "session",
+            "status": 401,
+            "windows_state": "RevocationPending"
+          }
+        ],
+        "native_runs": [
+          {
+            "pid": "3341",
+            "resume": false,
+            "log": "instrumentation-0.log"
+          },
+          {
+            "pid": "3420",
+            "resume": true,
+            "log": "instrumentation-1.log"
+          },
+          {
+            "pid": "3483",
+            "resume": true,
+            "log": "instrumentation-2.log"
+          }
+        ],
+        "real_phone_access": false,
+        "transport": "emulator TCP redirection for PAKE; ADB loopback for TLS and test control",
+        "secret_log_checked": true
+      }
+    },
+    {
+      "directory": "api26-bridge-router",
+      "results": {
+        "api": 26,
+        "avd": "PhoneBridgeP0Api26",
+        "passed": false,
+        "stage": "csharp_pair",
+        "events": [
+          {
+            "event_name": "failed",
+            "stage": "pake_frame_02",
+            "error_type": "IOException"
+          },
+          {
+            "event_name": "driver_failed",
+            "stage": "csharp_pair",
+            "error_type": "RuntimeError"
+          }
+        ],
+        "real_phone_access": false,
+        "transport": "emulator TCP redirection for PAKE; ADB loopback for TLS and test control",
+        "secret_log_checked": false
+      }
+    },
+    {
+      "directory": "api26-first",
+      "results": {
+        "api": 26,
+        "avd": "PhoneBridgeP0Api26",
+        "apk_hashes": {
+          "org.phonebridge.ng": "64ab5d3f68dc84390ed73c44c97da1fec23ec5c7c297f6239c5384436855eb88",
+          "org.phonebridge.ng.test": "732128080a720060f09fabfca9b73e45300f801b180ef8c53823e8b083f2eba8"
+        },
+        "adb_exit": 0,
+        "expected": 39,
+        "tests": [
+          {
+            "test": "revokeAndAuthorizedCommitShareOneBarrier",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "wrongUnknownAndMalformedCredentialsAreUniformlyRefused",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "twoClientsRemainIndependent",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "unsafeModesAndLinksAreRejected",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "failedInitializationNeverBecomesFreshAutomatically",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "missingDatabaseDoesNotInitialize",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "keystoreIsNonExportableAndNonceChanges",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "revisionsProtectModeAndRevocationFromStaleCallers",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "sixteenActiveCapacityIsEnforcedWithoutEviction",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "missingKeyDoesNotRegenerate",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "verificationKnownAnswerAndBindings",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "protectedMalformedRecordCannotAuthorize",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "revocationPersistsAndCannotReactivateSameClient",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "failedRevocationPoisonsAllInstancesAndLeavesObservableDiskState",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "replacementKeyCannotReadOldCiphertext",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "deviceProtectedContextIsRefusedBeforeCreatingStore",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "hardlinkCreationIsBlockedByPlatformOrStore",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "incorrectCaBindingPoisonsAllLocalInstances",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "ownedDescriptorsAreAtomicallyCloseOnExec",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "invalidInputsNeverCreateStore",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "ciphertextTamperingTruncationAndOversizeFailClosed",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "nativeRoundTripDefaultModeAndNoRawToken",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "externalFileLockBlocksWithoutPoisoning",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "existingKeyOrDatabaseRefusesFreshInitialization",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "symlinkStoreRootRejected",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "totalRecordCapacityDoesNotDiscardRevocations",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "revokeCancelsAnAlreadyStreamingDownload",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "fifthAcceptedFailureClosesWindowAndDoesNotReopen",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "strictJsonAndHeadersRejectAmbiguousRequests",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "temporaryGrantDiesWhenControllerRestartsButTokenRemains",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "storedCorruptionFailsClosedForAllRequests",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "revokingOneComputerKeepsTheOtherAuthorized",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "cancellationAndApprovalHaveOneWinningState",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "wrongCodeAndTrailingFrameCannotObtainGrant",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "approvalPersistsBeforeReadAndWritesStayUnavailable",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "rejectCancelAndClosedGrantCannotActivate",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "strictTlsRejectsWrongIdentityAndHostname",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "selfRevocationPersistsAndInvalidatesOwnToken",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "realWindowExpiresAndCannotBeExtendedByPolling",
+            "code": 0,
+            "passed": true
+          }
+        ],
+        "passed": 39,
+        "total": 39,
+        "real_phone_access": false
+      }
+    },
+    {
+      "directory": "api26-native-final",
+      "results": {
+        "api": 26,
+        "avd": "PhoneBridgeP0Api26",
+        "apk_hashes": {
+          "org.phonebridge.ng": "aebe86e2e7a1124e6e37cc60db266d8e2ebc56679b0045e881ea424baa88b9c4",
+          "org.phonebridge.ng.test": "b96d8e25ebac6a06e709e14105a918449acbf7c209adabfae0c84da8b51dc45a"
+        },
+        "adb_exit": 0,
+        "expected": 42,
+        "tests": [
+          {
+            "test": "revokeAndAuthorizedCommitShareOneBarrier",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "wrongUnknownAndMalformedCredentialsAreUniformlyRefused",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "twoClientsRemainIndependent",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "unsafeModesAndLinksAreRejected",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "failedInitializationNeverBecomesFreshAutomatically",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "missingDatabaseDoesNotInitialize",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "keystoreIsNonExportableAndNonceChanges",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "revisionsProtectModeAndRevocationFromStaleCallers",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "sixteenActiveCapacityIsEnforcedWithoutEviction",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "missingKeyDoesNotRegenerate",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "verificationKnownAnswerAndBindings",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "protectedMalformedRecordCannotAuthorize",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "revocationPersistsAndCannotReactivateSameClient",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "failedRevocationPoisonsAllInstancesAndLeavesObservableDiskState",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "replacementKeyCannotReadOldCiphertext",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "deviceProtectedContextIsRefusedBeforeCreatingStore",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "hardlinkCreationIsBlockedByPlatformOrStore",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "incorrectCaBindingPoisonsAllLocalInstances",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "ownedDescriptorsAreAtomicallyCloseOnExec",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "invalidInputsNeverCreateStore",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "ciphertextTamperingTruncationAndOversizeFailClosed",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "nativeRoundTripDefaultModeAndNoRawToken",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "externalFileLockBlocksWithoutPoisoning",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "existingKeyOrDatabaseRefusesFreshInitialization",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "symlinkStoreRootRejected",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "totalRecordCapacityDoesNotDiscardRevocations",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "revokeWriteFailureClosesConnectionWithoutSuccessAcknowledgment",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "revokeCancelsAnAlreadyStreamingDownload",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "fifthAcceptedFailureClosesWindowAndDoesNotReopen",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "approvalWriteFailureCannotAcknowledgeActivation",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "strictJsonAndHeadersRejectAmbiguousRequests",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "temporaryGrantDiesWhenControllerRestartsButTokenRemains",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "storedCorruptionFailsClosedForAllRequests",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "slowHeadersAndIncompletePairingHaveAbsoluteDeadlines",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "revokingOneComputerKeepsTheOtherAuthorized",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "cancellationAndApprovalHaveOneWinningState",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "wrongCodeAndTrailingFrameCannotObtainGrant",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "approvalPersistsBeforeReadAndWritesStayUnavailable",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "rejectCancelAndClosedGrantCannotActivate",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "strictTlsRejectsWrongIdentityAndHostname",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "selfRevocationPersistsAndInvalidatesOwnToken",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "realWindowExpiresAndCannotBeExtendedByPolling",
+            "code": 0,
+            "passed": true
+          }
+        ],
+        "passed": 42,
+        "total": 42,
+        "real_phone_access": false
+      }
+    },
+    {
+      "directory": "api36-native-final",
+      "results": {
+        "api": 36,
+        "avd": "PhoneBridgeP0Api36",
+        "apk_hashes": {
+          "org.phonebridge.ng": "aebe86e2e7a1124e6e37cc60db266d8e2ebc56679b0045e881ea424baa88b9c4",
+          "org.phonebridge.ng.test": "ac13c7afc62e5b80ea8372e2352e652e55399f5ca697935849b8ae472a618cd9"
+        },
+        "adb_exit": 0,
+        "expected": 42,
+        "tests": [
+          {
+            "test": "revokeAndAuthorizedCommitShareOneBarrier",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "wrongUnknownAndMalformedCredentialsAreUniformlyRefused",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "twoClientsRemainIndependent",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "unsafeModesAndLinksAreRejected",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "failedInitializationNeverBecomesFreshAutomatically",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "missingDatabaseDoesNotInitialize",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "keystoreIsNonExportableAndNonceChanges",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "revisionsProtectModeAndRevocationFromStaleCallers",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "sixteenActiveCapacityIsEnforcedWithoutEviction",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "missingKeyDoesNotRegenerate",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "verificationKnownAnswerAndBindings",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "protectedMalformedRecordCannotAuthorize",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "revocationPersistsAndCannotReactivateSameClient",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "failedRevocationPoisonsAllInstancesAndLeavesObservableDiskState",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "replacementKeyCannotReadOldCiphertext",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "deviceProtectedContextIsRefusedBeforeCreatingStore",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "hardlinkCreationIsBlockedByPlatformOrStore",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "incorrectCaBindingPoisonsAllLocalInstances",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "ownedDescriptorsAreAtomicallyCloseOnExec",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "invalidInputsNeverCreateStore",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "ciphertextTamperingTruncationAndOversizeFailClosed",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "nativeRoundTripDefaultModeAndNoRawToken",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "externalFileLockBlocksWithoutPoisoning",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "existingKeyOrDatabaseRefusesFreshInitialization",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "symlinkStoreRootRejected",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "totalRecordCapacityDoesNotDiscardRevocations",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "revokeWriteFailureClosesConnectionWithoutSuccessAcknowledgment",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "revokeCancelsAnAlreadyStreamingDownload",
+            "code": -2,
+            "passed": false
+          },
+          {
+            "test": "fifthAcceptedFailureClosesWindowAndDoesNotReopen",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "approvalWriteFailureCannotAcknowledgeActivation",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "strictJsonAndHeadersRejectAmbiguousRequests",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "temporaryGrantDiesWhenControllerRestartsButTokenRemains",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "storedCorruptionFailsClosedForAllRequests",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "slowHeadersAndIncompletePairingHaveAbsoluteDeadlines",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "revokingOneComputerKeepsTheOtherAuthorized",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "cancellationAndApprovalHaveOneWinningState",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "wrongCodeAndTrailingFrameCannotObtainGrant",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "approvalPersistsBeforeReadAndWritesStayUnavailable",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "rejectCancelAndClosedGrantCannotActivate",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "strictTlsRejectsWrongIdentityAndHostname",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "selfRevocationPersistsAndInvalidatesOwnToken",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "realWindowExpiresAndCannotBeExtendedByPolling",
+            "code": 0,
+            "passed": true
+          }
+        ],
+        "passed": 41,
+        "total": 42,
+        "real_phone_access": false
+      }
+    },
+    {
+      "directory": "api36-native-reviewed",
+      "results": {
+        "api": 36,
+        "avd": "PhoneBridgeP0Api36",
+        "apk_hashes": {
+          "org.phonebridge.ng": "3fb1dc2c72949b6a0c8624bad6ea02d579e1a86a7b5f44e1983ee999ef85b3c3",
+          "org.phonebridge.ng.test": "3f392d8e4756727447c2e8dd36f120e9f581afd5077f51bacc6b8e4d800be003"
+        },
+        "adb_exit": 0,
+        "expected": 42,
+        "tests": [
+          {
+            "test": "revokeAndAuthorizedCommitShareOneBarrier",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "wrongUnknownAndMalformedCredentialsAreUniformlyRefused",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "twoClientsRemainIndependent",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "unsafeModesAndLinksAreRejected",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "failedInitializationNeverBecomesFreshAutomatically",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "missingDatabaseDoesNotInitialize",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "keystoreIsNonExportableAndNonceChanges",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "revisionsProtectModeAndRevocationFromStaleCallers",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "sixteenActiveCapacityIsEnforcedWithoutEviction",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "missingKeyDoesNotRegenerate",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "verificationKnownAnswerAndBindings",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "protectedMalformedRecordCannotAuthorize",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "revocationPersistsAndCannotReactivateSameClient",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "failedRevocationPoisonsAllInstancesAndLeavesObservableDiskState",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "replacementKeyCannotReadOldCiphertext",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "deviceProtectedContextIsRefusedBeforeCreatingStore",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "hardlinkCreationIsBlockedByPlatformOrStore",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "incorrectCaBindingPoisonsAllLocalInstances",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "ownedDescriptorsAreAtomicallyCloseOnExec",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "invalidInputsNeverCreateStore",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "ciphertextTamperingTruncationAndOversizeFailClosed",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "nativeRoundTripDefaultModeAndNoRawToken",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "externalFileLockBlocksWithoutPoisoning",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "existingKeyOrDatabaseRefusesFreshInitialization",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "symlinkStoreRootRejected",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "totalRecordCapacityDoesNotDiscardRevocations",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "revokeWriteFailureClosesConnectionWithoutSuccessAcknowledgment",
+            "code": -2,
+            "passed": false
+          },
+          {
+            "test": "revokeCancelsAnAlreadyStreamingDownload",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "fifthAcceptedFailureClosesWindowAndDoesNotReopen",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "approvalWriteFailureCannotAcknowledgeActivation",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "strictJsonAndHeadersRejectAmbiguousRequests",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "temporaryGrantDiesWhenControllerRestartsButTokenRemains",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "storedCorruptionFailsClosedForAllRequests",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "slowHeadersAndIncompletePairingHaveAbsoluteDeadlines",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "revokingOneComputerKeepsTheOtherAuthorized",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "cancellationAndApprovalHaveOneWinningState",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "wrongCodeAndTrailingFrameCannotObtainGrant",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "approvalPersistsBeforeReadAndWritesStayUnavailable",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "rejectCancelAndClosedGrantCannotActivate",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "strictTlsRejectsWrongIdentityAndHostname",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "selfRevocationPersistsAndInvalidatesOwnToken",
+            "code": 0,
+            "passed": true
+          },
+          {
+            "test": "realWindowExpiresAndCannotBeExtendedByPolling",
+            "code": 0,
+            "passed": true
+          }
+        ],
+        "passed": 41,
+        "total": 42,
+        "real_phone_access": false
+      }
+    }
+  ],
+  "raw_evidence": [
+    {
+      "path": ".audit/p1-007/api26-bridge-complete/instrumentation-0.log",
+      "sha256": "e2a03bbd64fb7c73ceaf1a7d4165b34b76461ddf00e45e014bd52f22e39cb02a"
+    },
+    {
+      "path": ".audit/p1-007/api26-bridge-complete/instrumentation-1.log",
+      "sha256": "e2a03bbd64fb7c73ceaf1a7d4165b34b76461ddf00e45e014bd52f22e39cb02a"
+    },
+    {
+      "path": ".audit/p1-007/api26-bridge-complete/instrumentation-2.log",
+      "sha256": "e2a03bbd64fb7c73ceaf1a7d4165b34b76461ddf00e45e014bd52f22e39cb02a"
+    },
+    {
+      "path": ".audit/p1-007/api26-bridge-diagnostic/instrumentation.log",
+      "sha256": "9cdee11ef25d2ae47067c05e4b522f811eb476633710baa0301803e1b2ef1e9d"
+    },
+    {
+      "path": ".audit/p1-007/api26-bridge-ethernet/instrumentation.log",
+      "sha256": "e2a03bbd64fb7c73ceaf1a7d4165b34b76461ddf00e45e014bd52f22e39cb02a"
+    },
+    {
+      "path": ".audit/p1-007/api26-bridge-final/instrumentation-0.log",
+      "sha256": "e2a03bbd64fb7c73ceaf1a7d4165b34b76461ddf00e45e014bd52f22e39cb02a"
+    },
+    {
+      "path": ".audit/p1-007/api26-bridge-final/instrumentation-1.log",
+      "sha256": "9cdee11ef25d2ae47067c05e4b522f811eb476633710baa0301803e1b2ef1e9d"
+    },
+    {
+      "path": ".audit/p1-007/api26-bridge-first/instrumentation.log",
+      "sha256": "9cdee11ef25d2ae47067c05e4b522f811eb476633710baa0301803e1b2ef1e9d"
+    },
+    {
+      "path": ".audit/p1-007/api26-bridge-reviewed/instrumentation-0.log",
+      "sha256": "e2a03bbd64fb7c73ceaf1a7d4165b34b76461ddf00e45e014bd52f22e39cb02a"
+    },
+    {
+      "path": ".audit/p1-007/api26-bridge-reviewed/instrumentation-1.log",
+      "sha256": "e2a03bbd64fb7c73ceaf1a7d4165b34b76461ddf00e45e014bd52f22e39cb02a"
+    },
+    {
+      "path": ".audit/p1-007/api26-bridge-reviewed/instrumentation-2.log",
+      "sha256": "e2a03bbd64fb7c73ceaf1a7d4165b34b76461ddf00e45e014bd52f22e39cb02a"
+    },
+    {
+      "path": ".audit/p1-007/api26-bridge-router/instrumentation.log",
+      "sha256": "9cdee11ef25d2ae47067c05e4b522f811eb476633710baa0301803e1b2ef1e9d"
+    },
+    {
+      "path": ".audit/p1-007/api26-first/instrumentation.log",
+      "sha256": "080303f8d995888aed7300139a12f696de1121ca88dadb25e43ed8f04969d64b"
+    },
+    {
+      "path": ".audit/p1-007/api26-native-complete/instrumentation.log",
+      "sha256": "83a3603b0f21bbd6a5fe2aa5f3e4939df3ddf1cd93b93ca9ec9cd774c2083591"
+    },
+    {
+      "path": ".audit/p1-007/api26-native-final/instrumentation.log",
+      "sha256": "9c730cb5ab12a967369e020348002a5325e26b68259da08155e0c4e1ec787368"
+    },
+    {
+      "path": ".audit/p1-007/api36-bridge-complete/instrumentation-0.log",
+      "sha256": "e2a03bbd64fb7c73ceaf1a7d4165b34b76461ddf00e45e014bd52f22e39cb02a"
+    },
+    {
+      "path": ".audit/p1-007/api36-bridge-complete/instrumentation-1.log",
+      "sha256": "e2a03bbd64fb7c73ceaf1a7d4165b34b76461ddf00e45e014bd52f22e39cb02a"
+    },
+    {
+      "path": ".audit/p1-007/api36-bridge-complete/instrumentation-2.log",
+      "sha256": "e2a03bbd64fb7c73ceaf1a7d4165b34b76461ddf00e45e014bd52f22e39cb02a"
+    },
+    {
+      "path": ".audit/p1-007/api36-native-complete/instrumentation.log",
+      "sha256": "998d59912c61994da650683d865b410a4e8b9c8bab36fec5a8d4fbd3f7253b30"
+    },
+    {
+      "path": ".audit/p1-007/api36-native-final/instrumentation.log",
+      "sha256": "5a9c763e2e4792de34b7ca62174b3bed262fa50488b2ae3b34df041f462e48c1"
+    },
+    {
+      "path": ".audit/p1-007/api36-native-reviewed/instrumentation.log",
+      "sha256": "868939f444069ceca0a8abb217c274a8df1055008cf87a720aa20c01c1af040b"
+    },
+    {
+      "path": ".audit/p1-007/api26-bridge-complete/apk-hashes.json",
+      "sha256": "35b981b17c4edb9ef689cd40577197a86cabbce2e56ae53c4dc5a7fcdb07add1"
+    },
+    {
+      "path": ".audit/p1-007/api26-bridge-complete/results.json",
+      "sha256": "483a1491a38d185dd507c4915b8796530d73e016d5f3a6419948f32ed723d472"
+    },
+    {
+      "path": ".audit/p1-007/api26-bridge-diagnostic/results.json",
+      "sha256": "5f979f3724ac10c7d5e0b662c5e8df638bf394cd07a0ffc94b191a180d57ab84"
+    },
+    {
+      "path": ".audit/p1-007/api26-bridge-ethernet/apk-hashes.json",
+      "sha256": "ef5b64b605a0651e8a0796613ec74ccadec2aab10f8745d19653232321f3dc50"
+    },
+    {
+      "path": ".audit/p1-007/api26-bridge-ethernet/results.json",
+      "sha256": "8f857c603b0291dabb90548af7fd623c51fbc12d2d89ffa49c61c131b2b086f1"
+    },
+    {
+      "path": ".audit/p1-007/api26-bridge-final/results.json",
+      "sha256": "8718e08cdc44de0f41ed2539ad67df7f3566f7d16a1998b309435f6b98d8b342"
+    },
+    {
+      "path": ".audit/p1-007/api26-bridge-first/results.json",
+      "sha256": "f683adb326cb72c4b5544bf4a016cb370b92ecf13d4c144113ac161e878f191b"
+    },
+    {
+      "path": ".audit/p1-007/api26-bridge-reviewed/apk-hashes.json",
+      "sha256": "0f11ca4899f14a17ebf08f924a6b43d939213475c592b9056669f8c765d13f55"
+    },
+    {
+      "path": ".audit/p1-007/api26-bridge-reviewed/results.json",
+      "sha256": "d934838f9b32aadb9ff395ea7099fe03b059ad088540de022fe7a98247d6942a"
+    },
+    {
+      "path": ".audit/p1-007/api26-bridge-router/results.json",
+      "sha256": "a695e5a21a87af6358f54d1152b7681748bd09b3631f6a603668cc672918945d"
+    },
+    {
+      "path": ".audit/p1-007/api26-first/results.json",
+      "sha256": "44f0c19fbfcd9a2a700ecbe8cc600168aaaefe3982879a277ff1fea6ff94daf8"
+    },
+    {
+      "path": ".audit/p1-007/api26-native-complete/results.json",
+      "sha256": "3a959831bfd8a2f53e2af998885774ef8b6bdea47ee4de49a016609f9cce324a"
+    },
+    {
+      "path": ".audit/p1-007/api26-native-final/results.json",
+      "sha256": "cb723d04e820723a44b0c06665a90227674ef5dbdef8e4844d5af4517c8c6ff7"
+    },
+    {
+      "path": ".audit/p1-007/api36-bridge-complete/apk-hashes.json",
+      "sha256": "35b981b17c4edb9ef689cd40577197a86cabbce2e56ae53c4dc5a7fcdb07add1"
+    },
+    {
+      "path": ".audit/p1-007/api36-bridge-complete/results.json",
+      "sha256": "55519169d8205bf1c5cd02fa7c6dbd083d0888888c888a40bfd7555e28cd1f16"
+    },
+    {
+      "path": ".audit/p1-007/api36-native-complete/results.json",
+      "sha256": "1086f699184b03754b6122ae6cdf9f9f9250794b729a98627a217f90814a85fb"
+    },
+    {
+      "path": ".audit/p1-007/api36-native-final/results.json",
+      "sha256": "9200e9e32a2e90b1db86f2c5f6000106216140fc8e314de7eb59bb071e799330"
+    },
+    {
+      "path": ".audit/p1-007/api36-native-reviewed/results.json",
+      "sha256": "091b9b95be963d27c6d91e281c5c180ebcc11ce1b77ae56f8e0bb97c56751814"
+    }
+  ],
+  "scope": "API 26/36 dedicated emulators. C# strict TLS/DPAPI and real Android Activity clicks. No real phone, mDNS or rclone test."
+}

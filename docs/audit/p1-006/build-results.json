@@ -1,0 +1,121 @@
+{
+  "observed_at": "2026-09-19T09:58:01.935037+00:00",
+  "agp": "9.1.1",
+  "gradle": "9.3.1",
+  "jdk": "21.0.10",
+  "builtin_kotlin": "2.2.10",
+  "android_compile_sdk": 36,
+  "android_min_sdk": 26,
+  "build_tools": "36.0.0",
+  "final_command": "./scripts/Verify-AndroidCredentials.ps1",
+  "final_exit": 0,
+  "strict_locking": true,
+  "strict_sha256_verification": true,
+  "first_hash_recording_is_not_independent_signature_verification": true,
+  "final_lint": {
+    "debug": "No issues found.",
+    "release": "No issues found.",
+    "warnings_as_errors": true,
+    "disabled_checks": [
+      "AndroidGradlePluginVersion",
+      "GradleDependency"
+    ],
+    "api_security_checks_enabled": true
+  },
+  "logs": [
+    {
+      "path": ".audit/p1-006/build-first.log",
+      "sha256": "dfc593aab0d9d6e71bef1552915601c8ca4118d8c91f89045646f89fbe15f801"
+    },
+    {
+      "path": ".audit/p1-006/build-release.log",
+      "sha256": "3521982b9a26b0c305dc5282ff31c74a1a0b1bd4011a8622332687290f15abd8"
+    },
+    {
+      "path": ".audit/p1-006/build-reviewed.log",
+      "sha256": "2a49696c154c37d3a6ef15ef5439dfaf55adf0e9f62f30422b129c130cd99de7"
+    },
+    {
+      "path": ".audit/p1-006/build-second.log",
+      "sha256": "31051e5e5f781ae2fa7ab087c87c79f60d8ec819c315a0d9d8c52235b0fc3c50"
+    },
+    {
+      "path": ".audit/p1-006/build-tests.log",
+      "sha256": "d2b2fa7f831f925f0aa88e4d5c107ce501b4dd9310bac8d9c4a566ec4bd67a77"
+    },
+    {
+      "path": ".audit/p1-006/build-third.log",
+      "sha256": "59f8a2704f762abdc2727409ad82c921941aeb2602738e1441ec87c14de8a5fb"
+    },
+    {
+      "path": ".audit/p1-006/native26-first.log",
+      "sha256": "51a82153495759d6dd01d20faca483d9f492d354a884151ce68f5498c2e454cd"
+    },
+    {
+      "path": ".audit/p1-006/native26-reviewed.log",
+      "sha256": "82b9f06670cfb103c5de852a74343ef79f311897e27485ad681c76af120f6af6"
+    },
+    {
+      "path": ".audit/p1-006/native36-reviewed.log",
+      "sha256": "6e487e76f566544d77828d8245d85dd6584d435d9028f63a6a7a58b118cbdb5c"
+    },
+    {
+      "path": ".audit/p1-006/verify-script.log",
+      "sha256": "84a89290c18de709af88b609dac326e115b2463178a14f8e211c267762b8e1fb"
+    }
+  ],
+  "first_lint": [
+    {
+      "path": ".audit/p1-006/lint-first.txt",
+      "sha256": "120115b7808c33242045531325cafb5fd702e91fd56562a7a8b2e28a8575144b"
+    },
+    {
+      "path": ".audit/p1-006/lint-second.txt",
+      "sha256": "a255560a900297535283fbe9a5bf0484ea4744de9ca936550d0b16e581f6db46"
+    }
+  ],
+  "failures": [
+    {
+      "stage": "build-first",
+      "exit": 1,
+      "reason": "Public SDK has no O_DIRECTORY or Os.unlink"
+    },
+    {
+      "stage": "build-tests",
+      "exit": 1,
+      "reason": "Lint: two O_CLOEXEC API 27 references and three pinned-version notices"
+    },
+    {
+      "stage": "build-second",
+      "exit": 1,
+      "reason": "Attempted fcntlInt fallback requires API 30"
+    },
+    {
+      "stage": "native26-first",
+      "exit": 1,
+      "passed": 23,
+      "total": 25,
+      "reason": "Platform denied hardlink creation; FileOutputStream(fd) did not own the descriptor"
+    }
+  ],
+  "remediation": [
+    "Directory fstat and Os.remove via public APIs",
+    "API 26 atomic O_CLOEXEC numeric flag verified from AOSP bionic",
+    "Explicit closure of supplied file descriptor and 20-open zero-residual regression",
+    "Record platform hardlink rejection separately from store rejection"
+  ],
+  "platform_denial_evidence": {
+    "path": ".audit/p1-006/hardlink-denial-api26.txt",
+    "sha256": "a9dfe52f79bedfe674d965cd86261e7da36e95ab8fb410aba53bb32f0946b56e"
+  },
+  "official_aosp_snapshots": [
+    {
+      "path": ".audit/p1-006/aosp-api26-fcntl.h",
+      "sha256": "74906a4ac981f11b7a07e9259805e78cb8d96a50e5e100c0f45bffee2a05ac40"
+    },
+    {
+      "path": ".audit/p1-006/FileOutputStream.java",
+      "sha256": "095ac742d953fcdf73791c3a943ec2ecac296967965e56030c227bcf01d07581"
+    }
+  ]
+}

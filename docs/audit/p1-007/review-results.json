@@ -1,0 +1,65 @@
+{
+  "review_type": "Implementer code review, not independent security audit",
+  "reviewed_sources": [
+    {
+      "path": "android/app/src/main/java/org/phonebridge/ng/AuthorizedServer.kt",
+      "sha256": "5dbc69140f225e3cda52cca5d47f15e65051e11beaef819b5493161ed5f84211"
+    },
+    {
+      "path": "android/app/src/main/java/org/phonebridge/ng/MainActivity.kt",
+      "sha256": "73e3fa16255015bd2c24698f536a6084e1328b42249b9c6ae3a5aa077189cfa2"
+    },
+    {
+      "path": "android/app/src/main/java/org/phonebridge/ng/PairingController.kt",
+      "sha256": "113eef1f33f5024529c853835f0699cfb2291600bab582e2bef6194057ff7a4a"
+    },
+    {
+      "path": "android/app/src/main/java/org/phonebridge/ng/SharingEngine.kt",
+      "sha256": "3ec4352957ca3c1bf9f28031f5be733ec3cc62c27efb9e6664a935b1e5cd13c4"
+    },
+    {
+      "path": "android/app/src/main/java/org/phonebridge/ng/SharingService.kt",
+      "sha256": "60ee186f8c40cf189fc9bd5fb38813a3a26761a34f9ef1bab70f77176355b4d5"
+    }
+  ],
+  "additional_reviewed": [
+    {
+      "path": "android/app/src/main/java/fi/iki/elonen/NanoHTTPD.java",
+      "sha256": "e900700952bf85bd8558aa401660c402fd5457431b131c69c1ff8120dd469675"
+    },
+    {
+      "path": "android/app/src/main/java/com/phonebridge/server/TlsIdentityStore.kt",
+      "sha256": "1970f1db473fec0ab0462da6bbb8693ce651fd1ecdead2305fa5ea398aa3a836"
+    },
+    {
+      "path": "android/app/src/main/java/com/phonebridge/server/TlsHelper.kt",
+      "sha256": "c61ed8d2a680bebc9464bcaef2c882b28994203251e4abe60423a4c9d4e22dff"
+    }
+  ],
+  "checked": [
+    "fresh CA and existing registry fail-closed initialization",
+    "fixed PAKE frames, deadlines, budget and FIN/EOF race",
+    "grant scope and strict JSON/auth-before-body",
+    "durable approval/cancel race and duplicate POST semantics",
+    "per-request authorization, revoke socket ownership and storage failure",
+    "bounded HTTP headers/threads/body and fixed errors without raw logs",
+    "foreground generation race, stable approval controls and revision-ordered UI snapshots",
+    "response stream closure through NanoHTTPD HTTPSession finally; existing storage fd ownership retained",
+    "API 29+ dup shutdown before TLS close to avoid blocked close_notify; dup released with use",
+    "test runner absent from Debug/Release product APK"
+  ],
+  "test_only_network_host": true,
+  "test_classes_absent_from_product": true,
+  "independent_security_audit": false,
+  "limitations": [
+    "No real phone/OEM/Doze or entire-device reboot",
+    "No Wi-Fi change callback/pending-window cancellation integration",
+    "No live mDNS advertisement/withdrawal evidence",
+    "Read-only file methods only; SAFE is stored default but safe writes not implemented",
+    "No Windows product pairing UI or new-token rclone mount",
+    "No complete diagnostics/export and whole-product secret scan",
+    "No release signing/distribution, disk-full/power-loss/backup migration",
+    "API 27/28 not tested; close branch retained below API 29",
+    "wake lock bounded to six hours; long-running behavior unvalidated"
+  ]
+}

@@ -1,0 +1,47 @@
+{
+  "identity_sha256": "65b52a178912e36cc73dc820f4029e85efa75a3427c2a341902326a8d2480903",
+  "sample_sha256": {
+    "phone-100MB.bin": "a00685541c25a9585dcfbef6b66884cd3fbb88cb3932da03b248647b2b7af71f",
+    "pc-upload-100MB.bin": "3d498edc7bba04f6c094dd49811ceee4a7912b9292bd4aaa6b251965da065fad",
+    "phone-origin.txt": "7374185329b3a98d96e953d8ed38bfe1c528ca5dd6b8298bdead468f65c5251e"
+  },
+  "sample_hashes_unchanged": true,
+  "app_stopped": true,
+  "sharing_stopped": true,
+  "control_files_absent": true,
+  "adb_forwards_empty": true,
+  "drive_absent": true,
+  "pc": {
+    "rclone_count": 0,
+    "observed_at": "2026-09-19T15:35:20.2918266+08:00",
+    "diagnostic_count": 0
+  },
+  "shared_folder": "music",
+  "auto_start_on_boot": "false",
+  "secret_scan_files": [
+    ".audit/runs/P1-002/real-bf9be356e258/chain-results.json",
+    ".audit/runs/P1-002/real-bf9be356e258/duplicate-process.jsonl",
+    ".audit/runs/P1-002/real-bf9be356e258/duplicate-process.stderr",
+    ".audit/runs/P1-002/real-bf9be356e258/executable-hash-mismatch.jsonl",
+    ".audit/runs/P1-002/real-bf9be356e258/executable-hash-mismatch.stderr",
+    ".audit/runs/P1-002/real-bf9be356e258/fingerprint-mismatch.jsonl",
+    ".audit/runs/P1-002/real-bf9be356e258/fingerprint-mismatch.stderr",
+    ".audit/runs/P1-002/real-bf9be356e258/host-crash.jsonl",
+    ".audit/runs/P1-002/real-bf9be356e258/host-crash.stderr",
+    ".audit/runs/P1-002/real-bf9be356e258/normal.jsonl",
+    ".audit/runs/P1-002/real-bf9be356e258/normal.stderr",
+    ".audit/runs/P1-002/real-bf9be356e258/occupied-drive.jsonl",
+    ".audit/runs/P1-002/real-bf9be356e258/occupied-drive.stderr",
+    ".audit/runs/P1-002/real-bf9be356e258/results.json",
+    ".audit/runs/P1-002/real-bf9be356e258/wrong-ca.jsonl",
+    ".audit/runs/P1-002/real-bf9be356e258/wrong-ca.stderr",
+    ".audit/runs/P1-002/real-bf9be356e258/wrong-password.jsonl",
+    ".audit/runs/P1-002/real-bf9be356e258/wrong-password.stderr",
+    ".audit/runs/P1-002/real-bf9be356e258/host/host-csharp-mount-foreground-launch.log",
+    ".audit/runs/P1-002/real-bf9be356e258/host/host-csharp-mount.log",
+    ".audit/runs/P1-002/real-bf9be356e258/host/tls-runtime.json",
+    ".audit/runs/P1-002/input-aef606d05308/results.json"
+  ],
+  "secret_scan_matches": 0,
+  "public_ca_residue_retained": true
+}

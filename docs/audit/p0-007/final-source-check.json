@@ -1,0 +1,8 @@
+{
+  "baseline_apply_check": 0,
+  "repair_reverse_check": 0,
+  "repair_diff_check": 0,
+  "dependencies_unchanged": true,
+  "apk_and_patch_hash_match": true,
+  "upstream_clean": true
+}

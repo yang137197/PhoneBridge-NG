@@ -1,0 +1,45 @@
+{
+  "jvm_runtime": [
+    {
+      "group": "org.bouncycastle",
+      "name": "bcprov-jdk18on",
+      "version": "1.86",
+      "source": "https://repo.maven.apache.org/maven2/org/bouncycastle/bcprov-jdk18on/1.86/bcprov-jdk18on-1.86.jar",
+      "sha256": "2af190b300cbb0b35e248ccf5f4a06b6072030aeb3da7a98ec73abe5b4cb371f",
+      "publisher_checksum_matches": true,
+      "publisher_checksum_algorithm": "sha256",
+      "independent_signature_verification": false,
+      "notices": [
+        "licenses/pairing-bcprov-jdk18on-LICENSE.md"
+      ]
+    },
+    {
+      "group": "org.jetbrains.kotlin",
+      "name": "kotlin-stdlib",
+      "version": "2.4.0",
+      "source": "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-stdlib/2.4.0/kotlin-stdlib-2.4.0.jar",
+      "sha256": "ccb14ff83fabcb11458b798dbc9824748ccdffeec79c9aba789e6ed1cda86b1c",
+      "publisher_checksum_matches": true,
+      "publisher_checksum_algorithm": "sha1",
+      "independent_signature_verification": false
+    },
+    {
+      "group": "org.jetbrains",
+      "name": "annotations",
+      "version": "13.0",
+      "source": "https://repo.maven.apache.org/maven2/org/jetbrains/annotations/13.0/annotations-13.0.jar",
+      "sha256": "ace2a10dc8e2d5fd34925ecac03e4988b2c0f851650c94b8cef49ba1bd111478",
+      "publisher_checksum_matches": true,
+      "publisher_checksum_algorithm": "sha1",
+      "independent_signature_verification": false
+    }
+  ],
+  "csharp": {
+    "version": "2.7.0",
+    "sha256": "f091ffccab4d03993e660bace277659a79dee0972f54d7f1f4bd46d680966241",
+    "nuget_signatures": "verified-in-P1-003",
+    "notice": "licenses/pairing-bouncycastle-csharp-LICENSE.md"
+  },
+  "kotlin_toolchain": "2.4.0; all resolved tool configurations in Gradle lock/verification files",
+  "signature_verification_for_gradle_artifacts": false
+}

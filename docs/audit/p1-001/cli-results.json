@@ -1,0 +1,22 @@
+[
+  {
+    "test": "manual-dual-stack",
+    "passed": true,
+    "exit": 0
+  },
+  {
+    "test": "invalid-http",
+    "passed": true,
+    "exit": 2
+  },
+  {
+    "test": "invalid-port",
+    "passed": true,
+    "exit": 2
+  },
+  {
+    "test": "english",
+    "passed": true,
+    "exit": 0
+  }
+]

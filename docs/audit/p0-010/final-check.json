@@ -1,0 +1,14 @@
+{
+  "markdown_files": 40,
+  "local_links_checked": 256,
+  "json_parsed": 104,
+  "python_parsed": 20,
+  "errors": [],
+  "artifact_hashes_match": true,
+  "upstream_clean": true,
+  "one_next_task": [
+    "P1-001-windows-discovery.md"
+  ],
+  "phase_0_gate": "minimum repaired LAN file chain verified; not MVP",
+  "historical_failures_preserved": true
+}

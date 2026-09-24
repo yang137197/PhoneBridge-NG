@@ -1,0 +1,5 @@
+{
+  "expected_crash_count": 1,
+  "archived_before_clear": true,
+  "clear_before_repair_tests": true
+}

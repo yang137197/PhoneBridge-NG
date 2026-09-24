@@ -1,0 +1,8 @@
+{
+  "DrivePresent": false,
+  "RcloneProcessPresent": false,
+  "DedicatedEmulatorPresent": false,
+  "TestForwardPresent": false,
+  "FinalAndroidFatalException": false,
+  "CachePreserved": true
+}

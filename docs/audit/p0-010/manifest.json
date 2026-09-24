@@ -1,0 +1,29 @@
+{
+  "script": "tests/integration/upstream_chain/real_device_chain.py",
+  "run_id": "P0-010-84926bfb5cd4",
+  "entry_exit_code": 1,
+  "failure": "Explorer observation not completed within bounded host window",
+  "host_instrumentation_result": "OK (1 test)",
+  "rclone_unmount_exit_code": 0,
+  "original_metadata_unchanged": true,
+  "fixtures_retained": true,
+  "visual_confirmation": "PASS_USER_CONFIRMED",
+  "app_apk_sha256": "a4383ddac27dccc3f2cc46704f1c389c8ad961d1d8e8205894d8cc8aebb2b88a",
+  "patch_sha256": "35e9311827ebea8d4d49e2b94739b2be1d7f6c9ca0742d95b4b99bb8e95b94e6",
+  "executed_chain_script_sha256": "7540bf6f9bfe1f39af259881839e03aec018c38004d5b8b06ec21eb40939fd8f",
+  "visual_recheck_exit_code": 1,
+  "visual_recheck_failure": "Native ActivityScenario.close blocked launching EmptyActivity from background",
+  "shutdown_regression_exit_code": 0,
+  "shutdown_fix_scope": "P0-010 Python host wrapper only; app/test APK unchanged",
+  "full_chain_rerun_after_host_fix": false,
+  "current_scripts": [
+    {
+      "path": "tests/integration/upstream_chain/real_device_chain.py",
+      "sha256": "5d779d1fcd946e9ac26de87f7b342616736c605d7230cf8d51bd86ae659f175f"
+    },
+    {
+      "path": "tests/integration/upstream_chain/real_device_view.py",
+      "sha256": "66fbdda534d4c853112b3cbd01998965865b9f2bb410aa48b443f4b603712bc0"
+    }
+  ]
+}

@@ -1,0 +1,51 @@
+{
+  "recorded_at": "2026-09-21T12:37:32.1867114+08:00",
+  "android_verification": {
+    "command": "scripts/Verify-AndroidApp.ps1",
+    "result": "passed",
+    "gradle_tasks": 123,
+    "build_time": "1m 16s"
+  },
+  "artifacts": [
+    {
+      "type": "debug_apk",
+      "path": "android/app/build/outputs/apk/debug/app-debug.apk",
+      "sha256": "2550b45d2e2802e1075c8a5cc2fec8053933289a9c82cd53aeb13cc84696381b",
+      "bytes": 4221179
+    },
+    {
+      "type": "unsigned_release_apk",
+      "path": "android/app/build/outputs/apk/release/app-release-unsigned.apk",
+      "sha256": "adcb77af190d793cc67cf53725c76f0fad12c58e3b92d7e5c8b491188f44d03c",
+      "bytes": 3470555
+    }
+  ],
+  "device_preflight": {
+    "samsung_connected": true,
+    "observed_manufacturer": "samsung",
+    "observed_model": "SM-S9180",
+    "observed_android": "16",
+    "observed_api": 36,
+    "mutation_performed": true
+  },
+  "samsung_install": {
+    "package": "org.phonebridge.ng",
+    "version": "0.1.0-dev",
+    "debug_apk_sha256": "2550b45d2e2802e1075c8a5cc2fec8053933289a9c82cd53aeb13cc84696381b",
+    "result": "installed_and_started",
+    "shared_folder": "Music",
+    "all_files_access": true,
+    "battery_optimization_exempt": true,
+    "notification_permission": true,
+    "wake_lock": "held",
+    "tcp_listener_8273": true
+  },
+  "network_preflight": {
+    "phone_ipv4": "192.168.100.238/24",
+    "windows_ipv4": "192.168.100.216/24",
+    "ping": null,
+    "tcp_8273_from_windows": true,
+    "pairing_blocked": false,
+    "conclusion": "Same LAN and TCP 8273 reachable after Wi-Fi change."
+  }
+}

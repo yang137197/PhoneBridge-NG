@@ -1,0 +1,44 @@
+<resources>
+    <string name="app_name">PhoneBridge NG</string>
+    <string name="subtitle">Access phone files from a computer on your local network</string>
+    <string name="folder">Shared folder</string>
+    <string name="permission">Allow shared file access</string>
+    <string name="start">Start sharing</string>
+    <string name="stop">Stop sharing</string>
+    <string name="stopped">Sharing stopped</string>
+    <string name="starting">Starting sharing…</string>
+    <string name="sharing">Sharing</string>
+    <string name="sharing_notification">Sharing phone storage</string>
+    <string name="sharing_channel">File sharing</string>
+    <string name="start_failed">Could not start. Check file access and the selected folder.</string>
+    <string name="battery_optimization_required">Allow PhoneBridge NG to ignore battery optimization so sharing can continue while locked. Sharing will not start without it.</string>
+    <string name="battery_optimization_settings_failed">Could not open battery optimization settings. Allow PhoneBridge NG manually in system settings, then retry.</string>
+    <string name="storage_error">Pairing storage failed. Sharing stopped; repair and pair again.</string>
+    <string name="action_rejected">The action did not complete. Check the current pairing state and retry.</string>
+    <string name="pair">Pair a new computer</string>
+    <string name="close_pairing">Close pairing</string>
+    <string name="pair_code">Enter this one-time code on the computer</string>
+    <string name="pair_waiting">Waiting for the computer to submit its request</string>
+    <plurals name="pair_remaining">
+        <item quantity="one">%1$d second left · %2$d / 5 attempts used</item>
+        <item quantity="other">%1$d seconds left · %2$d / 5 attempts used</item>
+    </plurals>
+    <string name="approve_prompt">Allow “%1$s” to access the shared folder?</string>
+    <string name="approve_note">The name is only a label. Allow only the computer you are pairing now.</string>
+    <string name="approve">Allow pairing</string>
+    <string name="reject">Reject</string>
+    <string name="paired">Paired</string>
+    <string name="rejected">Rejected</string>
+    <string name="cancelled">Cancelled</string>
+    <string name="computers">Paired computers</string>
+    <string name="no_computers">No paired computers</string>
+    <string name="access_mode">Access mode</string>
+    <string name="mode_read_only">Read-only (browse and download only)</string>
+    <string name="mode_safe">Safe mode (create new items, never replace existing files)</string>
+    <string name="mode_read_write">Full read/write (allow replacement and deletion)</string>
+    <string name="revoke">Revoke access</string>
+    <string name="revoke_prompt">Revoke access for “%1$s” and disconnect it?</string>
+    <string name="cancel">Cancel</string>
+    <string name="development_limit">Set access mode separately for each paired computer. Windows must reconnect after a change.</string>
+    <string name="permission_missing">Allow file access first and make sure the selected folder exists.</string>
+</resources>

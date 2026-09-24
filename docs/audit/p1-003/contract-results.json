@@ -1,0 +1,49 @@
+{
+  "scope": "design-vector-consistency-only",
+  "checks": [
+    {
+      "test": "rfc5869-independent-known-answer",
+      "passed": true
+    },
+    {
+      "test": "profile-kdf-vector",
+      "passed": true
+    },
+    {
+      "test": "hello-frame-bounds",
+      "passed": true
+    },
+    {
+      "test": "hello-field-binding",
+      "passed": true
+    },
+    {
+      "test": "hello-context",
+      "passed": true
+    },
+    {
+      "test": "role-separation",
+      "passed": true
+    },
+    {
+      "test": "fixed-signed-mac",
+      "passed": true
+    },
+    {
+      "test": "wire-round-sizes",
+      "passed": true
+    },
+    {
+      "test": "design-status-not-product-pass",
+      "passed": true
+    },
+    {
+      "test": "case-identifiers-unique",
+      "passed": true
+    },
+    {
+      "test": "required-lifecycle-coverage",
+      "passed": true
+    }
+  ]
+}

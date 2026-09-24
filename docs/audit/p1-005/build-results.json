@@ -1,0 +1,2956 @@
+{
+  "observed_at": "2026-09-19T09:15:19.527282+00:00",
+  "sdk": "10.0.401",
+  "final_command": "./scripts/Verify-Windows.ps1 -ResultsDirectory .audit/p1-005/unit-verified",
+  "final_exit": 0,
+  "restore_locked": true,
+  "build_warnings": 0,
+  "build_errors": 0,
+  "final_log": {
+    "path": ".audit/p1-005/verify-windows.log",
+    "sha256": "50114824b11a43505d1f4481bfdd540876854d6f2d448ca7a19843d34aa15452"
+  },
+  "logs": [
+    {
+      "path": ".audit/p1-005/build-final.log",
+      "sha256": "e3d9b8e455ef0d1384d786881613e4858e023df0f72c6d32018209b910317e1d"
+    },
+    {
+      "path": ".audit/p1-005/build-first.log",
+      "sha256": "668aac24360d0e0c9b42c576482be4b95f24a9838ebfbf851875b4f203275de4"
+    },
+    {
+      "path": ".audit/p1-005/restore-final.log",
+      "sha256": "9d954d9573df39898a21352d5f1c044bed069c29d2ad24d937f0394e3083ffed"
+    },
+    {
+      "path": ".audit/p1-005/test-contention-fixed.log",
+      "sha256": "df29a72b5f0b8ca5fafb4818c6d85fc08a2bce5354afe0ce5c7c4889cea6483a"
+    },
+    {
+      "path": ".audit/p1-005/test-contention-repro.log",
+      "sha256": "f8b05c94b7903787c351429e47c7263fab0852c5fe2182cb2488e98813bcd999"
+    },
+    {
+      "path": ".audit/p1-005/test-diagnostic.log",
+      "sha256": "e67fdb5994e9fd4faa7500facf908e7483d506eb091f889d5510fcb0ea4c2c25"
+    },
+    {
+      "path": ".audit/p1-005/test-diagnostic2.log",
+      "sha256": "1d5b694fcacf72837d10c41797446fd62dbe144414c148036eab32a7674e084e"
+    },
+    {
+      "path": ".audit/p1-005/test-final.log",
+      "sha256": "b26019201ed80baddec02b2356d11fbd0b20794c486735e30fd58230599b68b7"
+    },
+    {
+      "path": ".audit/p1-005/test-first.log",
+      "sha256": "07df5d49ad9d9daa8cd96479fbf53be24b15fa709f47078aeb7909cfb594a589"
+    },
+    {
+      "path": ".audit/p1-005/test-retry.log",
+      "sha256": "26626743a79aaf4267371fa5dbd2bde0f3a950063b9026439f4d478f3f4dc617"
+    },
+    {
+      "path": ".audit/p1-005/test-second.log",
+      "sha256": "6eaf5323c0f609e19e28e052cbc137f8e9f80da9ebc10dd00f0e4745c14acf91"
+    },
+    {
+      "path": ".audit/p1-005/verify-windows.log",
+      "sha256": "50114824b11a43505d1f4481bfdd540876854d6f2d448ca7a19843d34aa15452"
+    }
+  ],
+  "history": [
+    {
+      "stage": "unit-second",
+      "reports": [
+        {
+          "report": {
+            "path": ".audit/p1-005/unit-second/yang_LY_2026-09-19_17_00_10_net10.0.trx",
+            "sha256": "8e54449dbe776a2a62990d0b1604490d28190ed73c71446ebd012a70753283a2"
+          },
+          "total": 54,
+          "passed": 54,
+          "failed": 0,
+          "not_executed": 0,
+          "cases": [
+            {
+              "name": "ProtectedMalformedRecordFailsClosed (\"short\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "NewProcessReadsSameCredentialAndAnonymousCannotDecrypt",
+              "outcome": "Passed"
+            },
+            {
+              "name": "InvalidCaRejected (\"critical\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "PendingPersistsWithoutPlaintextAndCannotMount",
+              "outcome": "Passed"
+            },
+            {
+              "name": "ProtectedMalformedRecordFailsClosed (\"version\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "FailedCreateDoesNotExposeToken (0)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "ProtectedMalformedRecordFailsClosed (\"revision\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "AuthorizedStateAndRevocationAreCompareAndSwap",
+              "outcome": "Passed"
+            },
+            {
+              "name": "InvalidCaRejected (\"weak\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "FailedReplacementHasObservableDiskState (1)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "InvalidInputNeverWrites (\"short-id\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "FailedCreateDoesNotExposeToken (1)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "ProcessDeathDuringCommitKeepsAValidRecord (4)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "FailedCreateDoesNotExposeToken (4)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "ProtectedMalformedRecordFailsClosed (\"trailing\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "JunctionRootAndAncestorAreRejected",
+              "outcome": "Passed"
+            },
+            {
+              "name": "ProtectedMalformedRecordFailsClosed (\"device\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "CiphertextFailureNeverFallsBack (\"oversized\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "FailedCreateDoesNotExposeToken (2)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "InvalidCaRejected (\"trailing\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "InvalidCaRejected (\"expired\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "FailedCreateDoesNotExposeToken (3)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "CiphertextFailureNeverFallsBack (\"mutation\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "FailedReplacementHasObservableDiskState (3)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "CiphertextFailureNeverFallsBack (\"empty\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "InvalidInputNeverWrites (\"bad-name\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "InvalidCaRejected (\"signature\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "CrossProcessLeaseRefusesConcurrentAccess",
+              "outcome": "Passed"
+            },
+            {
+              "name": "ProcessDeathDuringCommitKeepsAValidRecord (2)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "FailedReplacementHasObservableDiskState (4)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "FailedReplacementHasObservableDiskState (2)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "ProtectedMalformedRecordFailsClosed (\"ca-hash\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "InvalidCaRejected (\"future\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "ProtectedMalformedRecordFailsClosed (\"mode\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "DuplicateMissingAndDifferentClientNeverCreateTrust",
+              "outcome": "Passed"
+            },
+            {
+              "name": "InvalidCaRejected (\"leaf\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "InvalidInputNeverWrites (\"long-name\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "InvalidCaRejected (\"algorithm\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "BroadAclRejectedWithoutSilentRepair (\"lock\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "FingerprintMismatchAndArrayOwnership",
+              "outcome": "Passed"
+            },
+            {
+              "name": "HardLinkAndDirectoryAtRecordAreRejected",
+              "outcome": "Passed"
+            },
+            {
+              "name": "InvalidCaRejected (\"usage\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "ProtectedMalformedRecordFailsClosed (\"wrong-magic\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "BroadAclRejectedWithoutSilentRepair (\"record\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "InvalidCaRejected (\"malformed\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "InvalidInputNeverWrites (\"bad-utf16\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "ProcessDeathDuringCommitKeepsAValidRecord (1)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "InvalidInputNeverWrites (\"format-name\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "FailedReplacementHasObservableDiskState (0)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "ProtectedMalformedRecordFailsClosed (\"state\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "BroadAclRejectedWithoutSilentRepair (\"directory\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "AclHasOnlyUserAndSystemAndParentsStayPinned",
+              "outcome": "Passed"
+            },
+            {
+              "name": "CiphertextFailureNeverFallsBack (\"foreign-binding\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "ProtectedMalformedRecordFailsClosed (\"utf8\")",
+              "outcome": "Passed"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "stage": "unit-final",
+      "reports": [
+        {
+          "report": {
+            "path": ".audit/p1-005/unit-final/yang_LY_2026-09-19_17_02_37_net10.0.trx",
+            "sha256": "102f267a8e368939a14ec92bd70be49ab95f28ec593412f84e22178c4ff5d9a1"
+          },
+          "total": 41,
+          "passed": 41,
+          "failed": 0,
+          "not_executed": 0,
+          "cases": [
+            {
+              "name": "ManualAndMdnsShareAddressRejection (\"::\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "SameDisplayNameDoesNotMergeServicesAndRemoveIsExact",
+              "outcome": "Passed"
+            },
+            {
+              "name": "ManualAndMdnsShareAddressRejection (\"2130706433\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "OversizedMetadataIsRejectedBeforeRetention",
+              "outcome": "Passed"
+            },
+            {
+              "name": "RejectsInvalidPort (65536)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "CancellationRemovesCandidatesAndDetachesEvenWithQueuedTraffic",
+              "outcome": "Passed"
+            },
+            {
+              "name": "RejectsProtocolAndVersion (\"HTTPS\",\"2\",\"https-required\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "NetworkRefreshStopsOldWatcherAndIgnoresItsQueuedCallbacks",
+              "outcome": "Passed"
+            },
+            {
+              "name": "ManualAndMdnsShareAddressRejection (\"224.0.0.251\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "CandidateStorageIsBounded",
+              "outcome": "Passed"
+            },
+            {
+              "name": "AddressChangeReplacesEndpointWithoutChangingCandidateKey",
+              "outcome": "Passed"
+            },
+            {
+              "name": "InvalidReplacementRevokesPreviouslyValidCandidate",
+              "outcome": "Passed"
+            },
+            {
+              "name": "ManualAndMdnsShareAddressRejection (\"192.168.001.2\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "ManualAndMdnsShareAddressRejection (\"ff02::fb\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "RejectsProtocolAndVersion (\"http\",\"2\",\"https-required\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "ManualAndMdnsShareAddressRejection (\"fe80::1\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "RejectsMalformedAndOversizedTxt",
+              "outcome": "Passed"
+            },
+            {
+              "name": "PropertyParserRejectsMissingOrWrongTypedValues",
+              "outcome": "Passed"
+            },
+            {
+              "name": "ManualAndMdnsShareAddressRejection (\"user@192.168.1.2\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "ManualAndMdnsShareAddressRejection (\"phone.local\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "StopFailureIsReportedWithoutClaimingSuccessfulShutdown",
+              "outcome": "Passed"
+            },
+            {
+              "name": "ManualAndMdnsShareAddressRejection (\"0.0.0.0\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "RejectsInvalidPort (0)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "PeriodicScansRemoveMissingCandidateWithoutNativeRemovedEvent",
+              "outcome": "Passed"
+            },
+            {
+              "name": "ManualAndMdnsShareAddressRejection (\"127.0.0.1\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "ManualHasSeparateKeyAndSurvivesMdnsRefresh",
+              "outcome": "Passed"
+            },
+            {
+              "name": "AbortedWatcherFailsAndStillCleansUp",
+              "outcome": "Passed"
+            },
+            {
+              "name": "UpdatesUseDeltasAndRemovedCannotBeResurrectedByLateUpdate",
+              "outcome": "Passed"
+            },
+            {
+              "name": "ManualAndMdnsShareAddressRejection (\"https://192.168.1.2\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "ManualAndMdnsShareAddressRejection (\"255.255.255.255\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "AdvertisedFingerprintAndUnknownAttributesCannotEstablishTrust",
+              "outcome": "Passed"
+            },
+            {
+              "name": "ManualAndMdnsShareAddressRejection (\"::ffff:127.0.0.1\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "DuplicateAndReorderedAddressesDoNotEmitChange",
+              "outcome": "Passed"
+            },
+            {
+              "name": "RemovalRequiresTwoMissingScansAndRediscoveryResetsMisses",
+              "outcome": "Passed"
+            },
+            {
+              "name": "AlreadyCancelledDoesNotStartNetworkWatcher",
+              "outcome": "Passed"
+            },
+            {
+              "name": "RejectsInvalidPort (-1)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "RejectsProtocolAndVersion (\"https\",\"3\",\"unsupported-version\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "ManualAndMdnsShareAddressRejection (\" 192.168.1.2\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "ManualAndMdnsShareAddressRejection (\"::1\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "PeriodicScansKeepLiveCandidateWithoutFlickerAndReleaseEveryWatcher",
+              "outcome": "Passed"
+            },
+            {
+              "name": "ManualAndMdnsShareAddressRejection (\"192.168.1.2/path\")",
+              "outcome": "Passed"
+            }
+          ]
+        },
+        {
+          "report": {
+            "path": ".audit/p1-005/unit-final/yang_LY_2026-09-19_17_02_38_net10.0.trx",
+            "sha256": "1068e6a7ad0d9a9dd138cc2a89ba6a8159ce6ee32539bd4e95df2a9b11a0ec58"
+          },
+          "total": 33,
+          "passed": 33,
+          "failed": 0,
+          "not_executed": 0,
+          "cases": [
+            {
+              "name": "AmbiguousRemotePathsAreRejected (\"/Music\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "AmbiguousRemotePathsAreRejected (\"a\\b\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "DuplicateStartAndConcurrentStopsRetainSingleOwner",
+              "outcome": "Passed"
+            },
+            {
+              "name": "ActualWindowsArgumentBoundaryPreservesQuotesSpacesAndUnicode",
+              "outcome": "Passed"
+            },
+            {
+              "name": "StartupTimeoutIsBoundedAndCleaned",
+              "outcome": "Passed"
+            },
+            {
+              "name": "AmbiguousRemotePathsAreRejected (\"a?b\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "StartFailureDoesNotExposeExceptionText",
+              "outcome": "Passed"
+            },
+            {
+              "name": "ActualProcessStartFailureIsSanitized",
+              "outcome": "Passed"
+            },
+            {
+              "name": "EndpointRequiresLiteralUnicastIp (\"http://192.0.2.1\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "EndpointRequiresLiteralUnicastIp (\"0.0.0.0\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "ArgumentsAreSeparateAndCannotDisableTlsOrReadonly",
+              "outcome": "Passed"
+            },
+            {
+              "name": "AmbiguousRemotePathsAreRejected (\"a:b\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "DisposeRejectsFurtherStart",
+              "outcome": "Passed"
+            },
+            {
+              "name": "AmbiguousRemotePathsAreRejected (\"a%2fb\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "CallerCancellationCleansStartup",
+              "outcome": "Passed"
+            },
+            {
+              "name": "CompletedStopAllowsNewSession",
+              "outcome": "Passed"
+            },
+            {
+              "name": "ClosingJobTerminatesOnlyTheRetainedChild",
+              "outcome": "Passed"
+            },
+            {
+              "name": "CancellingStopWaitDoesNotAbandonCleanup",
+              "outcome": "Passed"
+            },
+            {
+              "name": "StopDuringStartupCleansOwnedChild",
+              "outcome": "Passed"
+            },
+            {
+              "name": "EndpointRequiresLiteralUnicastIp (\"127.0.0.1\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "AmbiguousRemotePathsAreRejected (\"a/../b\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "LingeringDriveCannotBeReportedStopped",
+              "outcome": "Passed"
+            },
+            {
+              "name": "EndpointRequiresLiteralUnicastIp (\"phone.local\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "AmbiguousRemotePathsAreRejected (\"../Music\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "AmbiguousRemotePathsAreRejected (\"a//b\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "IdentityFingerprintMismatchAndNonCertificateAreRejected",
+              "outcome": "Passed"
+            },
+            {
+              "name": "GracefulTimeoutForcesOnlyOwnedChildAndReportsIt",
+              "outcome": "Passed"
+            },
+            {
+              "name": "AmbiguousRemotePathsAreRejected (\"a#b\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "HostEnvironmentCannotInjectRcloneOrProxyOptions",
+              "outcome": "Passed"
+            },
+            {
+              "name": "ActualChildDrainsBothPipesWithBoundedCapture",
+              "outcome": "Passed"
+            },
+            {
+              "name": "FailedTerminationRetainsOwnershipAndBlocksRestartUntilRetry",
+              "outcome": "Passed"
+            },
+            {
+              "name": "IdentityFailureAtRemoteReadinessNeverBecomesMounted",
+              "outcome": "Passed"
+            },
+            {
+              "name": "UnexpectedExitIsFailedAndPreservesExitCode",
+              "outcome": "Passed"
+            }
+          ]
+        },
+        {
+          "report": {
+            "path": ".audit/p1-005/unit-final/yang_LY_2026-09-19_17_02_38_net10.0[1].trx",
+            "sha256": "a3a6107178de4fab11a1208587e4afe82d33e0cfadc2f9df2afcc7f0d0a39d65"
+          },
+          "total": 50,
+          "passed": 50,
+          "failed": 0,
+          "not_executed": 0,
+          "cases": [
+            {
+              "name": "InvalidServerHelloFails (61)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "BoundServerHelloChangeFailsAtProof (58)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "InvalidLengthRejectedFromHeaderBeforePayload (-1)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "WrongDirectionAndReuseFail",
+              "outcome": "Passed"
+            },
+            {
+              "name": "FullHandshakeBindsIdentityAndGrant (\"00000000\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "EveryFrameSupportsByteFragments (33,800)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "EveryFrameSupportsByteFragments (2,54)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "EveryFrameSupportsByteFragments (49,32)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "EarlyResultTerminatesSession (0)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "InvalidInputsAndClosedSessionsRejected",
+              "outcome": "Passed"
+            },
+            {
+              "name": "InvalidServerHelloFails (60)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "InvalidLengthRejectedFromHeaderBeforePayload (8193)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "EarlyResultTerminatesSession (3)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "EveryFrameSupportsByteFragments (1,33)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "InvalidServerHelloFails (26)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "BoundServerHelloChangeFailsAtProof (42)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "CancellationTerminatesAtBoundary",
+              "outcome": "Passed"
+            },
+            {
+              "name": "TruncatedFrameFailsPermanently (8)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "InvalidLengthRejectedFromHeaderBeforePayload (32)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "InvalidGroupOrScalarRejected (1)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "InvalidServerHelloFails (10)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "EarlyResultTerminatesSession (6)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "InvalidLengthRejectedFromHeaderBeforePayload (0)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "WrongCodeNeverYieldsConfirmation",
+              "outcome": "Passed"
+            },
+            {
+              "name": "CrossSessionReplayAndReflectionFail",
+              "outcome": "Passed"
+            },
+            {
+              "name": "TruncatedFrameFailsPermanently (4)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "ExtraFrameAfterConfirmationInvalidatesUntakenResult",
+              "outcome": "Passed"
+            },
+            {
+              "name": "BoundServerHelloChangeFailsAtProof (62)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "ZeroServerPortRejected",
+              "outcome": "Passed"
+            },
+            {
+              "name": "TruncatedFrameFailsPermanently (9)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "EveryFrameSupportsByteFragments (50,32)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "ModifiedProofOrMacRejected (5)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "EarlyResultTerminatesSession (7)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "InvalidGroupOrScalarRejected (0)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "EveryFrameSupportsByteFragments (17,1600)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "ModifiedProofOrMacRejected (7)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "InvalidServerHelloFails (9)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "TruncatedFrameFailsPermanently (20)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "InvalidGroupOrScalarRejected (2)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "InvalidGroupOrScalarRejected (3)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "FullHandshakeBindsIdentityAndGrant (\"00123456\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "EarlyResultTerminatesSession (1)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "EveryFrameSupportsByteFragments (18,1600)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "TruncatedFrameFailsPermanently (0)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "ModifiedProofOrMacRejected (4)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "EveryFrameSupportsByteFragments (34,800)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "ModifiedProofOrMacRejected (6)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "InvalidLengthRejectedFromHeaderBeforePayload (34)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "EveryFrameSupportsByteFragments (2,4149)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "MagicTypeTrailingAndDuplicateRejected",
+              "outcome": "Passed"
+            }
+          ]
+        },
+        {
+          "report": {
+            "path": ".audit/p1-005/unit-final/yang_LY_2026-09-19_17_02_38_net10.0[2].trx",
+            "sha256": "d0a0724b701f029ac85ff41e1a7f1c90c26a436786fa0ee8670cdbd59ac0fdd8"
+          },
+          "total": 56,
+          "passed": 53,
+          "failed": 3,
+          "not_executed": 0,
+          "cases": [
+            {
+              "name": "ProtectedMalformedRecordFailsClosed (\"state\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "AclHasOnlyUserAndSystemAndParentsStayPinned",
+              "outcome": "Passed"
+            },
+            {
+              "name": "InvalidCaRejected (\"leaf\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "InvalidCredentialRequestDoesNotTouchStore",
+              "outcome": "Passed"
+            },
+            {
+              "name": "InvalidCaRejected (\"usage\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "ProtectedMalformedRecordFailsClosed (\"device\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "InvalidCaRejected (\"critical\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "InvalidCaRejected (\"trailing\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "ProtectedMalformedRecordFailsClosed (\"utf8\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "FailedReplacementHasObservableDiskState (1)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "FailedCreateDoesNotExposeToken (4)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "ProtectedMalformedRecordFailsClosed (\"version\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "AuthorizedStateAndRevocationAreCompareAndSwap",
+              "outcome": "Passed"
+            },
+            {
+              "name": "JunctionRootAndAncestorAreRejected",
+              "outcome": "Passed"
+            },
+            {
+              "name": "ProcessDeathDuringCommitKeepsAValidRecord (1)",
+              "outcome": "Failed"
+            },
+            {
+              "name": "CiphertextFailureNeverFallsBack (\"oversized\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "CrossProcessLeaseRefusesConcurrentAccess",
+              "outcome": "Passed"
+            },
+            {
+              "name": "InvalidInputNeverWrites (\"short-id\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "ProtectedMalformedRecordFailsClosed (\"ca-hash\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "BroadAclRejectedWithoutSilentRepair (\"lock\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "FailedReplacementHasObservableDiskState (3)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "InvalidInputNeverWrites (\"bad-name\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "FailedCreateDoesNotExposeToken (0)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "ProtectedMalformedRecordFailsClosed (\"trailing\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "ProtectedMalformedRecordFailsClosed (\"wrong-magic\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "InvalidInputNeverWrites (\"long-name\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "HardLinkAndDirectoryAtRecordAreRejected",
+              "outcome": "Passed"
+            },
+            {
+              "name": "ProcessDeathDuringCommitKeepsAValidRecord (4)",
+              "outcome": "Failed"
+            },
+            {
+              "name": "FailedReplacementHasObservableDiskState (2)",
+              "outcome": "Failed"
+            },
+            {
+              "name": "FailedCreateDoesNotExposeToken (1)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "DuplicateMissingAndDifferentClientNeverCreateTrust",
+              "outcome": "Passed"
+            },
+            {
+              "name": "InvalidCaRejected (\"malformed\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "InvalidCaRejected (\"signature\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "InvalidCaRejected (\"expired\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "ProtectedMalformedRecordFailsClosed (\"revision\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "PendingPersistsWithoutPlaintextAndCannotMount",
+              "outcome": "Passed"
+            },
+            {
+              "name": "InvalidInputNeverWrites (\"format-name\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "ProtectedMalformedRecordFailsClosed (\"mode\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "VerifiedModeRefreshPreservesTokenAndRejectsStaleRevision",
+              "outcome": "Passed"
+            },
+            {
+              "name": "BroadAclRejectedWithoutSilentRepair (\"directory\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "FailedReplacementHasObservableDiskState (0)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "InvalidInputNeverWrites (\"bad-utf16\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "FailedCreateDoesNotExposeToken (3)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "InvalidCaRejected (\"algorithm\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "NewProcessReadsSameCredentialAndAnonymousCannotDecrypt",
+              "outcome": "Passed"
+            },
+            {
+              "name": "InvalidCaRejected (\"weak\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "ProtectedMalformedRecordFailsClosed (\"short\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "CiphertextFailureNeverFallsBack (\"empty\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "FailedCreateDoesNotExposeToken (2)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "CiphertextFailureNeverFallsBack (\"foreign-binding\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "InvalidCaRejected (\"future\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "ProcessDeathDuringCommitKeepsAValidRecord (2)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "CiphertextFailureNeverFallsBack (\"mutation\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "BroadAclRejectedWithoutSilentRepair (\"record\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "FingerprintMismatchAndArrayOwnership",
+              "outcome": "Passed"
+            },
+            {
+              "name": "FailedReplacementHasObservableDiskState (4)",
+              "outcome": "Passed"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "stage": "unit-diagnostic",
+      "reports": [
+        {
+          "report": {
+            "path": ".audit/p1-005/unit-diagnostic/yang_LY_2026-09-19_17_04_07_net10.0.trx",
+            "sha256": "4b3a18ca753c7da470c7fdfb3e6823d8c3b378f1c7af961deea91bb7795fc979"
+          },
+          "total": 41,
+          "passed": 41,
+          "failed": 0,
+          "not_executed": 0,
+          "cases": [
+            {
+              "name": "RejectsProtocolAndVersion (\"https\",\"3\",\"unsupported-version\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "UpdatesUseDeltasAndRemovedCannotBeResurrectedByLateUpdate",
+              "outcome": "Passed"
+            },
+            {
+              "name": "AdvertisedFingerprintAndUnknownAttributesCannotEstablishTrust",
+              "outcome": "Passed"
+            },
+            {
+              "name": "RejectsProtocolAndVersion (\"http\",\"2\",\"https-required\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "AddressChangeReplacesEndpointWithoutChangingCandidateKey",
+              "outcome": "Passed"
+            },
+            {
+              "name": "ManualAndMdnsShareAddressRejection (\" 192.168.1.2\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "PropertyParserRejectsMissingOrWrongTypedValues",
+              "outcome": "Passed"
+            },
+            {
+              "name": "PeriodicScansKeepLiveCandidateWithoutFlickerAndReleaseEveryWatcher",
+              "outcome": "Passed"
+            },
+            {
+              "name": "ManualAndMdnsShareAddressRejection (\"255.255.255.255\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "AlreadyCancelledDoesNotStartNetworkWatcher",
+              "outcome": "Passed"
+            },
+            {
+              "name": "ManualAndMdnsShareAddressRejection (\"https://192.168.1.2\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "RejectsMalformedAndOversizedTxt",
+              "outcome": "Passed"
+            },
+            {
+              "name": "InvalidReplacementRevokesPreviouslyValidCandidate",
+              "outcome": "Passed"
+            },
+            {
+              "name": "ManualAndMdnsShareAddressRejection (\"phone.local\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "ManualAndMdnsShareAddressRejection (\"fe80::1\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "ManualAndMdnsShareAddressRejection (\"::1\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "ManualAndMdnsShareAddressRejection (\"224.0.0.251\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "DuplicateAndReorderedAddressesDoNotEmitChange",
+              "outcome": "Passed"
+            },
+            {
+              "name": "ManualAndMdnsShareAddressRejection (\"2130706433\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "ManualAndMdnsShareAddressRejection (\"192.168.1.2/path\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "RejectsInvalidPort (65536)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "ManualAndMdnsShareAddressRejection (\"0.0.0.0\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "NetworkRefreshStopsOldWatcherAndIgnoresItsQueuedCallbacks",
+              "outcome": "Passed"
+            },
+            {
+              "name": "CancellationRemovesCandidatesAndDetachesEvenWithQueuedTraffic",
+              "outcome": "Passed"
+            },
+            {
+              "name": "ManualAndMdnsShareAddressRejection (\"ff02::fb\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "ManualAndMdnsShareAddressRejection (\"192.168.001.2\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "AbortedWatcherFailsAndStillCleansUp",
+              "outcome": "Passed"
+            },
+            {
+              "name": "RejectsInvalidPort (-1)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "OversizedMetadataIsRejectedBeforeRetention",
+              "outcome": "Passed"
+            },
+            {
+              "name": "PeriodicScansRemoveMissingCandidateWithoutNativeRemovedEvent",
+              "outcome": "Passed"
+            },
+            {
+              "name": "CandidateStorageIsBounded",
+              "outcome": "Passed"
+            },
+            {
+              "name": "ManualAndMdnsShareAddressRejection (\"::\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "RemovalRequiresTwoMissingScansAndRediscoveryResetsMisses",
+              "outcome": "Passed"
+            },
+            {
+              "name": "RejectsInvalidPort (0)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "SameDisplayNameDoesNotMergeServicesAndRemoveIsExact",
+              "outcome": "Passed"
+            },
+            {
+              "name": "StopFailureIsReportedWithoutClaimingSuccessfulShutdown",
+              "outcome": "Passed"
+            },
+            {
+              "name": "ManualAndMdnsShareAddressRejection (\"::ffff:127.0.0.1\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "RejectsProtocolAndVersion (\"HTTPS\",\"2\",\"https-required\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "ManualHasSeparateKeyAndSurvivesMdnsRefresh",
+              "outcome": "Passed"
+            },
+            {
+              "name": "ManualAndMdnsShareAddressRejection (\"127.0.0.1\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "ManualAndMdnsShareAddressRejection (\"user@192.168.1.2\")",
+              "outcome": "Passed"
+            }
+          ]
+        },
+        {
+          "report": {
+            "path": ".audit/p1-005/unit-diagnostic/yang_LY_2026-09-19_17_04_08_net10.0.trx",
+            "sha256": "3266075a753005a804976c05ad5afdaaf87fbf96a8eb0f28868435627b0ac94b"
+          },
+          "total": 50,
+          "passed": 50,
+          "failed": 0,
+          "not_executed": 0,
+          "cases": [
+            {
+              "name": "EveryFrameSupportsByteFragments (49,32)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "InvalidServerHelloFails (26)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "EveryFrameSupportsByteFragments (1,33)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "InvalidGroupOrScalarRejected (1)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "EarlyResultTerminatesSession (3)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "EarlyResultTerminatesSession (7)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "FullHandshakeBindsIdentityAndGrant (\"00123456\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "InvalidLengthRejectedFromHeaderBeforePayload (32)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "BoundServerHelloChangeFailsAtProof (58)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "TruncatedFrameFailsPermanently (4)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "EveryFrameSupportsByteFragments (17,1600)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "EveryFrameSupportsByteFragments (2,54)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "InvalidLengthRejectedFromHeaderBeforePayload (0)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "ModifiedProofOrMacRejected (5)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "WrongCodeNeverYieldsConfirmation",
+              "outcome": "Passed"
+            },
+            {
+              "name": "InvalidServerHelloFails (10)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "MagicTypeTrailingAndDuplicateRejected",
+              "outcome": "Passed"
+            },
+            {
+              "name": "EarlyResultTerminatesSession (0)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "EveryFrameSupportsByteFragments (34,800)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "TruncatedFrameFailsPermanently (8)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "EveryFrameSupportsByteFragments (18,1600)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "ZeroServerPortRejected",
+              "outcome": "Passed"
+            },
+            {
+              "name": "EarlyResultTerminatesSession (1)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "CancellationTerminatesAtBoundary",
+              "outcome": "Passed"
+            },
+            {
+              "name": "BoundServerHelloChangeFailsAtProof (62)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "TruncatedFrameFailsPermanently (0)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "InvalidInputsAndClosedSessionsRejected",
+              "outcome": "Passed"
+            },
+            {
+              "name": "InvalidLengthRejectedFromHeaderBeforePayload (34)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "CrossSessionReplayAndReflectionFail",
+              "outcome": "Passed"
+            },
+            {
+              "name": "TruncatedFrameFailsPermanently (9)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "InvalidLengthRejectedFromHeaderBeforePayload (-1)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "ModifiedProofOrMacRejected (6)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "ModifiedProofOrMacRejected (4)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "InvalidLengthRejectedFromHeaderBeforePayload (8193)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "InvalidGroupOrScalarRejected (0)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "EveryFrameSupportsByteFragments (2,4149)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "WrongDirectionAndReuseFail",
+              "outcome": "Passed"
+            },
+            {
+              "name": "InvalidServerHelloFails (60)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "InvalidServerHelloFails (9)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "EveryFrameSupportsByteFragments (33,800)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "BoundServerHelloChangeFailsAtProof (42)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "EveryFrameSupportsByteFragments (50,32)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "EarlyResultTerminatesSession (6)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "InvalidGroupOrScalarRejected (3)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "InvalidServerHelloFails (61)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "TruncatedFrameFailsPermanently (20)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "ExtraFrameAfterConfirmationInvalidatesUntakenResult",
+              "outcome": "Passed"
+            },
+            {
+              "name": "InvalidGroupOrScalarRejected (2)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "ModifiedProofOrMacRejected (7)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "FullHandshakeBindsIdentityAndGrant (\"00000000\")",
+              "outcome": "Passed"
+            }
+          ]
+        },
+        {
+          "report": {
+            "path": ".audit/p1-005/unit-diagnostic/yang_LY_2026-09-19_17_04_08_net10.0[1].trx",
+            "sha256": "aae4131871384b2faaaf91ea850c8fbf544766dd9cf567b5e6d0b017f64368a6"
+          },
+          "total": 33,
+          "passed": 33,
+          "failed": 0,
+          "not_executed": 0,
+          "cases": [
+            {
+              "name": "AmbiguousRemotePathsAreRejected (\"a:b\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "AmbiguousRemotePathsAreRejected (\"a/../b\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "AmbiguousRemotePathsAreRejected (\"../Music\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "ActualProcessStartFailureIsSanitized",
+              "outcome": "Passed"
+            },
+            {
+              "name": "IdentityFailureAtRemoteReadinessNeverBecomesMounted",
+              "outcome": "Passed"
+            },
+            {
+              "name": "HostEnvironmentCannotInjectRcloneOrProxyOptions",
+              "outcome": "Passed"
+            },
+            {
+              "name": "CancellingStopWaitDoesNotAbandonCleanup",
+              "outcome": "Passed"
+            },
+            {
+              "name": "LingeringDriveCannotBeReportedStopped",
+              "outcome": "Passed"
+            },
+            {
+              "name": "AmbiguousRemotePathsAreRejected (\"a?b\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "EndpointRequiresLiteralUnicastIp (\"0.0.0.0\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "EndpointRequiresLiteralUnicastIp (\"phone.local\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "ActualWindowsArgumentBoundaryPreservesQuotesSpacesAndUnicode",
+              "outcome": "Passed"
+            },
+            {
+              "name": "StopDuringStartupCleansOwnedChild",
+              "outcome": "Passed"
+            },
+            {
+              "name": "ClosingJobTerminatesOnlyTheRetainedChild",
+              "outcome": "Passed"
+            },
+            {
+              "name": "AmbiguousRemotePathsAreRejected (\"/Music\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "CallerCancellationCleansStartup",
+              "outcome": "Passed"
+            },
+            {
+              "name": "DisposeRejectsFurtherStart",
+              "outcome": "Passed"
+            },
+            {
+              "name": "EndpointRequiresLiteralUnicastIp (\"http://192.0.2.1\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "CompletedStopAllowsNewSession",
+              "outcome": "Passed"
+            },
+            {
+              "name": "IdentityFingerprintMismatchAndNonCertificateAreRejected",
+              "outcome": "Passed"
+            },
+            {
+              "name": "EndpointRequiresLiteralUnicastIp (\"127.0.0.1\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "GracefulTimeoutForcesOnlyOwnedChildAndReportsIt",
+              "outcome": "Passed"
+            },
+            {
+              "name": "ActualChildDrainsBothPipesWithBoundedCapture",
+              "outcome": "Passed"
+            },
+            {
+              "name": "FailedTerminationRetainsOwnershipAndBlocksRestartUntilRetry",
+              "outcome": "Passed"
+            },
+            {
+              "name": "AmbiguousRemotePathsAreRejected (\"a//b\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "StartupTimeoutIsBoundedAndCleaned",
+              "outcome": "Passed"
+            },
+            {
+              "name": "UnexpectedExitIsFailedAndPreservesExitCode",
+              "outcome": "Passed"
+            },
+            {
+              "name": "ArgumentsAreSeparateAndCannotDisableTlsOrReadonly",
+              "outcome": "Passed"
+            },
+            {
+              "name": "AmbiguousRemotePathsAreRejected (\"a\\b\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "StartFailureDoesNotExposeExceptionText",
+              "outcome": "Passed"
+            },
+            {
+              "name": "AmbiguousRemotePathsAreRejected (\"a%2fb\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "DuplicateStartAndConcurrentStopsRetainSingleOwner",
+              "outcome": "Passed"
+            },
+            {
+              "name": "AmbiguousRemotePathsAreRejected (\"a#b\")",
+              "outcome": "Passed"
+            }
+          ]
+        },
+        {
+          "report": {
+            "path": ".audit/p1-005/unit-diagnostic/yang_LY_2026-09-19_17_04_12_net10.0.trx",
+            "sha256": "ba1049c68ec680f933fef666b9379fc558a2e247ccc2e92ddcba62b784169e34"
+          },
+          "total": 56,
+          "passed": 56,
+          "failed": 0,
+          "not_executed": 0,
+          "cases": [
+            {
+              "name": "CiphertextFailureNeverFallsBack (\"foreign-binding\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "FailedReplacementHasObservableDiskState (2)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "ProtectedMalformedRecordFailsClosed (\"mode\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "InvalidCredentialRequestDoesNotTouchStore",
+              "outcome": "Passed"
+            },
+            {
+              "name": "FailedCreateDoesNotExposeToken (2)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "ProtectedMalformedRecordFailsClosed (\"state\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "FingerprintMismatchAndArrayOwnership",
+              "outcome": "Passed"
+            },
+            {
+              "name": "BroadAclRejectedWithoutSilentRepair (\"lock\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "ProcessDeathDuringCommitKeepsAValidRecord (4)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "ProcessDeathDuringCommitKeepsAValidRecord (1)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "ProtectedMalformedRecordFailsClosed (\"device\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "ProtectedMalformedRecordFailsClosed (\"utf8\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "JunctionRootAndAncestorAreRejected",
+              "outcome": "Passed"
+            },
+            {
+              "name": "ProtectedMalformedRecordFailsClosed (\"trailing\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "FailedCreateDoesNotExposeToken (3)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "FailedCreateDoesNotExposeToken (1)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "BroadAclRejectedWithoutSilentRepair (\"record\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "CiphertextFailureNeverFallsBack (\"mutation\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "CiphertextFailureNeverFallsBack (\"empty\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "InvalidInputNeverWrites (\"bad-utf16\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "InvalidCaRejected (\"critical\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "VerifiedModeRefreshPreservesTokenAndRejectsStaleRevision",
+              "outcome": "Passed"
+            },
+            {
+              "name": "FailedCreateDoesNotExposeToken (0)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "PendingPersistsWithoutPlaintextAndCannotMount",
+              "outcome": "Passed"
+            },
+            {
+              "name": "FailedReplacementHasObservableDiskState (0)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "InvalidCaRejected (\"malformed\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "AuthorizedStateAndRevocationAreCompareAndSwap",
+              "outcome": "Passed"
+            },
+            {
+              "name": "ProtectedMalformedRecordFailsClosed (\"version\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "FailedReplacementHasObservableDiskState (3)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "AclHasOnlyUserAndSystemAndParentsStayPinned",
+              "outcome": "Passed"
+            },
+            {
+              "name": "InvalidCaRejected (\"leaf\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "InvalidCaRejected (\"algorithm\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "InvalidCaRejected (\"weak\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "ProtectedMalformedRecordFailsClosed (\"wrong-magic\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "FailedReplacementHasObservableDiskState (1)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "InvalidCaRejected (\"future\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "HardLinkAndDirectoryAtRecordAreRejected",
+              "outcome": "Passed"
+            },
+            {
+              "name": "InvalidInputNeverWrites (\"format-name\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "InvalidInputNeverWrites (\"short-id\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "FailedCreateDoesNotExposeToken (4)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "InvalidCaRejected (\"signature\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "InvalidCaRejected (\"usage\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "FailedReplacementHasObservableDiskState (4)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "InvalidInputNeverWrites (\"bad-name\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "ProtectedMalformedRecordFailsClosed (\"short\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "BroadAclRejectedWithoutSilentRepair (\"directory\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "InvalidCaRejected (\"trailing\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "NewProcessReadsSameCredentialAndAnonymousCannotDecrypt",
+              "outcome": "Passed"
+            },
+            {
+              "name": "InvalidCaRejected (\"expired\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "ProtectedMalformedRecordFailsClosed (\"ca-hash\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "ProcessDeathDuringCommitKeepsAValidRecord (2)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "ProtectedMalformedRecordFailsClosed (\"revision\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "CiphertextFailureNeverFallsBack (\"oversized\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "CrossProcessLeaseRefusesConcurrentAccess",
+              "outcome": "Passed"
+            },
+            {
+              "name": "InvalidInputNeverWrites (\"long-name\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "DuplicateMissingAndDifferentClientNeverCreateTrust",
+              "outcome": "Passed"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "stage": "unit-contention-repro",
+      "reports": [
+        {
+          "report": {
+            "path": ".audit/p1-005/unit-contention-repro/yang_LY_2026-09-19_17_05_56_net10.0.trx",
+            "sha256": "a1cf4dbef08215b0fedcb20522eec3b40797a82a88212a3a5f6c33385d9f8c23"
+          },
+          "total": 1,
+          "passed": 1,
+          "failed": 0,
+          "not_executed": 0,
+          "cases": [
+            {
+              "name": "SequentialCommitsAndReopensPreserveRevision",
+              "outcome": "Passed"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "stage": "unit-diagnostic2",
+      "reports": [
+        {
+          "report": {
+            "path": ".audit/p1-005/unit-diagnostic2/yang_LY_2026-09-19_17_06_11_net10.0.trx",
+            "sha256": "2544a53effbcdd1b3617389f7cf53a7728cbe8344812bc5fb35fc9b5767d195b"
+          },
+          "total": 41,
+          "passed": 41,
+          "failed": 0,
+          "not_executed": 0,
+          "cases": [
+            {
+              "name": "ManualAndMdnsShareAddressRejection (\"127.0.0.1\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "RejectsProtocolAndVersion (\"https\",\"3\",\"unsupported-version\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "ManualAndMdnsShareAddressRejection (\"0.0.0.0\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "RejectsInvalidPort (0)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "RejectsInvalidPort (-1)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "AdvertisedFingerprintAndUnknownAttributesCannotEstablishTrust",
+              "outcome": "Passed"
+            },
+            {
+              "name": "NetworkRefreshStopsOldWatcherAndIgnoresItsQueuedCallbacks",
+              "outcome": "Passed"
+            },
+            {
+              "name": "ManualAndMdnsShareAddressRejection (\"::1\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "RemovalRequiresTwoMissingScansAndRediscoveryResetsMisses",
+              "outcome": "Passed"
+            },
+            {
+              "name": "ManualAndMdnsShareAddressRejection (\"https://192.168.1.2\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "ManualAndMdnsShareAddressRejection (\"user@192.168.1.2\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "StopFailureIsReportedWithoutClaimingSuccessfulShutdown",
+              "outcome": "Passed"
+            },
+            {
+              "name": "ManualAndMdnsShareAddressRejection (\"255.255.255.255\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "ManualAndMdnsShareAddressRejection (\" 192.168.1.2\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "ManualHasSeparateKeyAndSurvivesMdnsRefresh",
+              "outcome": "Passed"
+            },
+            {
+              "name": "RejectsInvalidPort (65536)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "AlreadyCancelledDoesNotStartNetworkWatcher",
+              "outcome": "Passed"
+            },
+            {
+              "name": "AbortedWatcherFailsAndStillCleansUp",
+              "outcome": "Passed"
+            },
+            {
+              "name": "RejectsMalformedAndOversizedTxt",
+              "outcome": "Passed"
+            },
+            {
+              "name": "ManualAndMdnsShareAddressRejection (\"::\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "ManualAndMdnsShareAddressRejection (\"192.168.1.2/path\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "OversizedMetadataIsRejectedBeforeRetention",
+              "outcome": "Passed"
+            },
+            {
+              "name": "PeriodicScansRemoveMissingCandidateWithoutNativeRemovedEvent",
+              "outcome": "Passed"
+            },
+            {
+              "name": "ManualAndMdnsShareAddressRejection (\"224.0.0.251\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "ManualAndMdnsShareAddressRejection (\"192.168.001.2\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "ManualAndMdnsShareAddressRejection (\"phone.local\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "AddressChangeReplacesEndpointWithoutChangingCandidateKey",
+              "outcome": "Passed"
+            },
+            {
+              "name": "CancellationRemovesCandidatesAndDetachesEvenWithQueuedTraffic",
+              "outcome": "Passed"
+            },
+            {
+              "name": "RejectsProtocolAndVersion (\"http\",\"2\",\"https-required\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "ManualAndMdnsShareAddressRejection (\"fe80::1\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "UpdatesUseDeltasAndRemovedCannotBeResurrectedByLateUpdate",
+              "outcome": "Passed"
+            },
+            {
+              "name": "CandidateStorageIsBounded",
+              "outcome": "Passed"
+            },
+            {
+              "name": "ManualAndMdnsShareAddressRejection (\"::ffff:127.0.0.1\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "SameDisplayNameDoesNotMergeServicesAndRemoveIsExact",
+              "outcome": "Passed"
+            },
+            {
+              "name": "PropertyParserRejectsMissingOrWrongTypedValues",
+              "outcome": "Passed"
+            },
+            {
+              "name": "ManualAndMdnsShareAddressRejection (\"ff02::fb\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "PeriodicScansKeepLiveCandidateWithoutFlickerAndReleaseEveryWatcher",
+              "outcome": "Passed"
+            },
+            {
+              "name": "InvalidReplacementRevokesPreviouslyValidCandidate",
+              "outcome": "Passed"
+            },
+            {
+              "name": "ManualAndMdnsShareAddressRejection (\"2130706433\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "RejectsProtocolAndVersion (\"HTTPS\",\"2\",\"https-required\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "DuplicateAndReorderedAddressesDoNotEmitChange",
+              "outcome": "Passed"
+            }
+          ]
+        },
+        {
+          "report": {
+            "path": ".audit/p1-005/unit-diagnostic2/yang_LY_2026-09-19_17_06_12_net10.0.trx",
+            "sha256": "19cef928132e3ae63a4535ee182176ea7e5e98dc8c73d45aeb2cc5a682c686de"
+          },
+          "total": 33,
+          "passed": 33,
+          "failed": 0,
+          "not_executed": 0,
+          "cases": [
+            {
+              "name": "IdentityFingerprintMismatchAndNonCertificateAreRejected",
+              "outcome": "Passed"
+            },
+            {
+              "name": "AmbiguousRemotePathsAreRejected (\"a:b\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "IdentityFailureAtRemoteReadinessNeverBecomesMounted",
+              "outcome": "Passed"
+            },
+            {
+              "name": "DuplicateStartAndConcurrentStopsRetainSingleOwner",
+              "outcome": "Passed"
+            },
+            {
+              "name": "AmbiguousRemotePathsAreRejected (\"a?b\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "HostEnvironmentCannotInjectRcloneOrProxyOptions",
+              "outcome": "Passed"
+            },
+            {
+              "name": "AmbiguousRemotePathsAreRejected (\"a#b\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "StopDuringStartupCleansOwnedChild",
+              "outcome": "Passed"
+            },
+            {
+              "name": "EndpointRequiresLiteralUnicastIp (\"0.0.0.0\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "StartFailureDoesNotExposeExceptionText",
+              "outcome": "Passed"
+            },
+            {
+              "name": "GracefulTimeoutForcesOnlyOwnedChildAndReportsIt",
+              "outcome": "Passed"
+            },
+            {
+              "name": "AmbiguousRemotePathsAreRejected (\"/Music\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "EndpointRequiresLiteralUnicastIp (\"127.0.0.1\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "ActualProcessStartFailureIsSanitized",
+              "outcome": "Passed"
+            },
+            {
+              "name": "DisposeRejectsFurtherStart",
+              "outcome": "Passed"
+            },
+            {
+              "name": "UnexpectedExitIsFailedAndPreservesExitCode",
+              "outcome": "Passed"
+            },
+            {
+              "name": "FailedTerminationRetainsOwnershipAndBlocksRestartUntilRetry",
+              "outcome": "Passed"
+            },
+            {
+              "name": "LingeringDriveCannotBeReportedStopped",
+              "outcome": "Passed"
+            },
+            {
+              "name": "AmbiguousRemotePathsAreRejected (\"a//b\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "CompletedStopAllowsNewSession",
+              "outcome": "Passed"
+            },
+            {
+              "name": "ArgumentsAreSeparateAndCannotDisableTlsOrReadonly",
+              "outcome": "Passed"
+            },
+            {
+              "name": "ActualChildDrainsBothPipesWithBoundedCapture",
+              "outcome": "Passed"
+            },
+            {
+              "name": "AmbiguousRemotePathsAreRejected (\"a%2fb\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "StartupTimeoutIsBoundedAndCleaned",
+              "outcome": "Passed"
+            },
+            {
+              "name": "AmbiguousRemotePathsAreRejected (\"a/../b\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "EndpointRequiresLiteralUnicastIp (\"http://192.0.2.1\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "AmbiguousRemotePathsAreRejected (\"../Music\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "ActualWindowsArgumentBoundaryPreservesQuotesSpacesAndUnicode",
+              "outcome": "Passed"
+            },
+            {
+              "name": "CallerCancellationCleansStartup",
+              "outcome": "Passed"
+            },
+            {
+              "name": "CancellingStopWaitDoesNotAbandonCleanup",
+              "outcome": "Passed"
+            },
+            {
+              "name": "AmbiguousRemotePathsAreRejected (\"a\\b\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "ClosingJobTerminatesOnlyTheRetainedChild",
+              "outcome": "Passed"
+            },
+            {
+              "name": "EndpointRequiresLiteralUnicastIp (\"phone.local\")",
+              "outcome": "Passed"
+            }
+          ]
+        },
+        {
+          "report": {
+            "path": ".audit/p1-005/unit-diagnostic2/yang_LY_2026-09-19_17_06_12_net10.0[1].trx",
+            "sha256": "1991ab02b0f77b0b36909b7f8a972c1b8fcf27a9551fa1794ae08c62be2dabe9"
+          },
+          "total": 50,
+          "passed": 50,
+          "failed": 0,
+          "not_executed": 0,
+          "cases": [
+            {
+              "name": "BoundServerHelloChangeFailsAtProof (42)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "InvalidServerHelloFails (9)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "InvalidLengthRejectedFromHeaderBeforePayload (-1)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "FullHandshakeBindsIdentityAndGrant (\"00000000\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "InvalidLengthRejectedFromHeaderBeforePayload (0)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "BoundServerHelloChangeFailsAtProof (58)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "InvalidGroupOrScalarRejected (2)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "MagicTypeTrailingAndDuplicateRejected",
+              "outcome": "Passed"
+            },
+            {
+              "name": "EveryFrameSupportsByteFragments (2,54)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "ModifiedProofOrMacRejected (5)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "ModifiedProofOrMacRejected (6)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "EveryFrameSupportsByteFragments (50,32)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "InvalidLengthRejectedFromHeaderBeforePayload (8193)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "CancellationTerminatesAtBoundary",
+              "outcome": "Passed"
+            },
+            {
+              "name": "InvalidGroupOrScalarRejected (3)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "EarlyResultTerminatesSession (3)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "EarlyResultTerminatesSession (1)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "InvalidServerHelloFails (60)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "WrongDirectionAndReuseFail",
+              "outcome": "Passed"
+            },
+            {
+              "name": "FullHandshakeBindsIdentityAndGrant (\"00123456\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "InvalidServerHelloFails (61)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "InvalidLengthRejectedFromHeaderBeforePayload (34)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "EveryFrameSupportsByteFragments (34,800)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "EarlyResultTerminatesSession (6)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "TruncatedFrameFailsPermanently (9)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "InvalidInputsAndClosedSessionsRejected",
+              "outcome": "Passed"
+            },
+            {
+              "name": "EveryFrameSupportsByteFragments (2,4149)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "InvalidServerHelloFails (10)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "TruncatedFrameFailsPermanently (20)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "ExtraFrameAfterConfirmationInvalidatesUntakenResult",
+              "outcome": "Passed"
+            },
+            {
+              "name": "EarlyResultTerminatesSession (0)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "WrongCodeNeverYieldsConfirmation",
+              "outcome": "Passed"
+            },
+            {
+              "name": "InvalidLengthRejectedFromHeaderBeforePayload (32)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "InvalidServerHelloFails (26)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "EveryFrameSupportsByteFragments (49,32)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "EveryFrameSupportsByteFragments (18,1600)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "TruncatedFrameFailsPermanently (4)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "EveryFrameSupportsByteFragments (1,33)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "EveryFrameSupportsByteFragments (17,1600)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "TruncatedFrameFailsPermanently (8)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "ModifiedProofOrMacRejected (4)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "EarlyResultTerminatesSession (7)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "ModifiedProofOrMacRejected (7)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "TruncatedFrameFailsPermanently (0)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "InvalidGroupOrScalarRejected (1)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "EveryFrameSupportsByteFragments (33,800)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "BoundServerHelloChangeFailsAtProof (62)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "CrossSessionReplayAndReflectionFail",
+              "outcome": "Passed"
+            },
+            {
+              "name": "ZeroServerPortRejected",
+              "outcome": "Passed"
+            },
+            {
+              "name": "InvalidGroupOrScalarRejected (0)",
+              "outcome": "Passed"
+            }
+          ]
+        },
+        {
+          "report": {
+            "path": ".audit/p1-005/unit-diagnostic2/yang_LY_2026-09-19_17_06_13_net10.0.trx",
+            "sha256": "e26d47c41662077763cb061f37f182a000394ac0f69382b01a8a3261a10ff4c7"
+          },
+          "total": 57,
+          "passed": 55,
+          "failed": 2,
+          "not_executed": 0,
+          "cases": [
+            {
+              "name": "FailedCreateDoesNotExposeToken (0)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "BroadAclRejectedWithoutSilentRepair (\"directory\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "FailedReplacementHasObservableDiskState (0)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "FailedCreateDoesNotExposeToken (1)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "FailedCreateDoesNotExposeToken (3)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "InvalidInputNeverWrites (\"bad-utf16\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "ProtectedMalformedRecordFailsClosed (\"ca-hash\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "ProtectedMalformedRecordFailsClosed (\"state\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "InvalidCaRejected (\"malformed\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "ProtectedMalformedRecordFailsClosed (\"short\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "CiphertextFailureNeverFallsBack (\"empty\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "ProtectedMalformedRecordFailsClosed (\"mode\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "ProcessDeathDuringCommitKeepsAValidRecord (1)",
+              "outcome": "Failed"
+            },
+            {
+              "name": "FailedReplacementHasObservableDiskState (3)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "InvalidCaRejected (\"trailing\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "InvalidCredentialRequestDoesNotTouchStore",
+              "outcome": "Passed"
+            },
+            {
+              "name": "ProtectedMalformedRecordFailsClosed (\"device\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "FingerprintMismatchAndArrayOwnership",
+              "outcome": "Passed"
+            },
+            {
+              "name": "ProcessDeathDuringCommitKeepsAValidRecord (2)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "InvalidCaRejected (\"usage\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "InvalidCaRejected (\"algorithm\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "AuthorizedStateAndRevocationAreCompareAndSwap",
+              "outcome": "Passed"
+            },
+            {
+              "name": "JunctionRootAndAncestorAreRejected",
+              "outcome": "Passed"
+            },
+            {
+              "name": "PendingPersistsWithoutPlaintextAndCannotMount",
+              "outcome": "Passed"
+            },
+            {
+              "name": "InvalidCaRejected (\"leaf\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "AclHasOnlyUserAndSystemAndParentsStayPinned",
+              "outcome": "Passed"
+            },
+            {
+              "name": "NewProcessReadsSameCredentialAndAnonymousCannotDecrypt",
+              "outcome": "Passed"
+            },
+            {
+              "name": "InvalidInputNeverWrites (\"short-id\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "HardLinkAndDirectoryAtRecordAreRejected",
+              "outcome": "Passed"
+            },
+            {
+              "name": "InvalidInputNeverWrites (\"long-name\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "CiphertextFailureNeverFallsBack (\"mutation\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "BroadAclRejectedWithoutSilentRepair (\"record\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "FailedReplacementHasObservableDiskState (1)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "CiphertextFailureNeverFallsBack (\"oversized\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "ProcessDeathDuringCommitKeepsAValidRecord (4)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "InvalidInputNeverWrites (\"format-name\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "BroadAclRejectedWithoutSilentRepair (\"lock\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "InvalidCaRejected (\"expired\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "ProtectedMalformedRecordFailsClosed (\"version\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "ProtectedMalformedRecordFailsClosed (\"utf8\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "FailedCreateDoesNotExposeToken (2)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "SequentialCommitsAndReopensPreserveRevision",
+              "outcome": "Failed"
+            },
+            {
+              "name": "CrossProcessLeaseRefusesConcurrentAccess",
+              "outcome": "Passed"
+            },
+            {
+              "name": "FailedCreateDoesNotExposeToken (4)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "FailedReplacementHasObservableDiskState (4)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "CiphertextFailureNeverFallsBack (\"foreign-binding\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "InvalidCaRejected (\"weak\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "ProtectedMalformedRecordFailsClosed (\"trailing\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "InvalidCaRejected (\"future\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "ProtectedMalformedRecordFailsClosed (\"revision\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "InvalidInputNeverWrites (\"bad-name\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "ProtectedMalformedRecordFailsClosed (\"wrong-magic\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "FailedReplacementHasObservableDiskState (2)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "VerifiedModeRefreshPreservesTokenAndRejectsStaleRevision",
+              "outcome": "Passed"
+            },
+            {
+              "name": "InvalidCaRejected (\"signature\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "InvalidCaRejected (\"critical\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "DuplicateMissingAndDifferentClientNeverCreateTrust",
+              "outcome": "Passed"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "stage": "unit-retry",
+      "reports": [
+        {
+          "report": {
+            "path": ".audit/p1-005/unit-retry/yang_LY_2026-09-19_17_08_20_net10.0.trx",
+            "sha256": "2a61629097ed670c9f96b2b5701ab01663b09b8ac3835d3b78b78bb895b8ff83"
+          },
+          "total": 60,
+          "passed": 59,
+          "failed": 1,
+          "not_executed": 0,
+          "cases": [
+            {
+              "name": "FingerprintMismatchAndArrayOwnership",
+              "outcome": "Passed"
+            },
+            {
+              "name": "FailedReplacementHasObservableDiskState (1)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "FailedCreateDoesNotExposeToken (2)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "JunctionRootAndAncestorAreRejected",
+              "outcome": "Passed"
+            },
+            {
+              "name": "ProcessDeathDuringCommitKeepsAValidRecord (1)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "InvalidCaRejected (\"trailing\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "TemporaryLeaseConflictCanRecoverWithinBoundedWait",
+              "outcome": "Passed"
+            },
+            {
+              "name": "InvalidCaRejected (\"critical\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "CiphertextFailureNeverFallsBack (\"foreign-binding\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "FailedCreateDoesNotExposeToken (3)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "ProtectedMalformedRecordFailsClosed (\"ca-hash\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "InvalidInputNeverWrites (\"long-name\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "InvalidCaRejected (\"leaf\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "VerifiedModeRefreshPreservesTokenAndRejectsStaleRevision",
+              "outcome": "Passed"
+            },
+            {
+              "name": "FailedCreateDoesNotExposeToken (0)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "InvalidInputNeverWrites (\"bad-utf16\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "ProtectedMalformedRecordFailsClosed (\"revision\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "PendingPersistsWithoutPlaintextAndCannotMount",
+              "outcome": "Passed"
+            },
+            {
+              "name": "FailedCreateDoesNotExposeToken (4)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "InvalidInputNeverWrites (\"bad-name\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "ProtectedMalformedRecordFailsClosed (\"version\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "BroadAclRejectedWithoutSilentRepair (\"lock\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "CiphertextFailureNeverFallsBack (\"empty\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "FailedReplacementHasObservableDiskState (2)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "CiphertextFailureNeverFallsBack (\"mutation\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "ProtectedMalformedRecordFailsClosed (\"device\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "InvalidCredentialRequestDoesNotTouchStore",
+              "outcome": "Passed"
+            },
+            {
+              "name": "InvalidInputNeverWrites (\"short-id\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "SequentialCommitsAndReopensPreserveRevision",
+              "outcome": "Passed"
+            },
+            {
+              "name": "ProtectedMalformedRecordFailsClosed (\"state\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "ProcessDeathDuringCommitKeepsAValidRecord (2)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "ProcessDeathDuringCommitKeepsAValidRecord (4)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "InvalidCaRejected (\"future\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "ProtectedMalformedRecordFailsClosed (\"trailing\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "InvalidCaRejected (\"malformed\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "FailedReplacementHasObservableDiskState (0)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "CrossProcessLeaseRefusesConcurrentAccess",
+              "outcome": "Passed"
+            },
+            {
+              "name": "InvalidCaRejected (\"signature\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "InvalidCaRejected (\"algorithm\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "InvalidCaRejected (\"usage\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "NewProcessReadsSameCredentialAndAnonymousCannotDecrypt",
+              "outcome": "Passed"
+            },
+            {
+              "name": "InvalidCaRejected (\"expired\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "CiphertextFailureNeverFallsBack (\"oversized\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "FailedCreateDoesNotExposeToken (1)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "HardLinkAndDirectoryAtRecordAreRejected",
+              "outcome": "Passed"
+            },
+            {
+              "name": "PersistentReaderBlockingReplaceFailsClosedWithOldRecordIntact",
+              "outcome": "Passed"
+            },
+            {
+              "name": "BroadAclRejectedWithoutSilentRepair (\"record\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "ProtectedMalformedRecordFailsClosed (\"utf8\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "InvalidCaRejected (\"weak\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "ProtectedMalformedRecordFailsClosed (\"mode\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "ProtectedMalformedRecordFailsClosed (\"wrong-magic\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "InvalidInputNeverWrites (\"format-name\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "FailedReplacementHasObservableDiskState (4)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "BroadAclRejectedWithoutSilentRepair (\"directory\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "AclHasOnlyUserAndSystemAndParentsStayPinned",
+              "outcome": "Passed"
+            },
+            {
+              "name": "TemporaryReaderBlockingReplaceIsRetriedWithoutDroppingOldRecord",
+              "outcome": "Failed"
+            },
+            {
+              "name": "AuthorizedStateAndRevocationAreCompareAndSwap",
+              "outcome": "Passed"
+            },
+            {
+              "name": "FailedReplacementHasObservableDiskState (3)",
+              "outcome": "Passed"
+            },
+            {
+              "name": "ProtectedMalformedRecordFailsClosed (\"short\")",
+              "outcome": "Passed"
+            },
+            {
+              "name": "DuplicateMissingAndDifferentClientNeverCreateTrust",
+              "outcome": "Passed"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "stage": "unit-contention-fixed",
+      "reports": [
+        {
+          "report": {
+            "path": ".audit/p1-005/unit-contention-fixed/yang_LY_2026-09-19_17_09_23_net10.0.trx",
+            "sha256": "cf7abe1f787e2c020a8be47bfcb61ac9288e25f4f990e3fd7846c9a3f24b84da"
+          },
+          "total": 3,
+          "passed": 3,
+          "failed": 0,
+          "not_executed": 0,
+          "cases": [
+            {
+              "name": "PersistentReaderBlockingReplaceFailsClosedWithOldRecordIntact",
+              "outcome": "Passed"
+            },
+            {
+              "name": "TemporaryReaderBlockingReplaceIsRetriedWithoutDroppingOldRecord",
+              "outcome": "Passed"
+            },
+            {
+              "name": "TemporaryLeaseConflictCanRecoverWithinBoundedWait",
+              "outcome": "Passed"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "failures": [
+    {
+      "stage": "test-first",
+      "exit": 1,
+      "cause": "MSTEST0003 public test methods and MSTEST0037 assertion style; no tests executed"
+    },
+    {
+      "stage": "unit-final",
+      "exit": 1,
+      "cause": "Three storage failures: one uncertain write and two native-open Busy; old 124 tests passed"
+    },
+    {
+      "stage": "unit-diagnostic2",
+      "exit": 1,
+      "cause": "Two storage failures; first-chance sanitized diagnostic confirmed ReplaceFile HResult 0x80070497"
+    },
+    {
+      "stage": "unit-retry",
+      "exit": 1,
+      "cause": "Deterministic temporary reader test reproduced additional 0x80070020; only 1175 retry was insufficient"
+    }
+  ],
+  "remediation": "Bounded native-open retries for 32/33 and replacement retries for 32/33/1175; both files revalidated. No retry for 1176/1177 or entire authorization transaction.",
+  "exact_external_lock_owner": "not established",
+  "official_sources": [
+    "https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-replacefilew",
+    "https://learn.microsoft.com/en-us/windows/apps/develop/files/best-practices-writing-files"
+  ]
+}

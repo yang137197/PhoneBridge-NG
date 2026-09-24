@@ -1,0 +1,41 @@
+<resources>
+    <string name="app_name">PhoneBridge NG</string>
+    <string name="subtitle">在同一局域网内，让电脑访问手机文件</string>
+    <string name="folder">共享目录</string>
+    <string name="permission">允许访问共享文件</string>
+    <string name="start">开始共享</string>
+    <string name="stop">停止共享</string>
+    <string name="stopped">共享已停止</string>
+    <string name="starting">正在启动共享…</string>
+    <string name="sharing">正在共享</string>
+    <string name="sharing_notification">正在共享手机存储</string>
+    <string name="sharing_channel">文件共享</string>
+    <string name="start_failed">启动失败，请检查文件权限和共享目录</string>
+    <string name="battery_optimization_required">需要允许 PhoneBridge NG 忽略电池优化，才能在锁屏时继续共享。未允许，共享不会启动。</string>
+    <string name="battery_optimization_settings_failed">无法打开电池优化设置，请在系统设置中手动允许 PhoneBridge NG 后重试。</string>
+    <string name="storage_error">配对存储异常，共享已停止；需要修复后重新配对</string>
+    <string name="action_rejected">操作未完成，请检查当前配对状态后重试</string>
+    <string name="pair">配对新电脑</string>
+    <string name="close_pairing">关闭配对</string>
+    <string name="pair_code">在电脑上输入此一次性配对码</string>
+    <string name="pair_waiting">等待电脑提交配对请求</string>
+    <plurals name="pair_remaining"><item quantity="other">剩余 %1$d 秒 · 已使用 %2$d / 5 次尝试</item></plurals>
+    <string name="approve_prompt">允许“%1$s”访问共享目录？</string>
+    <string name="approve_note">电脑名称仅供辨认。只有你正在配对的电脑才应获得允许。</string>
+    <string name="approve">允许配对</string>
+    <string name="reject">拒绝</string>
+    <string name="paired">已配对</string>
+    <string name="rejected">已拒绝</string>
+    <string name="cancelled">已取消</string>
+    <string name="computers">已配对的电脑</string>
+    <string name="no_computers">尚无已配对电脑</string>
+    <string name="access_mode">访问模式</string>
+    <string name="mode_read_only">只读（仅浏览和下载）</string>
+    <string name="mode_safe">安全模式（允许新建，不覆盖已有文件）</string>
+    <string name="mode_read_write">完全读写（允许覆盖和删除）</string>
+    <string name="revoke">撤销访问</string>
+    <string name="revoke_prompt">撤销“%1$s”的访问权限并断开其连接？</string>
+    <string name="cancel">取消</string>
+    <string name="development_limit">访问模式按已配对电脑分别设置；切换后 Windows 需要重新连接。</string>
+    <string name="permission_missing">请先允许文件访问，并确认所选目录存在。</string>
+</resources>

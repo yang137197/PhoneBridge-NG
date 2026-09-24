@@ -1,0 +1,12 @@
+{
+  "p0_005_source_files_unchanged": 12,
+  "new_relative_to_p0_005": [
+    "android/app/src/main/java/com/phonebridge/MainActivity.kt",
+    "android/app/src/main/res/values/themes.xml",
+    "android/app/src/main/res/values-v27/themes.xml",
+    "android/app/src/androidTest/java/com/phonebridge/CompatibilityTest.kt"
+  ],
+  "build_files_and_manifest_unchanged": true,
+  "cumulative_source_files": 16,
+  "patch_lf_only": true
+}

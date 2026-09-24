@@ -1,0 +1,17 @@
+{
+  "patch_matches_tested_worktree": true,
+  "original_baseline_clean": true,
+  "changed_kotlin_files": 12,
+  "unit_tests_passed": 20,
+  "instrumentation_passed": 11,
+  "instrumentation_skipped": 1,
+  "https_regressions_passed": 97,
+  "scope_cases_passed": 2,
+  "process_death_passed": true,
+  "lint_added_issues": 0,
+  "local_links": 123,
+  "python_files_parsed": 11,
+  "p_drive_unmounted": true,
+  "p0_005_verified_scope": true,
+  "whole_product_complete": false
+}

@@ -1,0 +1,20 @@
+{
+  "baseline": "a378fec40561a4d18be2334f4de92ee02a0e7d0c",
+  "patch": "android/patches/P0-005-storage-safety.patch",
+  "patch_sha256": "fb5944b53f5ac95a2078560e31dc44c413b2560c2d283061f4f9bf3a3d81195f",
+  "patch_type": "Cumulative against original baseline; includes P0-004, do not stack",
+  "apk_sha256": "ca72222d3e4011085526b4ff33055e5291ac8236f91e2afa1cd2838a8487f80e",
+  "apk_bytes": 9645359,
+  "unit_tests_passed": 20,
+  "instrumentation_passed": 11,
+  "instrumentation_skipped": 1,
+  "https_storage_regressions_passed": 63,
+  "https_stream_regressions_passed": 34,
+  "scope_start_cases_passed": 2,
+  "process_death_passed": true,
+  "lint_errors": 2,
+  "lint_warnings": 128,
+  "lint_added_issues": 0,
+  "transport": "Android 14 AOSP emulator, ADB loopback, experimental TLS trust bypass",
+  "whole_product_complete": false
+}

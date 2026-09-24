@@ -1,0 +1,22 @@
+{
+  "markdown_files": 61,
+  "local_links": 361,
+  "json_files": 155,
+  "python_files": 27,
+  "xml_files": 22,
+  "errors": [],
+  "preserved_previous_file_counts": {
+    "p1-002": 57,
+    "p1-004": 28
+  },
+  "android_patch_apk_unchanged": true,
+  "upstream_clean": true,
+  "product_core_source_files_reviewed": 6,
+  "synthetic_secret_scan_matches": 0,
+  "active_task": [
+    "P1-006-android-pairing-storage.md"
+  ],
+  "owned_test_fixtures_remaining": 0,
+  "phone_network_or_complete_pairing_verified": false,
+  "whole_product_complete": false
+}

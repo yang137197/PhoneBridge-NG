@@ -1,0 +1,24 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/PhoneBridge.Connection/PhoneBridge.Connection.csproj" />
+    <Project Path="src/PhoneBridge.Desktop/PhoneBridge.Desktop.csproj" />
+    <Project Path="src/PhoneBridge.Credentials/PhoneBridge.Credentials.csproj" />
+    <Project Path="src/PhoneBridge.Pairing/PhoneBridge.Pairing.csproj" />
+    <Project Path="src/PhoneBridge.Discovery.Diagnostics/PhoneBridge.Discovery.Diagnostics.csproj" />
+    <Project Path="src/PhoneBridge.Discovery.Windows/PhoneBridge.Discovery.Windows.csproj" />
+    <Project Path="src/PhoneBridge.Discovery/PhoneBridge.Discovery.csproj" />
+    <Project Path="src/PhoneBridge.Mounting/PhoneBridge.Mounting.csproj" />
+    <Project Path="src/PhoneBridge.Mounting.Diagnostics/PhoneBridge.Mounting.Diagnostics.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/PhoneBridge.Connection.Tests/PhoneBridge.Connection.Tests.csproj" />
+    <Project Path="tests/PhoneBridge.Credentials.Tests/PhoneBridge.Credentials.Tests.csproj" />
+    <Project Path="tests/PhoneBridge.CredentialsFixture/PhoneBridge.CredentialsFixture.csproj" />
+    <Project Path="tests/PhoneBridge.Pairing.Tests/PhoneBridge.Pairing.Tests.csproj" />
+    <Project Path="tests/PhoneBridge.PairingFixture/PhoneBridge.PairingFixture.csproj" />
+    <Project Path="tests/PhoneBridge.Discovery.Tests/PhoneBridge.Discovery.Tests.csproj" />
+    <Project Path="tests/PhoneBridge.Desktop.Tests/PhoneBridge.Desktop.Tests.csproj" />
+    <Project Path="tests/PhoneBridge.Mounting.Tests/PhoneBridge.Mounting.Tests.csproj" />
+    <Project Path="tests/PhoneBridge.ProcessFixture/PhoneBridge.ProcessFixture.csproj" />
+  </Folder>
+</Solution>

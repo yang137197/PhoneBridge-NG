@@ -1,0 +1,9 @@
+{
+  "source_bytes": 100000000,
+  "download_bytes": 100000000,
+  "android_sha256": "9b3b9896c7296fba874dd1289d94a4689bf3845a5e4cfac63962655985477007",
+  "source_sha256": "9b3b9896c7296fba874dd1289d94a4689bf3845a5e4cfac63962655985477007",
+  "download_sha256": "cbf4208593974665ed2000bf3ec7c20e8da08107c8f2dd3319ee83d02325bc72",
+  "first_different_byte": 33554432,
+  "download_at_32MiB_matches_source_start": true
+}

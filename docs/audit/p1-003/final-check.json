@@ -1,0 +1,18 @@
+{
+  "markdown_files": 51,
+  "local_links_checked": 316,
+  "json_parsed": 138,
+  "python_parsed": 26,
+  "xml_parsed": 15,
+  "errors": [],
+  "p1_002_source_and_binary_hashes_checked": 60,
+  "p1_002_sources_and_binaries_unchanged": true,
+  "android_patch_and_apk_unchanged": true,
+  "upstream_clean": true,
+  "upstream_head": "a378fec40561a4d18be2334f4de92ee02a0e7d0c",
+  "active_task": [
+    "P1-004-pairing-core.md"
+  ],
+  "product_pairing_verified": false,
+  "whole_product_complete": false
+}

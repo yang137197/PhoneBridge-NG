@@ -1,0 +1,26 @@
+<root>
+  <data name="Added">
+    <value>发现</value>
+  </data>
+  <data name="Failed">
+    <value>发现失败</value>
+  </data>
+  <data name="Notice">
+    <value>仅发现未认证候选；不会配对、认证或挂载。按 Ctrl+C 停止。</value>
+  </data>
+  <data name="Rejected">
+    <value>拒绝</value>
+  </data>
+  <data name="Removed">
+    <value>移除</value>
+  </data>
+  <data name="Status">
+    <value>状态</value>
+  </data>
+  <data name="Updated">
+    <value>更新</value>
+  </data>
+  <data name="Usage">
+    <value>用法：--seconds 1..300 [--json] [--en-US] [--manual IP 端口]</value>
+  </data>
+</root>

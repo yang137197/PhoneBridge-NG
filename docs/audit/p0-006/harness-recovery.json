@@ -1,0 +1,9 @@
+{
+  "scope_first_attempt": "failed during fixture restore; API 26 mv lacks -T",
+  "restore_same_inode": true,
+  "destination_was_absent": true,
+  "backup_name": "/sdcard/Download-p0-005-unavailable-1789789735073003000",
+  "no_delete": true,
+  "logcat_first_attempt": "exit 1 before instrumentation; same command later succeeded; cause unconfirmed",
+  "logcat_clear_diagnosis": "Repeated after test APK install: failed to clear the main log, exit 1. Exact OS cause unconfirmed. Harness now retains and checks existing AndroidRuntime log instead of clearing it."
+}

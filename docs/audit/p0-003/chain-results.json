@@ -1,0 +1,30 @@
+{
+  "transport": "Android 14 emulator via ADB loopback",
+  "tls_mode": "unverified isolated upstream experiment",
+  "checks": [
+    {
+      "name": "mount",
+      "result": "PASS",
+      "drive": "P:",
+      "directory": [
+        "phone-origin-100MB.bin",
+        "phone-origin.txt",
+        "uploaded-20260919-102758.bin"
+      ]
+    },
+    {
+      "name": "failure",
+      "result": "FAIL",
+      "kind": "AssertionError",
+      "detail": "Download hash mismatch"
+    },
+    {
+      "name": "failure-cleanup",
+      "result": "PASS",
+      "exit_code": 0,
+      "cache_preserved": true
+    }
+  ],
+  "rclone_pid": 2168,
+  "data_directory": "C:\\Users\\yang1\\Documents\\ChatGPT\\samsung link windows\\PhoneBridge-NG\\.audit\\runs\\P0-003\\data-20260919-102940"
+}

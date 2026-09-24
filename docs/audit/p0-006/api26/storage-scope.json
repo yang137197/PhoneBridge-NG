@@ -1,0 +1,14 @@
+[
+  {
+    "name": "missing-selected-folder",
+    "result": "PASS",
+    "ui_status": "Tap to start",
+    "server_unavailable": true
+  },
+  {
+    "name": "unknown-selection",
+    "result": "PASS",
+    "ui_status": "Tap to start",
+    "server_unavailable": true
+  }
+]

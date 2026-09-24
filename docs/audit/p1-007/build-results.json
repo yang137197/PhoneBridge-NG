@@ -1,0 +1,205 @@
+{
+  "observed_at": "2026-09-19T15:25:54.046119+00:00",
+  "command": "./scripts/Verify-AndroidApp.ps1",
+  "exit": 0,
+  "agp": "9.1.1",
+  "gradle": "9.3.1",
+  "kotlin": "2.2.10",
+  "jdk": "21.0.10",
+  "sdk": 36,
+  "min_sdk": 26,
+  "build_tools": "36.0.0",
+  "strict_locks": true,
+  "strict_dependency_verification": true,
+  "kotlin_tests": 15,
+  "lint_debug": "No issues found.",
+  "lint_release": "No issues found.",
+  "lint_exceptions": [
+    "Pinned-version notices AndroidGradlePluginVersion/GradleDependency",
+    "TrustAllX509TrustManager only in bcpkix-jdk18on-1.86.jar unused EST utility"
+  ],
+  "warnings": [
+    "Java source/target 8 deprecation under JDK 21",
+    "SDK XML version 3/4 tool warning"
+  ],
+  "release_signed": false,
+  "logs": [
+    {
+      "path": ".audit/p1-007/bridge26-complete.log",
+      "sha256": "a979fff4465d37fe10711c71672ae4565463dba92c571f076a292b8a57bbdeed"
+    },
+    {
+      "path": ".audit/p1-007/bridge26-diagnostic.log",
+      "sha256": "16681014b76dbddb6b3f43b972d64eb2c32ad744f000a681bfebc82899bf6aa5"
+    },
+    {
+      "path": ".audit/p1-007/bridge26-ethernet.log",
+      "sha256": "a979fff4465d37fe10711c71672ae4565463dba92c571f076a292b8a57bbdeed"
+    },
+    {
+      "path": ".audit/p1-007/bridge26-final.log",
+      "sha256": "72e3a7a166f4049f53dc92aa5343cfaa32fe07ac7680e3a664d3c07255deb122"
+    },
+    {
+      "path": ".audit/p1-007/bridge26-first.log",
+      "sha256": "16681014b76dbddb6b3f43b972d64eb2c32ad744f000a681bfebc82899bf6aa5"
+    },
+    {
+      "path": ".audit/p1-007/bridge26-reviewed.log",
+      "sha256": "a979fff4465d37fe10711c71672ae4565463dba92c571f076a292b8a57bbdeed"
+    },
+    {
+      "path": ".audit/p1-007/bridge26-router.log",
+      "sha256": "16681014b76dbddb6b3f43b972d64eb2c32ad744f000a681bfebc82899bf6aa5"
+    },
+    {
+      "path": ".audit/p1-007/bridge36-complete.log",
+      "sha256": "181b302c53bfa81901c00c97f507f71c13cae15bf96330e070b5dba0d5df072c"
+    },
+    {
+      "path": ".audit/p1-007/build-abort-final.log",
+      "sha256": "6415ed43346e0bb1f692300b410c5566d2fc7a8c587b337f5a71efa6abb53108"
+    },
+    {
+      "path": ".audit/p1-007/build-bridge.log",
+      "sha256": "d8ec7a543f7ea1944ce7539aa0c908c8f9de6cbfb32ea4dd9b6456def7e8f3c7"
+    },
+    {
+      "path": ".audit/p1-007/build-complete.log",
+      "sha256": "18b425fa6b80ecd31649ad68455a5984577a046b6b6dee2dfe8f7c3f45058354"
+    },
+    {
+      "path": ".audit/p1-007/build-fault-final.log",
+      "sha256": "0a040c550b4b1bc567fdbd8c3975ce5422c3969b0feee6b4b3f453717bad6b90"
+    },
+    {
+      "path": ".audit/p1-007/build-final.log",
+      "sha256": "0b0915473f676352622c0b5e867446fa4e743c4f8bd26117737160a504171037"
+    },
+    {
+      "path": ".audit/p1-007/build-first.log",
+      "sha256": "d78c94d343750bfb59923ae3d77b17188b7833261792a858e9079eb7efd4f0e7"
+    },
+    {
+      "path": ".audit/p1-007/build-fourth.log",
+      "sha256": "e223bd947f915d2fafe76238426b759d885122813b2954f0aa5c776c67d58c4d"
+    },
+    {
+      "path": ".audit/p1-007/build-full-first.log",
+      "sha256": "8f3ea07e0ffda5707bf6e27de816aff8113b62b60716fcbfd85e6a1967cf2f9e"
+    },
+    {
+      "path": ".audit/p1-007/build-runner-final.log",
+      "sha256": "b5fe78f251c9a02ffb5962dc8bb2c3a20f8178ef2e1b459d9545824feb9c5eb2"
+    },
+    {
+      "path": ".audit/p1-007/build-second.log",
+      "sha256": "02473f319bf44bff66ccaba5417e2e341b329dd772a68428c1ff45fecfc1bf07"
+    },
+    {
+      "path": ".audit/p1-007/build-third.log",
+      "sha256": "2f35a0502adf4cefe6559ff6aef4eb384876b1055c2a12e96960dc9ba7fede82"
+    },
+    {
+      "path": ".audit/p1-007/csharp-build-complete.log",
+      "sha256": "c917eef66092de3aaec7bcfec748a9ff5527c46d781942b6ed6d4b25e630d357"
+    },
+    {
+      "path": ".audit/p1-007/csharp-build-diagnostic.log",
+      "sha256": "82bc1377e4c71d0d242fdba6affe11e70c8f6d9e6d7a6f51504db5e5745f5113"
+    },
+    {
+      "path": ".audit/p1-007/csharp-build-final.log",
+      "sha256": "cc3481563501c013e3c48ecfa8bcb7eb14682815532032be54fe59b4891100bd"
+    },
+    {
+      "path": ".audit/p1-007/csharp-build-locked.log",
+      "sha256": "d0dfba87804ac2a2597ad8601a7b39b6ff85ae3f13430b7f8243d6b1d7298dce"
+    },
+    {
+      "path": ".audit/p1-007/csharp-build.log",
+      "sha256": "f4ca58663abc99c65f7176e38aa4c6ebc15af6669a0a154dd1c782264db38b44"
+    },
+    {
+      "path": ".audit/p1-007/native26-complete.log",
+      "sha256": "4228509a1c4307e20d634757676c2b6d99ba8b9c7b7b28be53a6f6b308c4da8a"
+    },
+    {
+      "path": ".audit/p1-007/native26-final.log",
+      "sha256": "4228509a1c4307e20d634757676c2b6d99ba8b9c7b7b28be53a6f6b308c4da8a"
+    },
+    {
+      "path": ".audit/p1-007/native26-first.log",
+      "sha256": "75455369313e56f9e37e054d60e8338990fdd920712774947dad1a25ab367384"
+    },
+    {
+      "path": ".audit/p1-007/native36-complete.log",
+      "sha256": "5bb9bdacbafed65cdc18a9d9d3b7cd0e76667b358aba6ff2f404a72aa1f05e95"
+    },
+    {
+      "path": ".audit/p1-007/native36-final.log",
+      "sha256": "0d3d0aea185f40dc59e1a6f2569a80d6c55f8e2afe1f7314d5d63085c25186fc"
+    },
+    {
+      "path": ".audit/p1-007/native36-reviewed.log",
+      "sha256": "0d3d0aea185f40dc59e1a6f2569a80d6c55f8e2afe1f7314d5d63085c25186fc"
+    },
+    {
+      "path": ".audit/p1-007/revoke36-corrected.log",
+      "sha256": "395db63ec8c1be3175898c00e1d1ef3b509a1d2db08e4c2363eeb00a37c67d7e"
+    },
+    {
+      "path": ".audit/p1-007/revoke36-reproduce.log",
+      "sha256": "0b9caca6bd674378b8b34bc1c92de119d439c79938b63ab660e4b6ee2592bde2"
+    }
+  ],
+  "failures": [
+    {
+      "stage": "build-first",
+      "reason": "Duplicate identical BC LICENSE.md; fixed merge, not exclusion"
+    },
+    {
+      "stage": "build-second",
+      "reason": "Lint locale, plurals, icon and unused dependency EST trust-all utility"
+    },
+    {
+      "stage": "build-third",
+      "reason": "Failed previous build had not persisted new lock state"
+    },
+    {
+      "stage": "csharp-build-final",
+      "reason": "dotnet build does not accept restore --locked-mode switch; use RestoreLockedMode property"
+    },
+    {
+      "stage": "bridge-first/diagnostic",
+      "reason": "ADB stream closes both directions at final PAKE half-close; EndOfStreamException"
+    },
+    {
+      "stage": "bridge-router",
+      "reason": "API 26 emulator Wi-Fi subnet differs from legacy redirection target; restart dedicated AVD with -feature -Wifi"
+    },
+    {
+      "stage": "bridge26-final",
+      "reason": "Test runner startActivitySync waited for existing Activity; reuse live Activity before stop click"
+    },
+    {
+      "stage": "native36-final",
+      "passed": 41,
+      "total": 42,
+      "reason": "Conscrypt close_notify drain blocked during active download revoke; reproduce failed; interrupt underlying socket using public API before TLS close"
+    },
+    {
+      "stage": "revoke36-corrected",
+      "passed": 1,
+      "total": 1,
+      "seconds": 1.14,
+      "reason": "Same test after transport shutdown fix; positive retest before full platform regression"
+    },
+    {
+      "stage": "native36-reviewed",
+      "passed": 41,
+      "total": 42,
+      "reason": "Test observed aborted connection before fatal callback; wait at most one second for callback, keep fail-closed assertions"
+    }
+  ]
+}

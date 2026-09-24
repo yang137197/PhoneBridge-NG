@@ -1,0 +1,304 @@
+--- NanoHTTPD-2.3.1.java
++++ PhoneBridge-NG/NanoHTTPD.java
+@@ -1,4 +1,7 @@
+ package fi.iki.elonen;
++
++// Modified by PhoneBridge NG, 2026-09-19: strict bounded HTTP ingress, fixed errors and no peer logging.
++// Original NanoHTTPD 2.3.1 BSD-3-Clause notice is preserved below; see NOTICE.md.
+ 
+ /*
+  * #%L
+@@ -200,7 +203,7 @@
+                 // SocketTimeoutException, print the
+                 // stacktrace
+                 if (!(e instanceof SocketException && "NanoHttpd Shutdown".equals(e.getMessage())) && !(e instanceof SocketTimeoutException)) {
+-                    NanoHTTPD.LOG.log(Level.SEVERE, "Communication with the client broken, or an bug in the handler code", e);
++                    // PhoneBridge NG: do not log peer input, paths or exception messages.
+                 }
+             } finally {
+                 safeClose(outputStream);
+@@ -445,7 +448,7 @@
+                 try {
+                     file.delete();
+                 } catch (Exception ignored) {
+-                    NanoHTTPD.LOG.log(Level.WARNING, "could not delete file ", ignored);
++                    // PhoneBridge NG: do not log peer input, paths or exception messages.
+                 }
+             }
+             this.tempFiles.clear();
+@@ -656,58 +659,47 @@
+         /**
+          * Decodes the sent headers and loads the data into Key/value pairs
+          */
++        // PhoneBridge NG 2026-09-19: bounded, unambiguous request headers; BSD notice retained.
+         private void decodeHeader(BufferedReader in, Map<String, String> pre, Map<String, List<String>> parms, Map<String, String> headers) throws ResponseException {
+             try {
+-                // Read the request line
+-                String inLine = in.readLine();
+-                if (inLine == null) {
+-                    return;
+-                }
+-
+-                StringTokenizer st = new StringTokenizer(inLine);
+-                if (!st.hasMoreTokens()) {
+-                    throw new ResponseException(Response.Status.BAD_REQUEST, "BAD REQUEST: Syntax error. Usage: GET /example/file.html");
+-                }
+-
+-                pre.put("method", st.nextToken());
+-
+-                if (!st.hasMoreTokens()) {
+-                    throw new ResponseException(Response.Status.BAD_REQUEST, "BAD REQUEST: Missing URI. Usage: GET /example/file.html");
+-                }
+-
+-                String uri = st.nextToken();
+-
+-                // Decode parameters from the URI
+-                int qmi = uri.indexOf('?');
+-                if (qmi >= 0) {
+-                    decodeParms(uri.substring(qmi + 1), parms);
+-                    uri = decodePercent(uri.substring(0, qmi));
+-                } else {
+-                    uri = decodePercent(uri);
+-                }
+-
+-                // If there's another token, its protocol version,
+-                // followed by HTTP headers.
+-                // NOTE: this now forces header names lower case since they are
+-                // case insensitive and vary by client.
+-                if (st.hasMoreTokens()) {
+-                    protocolVersion = st.nextToken();
+-                } else {
+-                    protocolVersion = "HTTP/1.1";
+-                    NanoHTTPD.LOG.log(Level.FINE, "no protocol version specified, strange. Assuming HTTP/1.1.");
+-                }
+                 String line = in.readLine();
+-                while (line != null && !line.trim().isEmpty()) {
+-                    int p = line.indexOf(':');
+-                    if (p >= 0) {
+-                        headers.put(line.substring(0, p).trim().toLowerCase(Locale.US), line.substring(p + 1).trim());
+-                    }
+-                    line = in.readLine();
+-                }
+-
+-                pre.put("uri", uri);
+-            } catch (IOException ioe) {
+-                throw new ResponseException(Response.Status.INTERNAL_ERROR, "SERVER INTERNAL ERROR: IOException: " + ioe.getMessage(), ioe);
++                if (line == null) throw new IOException();
++                String[] parts = line.split(" ", -1);
++                if (parts.length != 3 || !parts[0].matches("[A-Z]{1,16}") ||
++                        !(parts[2].equals("HTTP/1.1") || parts[2].equals("HTTP/1.0"))) throw new IOException();
++                String raw = parts[1];
++                if (!raw.startsWith("/") || raw.length() > 4096 || raw.indexOf('?') >= 0 || raw.indexOf('#') >= 0) throw new IOException();
++                ByteArrayOutputStream path = new ByteArrayOutputStream();
++                for (int i = 0; i < raw.length(); i++) {
++                    char c = raw.charAt(i);
++                    if (c <= 32 || c >= 127) throw new IOException();
++                    if (c == '%') {
++                        if (i + 2 >= raw.length()) throw new IOException();
++                        int hi = Character.digit(raw.charAt(++i), 16), lo = Character.digit(raw.charAt(++i), 16);
++                        if (hi < 0 || lo < 0) throw new IOException();
++                        path.write((hi << 4) | lo);
++                    } else path.write(c); // Literal plus is a file-name character, not a query space.
++                }
++                String uri = java.nio.charset.StandardCharsets.UTF_8.newDecoder()
++                        .onMalformedInput(java.nio.charset.CodingErrorAction.REPORT)
++                        .decode(ByteBuffer.wrap(path.toByteArray())).toString();
++                protocolVersion = parts[2];
++                int count = 0;
++                while ((line = in.readLine()) != null && !line.isEmpty()) {
++                    if (++count > 64) throw new IOException();
++                    int colon = line.indexOf(':');
++                    if (colon <= 0) throw new IOException();
++                    String name = line.substring(0, colon);
++                    if (!name.matches("[!#$%&'*+.^_`|~0-9A-Za-z-]+")) throw new IOException();
++                    name = name.toLowerCase(Locale.US);
++                    String value = line.substring(colon + 1).trim();
++                    if (headers.containsKey(name) || (name.equals("authorization") && value.length() > 512)) throw new IOException();
++                    headers.put(name, value);
++                }
++                if (line == null || (protocolVersion.equals("HTTP/1.1") && !headers.containsKey("host"))) throw new IOException();
++                pre.put("method", parts[0]); pre.put("uri", uri);
++            } catch (Exception invalid) {
++                throw new ResponseException(Response.Status.BAD_REQUEST, "invalid_request");
+             }
+         }
+ 
+@@ -901,6 +893,14 @@
+                     read = this.inputStream.read(buf, this.rlen, HTTPSession.BUFSIZE - this.rlen);
+                 }
+ 
++                if (this.splitbyte == 0) throw new ResponseException(Response.Status.BAD_REQUEST, "invalid_request");
++                for (int i = 0; i < this.splitbyte; i++) {
++                    int value = buf[i] & 255;
++                    if ((value < 32 && value != 9 && value != 10 && value != 13) || value >= 127 ||
++                        (value == 10 && (i == 0 || buf[i - 1] != 13)) ||
++                        (value == 13 && (i + 1 >= this.splitbyte || buf[i + 1] != 10)))
++                        throw new ResponseException(Response.Status.BAD_REQUEST, "invalid_request");
++                }
+                 if (this.splitbyte < this.rlen) {
+                     this.inputStream.reset();
+                     this.inputStream.skip(this.splitbyte);
+@@ -914,7 +914,7 @@
+                 }
+ 
+                 // Create a BufferedReader for parsing the header.
+-                BufferedReader hin = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(buf, 0, this.rlen)));
++                BufferedReader hin = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(buf, 0, this.splitbyte), java.nio.charset.StandardCharsets.US_ASCII));
+ 
+                 // Decode the header into parms and header java properties
+                 Map<String, String> pre = new HashMap<String, String>();
+@@ -968,15 +968,15 @@
+                 // exception up the call stack.
+                 throw ste;
+             } catch (SSLException ssle) {
+-                Response resp = newFixedLengthResponse(Response.Status.INTERNAL_ERROR, NanoHTTPD.MIME_PLAINTEXT, "SSL PROTOCOL FAILURE: " + ssle.getMessage());
++                Response resp = newFixedLengthResponse(Response.Status.INTERNAL_ERROR, NanoHTTPD.MIME_PLAINTEXT, "transport_failure");
+                 resp.send(this.outputStream);
+                 safeClose(this.outputStream);
+             } catch (IOException ioe) {
+-                Response resp = newFixedLengthResponse(Response.Status.INTERNAL_ERROR, NanoHTTPD.MIME_PLAINTEXT, "SERVER INTERNAL ERROR: IOException: " + ioe.getMessage());
++                Response resp = newFixedLengthResponse(Response.Status.INTERNAL_ERROR, NanoHTTPD.MIME_PLAINTEXT, "transport_failure");
+                 resp.send(this.outputStream);
+                 safeClose(this.outputStream);
+             } catch (ResponseException re) {
+-                Response resp = newFixedLengthResponse(re.getStatus(), NanoHTTPD.MIME_PLAINTEXT, re.getMessage());
++                Response resp = newFixedLengthResponse(re.getStatus(), NanoHTTPD.MIME_PLAINTEXT, "invalid_request");
+                 resp.send(this.outputStream);
+                 safeClose(this.outputStream);
+             } finally {
+@@ -1475,7 +1475,7 @@
+         private final Map<String, String> header = new HashMap<String, String>() {
+ 
+             public String put(String key, String value) {
+-                lowerCaseHeader.put(key == null ? key : key.toLowerCase(), value);
++                lowerCaseHeader.put(key == null ? key : key.toLowerCase(Locale.ROOT), value);
+                 return super.put(key, value);
+             };
+         };
+@@ -1505,6 +1505,7 @@
+          */
+         protected Response(IStatus status, String mimeType, InputStream data, long totalBytes) {
+             this.status = status;
++            addHeader("Cache-Control", "no-store");
+             this.mimeType = mimeType;
+             if (data == null) {
+                 this.data = new ByteArrayInputStream(new byte[0]);
+@@ -1558,7 +1559,7 @@
+         }
+ 
+         public String getHeader(String name) {
+-            return this.lowerCaseHeader.get(name.toLowerCase());
++            return this.lowerCaseHeader.get(name.toLowerCase(Locale.ROOT));
+         }
+ 
+         public String getMimeType() {
+@@ -1625,7 +1626,7 @@
+                 outputStream.flush();
+                 safeClose(this.data);
+             } catch (IOException ioe) {
+-                NanoHTTPD.LOG.log(Level.SEVERE, "Could not send response to the client", ioe);
++                // PhoneBridge NG: do not log peer input, paths or exception messages.
+             }
+         }
+ 
+@@ -1773,7 +1774,7 @@
+                     final InputStream inputStream = finalAccept.getInputStream();
+                     NanoHTTPD.this.asyncRunner.exec(createClientHandler(finalAccept, inputStream));
+                 } catch (IOException e) {
+-                    NanoHTTPD.LOG.log(Level.FINE, "Communication with the client broken", e);
++                    // PhoneBridge NG: do not log peer input, paths or exception messages.
+                 }
+             } while (!NanoHTTPD.this.myServerSocket.isClosed());
+         }
+@@ -1867,7 +1868,7 @@
+             loadMimeTypes(MIME_TYPES, "META-INF/nanohttpd/default-mimetypes.properties");
+             loadMimeTypes(MIME_TYPES, "META-INF/nanohttpd/mimetypes.properties");
+             if (MIME_TYPES.isEmpty()) {
+-                LOG.log(Level.WARNING, "no mime types found in the classpath! please provide mimetypes.properties");
++                // PhoneBridge NG: do not log peer input, paths or exception messages.
+             }
+         }
+         return MIME_TYPES;
+@@ -1888,14 +1889,14 @@
+                     stream = url.openStream();
+                     properties.load(stream);
+                 } catch (IOException e) {
+-                    LOG.log(Level.SEVERE, "could not load mimetypes from " + url, e);
++                    // PhoneBridge NG: do not log peer input, paths or exception messages.
+                 } finally {
+                     safeClose(stream);
+                 }
+                 result.putAll((Map) properties);
+             }
+         } catch (IOException e) {
+-            LOG.log(Level.INFO, "no mime types available at " + resourceName);
++            // PhoneBridge NG: do not log peer input, paths or exception messages.
+         }
+     };
+ 
+@@ -1964,7 +1965,7 @@
+         int dot = uri.lastIndexOf('.');
+         String mime = null;
+         if (dot >= 0) {
+-            mime = mimeTypes().get(uri.substring(dot + 1).toLowerCase());
++            mime = mimeTypes().get(uri.substring(dot + 1).toLowerCase(Locale.ROOT));
+         }
+         return mime == null ? "application/octet-stream" : mime;
+     }
+@@ -1983,7 +1984,7 @@
+                 }
+             }
+         } catch (IOException e) {
+-            NanoHTTPD.LOG.log(Level.SEVERE, "Could not close", e);
++            // PhoneBridge NG: do not log peer input, paths or exception messages.
+         }
+     }
+ 
+@@ -2126,7 +2127,7 @@
+         try {
+             decoded = URLDecoder.decode(str, "UTF8");
+         } catch (UnsupportedEncodingException ignored) {
+-            NanoHTTPD.LOG.log(Level.WARNING, "Encoding not supported, ignored", ignored);
++            // PhoneBridge NG: do not log peer input, paths or exception messages.
+         }
+         return decoded;
+     }
+@@ -2138,7 +2139,7 @@
+      */
+     @SuppressWarnings("static-method")
+     protected boolean useGzipWhenAccepted(Response r) {
+-        return r.getMimeType() != null && (r.getMimeType().toLowerCase().contains("text/") || r.getMimeType().toLowerCase().contains("/json"));
++        return r.getMimeType() != null && (r.getMimeType().toLowerCase(Locale.ROOT).contains("text/") || r.getMimeType().toLowerCase(Locale.ROOT).contains("/json"));
+     }
+ 
+     public final int getListeningPort() {
+@@ -2202,7 +2203,7 @@
+                 }
+                 bytes = txt.getBytes(contentType.getEncoding());
+             } catch (UnsupportedEncodingException e) {
+-                NanoHTTPD.LOG.log(Level.SEVERE, "encoding problem, responding nothing", e);
++                // PhoneBridge NG: do not log peer input, paths or exception messages.
+                 bytes = new byte[0];
+             }
+             return newFixedLengthResponse(status, contentType.getContentTypeHeader(), new ByteArrayInputStream(bytes), bytes.length);
+@@ -2233,9 +2234,9 @@
+             try {
+                 session.parseBody(files);
+             } catch (IOException ioe) {
+-                return newFixedLengthResponse(Response.Status.INTERNAL_ERROR, NanoHTTPD.MIME_PLAINTEXT, "SERVER INTERNAL ERROR: IOException: " + ioe.getMessage());
++                return newFixedLengthResponse(Response.Status.INTERNAL_ERROR, NanoHTTPD.MIME_PLAINTEXT, "transport_failure");
+             } catch (ResponseException re) {
+-                return newFixedLengthResponse(re.getStatus(), NanoHTTPD.MIME_PLAINTEXT, re.getMessage());
++                return newFixedLengthResponse(re.getStatus(), NanoHTTPD.MIME_PLAINTEXT, "invalid_request");
+             }
+         }
+ 
+@@ -2348,7 +2349,7 @@
+                 this.myThread.join();
+             }
+         } catch (Exception e) {
+-            NanoHTTPD.LOG.log(Level.SEVERE, "Could not stop all connections", e);
++            // PhoneBridge NG: do not log peer input, paths or exception messages.
+         }
+     }
+ 

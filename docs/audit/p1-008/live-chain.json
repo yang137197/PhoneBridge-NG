@@ -1,0 +1,37 @@
+{
+  "recorded_at": "2026-09-21T09:41:05.6685356+08:00",
+  "result": "passed",
+  "device": {
+    "model": "Redmi K40 (M2012K11AC)",
+    "android_release": "16",
+    "api": 36,
+    "package": "org.phonebridge.ng",
+    "version": "0.1.0-dev",
+    "apk_sha256": "3fb1dc2c72949b6a0c8624bad6ea02d579e1a86a7b5f44e1983ee999ef85b3c3",
+    "shared_folder": "Music"
+  },
+  "checks": {
+    "mdns_v3_discovered": true,
+    "pairing_code_entered_locally": true,
+    "phone_approval_completed": true,
+    "pairing_record_redacted_in_ui": true,
+    "readonly_mount": true,
+    "initial_drive": "P:",
+    "root_item_count": 2,
+    "test_folder_item_count": 4,
+    "sample": {
+      "relative_path": "P0-010-84926bfb5cd4/phone-origin.txt",
+      "bytes": 49,
+      "sha256": "7374185329B3A98D96E953D8ED38BFE1C528CA5DD6B8298BDEAD468F65C5251E"
+    },
+    "manual_unmount_removed_drive": true,
+    "saved_pairing_reconnected": true,
+    "drive_letter_regression": "P: -> unmount -> P:",
+    "single_rclone_process": true,
+    "window_close_removed_drive": true,
+    "window_close_stopped_rclone": true,
+    "desktop_process_count_after_close": 0,
+    "phone_service_stopped_after_test": true
+  },
+  "secrets": "No pairing code, token, private key or authorization header recorded."
+}

@@ -1,0 +1,132 @@
+{
+  "target": "phone36",
+  "tests": [
+    {
+      "test": "preflight",
+      "result": "PASS",
+      "apk_sha256": "a4383ddac27dccc3f2cc46704f1c389c8ad961d1d8e8205894d8cc8aebb2b88a",
+      "shared_storage_writes": false
+    },
+    {
+      "test": "explicit_foreground_test_launch",
+      "result": "PASS",
+      "host": "legacy",
+      "background_start_result": 102,
+      "system_policy_changed": false
+    },
+    {
+      "test": "legacy_identity_stops_sharing",
+      "result": "PASS",
+      "plaintext_http_response_bytes": 0,
+      "foreground_service": false
+    },
+    {
+      "test": "explicit_experiment_identity_migration",
+      "result": "PASS",
+      "retired_pkcs12_sha256": "9d7608fac740a7309d7ee643a34e55d751b385e146dbbc219477dc80765375de",
+      "reset_formal_pairing": false,
+      "removed_only": "files/phonebridge_keystore.p12"
+    },
+    {
+      "test": "explicit_foreground_test_launch",
+      "result": "PASS",
+      "host": "trusted",
+      "background_start_result": 102,
+      "system_policy_changed": false
+    },
+    {
+      "test": "rclone_correct_identity_loopback",
+      "result": "PASS",
+      "exit_code": 0,
+      "tls_verification_disabled": false,
+      "error": null,
+      "url": "https://127.0.0.1:18279/"
+    },
+    {
+      "test": "stable_identity_metadata",
+      "result": "PASS",
+      "identity_certificate_sha256": "65b52a178912e36cc73dc820f4029e85efa75a3427c2a341902326a8d2480903",
+      "verified_status_tls_version": "TLSv1.3"
+    },
+    {
+      "test": "rclone_wrong_identity_rejected",
+      "result": "PASS",
+      "exit_code": 1,
+      "tls_verification_disabled": false,
+      "error": "2026/09/19 13:55:45 ERROR : error listing: couldn't list files: Propfind \"https://127.0.0.1:18279/\": tls: failed to verify certificate: x509: certificate signed by unknown authority",
+      "url": "https://127.0.0.1:18279/"
+    },
+    {
+      "test": "rclone_wrong_address_rejected",
+      "result": "PASS",
+      "exit_code": 1,
+      "tls_verification_disabled": false,
+      "error": "2026/09/19 13:55:46 ERROR : error listing: couldn't list files: Propfind \"https://localhost:18279/\": tls: failed to verify certificate: x509: certificate is not valid for any names, but wanted to match localhost",
+      "url": "https://localhost:18279/"
+    },
+    {
+      "test": "negative_tls_sent_no_http_requests",
+      "result": "PASS",
+      "request_count_difference": 1,
+      "expected_status_probe_requests": 1
+    },
+    {
+      "test": "rclone_correct_identity_real_lan",
+      "result": "PASS",
+      "exit_code": 0,
+      "tls_verification_disabled": false,
+      "error": null,
+      "url": "https://192.168.100.197:8273/"
+    },
+    {
+      "test": "explicit_foreground_test_launch",
+      "result": "PASS",
+      "host": "restart",
+      "background_start_result": 102,
+      "system_policy_changed": false
+    },
+    {
+      "test": "process_restart_preserves_paired_identity",
+      "result": "PASS",
+      "exit_code": 0,
+      "tls_verification_disabled": false,
+      "error": null,
+      "url": "https://127.0.0.1:18279/"
+    },
+    {
+      "test": "explicit_foreground_test_launch",
+      "result": "PASS",
+      "host": "corrupt",
+      "background_start_result": 102,
+      "system_policy_changed": false
+    },
+    {
+      "test": "corrupt_identity_stops_sharing",
+      "result": "PASS",
+      "plaintext_http_response_bytes": 0,
+      "foreground_service": false
+    },
+    {
+      "test": "explicit_foreground_test_launch",
+      "result": "PASS",
+      "host": "restore",
+      "background_start_result": 102,
+      "system_policy_changed": false
+    },
+    {
+      "test": "same_identity_recovers_after_public_metadata_restore",
+      "result": "PASS",
+      "exit_code": 0,
+      "tls_verification_disabled": false,
+      "error": null,
+      "url": "https://127.0.0.1:18279/"
+    },
+    {
+      "test": "cleanup",
+      "result": "PASS",
+      "sharing_stopped": true,
+      "adb_forward_removed": true,
+      "shared_storage_writes": false
+    }
+  ]
+}

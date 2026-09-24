@@ -88,6 +88,7 @@ P0-001 的 107 个通过测试、1 个跳过用例及 7 项离线问题复现仅
 | [AGENTS.md](AGENTS.md) | 用户原始项目约束，每次开始工作先读 |
 | [PRODUCT.md](docs/PRODUCT.md) | 用户、目标、非目标、MVP 与验收标准 |
 | [V0.2_PLAN.md](docs/V0.2_PLAN.md) | 下一版本的 UI、图标、语言、多设备范围、预期效果和开发顺序 |
+| [HANDOFF_V0.2.md](docs/HANDOFF_V0.2.md) | 新对话接续 v0.2.0 的当前状态、固定边界、唯一下一任务和开场提示词 |
 | [INSTALL_LOCAL.txt](docs/INSTALL_LOCAL.txt) | 第三方本地安装、首次配对和日常使用的最短步骤 |
 | [ARCHITECTURE.md](ARCHITECTURE.md) | 固定技术路线、职责、信任边界及未定方案 |
 | [DECISIONS.md](DECISIONS.md) | 已确定决策及未决问题，避免反复换方案 |

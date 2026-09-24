@@ -15,7 +15,7 @@
 - Windows 实际窗口依次打开并回读设备首页、添加手机、设备设置、常规设置、高级排障和关于六页。蓝色主按钮使用白字，禁用状态和危险按钮均按冻结变量呈现；未点击连接、挂载、删除、撤销或导出。
 - Windows 已把 A“桥接文件”导出为多尺寸 ICO 和 PNG，并用于 EXE、窗口及页内品牌图标；发布后的 EXE 图标和实际窗口均已回读。
 - Android 正式验证脚本共 123 个 Gradle 任务执行成功，覆盖 Debug/Release、测试 APK、单元测试和 Debug/Release lint；`uiPreview` assemble/lint 另行通过。
-- Samsung `R5CW429DKDN` 已同时保留正式 `org.phonebridge.ng` v0.1.0 和验收 `org.phonebridge.ng.uipreview` v0.2.0-ui-preview。启动器已显示 A 图标；首页、设置菜单和语言子页均已截图与 UI hierarchy 回读。
+- Samsung `R5CW429DKDN` 已安装验收 `org.phonebridge.ng.uipreview` v0.2.0-ui-preview。最终 `pm list packages -u` 只确认验收包与 `org.phonebridge.ng.test`，未检测到正式 `org.phonebridge.ng`，故不宣称当前仍与 v0.1.0 并存。验收包启动器已显示 A 图标；首页、设置菜单和语言子页均已截图与 UI hierarchy 回读。
 - Android 设置和返回均使用 48dp 图标按钮；真机层级边界为 135×135 px。设置页已改为可扩展菜单，语言选择位于独立子页。
 - `uiPreview` 资源明确允许截图，便于本地视觉验收；正式 Debug/Release 资源仍禁止截图并继续设置 `FLAG_SECURE`，没有放宽正式应用安全边界。
 
@@ -23,6 +23,7 @@
 
 - 用户尚未复验 r2 实际视觉；因此 P2-003 保持 active。
 - Android 配对会话和已有电脑详情没有在真实状态下打开；正式共享和配对数据未为视觉截图而改变。
+- 本轮未验证验收包与正式 v0.1.0 当前并存；独立应用 ID 的构建边界已确认，但设备最终回读时正式包不存在。
 - Windows English 切换尚未接线；Android 通知/前台服务运行期间的即时语言刷新、两端全量错误/对话框/托盘文案、无障碍、字体放大、横屏、高对比度和不同 DPI 未验证。
 - 多设备核心没有开始；多个设备卡片仍由现有发现/保存记录聚合产生，不能证明双设备并行连接。
 

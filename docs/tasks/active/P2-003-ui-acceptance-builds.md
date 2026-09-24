@@ -40,7 +40,7 @@
 - Windows 完整 `scripts/Verify-Windows.ps1`：Release 构建 0 警告/0 错误，280/280 通过；最终样式修正后 Desktop 51/51 通过。
 - Windows 六个既定页面均由实际 WPF 窗口打开并以 `PrintWindow` 回读，未触发连接、挂载或危险操作。
 - Android `scripts/Verify-AndroidApp.ps1`：123 个任务执行成功，Debug/Release、测试 APK、单元测试和 Debug/Release lint 通过。
-- Android `assembleUiPreview lintUiPreview` 通过；Samsung 上并行安装后，中文首页、中文/英文设置页、切回中文及冷启动保持均由 UI hierarchy 回读确认。
+- Android `assembleUiPreview lintUiPreview` 通过；Samsung 上以独立包名安装后，中文首页、中文/英文设置页、切回中文及冷启动保持均由 UI hierarchy 回读确认；最终包列表未检测到正式 `org.phonebridge.ng`，本轮不宣称当前并存。
 - r2 在 Samsung 上实际截图首页、设置菜单和语言子页；启动器 A 图标已回读，设置/返回按钮的真机边界均为 135×135 px（48dp）。
 
 ## 验收结果

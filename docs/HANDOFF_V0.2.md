@@ -10,7 +10,7 @@
 - v0.2.0 需求计划基线：`18b5e0778d4fd03fad95a0a4602cea36dcc83f28`。
 - P2-002 静态设计 r1 已由用户全部确认并冻结；视觉方向、Windows 分层/按钮命名、Android 页面层级和图标 A“桥接文件”均已确定。
 - P2-003 r2 已按用户首轮反馈更新：两端接入 A 应用图标，Android 设置/返回改为 48dp 图标按钮，设置改为独立菜单并由语言项进入子页；当前保持 active，等待用户复验，多设备核心尚未开始。
-- Windows 六个既定页面及 A 图标已实际回读；Android 验收包已在 Samsung 以独立包名并行安装，启动器 A 图标、首页、设置菜单、语言子页、中英文切换及冷启动保持已回读。仅 `uiPreview` 允许截图，正式 build 继续使用 `FLAG_SECURE`。制品和散列见 `docs/UI_ACCEPTANCE.md`。
+- Windows 六个既定页面及 A 图标已实际回读；Android 验收包已在 Samsung 以独立包名安装，启动器 A 图标、首页、设置菜单、语言子页、中英文切换及冷启动保持已回读。最终包列表未检测到正式 `org.phonebridge.ng`，不宣称当前与 v0.1.0 并存。仅 `uiPreview` 允许截图，正式 build 继续使用 `FLAG_SECURE`。制品和散列见 `docs/UI_ACCEPTANCE.md`。
 - 开始新任务前必须重新检查 `git status --short --branch`、`git log -5 --oneline --decorate` 和远端状态，不从本交接推断后来发生的变化。
 
 ## 2. 新对话必读顺序

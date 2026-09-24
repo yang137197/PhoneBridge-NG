@@ -20,7 +20,7 @@
 - 显示名：`PhoneBridge NG · UI 验收`
 - 版本：`0.2.0-ui-preview`，versionCode 2
 
-验收包已在 Samsung 上与正式 `org.phonebridge.ng` v0.1.0 并行安装。A“桥接文件”已用于启动器图标；设置与返回采用 48dp 图标按钮；“设置”现在是独立菜单，语言位于其子页。`uiPreview` 专用于视觉验收并允许截图，正式 Debug/Release 仍保留 `FLAG_SECURE`。该包使用本地调试签名且有独立数据，不是升级包；只做 UI 验收时不要与正式应用同时开始共享。
+验收包已在 Samsung 上安装。最终包列表确认 `org.phonebridge.ng.uipreview` 与测试包存在，未检测到正式 `org.phonebridge.ng`，因此本轮不宣称当前仍与 v0.1.0 并存。A“桥接文件”已用于验收包启动器图标；设置与返回采用 48dp 图标按钮；“设置”现在是独立菜单，语言位于其子页。`uiPreview` 专用于视觉验收并允许截图，正式 Debug/Release 仍保留 `FLAG_SECURE`。该包使用本地调试签名且有独立数据，不是升级包；若另行安装正式应用，只做 UI 验收时不要与其同时开始共享。
 
 ## 反馈范围
 

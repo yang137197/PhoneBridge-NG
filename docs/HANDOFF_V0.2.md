@@ -8,7 +8,7 @@
 - 本地目录：`C:\Users\yang1\Documents\ChatGPT\samsung link windows\PhoneBridge-NG`
 - 已发布版本：`v0.1.0`，标签提交 `e74e3a2403d3485883e24a723826c786973eb29e`。
 - v0.2.0 需求计划基线：`18b5e0778d4fd03fad95a0a4602cea36dcc83f28`。
-- P2-002 已产出静态 r1 设计候选，入口为 `docs/design/v0.2/README.md`；用户已明确选择图标 A“桥接文件”，其余内容尚未明确确认，任务保持 active。
+- P2-002 静态设计 r1 已由用户全部确认并冻结；视觉方向、Windows 分层/按钮命名、Android 页面层级和图标 A“桥接文件”均已确定。
 - v0.2.0 仍未修改 Windows/Android 业务代码、资源或构建配置，也没有生成候选安装包或 APK。
 - 开始新任务前必须重新检查 `git status --short --branch`、`git log -5 --oneline --decorate` 和远端状态，不从本交接推断后来发生的变化。
 
@@ -22,7 +22,7 @@
 6. `docs/PRODUCT.md` 中的“v0.2.0 已确认需求”
 7. `ARCHITECTURE.md` 与 `DECISIONS.md`
 8. `docs/tasks/completed/P2-001-v0.2-requirements-and-ui-plan.md`
-9. `docs/design/v0.2/README.md` 与 `docs/tasks/active/P2-002-ui-wireframes-and-icon-concepts.md`
+9. `docs/design/v0.2/README.md` 与 `docs/tasks/completed/P2-002-ui-wireframes-and-icon-concepts.md`
 
 涉及实现时再读对应 Windows/Android 源码和安全、配对、测试规范，不在任务开始时无差别展开所有历史验收文件。
 
@@ -79,27 +79,27 @@
 
 只增加一个轻量会话协调器管理会话集合、盘符冲突、应用退出和托盘汇总。一个设备的取消、断开或失败不得停止另一设备。第一条真实通过线是 Samsung 与 Redmi 在同一 LAN 同时挂载两个盘符，各自可打开和双向复制；断开其中一个后另一个继续可用。
 
-## 8. 唯一下一任务：确认 P2-002 其余冻结候选
+## 8. 唯一下一任务：P2-003
 
 ### 目标
 
-用户审阅已提交的 Windows/Android 线框、控件状态、视觉变量和双语关键文案，并明确确认或指出需要调整的具体项。图标 A 已选定。本任务不修改业务代码，不开始多设备核心重构。
+建立按 `device_id` 隔离的 Windows 多会话核心，并在真实局域网完成 Samsung 与 Redmi 同时挂载两个独立盘符的最小链路。本任务不同时实现 P2-002 的新 UI。
 
-### 已交付
+### 必须交付
 
-- `docs/design/v0.2/` 中的 Windows 六页、Android 四页线框和两张视觉方向稿。
-- Windows 五态设备卡片矩阵、通用控件状态和两端视觉变量。
-- 简体中文主稿与 English 关键路径文案。
-- A“桥接文件”、B“双端连接”、C“文件入口”三个原创 SVG 概念及 32/16 px 简化说明；用户已明确选择 A，B/C 仅保留为比较记录。
+- 每台设备独立拥有盘符、rclone 进程、RC 端口、缓存目录、取消令牌、健康检查、重连状态和日志上下文。
+- 一个轻量会话协调器管理会话集合、盘符冲突、应用退出和托盘汇总；不复制配对、TLS、挂载或安全卸载实现。
+- 一个设备的连接、取消、断开或失败不得改变另一设备会话。
+- 只增加完成真实双设备最小链路所需的入口和测试，不实现新视觉界面、语言设置或正式图标资产。
 
 ### 通过条件
 
-用户确认首次配对、日常连接、打开文件、断开、设置、排障和手机共享流程，并接受视觉方向、按钮命名与设置层级。图标方向已选 A；其余内容没有明确确认前不得开始 P2-003 多设备代码。
+Samsung 与 Redmi 在同一真实局域网同时连接为两个不同盘符；两个盘符都能打开、读取并各完成一次双向合成文件复制。断开或停止其中一台后，另一台仍可浏览和传输；进程、缓存、凭据和日志不能串设备。只运行与本次多会话改动直接相关的测试，不重复无关的大文件、睡眠或重启矩阵。
 
 ## 9. 后续顺序
 
-1. P2-002：用户确认图标 A 以外的视觉与交互冻结候选。
-2. P2-003：按设备隔离的多会话核心和真实双设备最小链路。
+1. P2-002：已完成并经用户确认。
+2. P2-003：按设备隔离的多会话核心和真实双设备最小链路（唯一下一任务）。
 3. P2-004：Windows 新 UI、操作精简和语言设置。
 4. P2-005：Android 新 UI 和语言设置。
 5. P2-006：正式图标、升级验证和 v0.2.0 交付刷新。
@@ -116,7 +116,7 @@
 
 先读取 AGENTS.md、DEVELOPMENT_RULES.md、README.md、docs/HANDOFF_V0.2.md、docs/V0.2_PLAN.md、docs/PRODUCT.md、ARCHITECTURE.md、DECISIONS.md，并核对当前 main、git status、最近提交和远端状态。以仓库当前事实为准，不沿用对话中的旧状态。
 
-v0.1.0 已发布。v0.2.0 已完成需求计划；P2-002 静态 r1 设计候选已写入 docs/design/v0.2/，用户已选择图标 A“桥接文件”，仍未修改业务代码。已确认范围：重构 Windows/Android UI、重做两端图标、两端首次默认简体中文并提供 English 设置、精简 Windows 操作、支持一台 Windows 同时连接至少两台 Android 手机。保持现有 Kotlin/WPF、HTTPS/WebDAV、rclone、WinFsp、mDNS、配对与安全存储路线。
+v0.1.0 已发布。v0.2.0 已完成需求计划；P2-002 静态设计 r1 已由用户全部确认并冻结，图标采用 A“桥接文件”，仍未修改业务代码。已确认范围：重构 Windows/Android UI、重做两端图标、两端首次默认简体中文并提供 English 设置、精简 Windows 操作、支持一台 Windows 同时连接至少两台 Android 手机。保持现有 Kotlin/WPF、HTTPS/WebDAV、rclone、WinFsp、mDNS、配对与安全存储路线。
 
-本轮只审阅并确认 P2-002 其余 r1 内容：核对 Windows/Android 线框、控件状态、视觉变量和关键中英文文案。图标 A“桥接文件”已经选定。不要修改业务代码，不开始 P2-003 多设备重构，不增加多主题，不运行无关测试。确认前唯一下一任务仍是 P2-002 用户确认。
+本轮只执行 P2-003：把当前全局唯一的 Windows `ConnectionClient`/`MountManager` 所有权重构为按 `device_id` 隔离的多会话核心，并完成 Samsung 与 Redmi 同时挂载两个独立盘符的真实最小链路。不要同时实现 Windows/Android 新 UI、语言设置或正式图标，不重复无关的大文件、睡眠或重启测试。完成后把状态、未验证项和唯一下一任务写入仓库并提交推送。
 ```

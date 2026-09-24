@@ -223,8 +223,7 @@ public partial class MainWindow : Window
         Pair.IsEnabled = !busy && !storeUnavailable && idle && Code.SecurePassword.Length == 8 && row?.Record is null && row?.Candidate?.Protocol == CandidateProtocol.PairedV3 && row.Candidate.Pairing is not null;
         Connect.IsEnabled = !busy && !storeUnavailable && idle &&
             row?.Record?.State is (PairingRecordState.Pending or PairingRecordState.Active) && Endpoints.SelectedItem is DeviceEndpoint;
-        Revoke.IsEnabled = !busy && !storeUnavailable && row?.Record is not null;
-        Forget.IsEnabled = !busy && !storeUnavailable && row?.Record?.State == PairingRecordState.RevocationPending;
+        RemovePhone.IsEnabled = !busy && !storeUnavailable && row?.Record is not null;
         DeleteConfirmed.IsEnabled = !busy && !storeUnavailable && row?.Record is { State: PairingRecordState.Active, Mode: not AccessMode.ReadOnly } && Endpoints.SelectedItem is DeviceEndpoint;
         Open.IsEnabled = !busy && mounted;
         Unmount.IsEnabled = !busy && !idle;
@@ -498,18 +497,16 @@ public partial class MainWindow : Window
     }
     private void CancelClick(object sender, RoutedEventArgs e) => operationCancellation?.Cancel();
     private void UnmountClick(object sender, RoutedEventArgs e) { reconnect.Suppress(); Start(DiagnosticEventName.MountStateChanged, async _ => { await client.StopAsync(); }); }
-    private void RevokeClick(object sender, RoutedEventArgs e)
+    private void RemovePhoneClick(object sender, RoutedEventArgs e)
     {
         if (Selected?.Record is not { } record || MessageBox.Show(this, T("RevokeConfirm"), "PhoneBridge NG", MessageBoxButton.OKCancel, MessageBoxImage.Question) != MessageBoxResult.OK) return;
         reconnect.Suppress();
-        var endpoint = Endpoints.SelectedItem as DeviceEndpoint;
-        Start(DiagnosticEventName.AuthenticationCompleted, async token => { if (!await client.RevokeAsync(record.DeviceId, endpoint, token)) throw new ConnectionException("revocation-unconfirmed"); });
-    }
-    private void ForgetClick(object sender, RoutedEventArgs e)
-    {
-        if (Selected?.Record is not { } record || MessageBox.Show(this, T("ForgetConfirm"), "PhoneBridge NG", MessageBoxButton.OKCancel, MessageBoxImage.Warning) != MessageBoxResult.OK) return;
-        reconnect.Suppress();
-        Start(DiagnosticEventName.AuthenticationCompleted, async _ => { await client.ForgetLocallyAsync(record.DeviceId); });
+        Start(DiagnosticEventName.AuthenticationCompleted, async _ =>
+        {
+            await client.RemoveLocallyAsync(record.DeviceId);
+            manualEndpoints.Clear(record.DeviceId);
+            ShowMainPage(DevicesPage, DevicesNavigation);
+        });
     }
     private void DeleteClick(object sender, RoutedEventArgs e)
     {

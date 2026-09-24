@@ -59,6 +59,7 @@ class SharingService : Service() {
         fun closePairing() { foregroundGeneration.incrementAndGet(); engine?.pairing?.cancelWindow() }
         fun decide(attempt: String, approve: Boolean) = submit { engine?.pairing?.decide(attempt, approve) ?: throw ApiFailure(409, "conflict") }
         fun revoke(client: String) = submit { engine?.revoke(client) ?: throw ApiFailure(409, "conflict") }
+        fun remove(client: String) = submit { engine?.remove(client) ?: throw ApiFailure(409, "conflict") }
         fun updateMode(client: String, mode: AccessMode) = submit { engine?.updateMode(client, mode) ?: throw ApiFailure(409, "conflict") }
     }
     private val binder = LocalBinder()

@@ -62,7 +62,7 @@
 | 导出诊断包 | Export diagnostics |
 | 诊断包不会自动上传。 | The diagnostic bundle is not uploaded automatically. |
 | 移除此手机 | Remove this phone |
-| 仅忘记本机 | Forget locally only |
+| 此操作会删除这台电脑保存的配对信息并立即断开连接。不会联系手机；手机可能仍保留旧授权。再次连接时必须重新配对。 | This deletes the pairing information saved on this computer and disconnects immediately. It does not contact the phone; the phone may retain the old authorization. You must pair again to reconnect. |
 | 授权一次删除 | Authorize one deletion |
 
 ## 4. Android 首页与配对
@@ -95,9 +95,9 @@
 | 安全模式（允许新建，不覆盖已有文件） | Safe mode (create new items, never replace existing files) |
 | 完全读写（允许覆盖和删除） | Full read/write (allow replacement and deletion) |
 | 更改后，Windows 需要重新连接。 | Windows must reconnect after a change. |
-| 撤销访问 | Revoke access |
+| 移除此电脑 | Remove this computer |
+| 此操作会删除手机保存的配对信息并立即断开连接。不会联系电脑；再次连接时必须重新配对。 | This deletes the pairing information saved on the phone and disconnects immediately. It does not contact the computer; you must pair again to reconnect. |
 | 设置 | Settings |
 | 语言 | Language |
 
 实现时所有可见文本继续进入既有 `zh-CN`/`en-US` 资源；本表不替代完整资源清单。
-

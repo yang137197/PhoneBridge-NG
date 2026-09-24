@@ -67,6 +67,18 @@ class PairingStore private constructor(inputContext: Context, caSha256: String, 
             db.snapshot()
         } }
     }
+    fun remove(clientId: String, expectedRevision: Long): StoreSnapshot {
+        if (!Rules.hex(clientId, 32)) throw StoreException(StoreError.INVALID_INPUT)
+        return transaction { files -> read(files).use { db ->
+            revision(db, expectedRevision)
+            val index = db.entries.indexOfFirst { it.client.clientId == clientId }
+            if (index < 0) throw StoreException(StoreError.UNAUTHORIZED)
+            val removed = db.entries.removeAt(index)
+            try {
+                advance(db); commit(files, db); db.snapshot()
+            } finally { removed.verifier.fill(0) }
+        } }
+    }
     fun updateMode(clientId: String, mode: AccessMode, expectedRevision: Long): StoreSnapshot = transaction { files -> read(files).use { db ->
         revision(db, expectedRevision)
         val index = db.entries.indexOfFirst { it.client.clientId == clientId && it.client.state == ClientState.ACTIVE }

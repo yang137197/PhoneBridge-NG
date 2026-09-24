@@ -36,7 +36,6 @@
   <data name="Open" xml:space="preserve"><value>Open drive</value></data>
   <data name="Unmount" xml:space="preserve"><value>Unmount</value></data>
   <data name="Revoke" xml:space="preserve"><value>Revoke pairing</value></data>
-  <data name="Forget" xml:space="preserve"><value>Forget locally…</value></data>
   <data name="Ready" xml:space="preserve"><value>Select a phone to begin.</value></data>
   <data name="Completed" xml:space="preserve"><value>Operation completed.</value></data>
   <data name="OperationCancelled" xml:space="preserve"><value>Cancelled. Any unconfirmed remote authorization remains disabled locally; check the saved pairing status.</value></data>
@@ -52,8 +51,7 @@
   <data name="Offline" xml:space="preserve"><value>Offline</value></data>
   <data name="InvalidCode" xml:space="preserve"><value>Enter the 8 digits displayed on the phone.</value></data>
   <data name="OpenFailed" xml:space="preserve"><value>Could not open File Explorer. The drive may still be mounted.</value></data>
-  <data name="RevokeConfirm" xml:space="preserve"><value>Disable this pairing, unmount its drive, and request revocation on the phone? If the phone is offline, a disabled record will remain for retry.</value></data>
-  <data name="ForgetConfirm" xml:space="preserve"><value>This removes only the local record. The phone may still authorize this computer. Revoke this computer on the phone before pairing again. Continue?</value></data>
+  <data name="RevokeConfirm" xml:space="preserve"><value>Disconnect this phone and delete its saved pairing credential and temporary address from Windows. The phone is not contacted and may retain the old authorization. Connecting again requires pairing as a new device. Continue?</value></data>
   <data name="Closing" xml:space="preserve"><value>Closing: cancelling work and unmounting the owned drive…</value></data>
   <data name="TrayOpen" xml:space="preserve"><value>Open PhoneBridge NG</value></data>
   <data name="TrayExit" xml:space="preserve"><value>Exit</value></data>
@@ -148,9 +146,8 @@
   <data name="SafetyOperations" xml:space="preserve"><value>Safety operations</value></data>
   <data name="AuthorizeDeletion" xml:space="preserve"><value>Authorize one deletion</value></data>
   <data name="RemoveAndAdvanced" xml:space="preserve"><value>Remove and advanced troubleshooting</value></data>
-  <data name="RemovePhoneHelp" xml:space="preserve"><value>Normal removal disables this local pairing and requests revocation on the phone.</value></data>
+  <data name="RemovePhoneHelp" xml:space="preserve"><value>Delete this phone's pairing information from Windows without asking the phone. Connecting again requires a new pairing.</value></data>
   <data name="RemovePhone" xml:space="preserve"><value>Remove this phone</value></data>
-  <data name="ForgetLocalOnly" xml:space="preserve"><value>Forget locally only…</value></data>
   <data name="General" xml:space="preserve"><value>General</value></data>
   <data name="AdvancedTroubleshooting" xml:space="preserve"><value>Advanced troubleshooting</value></data>
   <data name="Language" xml:space="preserve"><value>Language</value></data>

@@ -12,7 +12,7 @@
 
 状态 API 不会发起网络连接，也不能证明调用方已经验证 HTTPS 或完成远端撤销。已取得的内存副本不能远程收回；服务端逐请求校验和宿主会话停止由 Android/Connection 宿主负责。
 
-P1-008 增加 `List()` 的有界完整性校验枚举；任何损坏记录都会报错，不能从列表中悄悄隐藏。`RemoveAfterVerifiedRevocation` 仅在 RevocationPending/client/revision 匹配时删除，调用方必须先经保存 CA 的严格 HTTPS 验证远端撤销及 token 拒绝。`ForgetLocally` 只用于用户明确选择“仅忘记本机”的路径，必须说明远端可能仍有授权；它也要求本地先禁用并停止挂载。两者均通过验证后的独占文件句柄删除精确记录，不按目录批量清理。
+P1-008 增加 `List()` 的有界完整性校验枚举；任何损坏记录都会报错，不能从列表中悄悄隐藏。`RemoveAfterVerifiedRevocation` 仅在 RevocationPending/client/revision 匹配时删除，调用方必须先经保存 CA 的严格 HTTPS 验证远端撤销及 token 拒绝。P2-004 的 `RemoveLocally` 用于用户明确的本端移除：宿主先禁用记录并停止挂载，再删除本机精确记录；它不发网络请求，远端授权可能仍存在，界面不能宣称远端也已删除。两条路径均通过验证后的独占文件句柄删除精确记录，不按目录批量清理。
 
 ## 文件与失败边界
 

@@ -6,7 +6,7 @@
 
 宿主仅在**本次新建 CA 身份**的事务中调用 `PairingStore.initializeForNewIdentity(context, caSha256)`。模块检查 key/记录都不存在，但不拥有 CA 私钥，也不能证明传入身份确为新建。既有身份一律 `openExisting`；加载失败不能回退初始化、替换密钥或抹掉记录。需要 credential-protected Context 与开机后首次解锁；之后息屏无需每次认证。
 
-`snapshot` 返回不可修改的元数据与正修订号。手机明确批准后调用 `approve(clientId, clientName, token, expectedRevision)`，默认 SAFE；持久提交和回读成功后才能承认批准。`revoke` 保留 Revoked 记录，禁止同 client_id 再批准；`updateMode` 只更新 Active。最多 16 Active / 128 总记录；满时明确返回 CAPACITY，不删除撤销历史。修订号冲突需重新加载并重新判断意图，不能盲目重放批准。
+`snapshot` 返回不可修改的元数据与正修订号。手机明确批准后调用 `approve(clientId, clientName, token, expectedRevision)`，默认 SAFE；持久提交和回读成功后才能承认批准。`revoke` 用于远端 self-revocation，保留 Revoked 记录并禁止同 client_id 再批准；P2-004 新增的 `remove` 只用于手机用户明确的本地移除，会在 revision 校验后从库中精确删除整条记录，允许以后作为全新配对重新批准。`updateMode` 只更新 Active。最多 16 Active / 128 总记录；满时明确返回 CAPACITY，不自动删除记录。修订号冲突需重新加载并重新判断意图，不能盲目重放批准。
 
 每个请求调用 `authenticate`；返回值只是该请求的授权快照。文件写入提交使用 `withAuthorizedCommit` 的短回调，在撤销共用锁内重新验证并检查当前模式。回调不能执行长网络传输、嵌套存储操作或等待 UI；模式执行、停止共享、活动流取消由后续宿主完成。存储成功不等于全链路撤销完成。所有方法同步，放在受控后台工作者上。
 

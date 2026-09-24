@@ -163,7 +163,7 @@ P1-005 复核修正（先于代码）：全 solution 并行回归复现原生打
 
 目录 0700/文件 0600、owner UID、普通类型与 nlink 检查、O_NOFOLLOW/CLOEXEC；同进程 gate + 文件锁串行事务。临时文件仅写密文，FileDescriptor.sync/Os.rename/目录 fsync 后回读；不使用会吞掉 sync 失败的便利提交路径。写失败或库损坏使该存储在本进程中的所有实例禁用，重启后以持久记录为准，不宣称失败撤销已持久化。每次授权重新读取；提供短小授权提交回调，在同一锁内重新校验并执行提交，供后续 WebDAV 共用撤销屏障；不在锁内传输网络流。
 
-只有批准方法可以写 Active；重复 client_id 不覆盖，修改/撤销校验修订号。HTTP 窗口、批准/取消竞争、活动流取消和停止共享由后续授权层集成，本模块不把存储成功等同全部远端撤销完成。应用设置云/D2D 备份排除，仍须实际 OEM 验证。Keystore 不防已控制同 UID 进程/Root 或旧有效密文回放；KeyInfo 如实报告，不推断 StrongBox。
+只有批准方法可以写 Active；重复 client_id 不覆盖，修改/撤销/本地删除均校验修订号。远端 self-revocation 保留 Revoked 记录，手机用户明确“移除此电脑”则从加密库精确删除整条记录；两者都与授权提交共用锁，旧 token 随即失效。HTTP 窗口、批准/取消竞争、活动流取消和停止共享由后续授权层集成。应用设置云/D2D 备份排除，仍须实际 OEM 验证。Keystore 不防已控制同 UID 进程/Root 或旧有效密文回放；KeyInfo 如实报告，不推断 StrongBox。
 
 来源：[AGP 9.1.1](https://developer.android.com/build/releases/agp-9-1-0-release-notes)、[Keystore](https://developer.android.com/privacy-and-security/keystore)、[随机 IV 要求](https://developer.android.com/reference/android/security/keystore/KeyGenParameterSpec.Builder#setRandomizedEncryptionRequired(boolean))、[noBackup](https://developer.android.com/identity/data/autobackup)。
 
@@ -175,7 +175,7 @@ P1-006 复核修正：公开 Android SDK 不提供 O_DIRECTORY / unlink；使用
 
 正式工程放在 android/app，独立 applicationId=org.phonebridge.ng，不覆盖 com.phonebridge 实验 APK。AGP 9.1.1 内置 Kotlin 2.2.10 统一编译 App；以 sourceSets 直接引用已有 pairing-core/credentials-store 源文件，避免 2.2 编译器读取 2.4 metadata，不复制/分叉两模块逻辑。重新在 Android 编译和运行这些相同源文件；旧 JVM 2.4 与独立存储构建保留。固定 BC prov/pkix/util 1.86，TLS 证书和 PAKE 统一同版本；不更改旧 APK。版本兼容依实际 D8/设备测试证明。[AGP Kotlin 依赖](https://developer.android.com/build/releases/agp-9-1-0-release-notes)、[sourceSets 规则](https://developer.android.com/build/migrate-to-built-in-kotlin)
 
-从固定 P0-009 副本导入证书、TLS、SharedPath/SharedStorage、Range/XML/RequestBody 辅助代码，保留许可和逐文件来源。宿主只在本次新建 TLS 身份时初始化配对库；已有身份加载失败停止，不退回密码、不新建空授权库。Activity 通过非导出 Service 的进程内 Binder 控制共享/配对/本地批准；FLAG_SECURE、前台离开即关闭窗口，所有 UI 文案使用中英文资源。网络/磁盘/密码运算均离开 UI 线程。共享服务类型沿用 connectedDevice，独立通知、明确开始/停止。
+从固定 P0-009 副本导入证书、TLS、SharedPath/SharedStorage、Range/XML/RequestBody 辅助代码，保留许可和逐文件来源。宿主只在本次新建 TLS 身份时初始化配对库；已有身份加载失败停止，不退回密码、不新建空授权库。Activity 通过非导出 Service 的进程内 Binder 控制共享/配对/本地批准；P2-004 起不设置应用级截屏阻挡，所有 UI 文案使用中英文资源。网络/磁盘/密码运算均离开 UI 线程。共享服务类型沿用 connectedDevice，独立通知、明确开始/停止。
 
 配对窗口依 elapsedRealtime 120 秒、5 次已接受连接、单握手工作者、30 秒总握手/5 秒帧截止和10秒重开间隔；调度器以关闭所属 socket 保证写阻塞也可取消。8 帧复用既有核心；Windows 发完第7帧后 half-close 输出，Android 检查 EOF 后发送第8帧并关闭 TCP，尾数据失败。确认后立刻关闭配对监听/广告，仅留到原期限的 grant SHA-256 与单次请求状态。未批准 token 只在内存，关闭/拒绝/取消/到期清零；批准持久完成再返回 Active。批准/取消/超时在同一状态锁内串行，已 Active 的取消返回冲突。
 
@@ -197,9 +197,9 @@ P1-007 API 36 复验修正：活动下载撤销连续两次在约 5 秒后使 se
 
 HTTPS 使用 SocketsHttpHandler 的 CustomRootTrust、原生 SAN 校验和 serverAuth 策略，无证书接受回调；禁用代理、重定向、Cookie、压缩，限制头/正文和端到端截止时间。严格校验 JSON 唯一字段、类型、身份、client_id、状态及 no-store。先持久 Pending 再 POST；超时保留 Pending，恢复仅查询已保存 token 的 session。只有身份正确且 share_ready 的 session 才激活/挂载。配对取消先持久 RevocationPending，尝试 grant 取消及长期 token 撤销；离线保留禁用记录，不以超时推断未批准。
 
-凭据库增加有界枚举和“已确认远端撤销后删除本地记录”的 CAS API；后者仅接收 RevocationPending，并由网络层完成严格 HTTPS 的撤销/401 回读证明。精确记录通过已验证且独占的文件句柄标记删除，不递归清理。撤销先禁用本地状态、停止所属挂载，再发网络请求；取消前未 POST 的记录也保持保守处理。重新配对不会覆盖任何未处理记录。
+凭据库同时保留两条路径：配对取消/兼容流程可在已确认远端撤销后删除 RevocationPending；当前 Windows 用户“移除此手机”则先停止所属挂载，再直接删除本机精确记录，不发网络请求。后者同时清除临时端点和自动恢复状态；手机端可能仍保留旧授权，因此不得宣称远端也已删除。重新连接必须创建新 client_id/token，不覆盖任何仍存在的本机记录。
 
-WPF 显示附近设备和离线保存记录、短码输入、等待手机批准、配对/连接/取消/打开/卸载/撤销，以及只读开发能力说明。rclone 从程序目录 tools/rclone.exe 加载，沿用固定 SHA-256 与 WinFsp 检查；不把 .audit 路径写入产品。当前只有一台设备的活动挂载；驱动器由用户选择可用字母，凭据只从受保护记录取得。不在本任务增加自动重连/自启/托盘或写入。
+WPF 显示附近设备和离线保存记录、短码输入、等待手机批准、配对/连接/取消/打开/卸载/移除，以及只读开发能力说明。当前“移除此手机”只清理 Windows 本端并返回未配对候选；不要求手机确认。rclone 从程序目录 tools/rclone.exe 加载，沿用固定 SHA-256 与 WinFsp 检查；不把 .audit 路径写入产品。当前只有一台设备的活动挂载；驱动器由用户选择可用字母，凭据只从受保护记录取得。
 
 依据：[WPF 线程模型](https://learn.microsoft.com/en-us/dotnet/desktop/wpf/advanced/threading-model)、[CertificateChainPolicy](https://learn.microsoft.com/en-us/dotnet/api/system.net.security.sslclientauthenticationoptions.certificatechainpolicy?view=net-10.0)。严格 TLS 拒绝、持久状态竞争和 Redmi K40 的 NG→WPF→rclone→WinFsp 真实链路已由 P1-008 通过；测试入口未进入产品二进制。
 

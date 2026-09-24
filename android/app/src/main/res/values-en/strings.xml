@@ -36,8 +36,8 @@
     <string name="mode_read_only">Read-only (browse and download only)</string>
     <string name="mode_safe">Safe mode (create new items, never replace existing files)</string>
     <string name="mode_read_write">Full read/write (allow replacement and deletion)</string>
-    <string name="revoke">Revoke access</string>
-    <string name="revoke_prompt">Revoke access for “%1$s” and disconnect it?</string>
+    <string name="revoke">Remove this computer</string>
+    <string name="revoke_prompt">Remove “%1$s” and delete its pairing information? It will be disconnected immediately and must pair again as a new computer.</string>
     <string name="cancel">Cancel</string>
     <string name="development_limit">Set access mode separately for each paired computer. Windows must reconnect after a change.</string>
     <string name="permission_missing">Allow file access first and make sure the selected folder exists.</string>

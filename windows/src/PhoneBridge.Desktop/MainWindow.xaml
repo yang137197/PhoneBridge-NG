@@ -128,10 +128,7 @@
        <StackPanel>
         <TextBlock Text="{local:Text RemoveAndAdvanced}" Style="{StaticResource SectionTitle}"/>
         <TextBlock Text="{local:Text RemovePhoneHelp}" Foreground="{StaticResource MutedTextBrush}" Margin="0,10,0,18"/>
-        <WrapPanel>
-         <Button x:Name="Revoke" Content="{local:Text RemovePhone}" Click="RevokeClick" AutomationProperties.AutomationId="Revoke" Style="{StaticResource DangerButton}" Margin="0,0,10,0"/>
-         <Button x:Name="Forget" Content="{local:Text ForgetLocalOnly}" Click="ForgetClick" AutomationProperties.AutomationId="Forget" Style="{StaticResource TextButton}"/>
-        </WrapPanel>
+        <Button x:Name="RemovePhone" Content="{local:Text RemovePhone}" Click="RemovePhoneClick" AutomationProperties.AutomationId="RemovePhone" Style="{StaticResource DangerButton}" HorizontalAlignment="Left"/>
        </StackPanel>
       </Border>
      </StackPanel>

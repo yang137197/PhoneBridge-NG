@@ -36,6 +36,7 @@ internal class SharingEngine(context: Context, root: File, port: Int, private va
     private fun storageFailed() { if (fatal.compareAndSet(false, true)) failed() }
     private fun publishClients(snapshot: StoreSnapshot) = synchronized(viewGate) { if (snapshot.revision > clients.revision) clients = snapshot }
     fun revoke(client: String) { connections.revoke(client) }
+    fun remove(client: String) { connections.remove(client) }
     fun updateMode(client: String, mode: AccessMode) { connections.updateMode(client, mode) }
     override fun close() {
         pairingInstance?.close(); pairingInstance = null

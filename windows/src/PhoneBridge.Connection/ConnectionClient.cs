@@ -226,11 +226,11 @@ public sealed class ConnectionClient(PairingStore store) : IAsyncDisposable
     }
 
     public Task<bool> StopAsync() => RunAsync(async () => { await StopCoreAsync().ConfigureAwait(false); return true; }, CancellationToken.None);
-    public Task<bool> ForgetLocallyAsync(string deviceId) => RunAsync(async () =>
+    public Task<bool> RemoveLocallyAsync(string deviceId) => RunAsync(async () =>
     {
         var record = store.BeginRevocation(store.Load(deviceId));
         if (Connected?.Record.DeviceId == deviceId) await StopCoreAsync().ConfigureAwait(false);
-        store.ForgetLocally(record);
+        store.RemoveLocally(record);
         return true;
     }, CancellationToken.None);
     private async Task StopCoreAsync()

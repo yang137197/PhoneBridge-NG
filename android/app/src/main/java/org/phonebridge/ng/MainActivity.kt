@@ -22,7 +22,6 @@ import android.provider.Settings
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
-import android.view.WindowManager
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Button
@@ -87,7 +86,6 @@ class MainActivity : Activity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (!resources.getBoolean(R.bool.allow_screenshots)) window.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
         content = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
             setPadding(dp(16), dp(18), dp(16), dp(32))
@@ -339,7 +337,7 @@ class MainActivity : Activity() {
         sectionTitle(content, R.string.danger_zone, danger)
         button(content, R.string.revoke, primary = false) {
             AlertDialog.Builder(this).setMessage(getString(R.string.revoke_prompt, client.clientName))
-                .setPositiveButton(R.string.revoke) { _, _ -> binder?.revoke(client.clientId); showHome() }
+                .setPositiveButton(R.string.revoke) { _, _ -> binder?.remove(client.clientId); showHome() }
                 .setNegativeButton(R.string.cancel, null).show()
         }.apply { setTextColor(danger); background = outlined(danger) }
     }

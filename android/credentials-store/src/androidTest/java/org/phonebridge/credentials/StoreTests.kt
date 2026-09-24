@@ -71,6 +71,13 @@ class StoreTests {
         error(StoreError.ALREADY_EXISTS) { s.approve(client, "new", token, revoked.revision) }
         error(StoreError.UNAUTHORIZED) { s.updateMode(client, AccessMode.READ_WRITE, revoked.revision) }
     }
+    @Test fun localRemovalDeletesRecordAndAllowsFreshPairing() {
+        val (s, snap) = active(); val removed = s.remove(client, snap.revision)
+        assertTrue(removed.clients.isEmpty()); assertTrue(store().snapshot().clients.isEmpty())
+        error(StoreError.UNAUTHORIZED) { s.authenticate(client, token) }
+        val fresh = s.approve(client, "new computer", token, removed.revision)
+        assertEquals(ClientState.ACTIVE, fresh.clients.single().state)
+    }
     @Test fun revisionsProtectModeAndRevocationFromStaleCallers() {
         val (s, snap) = active(); val changed = s.updateMode(client, AccessMode.READ_ONLY, snap.revision)
         assertEquals(AccessMode.READ_ONLY, store().authenticate(client, token).mode)

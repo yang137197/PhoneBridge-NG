@@ -57,8 +57,8 @@ public sealed class PairingStore
         files.Delete(expected.DeviceId);return true;
     });
 
-    /// <summary>Explicit user choice only. Remote authorization may remain; never label this as remote revocation.</summary>
-    public void ForgetLocally(PairingRecord expected) => RemoveAfterVerifiedRevocation(expected);
+    /// <summary>Explicit local removal. Remote authorization may remain; never label this as remote revocation.</summary>
+    public void RemoveLocally(PairingRecord expected) => RemoveAfterVerifiedRevocation(expected);
 
     public CredentialLease OpenCredential(string deviceId,string expectedClientId,CredentialPurpose purpose)
     {

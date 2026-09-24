@@ -1,27 +1,27 @@
 # PhoneBridge NG v0.2.0 UI 验收入口
 
-状态：P2-003 r2 候选已按首轮反馈更新，等待用户复验。以下文件都在 Git 忽略的 `.audit/ui-acceptance/`，不是正式发布包。
+状态：P2-003 UI 复验已通过；以下制品已刷新为 P2-004 本地移除/截屏策略候选，等待真实配对验收。文件均位于 Git 忽略的 `.audit/ui-acceptance/`，不是正式发布包。
 
 ## Windows
 
-- 文件：`.audit/ui-acceptance/PhoneBridge-NG-Windows-v0.2-ui-preview-r6.zip`
-- SHA-256：`299BAB6469021FDB1E1364F756917DEFBE8E39718D066ACB2178C186A7C7EAA9`
-- 大小：39,561,337 bytes
+- 文件：`.audit/ui-acceptance/PhoneBridge-NG-Windows-v0.2-ui-preview-r7.zip`
+- SHA-256：`C9D375AC16AEC445AD2E35650CE10B06C4013E3CFBE42243F07BDA73138CD504`
+- 大小：39,560,586 bytes
 - 验收启动：解压后运行 `PhoneBridge.Desktop.exe --ui-preview`。
 
-当前本机已打开 r2 验收窗口。A“桥接文件”已用于 EXE、窗口和页内品牌图标。依次检查“设备”“添加手机”“设备设置”“设置 → 常规”“设置 → 高级排障”“关于”。`--ui-preview` 只隔离单实例互斥体，不隔离配对和设置数据；安装版仍运行时只做页面浏览，不要在两边同时连接或挂载。
+当前本机已打开 r7 验收窗口。设备设置只保留“移除此手机”，说明其只清理 Windows 本地配对信息且再次连接需要重新配对。`--ui-preview` 只隔离单实例互斥体，不隔离配对和设置数据；未进入真实移除验收前不要点击现有真实设备的删除按钮。
 
 ## Android
 
 - 文件：`.audit/ui-acceptance/android/PhoneBridge-NG-v0.2-ui-preview.apk`
-- SHA-256：`126C27759F345C27A94B9D4D0026B46CA7B2334AF2731A8E81C2BEB0F081DBA7`
-- 大小：4,190,058 bytes
+- SHA-256：`6A99753BA44BFCF1C06F3E7055F0F4BCDFE9B65AB94958C798990A250AFF2A35`
+- 大小：4,149,724 bytes
 - 包名：`org.phonebridge.ng.uipreview`
 - 应用内名称：`PhoneBridge NG · UI 验收`；Samsung 启动器/应用信息当前仍显示 `PhoneBridge NG`，原因尚未验证，以包名区分验收应用
 - 版本：`0.2.0-ui-preview`，versionCode 2
 
-验收包已在 Samsung 上安装。最终包列表确认 `org.phonebridge.ng.uipreview` 与测试包存在，未检测到正式 `org.phonebridge.ng`，因此本轮不宣称当前仍与 v0.1.0 并存。A“桥接文件”已用于验收包启动器图标；设置与返回采用 48dp 图标按钮；“设置”现在是独立菜单，语言位于其子页。`uiPreview` 专用于视觉验收并允许截图，正式 Debug/Release 仍保留 `FLAG_SECURE`。该包使用本地调试签名且有独立数据，不是升级包；若另行安装正式应用，只做 UI 验收时不要与其同时开始共享。
+验收包已在 Samsung 上覆盖安装。Android 所有 build type 已取消 `FLAG_SECURE`；当前验收包实际截屏成功。电脑详情中的操作改为“移除此电脑”，会删除手机本地的完整配对记录并断开旧连接。该包使用本地调试签名且有独立数据，不是升级包。
 
 ## 反馈范围
 
-请复验 A 图标、Android 设置/返回图标尺寸、设置菜单与语言子页，并继续指出信息层级、留白与密度、按钮命名与主次、字号、颜色、卡片、导航和中英文页面观感。功能链路、多设备、安装器/完整托盘状态图标和交付签名不在本次视觉确认范围内。
+P2-003 视觉已通过。当前只验收 P2-004 行为：用可重建的真实配对分别在 Windows 和 Android 执行一次本地移除，确认另一端无需确认、旧凭据失效，并按全新设备重新配对。不要用不可恢复的正式配对直接试验。

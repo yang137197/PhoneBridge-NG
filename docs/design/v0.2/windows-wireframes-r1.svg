@@ -114,12 +114,11 @@
     <rect class="surface" x="578" y="164" width="114" height="34" rx="8"/>
     <text x="590" y="185" class="body small">授权一次删除</text>
     <rect class="surface" x="28" y="236" width="684" height="130" rx="12"/>
-    <text x="48" y="266" class="ink h2">移除与高级排障</text>
-    <text x="48" y="292" class="muted small">正常移除会先禁用本机配对、断开盘符，并请求手机撤销授权。</text>
+    <text x="48" y="266" class="ink h2">移除此手机</text>
+    <text x="48" y="292" class="muted small">删除电脑本地配对信息并断开连接；不会联系或等待手机。</text>
     <rect class="danger" x="48" y="312" width="118" height="38" rx="8"/>
     <text x="67" y="336" class="red label">移除此手机</text>
-    <text x="204" y="336" class="blue small">仅忘记本机…</text>
-    <text x="310" y="336" class="muted tiny">仅用于远端撤销无法确认的排障场景</text>
+    <text x="204" y="336" class="muted tiny">再次连接时按新设备重新配对；手机可能仍保留旧授权</text>
     <text x="12" y="398" class="muted tiny">03 设备设置</text>
   </g>
 

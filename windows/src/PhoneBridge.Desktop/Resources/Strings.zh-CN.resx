@@ -36,7 +36,6 @@
   <data name="Open" xml:space="preserve"><value>打开盘符</value></data>
   <data name="Unmount" xml:space="preserve"><value>卸载</value></data>
   <data name="Revoke" xml:space="preserve"><value>撤销配对</value></data>
-  <data name="Forget" xml:space="preserve"><value>仅忘记本机…</value></data>
   <data name="Ready" xml:space="preserve"><value>选择手机后开始。</value></data>
   <data name="Completed" xml:space="preserve"><value>操作已完成。</value></data>
   <data name="OperationCancelled" xml:space="preserve"><value>已取消。未确认的远端授权保持本地禁用，请查看配对状态。</value></data>
@@ -52,8 +51,7 @@
   <data name="Offline" xml:space="preserve"><value>离线</value></data>
   <data name="InvalidCode" xml:space="preserve"><value>请输入手机显示的 8 位数字。</value></data>
   <data name="OpenFailed" xml:space="preserve"><value>未能打开资源管理器，盘符可能仍已挂载。</value></data>
-  <data name="RevokeConfirm" xml:space="preserve"><value>禁用此配对、卸载对应盘符，并请求手机撤销授权？手机离线时会保留禁用记录供重试。</value></data>
-  <data name="ForgetConfirm" xml:space="preserve"><value>此操作仅删除本机记录，手机可能仍保留此电脑的授权。重新配对前，请在手机上撤销此电脑。是否继续？</value></data>
+  <data name="RevokeConfirm" xml:space="preserve"><value>将停止此手机的连接，并删除 Windows 上保存的配对凭据和临时地址。不会联系手机；手机端可能仍保留旧授权。再次连接需要按新设备重新配对。是否继续？</value></data>
   <data name="Closing" xml:space="preserve"><value>正在退出：取消操作并卸载本客户端盘符…</value></data>
   <data name="TrayOpen" xml:space="preserve"><value>打开 PhoneBridge NG</value></data>
   <data name="TrayExit" xml:space="preserve"><value>退出</value></data>
@@ -148,9 +146,8 @@
   <data name="SafetyOperations" xml:space="preserve"><value>安全操作</value></data>
   <data name="AuthorizeDeletion" xml:space="preserve"><value>授权一次删除</value></data>
   <data name="RemoveAndAdvanced" xml:space="preserve"><value>移除与高级排障</value></data>
-  <data name="RemovePhoneHelp" xml:space="preserve"><value>正常移除会禁用本机配对，并请求手机撤销授权。</value></data>
+  <data name="RemovePhoneHelp" xml:space="preserve"><value>直接清除 Windows 上此手机的配对信息，不请求手机确认。再次连接需要重新配对。</value></data>
   <data name="RemovePhone" xml:space="preserve"><value>移除此手机</value></data>
-  <data name="ForgetLocalOnly" xml:space="preserve"><value>仅忘记本机…</value></data>
   <data name="General" xml:space="preserve"><value>常规</value></data>
   <data name="AdvancedTroubleshooting" xml:space="preserve"><value>高级排障</value></data>
   <data name="Language" xml:space="preserve"><value>语言</value></data>

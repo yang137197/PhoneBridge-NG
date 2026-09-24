@@ -9,8 +9,9 @@
 - 已发布版本：`v0.1.0`，标签提交 `e74e3a2403d3485883e24a723826c786973eb29e`。
 - v0.2.0 需求计划基线：`18b5e0778d4fd03fad95a0a4602cea36dcc83f28`。
 - P2-002 静态设计 r1 已由用户全部确认并冻结；视觉方向、Windows 分层/按钮命名、Android 页面层级和图标 A“桥接文件”均已确定。
-- P2-003 r2 已按用户首轮反馈更新：两端接入 A 应用图标，Android 设置/返回改为 48dp 图标按钮，设置改为独立菜单并由语言项进入子页；当前保持 active，等待用户复验，多设备核心尚未开始。
-- Windows 六个既定页面及 A 图标已实际回读；Android 验收包已在 Samsung 以独立包名安装，启动器 A 图标、首页、设置菜单、语言子页、中英文切换及冷启动保持已回读。最终包列表未检测到正式 `org.phonebridge.ng`，不宣称当前与 v0.1.0 并存。仅 `uiPreview` 允许截图，正式 build 继续使用 `FLAG_SECURE`。制品和散列见 `docs/UI_ACCEPTANCE.md`。
+- P2-003 r2 的实际 UI 已由用户复验通过并完成。
+- P2-004 已实现两端本地直接移除与全构建允许截屏：Windows/Android 都不等待远端确认，旧凭据在删除端失效，再次连接按新设备配对；隔离测试通过，等待真实配对验收。多设备核心尚未开始。
+- Windows r7 验收窗口已打开；Android 验收包已在 Samsung 覆盖安装并实际截屏成功。当前未检测到正式 `org.phonebridge.ng`，不宣称与 v0.1.0 并存。制品和散列见 `docs/UI_ACCEPTANCE.md`。
 - 开始新任务前必须重新检查 `git status --short --branch`、`git log -5 --oneline --decorate` 和远端状态，不从本交接推断后来发生的变化。
 
 ## 2. 新对话必读顺序
@@ -24,7 +25,7 @@
 7. `ARCHITECTURE.md` 与 `DECISIONS.md`
 8. `docs/tasks/completed/P2-001-v0.2-requirements-and-ui-plan.md`
 9. `docs/design/v0.2/README.md` 与 `docs/tasks/completed/P2-002-ui-wireframes-and-icon-concepts.md`
-10. `docs/UI_ACCEPTANCE.md`、`docs/audit/P2-003-UI-ACCEPTANCE.md` 与 `docs/tasks/active/P2-003-ui-acceptance-builds.md`
+10. `docs/UI_ACCEPTANCE.md`、`docs/audit/P2-004-VALIDATION.md` 与 `docs/tasks/active/P2-004-local-removal-and-screenshot-policy.md`
 
 涉及实现时再读对应 Windows/Android 源码和安全、配对、测试规范，不在任务开始时无差别展开所有历史验收文件。
 
@@ -38,6 +39,8 @@
 | V2-I18N-01 | 两端默认简体中文，增加 English 设置 | 首次为简体中文，切换 English 后界面更新并持久保存 |
 | V2-UX-03 | 精简 Windows 操作 | 日常只突出配对、连接、打开文件、断开；危险和排障操作进入对应设置 |
 | V2-MULTI-01 | 下一版本支持多设备同时连接 | 一台 Windows 至少同时连接 Samsung 与 Redmi 两台手机，两个独立盘符互不影响 |
+| V2-REMOVE-01 | 两端本地直接移除配对设备 | 本端删除记录并断开，不等待远端确认；重新连接按新设备配对 |
+| V2-CAPTURE-01 | 两端允许系统截屏 | Windows/Android 不设置应用级截屏阻挡 |
 
 视觉参考只用于风格：浅灰背景、白色圆角卡片、蓝色主色、简洁线性图标、清晰留白和左侧分区导航。不复制参考应用的品牌、图标或资产。参考截图没有提交到仓库；精确图像不可用时按上述描述继续，不因此扩大工作。
 
@@ -56,7 +59,8 @@
 - P2-003 候选的 `windows/src/PhoneBridge.Desktop/MainWindow.xaml` 已按“设备 / 设置 / 关于”及子页面分层；原有连接、挂载和安全操作仍由同一个窗口代码接入。
 - `windows/src/PhoneBridge.Desktop/MainWindow.xaml.cs` 当前创建一个 `ConnectionClient`。
 - `windows/src/PhoneBridge.Connection/ConnectionClient.cs` 当前持有一个 `ReadOnlyMountManager` 和一个 `Connected` 设备状态；多设备必须重构为按 `device_id` 隔离的会话所有权。
-- Android 主界面仍位于 `android/app/src/main/java/org/phonebridge/ng/MainActivity.kt`，P2-003 已用原生程序化布局实现首页、配对、电脑详情、设置菜单和语言子页。
+- Android 主界面仍位于 `android/app/src/main/java/org/phonebridge/ng/MainActivity.kt`，已用原生程序化布局实现首页、配对、电脑详情、设置菜单和语言子页；P2-004 已移除 `FLAG_SECURE`。
+- Windows 当前“移除此手机”停止活动挂载并删除本机配对记录、临时地址和自动恢复状态，不发远端请求。Android 当前“移除此电脑”从加密库删除完整 client 记录并关闭其 socket，不要求 Windows 确认。
 - 两端候选均默认简体中文。Android 已实现并实测应用内中英文切换和冷启动保持；Windows 本轮只有语言控件，切换及托盘/通知/对话框的完整语言覆盖仍未实现。
 - 设备发现、配对协议、凭据、严格 TLS、单个挂载会话、VFS 缓存、安全卸载、托盘、签名和发布链路可以复用。
 
@@ -69,8 +73,7 @@
 | 取消 | 只在正在执行的操作旁出现 |
 | 打开盘符 | 改名“打开文件”，连接后作为主操作 |
 | 卸载 | 改名“断开”，作为设备次要操作 |
-| 撤销配对 | 改名“移除此手机”，进入设备设置 |
-| 仅忘记本机 | 进入设备设置的高级排障 |
+| 撤销配对 / 仅忘记本机 | 合并为“移除此手机”，只清理 Windows 本端，不请求手机确认 |
 | 删除路径 / 确认删除 | 移出首页，进入设备设置的安全操作并解释“授权一次删除” |
 | 手动 IP / 端口、诊断包 | 进入设置的高级排障 |
 | Windows 自启动 | 进入设置的常规页，行为仍是只启动客户端 |
@@ -81,30 +84,31 @@
 
 只增加一个轻量会话协调器管理会话集合、盘符冲突、应用退出和托盘汇总。一个设备的取消、断开或失败不得停止另一设备。第一条真实通过线是 Samsung 与 Redmi 在同一 LAN 同时挂载两个盘符，各自可打开和双向复制；断开其中一个后另一个继续可用。
 
-## 8. 唯一下一任务：完成 P2-003 r2 UI 复验
+## 8. 唯一下一任务：完成 P2-004 真实配对移除验收
 
 ### 目标
 
-由用户复验已打开的 Windows r2 验收窗口和 Samsung 上的“PhoneBridge NG · UI 验收”，确认 A 图标、Android 图标尺寸和设置菜单层级，或只列出需要调整的页面与具体视觉问题。确认前不开始 P2-004 多设备核心。
+使用一组可重建的真实配对，分别从 Windows 与 Android 各执行一次本地移除，确认本端记录和活动连接消失、另一端无需确认、旧凭据不能连接，并可按全新设备重新配对。通过前不开始 P2-005 多设备核心。
 
 ### 必须交付
 
-- Windows 检查设备首页、添加手机、设备设置、常规设置、高级排障和关于页。
-- Android 检查首页、设置菜单、语言子页及中英文观感；配对会话和电脑详情只有形成真实状态时再验收，不为截图修改正式数据。
-- 本次判断 A 应用图标、信息层级、留白、密度、字号、颜色、卡片、导航和按钮主次；不验收多设备、安装器或完整托盘状态图标。
-- Windows 安装版并行运行时只浏览 UI，不在两个客户端同时连接或挂载；Android 验收包也不与正式包同时开始共享。
+- Windows 使用可重建配对，点击“移除此手机”，确认不出现手机确认依赖，本机记录、临时地址和活动挂载消失。
+- Android 使用可重建配对，点击“移除此电脑”，确认电脑无需确认、手机列表记录消失、旧 token 被拒绝。
+- 两条路径各完成一次全新重新配对；不使用不可恢复的正式配对做试验。
+- Android 再完成一次系统截屏；不扩展多设备、安装器或正式签名验收。
 
 ### 通过条件
 
-用户明确回复“确认”或给出限定调整项；若有调整，只修改对应视觉并回读相关页面。P2-003 完成前不启动多设备重构，不把现有多个设备卡片误称为多设备并行能力。
+两端真实移除均不依赖远端确认，旧凭据失效，全新重配成功。P2-004 完成前不启动多设备重构。
 
 ## 9. 后续顺序
 
 1. P2-002：已完成并经用户确认。
-2. P2-003：两端原生 UI 验收候选（r2 已生成，等待用户复验）。
-3. P2-004：按设备隔离的多会话核心和真实双设备最小链路。
-4. P2-005：按验收结果收口 UI、多会话接线和完整语言覆盖。
-5. P2-006：正式图标收口、升级验证和 v0.2.0 交付刷新。
+2. P2-003：两端原生 UI 验收（已完成并由用户复验通过）。
+3. P2-004：两端本地直接移除和允许截屏（已实现，等待真实配对验收）。
+4. P2-005：按设备隔离的多会话核心和真实双设备最小链路。
+5. P2-006：按验收结果收口 UI、多会话接线和完整语言覆盖。
+6. P2-007：正式图标收口、升级验证和 v0.2.0 交付刷新。
 
 编号以后续实际任务文件为准，但顺序和每次一个根因的原则不变。
 
@@ -118,7 +122,7 @@
 
 先读取 AGENTS.md、DEVELOPMENT_RULES.md、README.md、docs/HANDOFF_V0.2.md、docs/V0.2_PLAN.md、docs/PRODUCT.md、ARCHITECTURE.md、DECISIONS.md，并核对当前 main、git status、最近提交和远端状态。以仓库当前事实为准，不沿用对话中的旧状态。
 
-v0.1.0 已发布。v0.2.0 已完成需求计划；P2-002 静态设计 r1 已由用户全部确认并冻结，图标采用 A“桥接文件”。P2-003 r2 已按首轮反馈更新两端 A 应用图标、Android 48dp 设置/返回图标及独立设置菜单，任务仍为 active，等待用户实际视觉复验。已确认范围：重构 Windows/Android UI、重做两端图标、两端首次默认简体中文并提供 English 设置、精简 Windows 操作、支持一台 Windows 同时连接至少两台 Android 手机。保持现有 Kotlin/WPF、HTTPS/WebDAV、rclone、WinFsp、mDNS、配对与安全存储路线。
+v0.1.0 已发布。P2-002 静态设计和 P2-003 实际 UI 已由用户确认。P2-004 已实现两端本地直接移除和全构建允许截屏：Windows/Android 都不等待远端确认，再次连接按新设备配对；当前等待真实配对验收。多设备核心顺延为 P2-005。保持现有 Kotlin/WPF、HTTPS/WebDAV、rclone、WinFsp、mDNS、配对与安全存储路线。
 
-本轮只完成 P2-003 r2 UI 复验：按 `docs/UI_ACCEPTANCE.md` 检查 Windows 六页和 Samsung 上的“PhoneBridge NG · UI 验收”，重点确认 A 图标、Android 图标尺寸和设置菜单层级，或列出限定调整项。不要开始 P2-004 多设备核心，不把候选当正式发布包，不扩展功能或测试。确认后把 P2-003 状态、未验证项和唯一下一任务写入仓库并提交推送。
+本轮只完成 P2-004 真实配对验收：按 `docs/UI_ACCEPTANCE.md` 使用可重建配对，分别验证 Windows 和 Android 本地移除、旧凭据失效、全新重配及 Android 截屏。不要开始 P2-005 多设备核心，不把候选当正式发布包，不扩展功能或测试。完成后把状态、未验证项和唯一下一任务写入仓库并提交推送。
 ```

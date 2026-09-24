@@ -111,7 +111,7 @@ public sealed class ConnectionTests
             new StageObserver(stage =>
             {
                 if (stage != ConnectionStage.WaitingApproval) return;
-                store.ForgetLocally(store.BeginRevocation(store.List().Single()));
+                store.RemoveLocally(store.BeginRevocation(store.List().Single()));
                 store.CreatePending(server.Identity, replacement, "New phone", "New PC");
                 cancel.Cancel();
             }), cancel.Token));
@@ -178,6 +178,18 @@ public sealed class ConnectionTests
         await Assert.ThrowsAsync<CredentialStoreException>(() => client.ConnectAsync(record.DeviceId, server.Endpoint, NoMount, null, default));
         Assert.Throws<CredentialStoreException>(() => store.ApplyVerifiedSession(record, record.DeviceId, record.ClientId, AccessMode.Safe));
         Assert.AreEqual(0, server.RequestCount);
+    }
+    [TestMethod]
+    public async Task LocalRemovalNeedsNoEndpointAndAllowsFreshPairing()
+    {
+        await using var server = new NetworkPeer(); var store = Store();
+        var record = store.CreatePending(server.Identity, new string('a', 32), "Phone", "PC");
+        record = store.ApplyVerifiedSession(record, record.DeviceId, record.ClientId, AccessMode.Safe);
+        await using var client = new ConnectionClient(store);
+        Assert.IsTrue(await client.RemoveLocallyAsync(record.DeviceId));
+        Assert.IsEmpty(store.List()); Assert.AreEqual(0, server.RequestCount);
+        var fresh = store.CreatePending(server.Identity, new string('b', 32), "Phone", "PC");
+        Assert.AreEqual(PairingRecordState.Pending, fresh.State);
     }
     [TestMethod]
     public async Task DuplicateWrongIdentityAndNotReadySessionCannotActivate()

@@ -140,6 +140,7 @@ class ServiceTests {
         }
         fun authenticate(socket: Socket, credentials: Credentials) { connections.authenticate(socket, credentials.client, credentials.token) }
         fun updateMode(client: String, mode: AccessMode) { connections.updateMode(client, mode) }
+        fun remove(client: String) { connections.remove(client) }
         override fun close() { pairing?.close(); connections.close(); server.stop() }
     }
     @Test fun approvalPersistsBeforeReadAndWritesStayUnavailable() {
@@ -301,6 +302,13 @@ class ServiceTests {
             assertEquals(401, f.request("GET", "/origin.txt", c.basic).code)
             assertEquals(401, f.request("GET", "/phonebridge/v1/session", c.basic).code)
             assertEquals(401, f.request("DELETE", "/phonebridge/v1/pairings/self", c.basic).code)
+        } }
+    }
+    @Test fun localRemovalDeletesPairingAndRejectsOldToken() {
+        Fixture().use { f -> f.paired().use { c ->
+            f.remove(c.client)
+            assertTrue(f.store.snapshot().clients.isEmpty())
+            assertEquals(401, f.request("GET", "/phonebridge/v1/session", c.basic).code)
         } }
     }
     @Test fun revokeCancelsAnAlreadyStreamingDownload() {

@@ -88,6 +88,15 @@ internal class ClientConnections(private val store: PairingStore, private val on
             onChanged(result)
         } catch (_: StoreException) { failLocked(); throw ApiFailure(503, "storage_failure") }
     }
+    fun remove(client: String) = synchronized(gate) {
+        if (!healthy) throw ApiFailure(503, "storage_failure")
+        blocked.add(client)
+        try {
+            val result = store.remove(client, store.snapshot().revision)
+            for ((socket, owner) in sockets.toMap()) if (owner == client) closeSocket(socket)
+            onChanged(result)
+        } catch (_: StoreException) { failLocked(); throw ApiFailure(503, "storage_failure") }
+    }
     fun updateMode(client: String, mode: AccessMode) = synchronized(gate) {
         if (!healthy) throw ApiFailure(503, "storage_failure")
         try {

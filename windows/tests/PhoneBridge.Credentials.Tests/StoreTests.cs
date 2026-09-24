@@ -87,8 +87,8 @@ public sealed class StoreTests
     public void ExplicitLocalForgetRequiresDisabledState()
     {
         var store=PairingStore.OpenAt(_root); var active=Active(store);
-        Error(StoreError.StateConflict,()=>store.ForgetLocally(active));
-        store.ForgetLocally(store.BeginRevocation(active)); Assert.IsEmpty(store.List());
+        Error(StoreError.StateConflict,()=>store.RemoveLocally(active));
+        store.RemoveLocally(store.BeginRevocation(active)); Assert.IsEmpty(store.List());
     }
     [TestMethod]
     public void PendingPersistsWithoutPlaintextAndCannotMount()

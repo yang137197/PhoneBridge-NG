@@ -112,7 +112,8 @@ public partial class MainWindow : Window
 
     private void AddPhoneClick(object sender, RoutedEventArgs e)
     {
-        var row = Selected ?? (Devices.ItemsSource as IEnumerable<DeviceRow>)?.FirstOrDefault(item => item.Record is null);
+        var available = (Devices.ItemsSource as IEnumerable<DeviceRow>)?.ToArray() ?? [];
+        var row = Selected ?? available.FirstOrDefault(CanPair) ?? available.FirstOrDefault(item => item.Record is null);
         if (row is not null) SelectDevice(row);
         PairingPhoneName.Text = row?.Name ?? T("ChoosePhoneFirst");
         ShowMainPage(AddPhonePage, DevicesNavigation);
@@ -180,10 +181,16 @@ public partial class MainWindow : Window
         }).ToList();
         rows.AddRange(records.Where(r => !candidates.Values.Any(c => c.DeviceIdHint == r.DeviceId))
             .Select(r => new DeviceRow(r.DeviceId, null, r, r.DeviceId == connectedDevice, r.DeviceId == connectedDevice ? connectedDrive : null)));
-        Devices.ItemsSource = rows.OrderBy(r => r.Name, StringComparer.CurrentCulture).ToArray();
-        Devices.SelectedItem = rows.FirstOrDefault(r => r.Id == selected);
+        var ordered = rows.OrderBy(r => r.Name, StringComparer.CurrentCulture).ToArray();
+        Devices.ItemsSource = ordered;
+        var restored = ordered.FirstOrDefault(r => r.Id == selected);
+        if (restored is null && AddPhonePage.Visibility == Visibility.Visible)
+            restored = ordered.FirstOrDefault(CanPair);
+        Devices.SelectedItem = restored;
         UpdateControls();
     }
+    private static bool CanPair(DeviceRow row) => row.Record is null &&
+        row.Candidate is { Protocol: CandidateProtocol.PairedV3, Pairing: not null };
     private async Task ReloadRecords()
     {
         try { records = await client.RecordsAsync(); storeUnavailable = false; }

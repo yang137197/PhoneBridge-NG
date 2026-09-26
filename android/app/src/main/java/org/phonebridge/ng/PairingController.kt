@@ -79,7 +79,7 @@ internal data class PairingView(val windowId: String, val code: String?, val por
 /** Only a foreground local caller can open a window or approve an exact pending attempt. */
 internal class PairingController(private val store: PairingStore, private val ca: ByteArray, private val httpsPort: Int,
     private val onAdvertisement: (String?, Int) -> Unit, private val onStoreChanged: (StoreSnapshot) -> Unit,
-    private val onFatalStorage: () -> Unit) : AutoCloseable {
+    private val onFatalStorage: () -> Unit, private val onWindowClosed: () -> Unit = {}) : AutoCloseable {
     private val gate = Any()
     private val worker = Executors.newSingleThreadExecutor()
     private val timer = Executors.newSingleThreadScheduledExecutor()
@@ -121,12 +121,16 @@ internal class PairingController(private val store: PairingStore, private val ca
         return window
     }
     fun cancelWindow() = synchronized(gate) { invalidateLocked() }
+    fun cancelWindowUnlessActive(): Boolean = synchronized(gate) {
+        if (liveLocked()?.state == "Active") false else { invalidateLocked(); true }
+    }
     private fun invalidateLocked() {
         val old = window ?: return; window = null
         old.expiry?.cancel(false); old.code.fill('\u0000'); old.grantHash?.fill(0); old.token?.fill(0); old.tokenHash?.fill(0)
         try { old.listener.close() } catch (_: Exception) { }
         try { old.socket?.close() } catch (_: Exception) { }
         onAdvertisement(null, 0)
+        onWindowClosed()
     }
     private fun accept(w: Window) {
         while (true) {

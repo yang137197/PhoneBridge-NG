@@ -66,7 +66,7 @@ class SharingService : Service() {
     inner class LocalBinder : Binder() {
         internal val service get() = this@SharingService
         fun enterForeground() { foreground.set(true) }
-        fun leaveForeground() { foreground.set(false); foregroundGeneration.incrementAndGet(); engine?.pairing?.cancelWindow() }
+        fun leaveForeground() { foreground.set(false); foregroundGeneration.incrementAndGet(); engine?.pairing?.cancelWindowUnlessActive() }
         fun openPairing() {
             val generation = foregroundGeneration.get()
             submit { engine?.pairing?.openWindow { foreground.get() && foregroundGeneration.get() == generation } ?: throw ApiFailure(409, "conflict") }
@@ -74,8 +74,8 @@ class SharingService : Service() {
         fun closePairing() {
             foregroundGeneration.incrementAndGet()
             submit {
-                engine?.pairing?.cancelWindow()
-                if (!sharingEnabled) { stopEngine(); stopSelf() }
+                val canStop = engine?.pairing?.cancelWindowUnlessActive() ?: true
+                if (!sharingEnabled && canStop) { stopEngine(); stopSelf() }
             }
         }
         fun decide(attempt: String, approve: Boolean) = submit { engine?.pairing?.decide(attempt, approve) ?: throw ApiFailure(409, "conflict") }
@@ -124,9 +124,14 @@ class SharingService : Service() {
                     check(SharedFolders.allowed(this))
                     val root = SharedFolders.selected(selected)
                     acquireRuntimeLocks()
-                    val created = SharingEngine(applicationContext, root, 8273, { sharingEnabled }) {
-                        worker.execute { status = R.string.storage_error; stopEngine(); stopSelf() }
-                    }
+                    val created = SharingEngine(applicationContext, root, 8273, { sharingEnabled },
+                        { worker.execute { status = R.string.storage_error; stopEngine(); stopSelf() } },
+                        { worker.execute {
+                            val current = engine
+                            if (!sharingEnabled && current != null && runCatching { current.pairing.view() }.getOrNull() == null) {
+                                stopEngine(); stopSelf()
+                            }
+                        } })
                     engine = created; selectedFolder = selected; storedClients = created.clients.clients
                 }
                 if (pairingOnly) {

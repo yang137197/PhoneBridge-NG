@@ -229,6 +229,20 @@ class ServiceTests {
             assertEquals(200, f.request("GET", "/origin.txt", c.basic).code)
         } }
     }
+    @Test fun approvedPairingSurvivesUiBackgroundUntilWindowsReadsActive() {
+        Fixture(shareReady = AtomicBoolean(false)).use { f -> f.exchange(f.pairing!!.openWindow()).use { c ->
+            val path = "/phonebridge/v1/pairing/${c.attempt}"
+            assertEquals(202, f.request("POST", path, c.bearer, c.body()).code)
+            f.pairing!!.decide(c.attempt, true)
+            assertFalse(f.pairing!!.cancelWindowUnlessActive())
+            val active = f.request("GET", path, c.bearer)
+            assertEquals(200, active.code)
+            assertEquals("Active", JSONObject(active.body).getString("state"))
+            val session = f.request("GET", "/phonebridge/v1/session", c.basic)
+            assertEquals(200, session.code)
+            assertFalse(JSONObject(session.body).getBoolean("share_ready"))
+        } }
+    }
     @Test fun safeWritesCannotOverwriteAndConfirmedDeleteIsSingleUse() {
         Fixture().use { f -> f.paired().use { c ->
             assertEquals(201, f.request("PUT", "/upload.txt", c.basic, "complete".toByteArray(), type = "application/octet-stream").code)

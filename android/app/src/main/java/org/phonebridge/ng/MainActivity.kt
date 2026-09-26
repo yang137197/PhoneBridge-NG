@@ -307,7 +307,7 @@ class MainActivity : Activity() {
     private fun renderPairing() {
         if (screen != Screen.PAIRING || !::pairingArea.isInitialized) return
         val view = try { binder?.service?.engine?.pairing?.view() } catch (_: Exception) { null }
-        if (view?.state == "Active") { binder?.closePairing(); showHome(); return }
+        if (view?.state == "Active") { showHome(); return }
         pairingArea.removeAllViews()
         countdown = null
         if (view == null) {

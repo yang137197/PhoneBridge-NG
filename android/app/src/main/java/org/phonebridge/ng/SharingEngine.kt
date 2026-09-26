@@ -11,7 +11,7 @@ import java.io.File
 import java.util.concurrent.atomic.AtomicBoolean
 
 internal class SharingEngine(context: Context, root: File, port: Int, private val shareReady: () -> Boolean,
-    private val failed: () -> Unit) : AutoCloseable {
+    private val failed: () -> Unit, private val pairingClosed: () -> Unit) : AutoCloseable {
     private val identity = TlsHelper.openIdentity(context)
     val fingerprint = identity.fingerprint
     private val store = if (identity.created) PairingStore.initializeForNewIdentity(context, fingerprint) else PairingStore.openExisting(context, fingerprint)
@@ -30,7 +30,7 @@ internal class SharingEngine(context: Context, root: File, port: Int, private va
             server.makeSecure(TlsHelper.socketFactory(identity), null)
             server.start(5_000, false)
             pairingInstance = PairingController(store, identity.authority.encoded, httpsPort,
-                { id, pairPort -> publisher.publish(httpsPort, id, pairPort) }, ::publishClients, ::storageFailed)
+                { id, pairPort -> publisher.publish(httpsPort, id, pairPort) }, ::publishClients, ::storageFailed, pairingClosed)
             publisher.publish(httpsPort, null, 0)
         } catch (e: Exception) { close(); throw e }
     }

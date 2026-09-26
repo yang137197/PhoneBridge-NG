@@ -141,7 +141,7 @@ P1-004 最终 124 项 Windows、15 项 Kotlin 与 59 项管道互操作通过，
 
 ## 12. P1-005 Windows 受保护记录（实施前记录，现限定验收通过）
 
-新增 PhoneBridge.Credentials / PairingStore，使用系统 CryptProtectData/CryptUnprotectData，固定 UI_FORBIDDEN、当前用户，额外熵绑定协议用途和设备 CA hash；不使用 LocalMachine，不增加安全存储 NuGet 依赖。每条记录的版本、CA/指纹/device_id、client_id、随机 32-byte token、名称、状态/模式与修订号一起保护；有界二进制格式而非普通设置 JSON。CA 须为单一规范 DER、自签名有效、RSA >=2048/SHA256withRSA、CA/KeyCertSign 和当前有效期满足要求，匹配已确认指纹。
+新增 PhoneBridge.Credentials / PairingStore，使用系统 CryptProtectData/CryptUnprotectData，固定 UI_FORBIDDEN、当前用户，额外熵绑定协议用途和设备 CA hash；不使用 LocalMachine，不增加安全存储 NuGet 依赖。每条记录的版本、CA/指纹/device_id、client_id、随机 32-byte token、名称、状态/模式与修订号一起保护；有界二进制格式而非普通设置 JSON。P2-004 将记录格式升为 schema 2，追加只影响 Windows 显示的本地名称和备注，并保持 schema 1 只读兼容；更新使用同一修订号比较交换和原子提交，不改变 device_id、client_id、token 或证书身份。CA 须为单一规范 DER、自签名有效、RSA >=2048/SHA256withRSA、CA/KeyCertSign 和当前有效期满足要求，匹配已确认指纹。
 
 默认目录为 LocalAppData/PhoneBridge-NG/Pairings-v1。创建时使用当前用户/SYSTEM 专属 ACL；既有宽松 ACL 不自动修正。操作期间固定各级目录句柄，拒绝重解析点；记录/锁/临时文件检查 owner、DACL、类型和硬链接数。独占锁文件串行跨进程事务；只写随机命名密文临时文件，Flush(true) 后同目录 move/replace，并回读提交结果。Windows 文件替换失败可能留下不确定状态，不能宣称必然未提交；本实例停止后续凭据使用，新实例重新加载磁盘状态。进程中断不等于断电持久性已测。
 
@@ -175,7 +175,9 @@ P1-006 复核修正：公开 Android SDK 不提供 O_DIRECTORY / unlink；使用
 
 正式工程放在 android/app，独立 applicationId=org.phonebridge.ng，不覆盖 com.phonebridge 实验 APK。AGP 9.1.1 内置 Kotlin 2.2.10 统一编译 App；以 sourceSets 直接引用已有 pairing-core/credentials-store 源文件，避免 2.2 编译器读取 2.4 metadata，不复制/分叉两模块逻辑。重新在 Android 编译和运行这些相同源文件；旧 JVM 2.4 与独立存储构建保留。固定 BC prov/pkix/util 1.86，TLS 证书和 PAKE 统一同版本；不更改旧 APK。版本兼容依实际 D8/设备测试证明。[AGP Kotlin 依赖](https://developer.android.com/build/releases/agp-9-1-0-release-notes)、[sourceSets 规则](https://developer.android.com/build/migrate-to-built-in-kotlin)
 
-从固定 P0-009 副本导入证书、TLS、SharedPath/SharedStorage、Range/XML/RequestBody 辅助代码，保留许可和逐文件来源。宿主只在本次新建 TLS 身份时初始化配对库；已有身份加载失败停止，不退回密码、不新建空授权库。Activity 通过非导出 Service 的进程内 Binder 控制共享/配对/本地批准；P2-004 起不设置应用级截屏阻挡，所有 UI 文案使用中英文资源。网络/磁盘/密码运算均离开 UI 线程。共享服务类型沿用 connectedDevice，独立通知、明确开始/停止。
+从固定 P0-009 副本导入证书、TLS、SharedPath/SharedStorage、Range/XML/RequestBody 辅助代码，保留许可和逐文件来源。宿主只在本次新建 TLS 身份时初始化配对库；已有身份加载失败停止，不退回密码、不新建空授权库。Activity 通过非导出 Service 的进程内 Binder 控制共享/配对/本地批准；P2-004 起不设置应用级截屏阻挡，所有 UI 文案使用中英文资源。网络/磁盘/密码运算均离开 UI 线程。共享服务类型沿用 connectedDevice，独立通知、明确开始/停止。P2-004 的服务在共享引擎停止后保留加密库的非秘密客户端快照，离线详情、访问模式更新和本地删除重新打开同一 PairingStore，不把“停止共享”解释为“没有配对”。既有七个共享目录索引保持不变，末尾追加 `Environment.getExternalStorageDirectory()` 的内部共享存储根；Android 系统不可访问的私有目录仍不在承诺范围。
+
+Android 页面返回由统一页面状态处理：语言页回设置，设置/电脑详情回首页，配对页关闭配对专用引擎后回首页。首页二次返回在共享中只把任务置于后台，前台服务继续；设置中的显式退出先发送 STOP 再结束任务。配对完成后配对专用引擎释放，用户仍可重新选择共享目录再开始共享。
 
 配对窗口依 elapsedRealtime 120 秒、5 次已接受连接、单握手工作者、30 秒总握手/5 秒帧截止和10秒重开间隔；调度器以关闭所属 socket 保证写阻塞也可取消。8 帧复用既有核心；Windows 发完第7帧后 half-close 输出，Android 检查 EOF 后发送第8帧并关闭 TCP，尾数据失败。确认后立刻关闭配对监听/广告，仅留到原期限的 grant SHA-256 与单次请求状态。未批准 token 只在内存，关闭/拒绝/取消/到期清零；批准持久完成再返回 Active。批准/取消/超时在同一状态锁内串行，已 Active 的取消返回冲突。
 

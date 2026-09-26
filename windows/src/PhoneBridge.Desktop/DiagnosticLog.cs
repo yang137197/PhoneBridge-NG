@@ -17,7 +17,7 @@ internal enum DiagnosticEventName
     PairingStarted, AuthenticationCompleted, ConnectionStarted, ConnectionCompleted,
     MountStateChanged, RcloneExited, WinFspChecked, NetworkCheckCompleted,
     ReconnectScheduled, TrayVisibilityChanged, StartupSettingChanged,
-    DiagnosticExportCompleted, DiagnosticExportFailed, ManualEndpointChanged
+    DiagnosticExportCompleted, DiagnosticExportFailed, ManualEndpointChanged, DeviceMetadataChanged
 }
 internal enum DiagnosticResultCode
 {

@@ -53,18 +53,25 @@ public sealed class PairingRecord
     public string DeviceId => Identity.DeviceId;
     public string ClientId { get; }
     public string DeviceName { get; }
+    public string DeviceAlias { get; }
+    public string Note { get; }
+    public string DisplayName => DeviceAlias.Length == 0 ? DeviceName : DeviceAlias;
     public string ClientName { get; }
     public PairingRecordState State { get; }
     public AccessMode Mode { get; }
     public ulong Revision { get; }
     public bool CanMount => State==PairingRecordState.Active;
-    internal PairingRecord(ValidatedDeviceIdentity identity,string client,string deviceName,string clientName,PairingRecordState state,AccessMode mode,ulong revision)
+    internal PairingRecord(ValidatedDeviceIdentity identity,string client,string deviceName,string clientName,PairingRecordState state,AccessMode mode,ulong revision,
+        string deviceAlias="",string note="")
     {
         if (!RecordRules.Hex(client,32) || !Enum.IsDefined(state) || !Enum.IsDefined(mode) || revision==0) throw new CredentialStoreException(StoreError.InvalidInput);
-        RecordRules.Name(deviceName);RecordRules.Name(clientName);
-        Identity=identity;ClientId=client;DeviceName=deviceName;ClientName=clientName;State=state;Mode=mode;Revision=revision;
+        RecordRules.Name(deviceName);RecordRules.Name(clientName);RecordRules.OptionalText(deviceAlias,64,128);RecordRules.OptionalText(note,500,1024);
+        Identity=identity;ClientId=client;DeviceName=deviceName;DeviceAlias=deviceAlias;Note=note;ClientName=clientName;State=state;Mode=mode;Revision=revision;
     }
-    internal PairingRecord WithState(PairingRecordState state,AccessMode mode) => new(Identity,ClientId,DeviceName,ClientName,state,mode,checked(Revision+1));
+    internal PairingRecord WithState(PairingRecordState state,AccessMode mode) =>
+        new(Identity,ClientId,DeviceName,ClientName,state,mode,checked(Revision+1),DeviceAlias,Note);
+    internal PairingRecord WithLocalMetadata(string deviceAlias,string note) =>
+        new(Identity,ClientId,DeviceName,ClientName,State,Mode,checked(Revision+1),deviceAlias,note);
     public override string ToString() => "PairingRecord(redacted)";
 }
 
@@ -97,6 +104,17 @@ internal static class RecordRules
             int count=0;
             foreach (var rune in name.EnumerateRunes())
                 if (++count>128 || Rune.GetUnicodeCategory(rune) is UnicodeCategory.Control or UnicodeCategory.Format) throw new InvalidDataException();
+        }
+        catch { throw new CredentialStoreException(StoreError.InvalidInput); }
+    }
+    internal static void OptionalText(string value,int maxRunes,int maxBytes)
+    {
+        try
+        {
+            if(value is null || value.Length>maxBytes || Utf8.GetByteCount(value)>maxBytes)throw new InvalidDataException();
+            int count=0;
+            foreach(var rune in value.EnumerateRunes())
+                if(++count>maxRunes || Rune.GetUnicodeCategory(rune) is UnicodeCategory.Control or UnicodeCategory.Format)throw new InvalidDataException();
         }
         catch { throw new CredentialStoreException(StoreError.InvalidInput); }
     }

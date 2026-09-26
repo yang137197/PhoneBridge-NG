@@ -141,6 +141,8 @@ public partial class MainWindow : Window
         if (sender is not WpfButton { DataContext: DeviceRow row }) return;
         SelectDevice(row);
         DeviceSettingsName.Text = row.Name;
+        DeviceAlias.Text = row.Record?.DeviceAlias ?? string.Empty;
+        DeviceNote.Text = row.Record?.Note ?? string.Empty;
         ShowMainPage(DeviceSettingsPage, DevicesNavigation);
     }
 
@@ -216,7 +218,8 @@ public partial class MainWindow : Window
         ManualAddress.Clear();
         ManualPort.Text = ManualEndpointSession.DefaultPort;
         if (PairingPhoneName is not null) PairingPhoneName.Text = Selected?.Name ?? T("ChoosePhoneFirst");
-        if (DeviceSettingsName is not null) DeviceSettingsName.Text = Selected?.Name ?? string.Empty;
+        if (DeviceSettingsName is not null && DeviceSettingsPage.Visibility == Visibility.Visible)
+            DeviceSettingsName.Text = Selected?.Name ?? string.Empty;
         UpdateControls();
     }
     private void RefreshEndpoints(DeviceEndpoint? preferred = null)
@@ -241,6 +244,7 @@ public partial class MainWindow : Window
         Connect.IsEnabled = !busy && !storeUnavailable && idle &&
             row?.Record?.State is (PairingRecordState.Pending or PairingRecordState.Active) && Endpoints.SelectedItem is DeviceEndpoint;
         RemovePhone.IsEnabled = !busy && !storeUnavailable && row?.Record is not null;
+        SaveDeviceDetails.IsEnabled = !busy && !storeUnavailable && row?.Record is not null;
         DeleteConfirmed.IsEnabled = !busy && !storeUnavailable && row?.Record is { State: PairingRecordState.Active, Mode: not AccessMode.ReadOnly } && Endpoints.SelectedItem is DeviceEndpoint;
         Open.IsEnabled = !busy && mounted;
         Unmount.IsEnabled = !busy && !idle;
@@ -256,7 +260,7 @@ public partial class MainWindow : Window
         ClearManualAddress.IsEnabled = canUseManual && row?.Record is { } manualRecord && manualEndpoints.TryGet(manualRecord.DeviceId, out _);
         Drives.IsEnabled = !busy && idle; Endpoints.IsEnabled = !busy;
         ConnectionStatus.Text = mounted && client.Connected is { } active
-            ? string.Format(T("MountedAt"), active.DriveLetter, active.Record.DeviceName, T(active.Record.Mode.ToString()))
+            ? string.Format(T("MountedAt"), active.DriveLetter, active.Record.DisplayName, T(active.Record.Mode.ToString()))
             : client.Mount.State == MountState.RecoveringWrites ? T("RecoveringWrites")
             : client.Mount.State == MountState.StopFailed ? T(client.Mount.ErrorCode ?? "unmount-not-confirmed") : T("NoMount");
         SetTrayStatus(TrayPolicy.ResolveStatus(
@@ -426,18 +430,19 @@ public partial class MainWindow : Window
     private MountOptions OptionsFor(char letter) => new(letter,
         Path.Combine(AppContext.BaseDirectory, "tools", "rclone.exe"),
         Path.Combine(appDataRoot, "Sessions"));
-    private void Start(DiagnosticEventName completionEvent, Func<CancellationToken, Task> work, string successKey = "Completed")
+    private void Start(DiagnosticEventName completionEvent, Func<CancellationToken, Task> work, string successKey = "Completed", Action? succeeded = null)
     {
         if (!operation.IsCompleted || closing) return;
         operationCancellation = new();
-        operation = Execute(completionEvent, work, successKey, operationCancellation.Token);
+        operation = Execute(completionEvent, work, successKey, operationCancellation.Token, succeeded);
         UpdateControls();
     }
-    private async Task Execute(DiagnosticEventName completionEvent, Func<CancellationToken, Task> work, string successKey, CancellationToken token)
+    private async Task Execute(DiagnosticEventName completionEvent, Func<CancellationToken, Task> work, string successKey, CancellationToken token, Action? succeeded)
     {
         // Ensure operation has been assigned before controls are recomputed.
         await Task.Yield();
-        try { await work(token); diagnostics.Write(new(completionEvent, Code: DiagnosticResultCode.Success)); Status.Text = T(successKey); }
+        bool completed=false;
+        try { await work(token); diagnostics.Write(new(completionEvent, Code: DiagnosticResultCode.Success)); Status.Text = T(successKey); completed=true; }
         catch (OperationCanceledException) when (token.IsCancellationRequested) { diagnostics.Write(new(completionEvent, DiagnosticLevel.Warning, DiagnosticResultCode.Cancelled)); Status.Text = T("OperationCancelled"); }
         catch (OperationCanceledException) { diagnostics.Write(new(completionEvent, DiagnosticLevel.Warning, DiagnosticResultCode.Timeout)); Status.Text = T("TimedOut"); }
         catch (ConnectionException error) { diagnostics.Write(new(completionEvent, DiagnosticLevel.Error, DiagnosticCodeMap.From(error.Code), DiagnosticState.Failed)); Status.Text = T(error.Code); }
@@ -452,6 +457,7 @@ public partial class MainWindow : Window
             // Keep the selected letter while it is occupied by our active mount. Refill only
             // after the mount manager has confirmed that the drive disappeared.
             if (client.Mount.State != MountState.Mounted) FillDrives();
+            if(completed)succeeded?.Invoke();
         }
     }
     private void PairClick(object sender, RoutedEventArgs e)
@@ -472,7 +478,7 @@ public partial class MainWindow : Window
         Start(DiagnosticEventName.AuthenticationCompleted, async token =>
         {
             await client.PairAsync(candidate, endpoint, code, Environment.MachineName, progress, token);
-        }, "PairingCompleted");
+        }, "PairingCompleted", () => ShowMainPage(DevicesPage, DevicesNavigation));
     }
     private void ConnectClick(object sender, RoutedEventArgs e)
     {
@@ -522,6 +528,20 @@ public partial class MainWindow : Window
             await client.RemoveLocallyAsync(record.DeviceId);
             manualEndpoints.Clear(record.DeviceId);
             ShowMainPage(DevicesPage, DevicesNavigation);
+        });
+    }
+    private void SaveDeviceDetailsClick(object sender, RoutedEventArgs e)
+    {
+        if(Selected?.Record is not { } record)return;
+        string alias=DeviceAlias.Text;string note=DeviceNote.Text;
+        Start(DiagnosticEventName.DeviceMetadataChanged,async _=>
+        {
+            await client.UpdateLocalMetadataAsync(record.DeviceId,alias,note);
+        },"DeviceDetailsSaved",()=>
+        {
+            DeviceSettingsName.Text=Selected?.Name??string.Empty;
+            DeviceAlias.Text=Selected?.Record?.DeviceAlias??string.Empty;
+            DeviceNote.Text=Selected?.Record?.Note??string.Empty;
         });
     }
     private void DeleteClick(object sender, RoutedEventArgs e)
@@ -622,7 +642,7 @@ public partial class MainWindow : Window
 
     private sealed record DeviceRow(string Id, DeviceCandidate? Candidate, PairingRecord? Record, bool IsConnected, char? DriveLetter)
     {
-        public string Name => Record?.DeviceName ?? Candidate!.DisplayName;
+        public string Name => Record?.DisplayName ?? Candidate!.DisplayName;
         public string Address => Candidate is null ? T("Offline") : string.Join(", ", Candidate.Endpoints.Select(p => p.Address));
         public string Mode => Record is null ? T("NotPaired") : T(Record.Mode.ToString());
         public string State => IsConnected ? T("ConnectedState") : Record?.State switch
@@ -635,6 +655,7 @@ public partial class MainWindow : Window
         };
         public string PrimaryAction => IsConnected ? T("OpenFiles") : Record?.State == PairingRecordState.Pending ? T("ContinueConnecting") : Record is null ? T("PairAction") : T("ConnectAction");
         public string DriveSummary => IsConnected && DriveLetter is { } letter ? $"{letter}:\\" : Address;
+        public string NoteSummary => Record?.Note ?? string.Empty;
         public string Accent => IsConnected ? "#16865B" : Record is null ? "#109DA8" : Record.State == PairingRecordState.Active ? "#8A96A6" : "#A85F00";
         public bool CanDisconnect => IsConnected;
         public bool ShowInDeviceList => Record is not null;

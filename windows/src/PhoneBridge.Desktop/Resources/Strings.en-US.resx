@@ -149,6 +149,13 @@
   <data name="RemoveAndAdvanced" xml:space="preserve"><value>Remove and advanced troubleshooting</value></data>
   <data name="RemovePhoneHelp" xml:space="preserve"><value>Delete this phone's pairing information from Windows without asking the phone. Connecting again requires a new pairing.</value></data>
   <data name="RemovePhone" xml:space="preserve"><value>Remove this phone</value></data>
+  <data name="DeviceLocalDetails" xml:space="preserve"><value>Local display details</value></data>
+  <data name="DeviceAlias" xml:space="preserve"><value>Custom name</value></data>
+  <data name="DeviceAliasHelp" xml:space="preserve"><value>Stored only on this Windows PC. Leave blank to use the phone's original name.</value></data>
+  <data name="DeviceNote" xml:space="preserve"><value>Note</value></data>
+  <data name="DeviceNoteHelp" xml:space="preserve"><value>The note stays on this PC and is never sent to the phone.</value></data>
+  <data name="SaveDeviceDetails" xml:space="preserve"><value>Save name and note</value></data>
+  <data name="DeviceDetailsSaved" xml:space="preserve"><value>The name and note were saved on this PC.</value></data>
   <data name="General" xml:space="preserve"><value>General</value></data>
   <data name="AdvancedTroubleshooting" xml:space="preserve"><value>Advanced troubleshooting</value></data>
   <data name="Language" xml:space="preserve"><value>Language</value></data>

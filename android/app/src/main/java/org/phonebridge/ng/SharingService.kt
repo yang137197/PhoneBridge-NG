@@ -13,7 +13,10 @@ import android.os.Binder
 import android.os.Build
 import android.os.Environment
 import android.os.IBinder
+import com.phonebridge.server.TlsHelper
 import org.phonebridge.credentials.AccessMode
+import org.phonebridge.credentials.PairedClient
+import org.phonebridge.credentials.PairingStore
 import org.phonebridge.credentials.StoreException
 import java.io.File
 import java.util.concurrent.Executors
@@ -22,10 +25,13 @@ import java.util.concurrent.atomic.AtomicLong
 
 internal object SharedFolders {
     val names = listOf("Music", "DCIM", "Pictures", "Download", "Movies", "Documents", "Android/media")
+    val count get() = names.size + 1
+    fun displayNames(context: Context) = names + context.getString(R.string.phone_storage)
     @Suppress("DEPRECATION")
     fun selected(index: Int): File {
-        require(index in names.indices)
-        val directory = File(Environment.getExternalStorageDirectory(), names[index])
+        require(index in 0 until count)
+        val root = Environment.getExternalStorageDirectory()
+        val directory = if (index == names.size) root else File(root, names[index])
         require(directory.isDirectory)
         return directory
     }
@@ -50,6 +56,8 @@ class SharingService : Service() {
         private set
     @Volatile internal var selectedFolder = 0
         private set
+    @Volatile internal var storedClients: List<PairedClient> = emptyList()
+        private set
     private var runtimeLocks: SharingRuntimeLocks? = null
     internal val multicastLockHeld: Boolean get() = runtimeLocks?.multicastHeld == true
     internal val wakeLockHeld: Boolean get() = runtimeLocks?.wakeHeld == true
@@ -63,17 +71,38 @@ class SharingService : Service() {
             val generation = foregroundGeneration.get()
             submit { engine?.pairing?.openWindow { foreground.get() && foregroundGeneration.get() == generation } ?: throw ApiFailure(409, "conflict") }
         }
-        fun closePairing() { foregroundGeneration.incrementAndGet(); engine?.pairing?.cancelWindow() }
+        fun closePairing() {
+            foregroundGeneration.incrementAndGet()
+            submit {
+                engine?.pairing?.cancelWindow()
+                if (!sharingEnabled) { stopEngine(); stopSelf() }
+            }
+        }
         fun decide(attempt: String, approve: Boolean) = submit { engine?.pairing?.decide(attempt, approve) ?: throw ApiFailure(409, "conflict") }
         fun revoke(client: String) = submit { engine?.revoke(client) ?: throw ApiFailure(409, "conflict") }
-        fun remove(client: String) = submit { engine?.remove(client) ?: throw ApiFailure(409, "conflict") }
-        fun updateMode(client: String, mode: AccessMode) = submit { engine?.updateMode(client, mode) ?: throw ApiFailure(409, "conflict") }
+        fun remove(client: String) = submit {
+            val current = engine
+            if (current != null) { current.remove(client); storedClients = current.clients.clients }
+            else { val store = pairingStore(); storedClients = store.remove(client, store.snapshot().revision).clients }
+        }
+        fun updateMode(client: String, mode: AccessMode) = submit {
+            val current = engine
+            if (current != null) { current.updateMode(client, mode); storedClients = current.clients.clients }
+            else { val store = pairingStore(); storedClients = store.updateMode(client, mode, store.snapshot().revision).clients }
+        }
     }
     private val binder = LocalBinder()
     override fun onBind(intent: Intent?): IBinder = binder
     override fun onCreate() {
         super.onCreate()
         getSystemService(NotificationManager::class.java).createNotificationChannel(NotificationChannel(CHANNEL, getString(R.string.sharing_channel), NotificationManager.IMPORTANCE_LOW))
+        worker.execute {
+            val existing = File(noBackupFilesDir, "pairings-v1").isDirectory
+            storedClients = if (!existing) emptyList() else try { pairingStore().snapshot().clients } catch (_: Exception) {
+                status = R.string.storage_error
+                emptyList()
+            }
+        }
     }
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         if (intent?.action == STOP) {
@@ -89,6 +118,7 @@ class SharingService : Service() {
         val selected = if (action in setOf(START, PAIR)) intent?.getIntExtra("folder", 0) ?: 0 else prefs.getInt("folder", 0)
         worker.execute {
             try {
+                if (action == START && engine != null && !sharingEnabled && selected != selectedFolder) stopEngine()
                 if (engine == null) {
                     status = R.string.starting
                     check(SharedFolders.allowed(this))
@@ -97,7 +127,7 @@ class SharingService : Service() {
                     val created = SharingEngine(applicationContext, root, 8273, { sharingEnabled }) {
                         worker.execute { status = R.string.storage_error; stopEngine(); stopSelf() }
                     }
-                    engine = created; selectedFolder = selected
+                    engine = created; selectedFolder = selected; storedClients = created.clients.clients
                 }
                 if (pairingOnly) {
                     if (!sharingEnabled) {
@@ -124,6 +154,11 @@ class SharingService : Service() {
             catch (_: Exception) { status = R.string.action_rejected }
         }
     }
+    private fun pairingStore(): PairingStore {
+        check(File(noBackupFilesDir, "pairings-v1").isDirectory)
+        val identity = TlsHelper.openIdentity(applicationContext)
+        return PairingStore.openExisting(applicationContext, identity.fingerprint)
+    }
     private fun notification(text: Int): Notification {
         val launch = PendingIntent.getActivity(this, 0, Intent(this, MainActivity::class.java), PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
         val stop = PendingIntent.getService(this, 1, Intent(this, SharingService::class.java).setAction(STOP), PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
@@ -138,6 +173,7 @@ class SharingService : Service() {
     private fun stopEngine() {
         val old = engine; engine = null
         sharingEnabled = false
+        if (old != null) storedClients = old.clients.clients
         try { old?.close() } catch (_: Exception) { }
         runtimeLocks?.close(); runtimeLocks = null
         stopForeground(STOP_FOREGROUND_REMOVE)

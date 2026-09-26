@@ -60,6 +60,7 @@
           <StackPanel Grid.Row="2" Margin="30,10,0,18">
            <TextBlock Text="{Binding Mode}"/>
            <TextBlock Text="{Binding DriveSummary}" Style="{StaticResource MutedText}" Margin="0,5,0,0"/>
+           <TextBlock Text="{Binding NoteSummary}" Style="{StaticResource MutedText}" Margin="0,5,0,0" TextTrimming="CharacterEllipsis"/>
           </StackPanel>
           <WrapPanel Grid.Row="3" Margin="30,0,0,0">
            <Button Content="{Binding PrimaryAction}" Style="{StaticResource PrimaryButton}" Click="DevicePrimaryClick" Margin="0,0,10,0"/>
@@ -124,6 +125,18 @@
         </StackPanel>
        </Border>
       </Grid>
+      <Border Style="{StaticResource Card}" Margin="0,16,0,0">
+       <StackPanel>
+        <TextBlock Text="{local:Text DeviceLocalDetails}" Style="{StaticResource SectionTitle}"/>
+        <TextBlock Text="{local:Text DeviceAlias}" FontWeight="SemiBold" Margin="0,20,0,8"/>
+        <TextBox x:Name="DeviceAlias" AutomationProperties.Name="{local:Text DeviceAlias}" AutomationProperties.AutomationId="DeviceAlias" MaxLength="64"/>
+        <TextBlock Text="{local:Text DeviceAliasHelp}" Style="{StaticResource MutedText}" Margin="0,6,0,12"/>
+        <TextBlock Text="{local:Text DeviceNote}" FontWeight="SemiBold" Margin="0,8,0,8"/>
+        <TextBox x:Name="DeviceNote" AutomationProperties.Name="{local:Text DeviceNote}" AutomationProperties.AutomationId="DeviceNote" MaxLength="500" TextWrapping="Wrap" MinHeight="86" VerticalScrollBarVisibility="Auto"/>
+        <TextBlock Text="{local:Text DeviceNoteHelp}" Style="{StaticResource MutedText}" Margin="0,6,0,12"/>
+        <Button x:Name="SaveDeviceDetails" Content="{local:Text SaveDeviceDetails}" Click="SaveDeviceDetailsClick" AutomationProperties.AutomationId="SaveDeviceDetails" Style="{StaticResource PrimaryButton}" HorizontalAlignment="Left"/>
+       </StackPanel>
+      </Border>
       <Border Style="{StaticResource Card}" Margin="0,16,0,0">
        <StackPanel>
         <TextBlock Text="{local:Text RemoveAndAdvanced}" Style="{StaticResource SectionTitle}"/>

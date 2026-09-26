@@ -1,6 +1,7 @@
 package org.phonebridge.ng
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.ComponentName
@@ -19,6 +20,8 @@ import android.os.Handler
 import android.os.IBinder
 import android.os.Looper
 import android.provider.Settings
+import android.window.OnBackInvokedCallback
+import android.window.OnBackInvokedDispatcher
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
@@ -33,8 +36,10 @@ import android.widget.RadioGroup
 import android.widget.ScrollView
 import android.widget.Spinner
 import android.widget.TextView
+import android.widget.Toast
 import org.phonebridge.credentials.AccessMode
 import org.phonebridge.credentials.ClientState
+import org.phonebridge.credentials.PairedClient
 
 class MainActivity : Activity() {
     private enum class Screen { HOME, PAIRING, CLIENT, SETTINGS, LANGUAGE }
@@ -67,6 +72,8 @@ class MainActivity : Activity() {
     private var countdown: TextView? = null
     private var screen = Screen.HOME
     private var selectedClientId: String? = null
+    private var lastRootBackAt = 0L
+    private var backCallback: OnBackInvokedCallback? = null
 
     private val connection = object : ServiceConnection {
         override fun onServiceConnected(name: ComponentName, service: IBinder) {
@@ -101,6 +108,11 @@ class MainActivity : Activity() {
             insets
         }
         setContentView(scroll)
+        if (Build.VERSION.SDK_INT >= 33) {
+            backCallback = OnBackInvokedCallback { handleBack() }.also {
+                onBackInvokedDispatcher.registerOnBackInvokedCallback(OnBackInvokedDispatcher.PRIORITY_DEFAULT, it)
+            }
+        }
         when (savedInstanceState?.getString("screen")) {
             Screen.SETTINGS.name -> showSettings()
             Screen.LANGUAGE.name -> showLanguageSettings()
@@ -121,6 +133,14 @@ class MainActivity : Activity() {
     }
     override fun onPause() { visible = false; handler.removeCallbacks(refresh); binder?.leaveForeground(); super.onPause() }
     override fun onStop() { if (bound) { unbindService(connection); bound = false }; binder = null; super.onStop() }
+    override fun onDestroy() {
+        if (Build.VERSION.SDK_INT >= 33) backCallback?.let { onBackInvokedDispatcher.unregisterOnBackInvokedCallback(it) }
+        super.onDestroy()
+    }
+
+    @Deprecated("Android 13 and newer use OnBackInvokedCallback")
+    @SuppressLint("GestureBackNavigation")
+    override fun onBackPressed() { if (Build.VERSION.SDK_INT < 33) handleBack() }
 
     private fun showHome() {
         screen = Screen.HOME
@@ -148,8 +168,8 @@ class MainActivity : Activity() {
         val folderCard = card(statusCard, surface, compact = true)
         label(folderCard, getString(R.string.folder), 12f, true, muted)
         folder = Spinner(this).apply {
-            adapter = ArrayAdapter(this@MainActivity, android.R.layout.simple_spinner_dropdown_item, SharedFolders.names)
-            setSelection(getSharedPreferences("settings", Context.MODE_PRIVATE).getInt("folder", 0).coerceIn(0, SharedFolders.names.lastIndex))
+            adapter = ArrayAdapter(this@MainActivity, android.R.layout.simple_spinner_dropdown_item, SharedFolders.displayNames(this@MainActivity))
+            setSelection(getSharedPreferences("settings", Context.MODE_PRIVATE).getInt("folder", 0).coerceIn(0, SharedFolders.count - 1))
         }
         folderCard.addView(folder, matchWrap(top = 0))
 
@@ -216,6 +236,8 @@ class MainActivity : Activity() {
             R.string.language,
             getString(if (AppLanguage.selected(this) == AppLanguage.CHINESE) R.string.language_zh else R.string.language_en),
         ) { showLanguageSettings() }
+        sectionTitle(content, R.string.settings_app)
+        button(content, R.string.exit_app, primary = false) { requestExitApplication() }.apply { setTextColor(danger); background = outlined(danger) }
         label(content, getString(R.string.no_theme), 12f, false, muted).setPadding(dp(4), dp(18), 0, 0)
     }
 
@@ -255,11 +277,13 @@ class MainActivity : Activity() {
         status.setText(service?.status ?: R.string.stopped)
         status.setTextColor(if (service?.sharingEnabled == true) success else muted)
         start.setText(if (service?.sharingEnabled == true) R.string.stop else R.string.start)
-        folder.isEnabled = engine == null
+        folder.isEnabled = service?.sharingEnabled != true
         pair.isEnabled = SharedFolders.allowed(this) && runCatching { engine?.pairing?.view() }.getOrNull() == null
-        val clients = engine?.clients?.clients?.filter { it.state == ClientState.ACTIVE } ?: emptyList()
-        if (renderedClients == clients) return
-        renderedClients = clients
+        val clients = pairedClients()
+        val sharing = service?.sharingEnabled == true
+        val renderKey = clients to sharing
+        if (renderedClients == renderKey) return
+        renderedClients = renderKey
         clientsArea.removeAllViews()
         if (clients.isEmpty()) {
             val empty = card(clientsArea, surface)
@@ -275,7 +299,7 @@ class MainActivity : Activity() {
             val copy = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
             title.addView(copy, LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f))
             label(copy, client.clientName, 15f, true)
-            label(copy, "●  ${getString(R.string.online)}", 12f, false, success)
+            label(copy, getString(if (sharing) R.string.paired_sharing else R.string.paired_offline), 12f, false, if (sharing) success else muted)
             label(item, modeName(client.mode), 13f, false, text).setPadding(dp(46), dp(6), 0, 0)
         }
     }
@@ -283,7 +307,7 @@ class MainActivity : Activity() {
     private fun renderPairing() {
         if (screen != Screen.PAIRING || !::pairingArea.isInitialized) return
         val view = try { binder?.service?.engine?.pairing?.view() } catch (_: Exception) { null }
-        if (view?.state == "Active") { showHome(); return }
+        if (view?.state == "Active") { binder?.closePairing(); showHome(); return }
         pairingArea.removeAllViews()
         countdown = null
         if (view == null) {
@@ -315,12 +339,13 @@ class MainActivity : Activity() {
 
     private fun renderClient() {
         if (screen != Screen.CLIENT) return
-        val client = binder?.service?.engine?.clients?.clients?.firstOrNull { it.clientId == selectedClientId && it.state == ClientState.ACTIVE }
+        val client = pairedClients().firstOrNull { it.clientId == selectedClientId }
         if (client == null) { showHome(); return }
         while (content.childCount > 1) content.removeViewAt(content.childCount - 1)
         val identity = card(content, surface)
         label(identity, client.clientName, 17f, true)
-        label(identity, "●  ${getString(R.string.online)}", 13f, false, success)
+        val sharing = binder?.service?.sharingEnabled == true
+        label(identity, getString(if (sharing) R.string.paired_sharing else R.string.paired_offline), 13f, false, if (sharing) success else muted)
 
         val access = card(content, surface)
         label(access, getString(R.string.access_mode), 18f, true)
@@ -441,6 +466,41 @@ class MainActivity : Activity() {
     private fun matchWrap(top: Int = 0, bottom: Int = 0) = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT).apply { topMargin = dp(top); bottomMargin = dp(bottom) }
     private fun dp(value: Int) = (value * resources.displayMetrics.density + 0.5f).toInt()
     private fun modeName(mode: AccessMode) = getString(when (mode) { AccessMode.READ_ONLY -> R.string.mode_read_only; AccessMode.SAFE -> R.string.mode_safe; AccessMode.READ_WRITE -> R.string.mode_read_write })
+    private fun pairedClients(): List<PairedClient> {
+        val service = binder?.service ?: return emptyList()
+        return (service.engine?.clients?.clients ?: service.storedClients).filter { it.state == ClientState.ACTIVE }
+    }
+
+    private fun handleBack() {
+        lastRootBackAt = if (screen == Screen.HOME) lastRootBackAt else 0L
+        when (screen) {
+            Screen.PAIRING -> { binder?.closePairing(); showHome() }
+            Screen.CLIENT, Screen.SETTINGS -> showHome()
+            Screen.LANGUAGE -> showSettings()
+            Screen.HOME -> handleRootBack()
+        }
+    }
+    private fun handleRootBack() {
+        val now = android.os.SystemClock.elapsedRealtime()
+        if (now - lastRootBackAt > 2_000) {
+            lastRootBackAt = now
+            Toast.makeText(this, if (binder?.service?.sharingEnabled == true) R.string.back_again_background else R.string.back_again_exit, Toast.LENGTH_SHORT).show()
+            return
+        }
+        lastRootBackAt = 0L
+        if (binder?.service?.sharingEnabled == true) moveTaskToBack(true) else exitApplication()
+    }
+    private fun requestExitApplication() {
+        if (binder?.service?.sharingEnabled == true) {
+            AlertDialog.Builder(this).setMessage(R.string.exit_stops_sharing)
+                .setPositiveButton(R.string.exit_app) { _, _ -> exitApplication() }
+                .setNegativeButton(R.string.cancel, null).show()
+        } else exitApplication()
+    }
+    private fun exitApplication() {
+        startService(Intent(this, SharingService::class.java).setAction(SharingService.STOP))
+        finishAndRemoveTask()
+    }
 
     private fun requestStart(selected: Int) {
         if (BatteryOptimizationPolicy.isExempt(this)) { beginSharing(selected); return }

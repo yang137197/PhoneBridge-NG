@@ -149,6 +149,13 @@
   <data name="RemoveAndAdvanced" xml:space="preserve"><value>移除与高级排障</value></data>
   <data name="RemovePhoneHelp" xml:space="preserve"><value>直接清除 Windows 上此手机的配对信息，不请求手机确认。再次连接需要重新配对。</value></data>
   <data name="RemovePhone" xml:space="preserve"><value>移除此手机</value></data>
+  <data name="DeviceLocalDetails" xml:space="preserve"><value>本机显示信息</value></data>
+  <data name="DeviceAlias" xml:space="preserve"><value>自定义名称</value></data>
+  <data name="DeviceAliasHelp" xml:space="preserve"><value>只保存在这台 Windows 电脑；留空时显示手机原始名称。</value></data>
+  <data name="DeviceNote" xml:space="preserve"><value>备注</value></data>
+  <data name="DeviceNoteHelp" xml:space="preserve"><value>备注只保存在本机，不会发送到手机。</value></data>
+  <data name="SaveDeviceDetails" xml:space="preserve"><value>保存名称和备注</value></data>
+  <data name="DeviceDetailsSaved" xml:space="preserve"><value>名称和备注已保存在本机。</value></data>
   <data name="General" xml:space="preserve"><value>常规</value></data>
   <data name="AdvancedTroubleshooting" xml:space="preserve"><value>高级排障</value></data>
   <data name="Language" xml:space="preserve"><value>语言</value></data>

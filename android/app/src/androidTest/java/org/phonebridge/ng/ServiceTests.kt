@@ -3,6 +3,11 @@ package org.phonebridge.ng
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import android.provider.Settings
+import android.content.ComponentName
+import android.content.Context
+import android.content.Intent
+import android.content.ServiceConnection
+import android.os.IBinder
 import com.phonebridge.server.TlsHelper
 import com.phonebridge.server.TlsIdentityStore
 import com.phonebridge.server.SharedPath
@@ -24,6 +29,7 @@ import java.security.KeyStore
 import java.security.SecureRandom
 import java.util.UUID
 import java.util.concurrent.CountDownLatch
+import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicBoolean
 import javax.net.ssl.SSLContext
 import javax.net.ssl.SSLSocket
@@ -31,6 +37,49 @@ import javax.net.ssl.TrustManagerFactory
 
 @RunWith(AndroidJUnit4::class)
 class ServiceTests {
+    @Test fun phoneStorageOptionKeepsExistingFolderIndexesAndUsesSharedStorageRoot() {
+        assertEquals(listOf("Music", "DCIM", "Pictures", "Download", "Movies", "Documents", "Android/media"), SharedFolders.names)
+        assertEquals(SharedFolders.names.size + 1, SharedFolders.count)
+        @Suppress("DEPRECATION")
+        val root = android.os.Environment.getExternalStorageDirectory().canonicalFile
+        assertEquals(root, SharedFolders.selected(SharedFolders.count - 1).canonicalFile)
+    }
+
+    @Test fun stoppedServiceLoadsAndRemovesPersistedComputer() {
+        val context = InstrumentationRegistry.getInstrumentation().targetContext
+        val identity = TlsHelper.openIdentity(context)
+        val store = if (identity.created) PairingStore.initializeForNewIdentity(context, identity.fingerprint)
+            else PairingStore.openExisting(context, identity.fingerprint)
+        assertTrue(store.snapshot().clients.isEmpty())
+        val client = "101112131415161718191a1b1c1d1e1f"
+        val token = ByteArray(32).also { SecureRandom().nextBytes(it) }
+        store.approve(client, "Synthetic PC", token, store.snapshot().revision)
+        val connected = CountDownLatch(1)
+        var binder: SharingService.LocalBinder? = null
+        val connection = object : ServiceConnection {
+            override fun onServiceConnected(name: ComponentName, service: IBinder) { binder = service as SharingService.LocalBinder; connected.countDown() }
+            override fun onServiceDisconnected(name: ComponentName) { binder = null }
+        }
+        assertTrue(context.bindService(Intent(context, SharingService::class.java), connection, Context.BIND_AUTO_CREATE))
+        try {
+            assertTrue(connected.await(10, TimeUnit.SECONDS))
+            val loaded = android.os.SystemClock.elapsedRealtime() + 10_000
+            while (binder?.service?.storedClients?.singleOrNull()?.clientId != client && android.os.SystemClock.elapsedRealtime() < loaded) Thread.sleep(20)
+            assertEquals(client, binder?.service?.storedClients?.single()?.clientId)
+            assertFalse(binder?.service?.sharingEnabled ?: true)
+            binder?.remove(client)
+            val removed = android.os.SystemClock.elapsedRealtime() + 10_000
+            while (binder?.service?.storedClients?.isNotEmpty() == true && android.os.SystemClock.elapsedRealtime() < removed) Thread.sleep(20)
+            assertTrue(binder?.service?.storedClients?.isEmpty() == true)
+            try { store.authenticate(client, token); fail("removed token remained authorized") }
+            catch (error: org.phonebridge.credentials.StoreException) { assertEquals(org.phonebridge.credentials.StoreError.UNAUTHORIZED, error.error) }
+        } finally {
+            token.fill(0)
+            context.unbindService(connection)
+            context.stopService(Intent(context, SharingService::class.java))
+        }
+    }
+
     @Test fun batteryOptimizationRequestTargetsOnlyThisPackage() {
         val context = InstrumentationRegistry.getInstrumentation().targetContext
         val request = BatteryOptimizationPolicy.requestIntent(context.packageName)

@@ -817,13 +817,11 @@ Android 最终输出：
 PhoneBridge.apk
 ```
 
-第一阶段：
+唯一分发渠道：
 
 GitHub Release APK。
 
-后续再考虑：
-
-Google Play / 其他分发。
+不规划 Google Play 或其他应用商店发布；不得为商店审核、商店签名或商店上架扩大范围。
 
 ---
 

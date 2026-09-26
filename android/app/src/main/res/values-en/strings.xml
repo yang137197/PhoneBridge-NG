@@ -2,6 +2,7 @@
     <string name="app_name">PhoneBridge NG</string>
     <string name="subtitle">Access phone files from a computer on your local network</string>
     <string name="folder">Shared folder</string>
+    <string name="phone_storage">Phone storage</string>
     <string name="permission">Allow shared file access</string>
     <string name="start">Start sharing</string>
     <string name="stop">Stop sharing</string>
@@ -47,7 +48,8 @@
     <string name="back">Back</string>
     <string name="permission_card_title">File access required</string>
     <string name="computer_details">Computer details</string>
-    <string name="online">Online</string>
+    <string name="paired_sharing">Paired · sharing available</string>
+    <string name="paired_offline">Paired · currently offline</string>
     <string name="language">Language</string>
     <string name="language_zh">简体中文</string>
     <string name="language_en">English</string>
@@ -57,4 +59,9 @@
     <string name="approval_status">Approval status (when a request arrives)</string>
     <string name="mode_reconnect">Windows must reconnect after a change.</string>
     <string name="danger_zone">Danger zone</string>
+    <string name="settings_app">App</string>
+    <string name="exit_app">Exit app</string>
+    <string name="exit_stops_sharing">Exiting the app stops sharing and disconnects the current session. Continue?</string>
+    <string name="back_again_background">Press back again to return home; sharing will continue in the background</string>
+    <string name="back_again_exit">Press back again to exit the app</string>
 </resources>

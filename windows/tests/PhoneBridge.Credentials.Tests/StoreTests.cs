@@ -100,6 +100,36 @@ public sealed class StoreTests
         store.RemoveLocally(store.BeginRevocation(active)); Assert.IsEmpty(store.List());
     }
     [TestMethod]
+    public void LocalAliasAndNotePersistWithoutChangingDeviceIdentity()
+    {
+        var store=PairingStore.OpenAt(_root);var active=Active(store);
+        var changed=store.UpdateLocalMetadata(active,"  我的手机  ","  主力设备  ");
+        Assert.AreEqual(active.DeviceId,changed.DeviceId);Assert.AreEqual(active.ClientId,changed.ClientId);
+        Assert.AreEqual("我的手机",changed.DeviceAlias);Assert.AreEqual("主力设备",changed.Note);Assert.AreEqual("我的手机",changed.DisplayName);
+        var restored=PairingStore.OpenAt(_root).Load(active.DeviceId);
+        Assert.AreEqual("我的手机",restored.DeviceAlias);Assert.AreEqual("主力设备",restored.Note);
+        var cleared=PairingStore.OpenAt(_root).UpdateLocalMetadata(restored,"","");
+        Assert.AreEqual(cleared.DeviceName,cleared.DisplayName);
+        Error(StoreError.RevisionConflict,()=>store.UpdateLocalMetadata(active,"stale",""));
+    }
+    [TestMethod]
+    public void LocalAliasAndNoteAreBoundedAndOldSchemaRemainsReadable()
+    {
+        var store=PairingStore.OpenAt(_root);var pending=Pending(store);
+        Error(StoreError.InvalidInput,()=>store.UpdateLocalMetadata(pending,new string('a',65),""));
+        Error(StoreError.InvalidInput,()=>store.UpdateLocalMetadata(pending,"",new string('a',501)));
+        var plain=CurrentUserProtection.Unprotect(File.ReadAllBytes(RecordPath),pending.DeviceId);
+        try
+        {
+            Assert.AreEqual(2,plain[4]);Assert.AreEqual(0,plain[^1]);Assert.AreEqual(0,plain[^2]);Assert.AreEqual(0,plain[^3]);Assert.AreEqual(0,plain[^4]);
+            plain[4]=1;Array.Resize(ref plain,plain.Length-4);
+            File.WriteAllBytes(RecordPath,CurrentUserProtection.Protect(plain,pending.DeviceId));
+        }
+        finally { CryptographicOperations.ZeroMemory(plain); }
+        var restored=PairingStore.OpenAt(_root).Load(pending.DeviceId);
+        Assert.AreEqual("",restored.DeviceAlias);Assert.AreEqual("",restored.Note);Assert.AreEqual(restored.DeviceName,restored.DisplayName);
+    }
+    [TestMethod]
     public void PendingPersistsWithoutPlaintextAndCannotMount()
     {
         var store=PairingStore.OpenAt(_root);var p=Pending(store);Assert.AreEqual(PairingRecordState.Pending,p.State);Assert.IsFalse(p.CanMount);
@@ -242,7 +272,7 @@ public sealed class StoreTests
             int n=BinaryPrimitives.ReadUInt16BigEndian(plain.AsSpan(15));
             switch(mutation)
             {
-                case "wrong-magic":plain[0]^=1;break;case "version":plain[4]=2;break;case "revision":Array.Clear(plain,5,8);break;
+                case "wrong-magic":plain[0]^=1;break;case "version":plain[4]=3;break;case "revision":Array.Clear(plain,5,8);break;
                 case "state":plain[13]=255;break;case "mode":plain[14]=255;break;case "ca-hash":plain[17+n]^=1;break;
                 case "device":plain[49+n]^=1;break;case "utf8":plain[^1]=255;break;
                 case "trailing":var longer=new byte[plain.Length+1];plain.CopyTo(longer,0);CryptographicOperations.ZeroMemory(plain);plain=longer;break;

@@ -15,6 +15,11 @@ public sealed class ConnectionClient(PairingStore store) : IAsyncDisposable
     public ConnectedDevice? Connected { get; private set; }
     public MountSnapshot Mount => mounts.Snapshot;
     public Task<IReadOnlyList<PairingRecord>> RecordsAsync() => Task.Run(store.List);
+    public Task<PairingRecord> UpdateLocalMetadataAsync(string deviceId,string deviceAlias,string note) => RunAsync(() =>
+    {
+        var current=store.Load(deviceId);
+        return Task.FromResult(store.UpdateLocalMetadata(current,deviceAlias,note));
+    },CancellationToken.None);
 
     public Task<PairingRecord> PairAsync(DeviceCandidate candidate, DeviceEndpoint endpoint, char[] code,
         string clientName, IProgress<ConnectionStage>? progress, CancellationToken cancellationToken) =>

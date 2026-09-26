@@ -77,7 +77,7 @@
 
 当前唯一交付目录是 `.audit/delivery/output/`；正式交付包含安装器、正式 APK、对应源码 ZIP、README、SHA256SUMS 和 manifest。二进制构建后运行 `scripts/New-SourceDelivery.ps1` 生成并核验对应源码包。`.audit/runs/` 中的文件只用于历史验证，不作为当前安装入口。先阅读交付目录内的 `README.txt`。
 
-`.audit/ui-acceptance/` 保存 P2-006 r21 和 P2-005 r20 的历史隔离验收证据，不是安装入口。正式安装入口是 GitHub `v0.2.0` Release；`.audit/delivery/output/` 是与其一致的本地镜像。`0.1.0` 不作为 `0.2.0` 的升级来源，正式升级基线从 `0.2.0` 开始。
+`.audit/ui-acceptance/` 保存 P2-006 r21 和 P2-005 r20 的历史隔离验收证据，不是安装入口。正式安装入口是 GitHub `v0.2.0` Release；`.audit/delivery/output/` 是与其一致的本地镜像。`0.1.0` 不作为 `0.2.0` 的升级来源；后续每个正式候选均按 [开发规则 4.1](DEVELOPMENT_RULES.md#41-正式候选版本的升级验证基线) 动态使用其前一个正式 Release 验证升级。
 
 P0-001 的 107 个通过测试、1 个跳过用例及 7 项离线问题复现仅为上游审计证据，不能代表真实手机、Explorer、大文件或断网恢复通过。
 

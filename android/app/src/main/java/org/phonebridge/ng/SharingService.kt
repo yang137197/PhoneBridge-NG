@@ -67,6 +67,7 @@ class SharingService : Service() {
         internal val service get() = this@SharingService
         fun enterForeground() { foreground.set(true) }
         fun leaveForeground() { foreground.set(false); foregroundGeneration.incrementAndGet(); engine?.pairing?.cancelWindowUnlessActive() }
+        fun refreshLanguage() { this@SharingService.refreshLanguage() }
         fun openPairing() {
             val generation = foregroundGeneration.get()
             submit { engine?.pairing?.openWindow { foreground.get() && foregroundGeneration.get() == generation } ?: throw ApiFailure(409, "conflict") }
@@ -101,10 +102,11 @@ class SharingService : Service() {
         }
     }
     private val binder = LocalBinder()
+    override fun attachBaseContext(newBase: Context) { super.attachBaseContext(AppLanguage.wrap(newBase)) }
     override fun onBind(intent: Intent?): IBinder = binder
     override fun onCreate() {
         super.onCreate()
-        getSystemService(NotificationManager::class.java).createNotificationChannel(NotificationChannel(CHANNEL, getString(R.string.sharing_channel), NotificationManager.IMPORTANCE_LOW))
+        updateNotificationChannel()
         worker.execute {
             val existing = File(noBackupFilesDir, "pairings-v1").isDirectory
             storedClients = if (!existing) emptyList() else try { pairingStore().snapshot().clients } catch (_: Exception) {
@@ -174,11 +176,22 @@ class SharingService : Service() {
         return PairingStore.openExisting(applicationContext, identity.fingerprint)
     }
     private fun notification(text: Int): Notification {
+        val localized = AppLanguage.wrap(this)
         val launch = PendingIntent.getActivity(this, 0, Intent(this, MainActivity::class.java), PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
         val stop = PendingIntent.getService(this, 1, Intent(this, SharingService::class.java).setAction(STOP), PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
         return Notification.Builder(this, CHANNEL).setSmallIcon(android.R.drawable.stat_sys_upload)
-            .setContentTitle(getString(R.string.app_name)).setContentText(getString(text)).setContentIntent(launch)
-            .setOngoing(true).addAction(Notification.Action.Builder(null, getString(R.string.stop), stop).build()).build()
+            .setContentTitle(localized.getString(R.string.app_name)).setContentText(localized.getString(text)).setContentIntent(launch)
+            .setOngoing(true).addAction(Notification.Action.Builder(null, localized.getString(R.string.stop), stop).build()).build()
+    }
+    private fun updateNotificationChannel() {
+        val localized = AppLanguage.wrap(this)
+        getSystemService(NotificationManager::class.java).createNotificationChannel(
+            NotificationChannel(CHANNEL, localized.getString(R.string.sharing_channel), NotificationManager.IMPORTANCE_LOW)
+        )
+    }
+    private fun refreshLanguage() {
+        updateNotificationChannel()
+        if (engine != null) startForeground(1, notification(if (sharingEnabled) R.string.sharing_notification else R.string.pairing_notification))
     }
     private fun acquireRuntimeLocks() {
         check(runtimeLocks == null)

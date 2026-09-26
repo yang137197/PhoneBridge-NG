@@ -254,8 +254,8 @@ class MainActivity : Activity() {
         val chinese = RadioButton(this).apply { text = getString(R.string.language_zh); textSize = 15f; isChecked = selectedLanguage == AppLanguage.CHINESE }
         val english = RadioButton(this).apply { setText(R.string.language_en); textSize = 15f; isChecked = selectedLanguage == AppLanguage.ENGLISH }
         choices.addView(chinese, matchWrap(top = 12)); choices.addView(english, matchWrap(top = 6))
-        chinese.setOnClickListener { if (AppLanguage.set(this, AppLanguage.CHINESE)) recreate() }
-        english.setOnClickListener { if (AppLanguage.set(this, AppLanguage.ENGLISH)) recreate() }
+        chinese.setOnClickListener { if (AppLanguage.set(this, AppLanguage.CHINESE)) { binder?.refreshLanguage(); recreate() } }
+        english.setOnClickListener { if (AppLanguage.set(this, AppLanguage.ENGLISH)) { binder?.refreshLanguage(); recreate() } }
         language.addView(choices, matchWrap())
         val note = card(content, subtle)
         label(note, getString(R.string.language_behavior), 16f, true)

@@ -43,7 +43,7 @@ Android 版本策略由 P0-007/D-02 确定：保留 minSdk 26 的安装下限，
 
 | 职责 | 边界 |
 | --- | --- |
-| UI、托盘、设置、Localization | WPF 主界面；关闭窗口进入托盘；zh-CN 默认，en-US 资源；自启由用户选择。所有入口调用同一业务路径。 |
+| UI、托盘、设置、Localization | WPF 主界面；关闭窗口进入托盘；zh-CN 默认，zh-CN/en-US 动态资源和语言设置按数据根持久化；当前窗口、卡片、状态与托盘同步刷新。自启由用户选择。所有入口调用同一业务路径。 |
 | DeviceDiscovery / Device Model | mDNS 与手动候选端点、稳定 Device ID、名称、连接状态；地址变化不创建第二个配对设备。 |
 | Pairing / CertificateManager | 首次身份绑定、后续证书与公钥校验、身份变化中止；认证和文件传输必须使用一致的信任策略。 |
 | CredentialManager | ADR-017 使用当前用户 DPAPI，整条身份/凭据/状态共同保护；普通设置仅存引用及非秘密元数据。P1-005、P1-008 已完成实现及限定验收。 |

@@ -1,3 +1,4 @@
+using System.Reflection;
 using PhoneBridge.Desktop;
 
 namespace PhoneBridge.Desktop.Tests;
@@ -23,5 +24,26 @@ public sealed class DeviceListPolicyTests
         Assert.IsTrue(DeviceListPolicy.IsConnected("phone-a", "phone-a"));
         Assert.IsFalse(DeviceListPolicy.IsConnected("phone-a", "phone-b"));
         Assert.IsFalse(DeviceListPolicy.IsConnected("phone-a", null));
+    }
+
+    [TestMethod]
+    public void BusyCardOnlyDisablesAndCancelsItsOwnDevice()
+    {
+        Type type = typeof(MainWindow).GetNestedType("DeviceRow", BindingFlags.NonPublic)!;
+        object NewRow(string id, bool busy) => Activator.CreateInstance(type, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic,
+            binder: null, args: [id, id, null, null, false, null, busy, false], culture: null)!;
+        object busy = NewRow("a", true);
+        object other = NewRow("b", false);
+        T Property<T>(object row, string name) => (T)type.GetProperty(name)!.GetValue(row)!;
+
+        Assert.IsTrue(Property<bool>(busy, "IsBusy"));
+        Assert.IsFalse(Property<bool>(busy, "CanUsePrimary"));
+        Assert.IsTrue(Property<bool>(busy, "CanCancel"));
+        Assert.IsFalse(Property<bool>(busy, "CanModifySession"));
+        Assert.AreEqual(TextCatalog.Get("Working"), Property<string>(busy, "State"));
+        Assert.IsFalse(Property<bool>(other, "IsBusy"));
+        Assert.IsTrue(Property<bool>(other, "CanUsePrimary"));
+        Assert.IsFalse(Property<bool>(other, "CanCancel"));
+        Assert.IsTrue(Property<bool>(other, "CanModifySession"));
     }
 }

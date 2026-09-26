@@ -20,7 +20,7 @@
      <Button x:Name="SettingsNavigation" Style="{StaticResource NavButton}" Content="{local:Text NavSettings}" Click="NavigateSettingsClick"/>
      <Button x:Name="AboutNavigation" Style="{StaticResource NavButton}" Content="{local:Text NavAbout}" Click="NavigateAboutClick"/>
     </StackPanel>
-    <TextBlock Grid.Row="3" Text="v0.2 UI acceptance" Style="{StaticResource MutedText}" Margin="4,0"/>
+    <TextBlock Grid.Row="3" Text="{local:Text VersionPreview}" Style="{StaticResource MutedText}" Margin="4,0"/>
    </Grid>
   </Border>
 
@@ -62,9 +62,10 @@
            <TextBlock Text="{Binding DriveSummary}" Style="{StaticResource MutedText}" Margin="0,5,0,0"/>
           </StackPanel>
           <WrapPanel Grid.Row="3" Margin="30,0,0,0">
-           <Button Content="{Binding PrimaryAction}" Style="{StaticResource PrimaryButton}" Click="DevicePrimaryClick" Margin="0,0,10,0"/>
-           <Button Content="{local:Text Disconnect}" Click="DeviceDisconnectClick" Margin="0,0,10,0" Visibility="{Binding CanDisconnect, Converter={StaticResource BooleanToVisibility}}"/>
-           <Button Content="{local:Text PhoneSettings}" Style="{StaticResource TextButton}" Click="DeviceSettingsClick"/>
+            <Button Content="{Binding PrimaryAction}" Style="{StaticResource PrimaryButton}" Click="DevicePrimaryClick" IsEnabled="{Binding CanUsePrimary}" Margin="0,0,10,0"/>
+            <Button Content="{local:Text Cancel}" Click="DeviceCancelClick" Margin="0,0,10,0" Visibility="{Binding CanCancel, Converter={StaticResource BooleanToVisibility}}"/>
+            <Button Content="{local:Text Disconnect}" Click="DeviceDisconnectClick" IsEnabled="{Binding CanModifySession}" Margin="0,0,10,0" Visibility="{Binding CanDisconnect, Converter={StaticResource BooleanToVisibility}}"/>
+            <Button Content="{local:Text PhoneSettings}" Style="{StaticResource TextButton}" Click="DeviceSettingsClick" IsEnabled="{Binding CanModifySession}"/>
           </WrapPanel>
          </Grid>
         </Border>
@@ -157,8 +158,8 @@
         <TextBlock Text="{local:Text General}" Style="{StaticResource PageTitle}" Margin="0,0,0,24"/>
         <TextBlock Text="{local:Text Language}" Style="{StaticResource SectionTitle}"/>
         <StackPanel Orientation="Horizontal" Margin="0,16,0,24">
-         <RadioButton Content="{local:Text SimplifiedChinese}" IsChecked="True" Margin="0,0,34,0"/>
-         <RadioButton Content="English"/>
+          <RadioButton x:Name="ChineseLanguage" Content="{local:Text SimplifiedChinese}" GroupName="Language" Tag="zh-CN" Click="LanguageChangedClick" Margin="0,0,34,0"/>
+          <RadioButton x:Name="EnglishLanguage" Content="{local:Text English}" GroupName="Language" Tag="en-US" Click="LanguageChangedClick"/>
         </StackPanel>
         <Separator/>
         <TextBlock Text="{local:Text Startup}" Style="{StaticResource SectionTitle}" Margin="0,24,0,12"/>

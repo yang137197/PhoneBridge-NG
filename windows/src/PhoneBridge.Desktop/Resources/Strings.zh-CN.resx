@@ -54,6 +54,7 @@
   <data name="OpenFailed" xml:space="preserve"><value>未能打开资源管理器，盘符可能仍已挂载。</value></data>
   <data name="RevokeConfirm" xml:space="preserve"><value>将停止此手机的连接，并删除 Windows 上保存的配对凭据和临时地址。不会联系手机；手机端可能仍保留旧授权。再次连接需要按新设备重新配对。是否继续？</value></data>
   <data name="Closing" xml:space="preserve"><value>正在退出：取消操作并卸载本客户端盘符…</value></data>
+  <data name="Working" xml:space="preserve"><value>正在处理</value></data>
   <data name="TrayOpen" xml:space="preserve"><value>打开 PhoneBridge NG</value></data>
   <data name="TrayExit" xml:space="preserve"><value>退出</value></data>
   <data name="TrayOffline" xml:space="preserve"><value>PhoneBridge NG · 当前离线</value></data>
@@ -158,6 +159,8 @@
   <data name="AdvancedTroubleshooting" xml:space="preserve"><value>高级排障</value></data>
   <data name="Language" xml:space="preserve"><value>语言</value></data>
   <data name="SimplifiedChinese" xml:space="preserve"><value>简体中文</value></data>
+  <data name="English" xml:space="preserve"><value>English</value></data>
+  <data name="LanguageSaveFailed" xml:space="preserve"><value>无法保存语言设置。</value></data>
   <data name="Startup" xml:space="preserve"><value>启动</value></data>
   <data name="AutoStartHelp" xml:space="preserve"><value>只启动客户端并进入托盘，不自动连接或创建盘符。</value></data>
   <data name="DefaultDrive" xml:space="preserve"><value>默认盘符</value></data>

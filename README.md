@@ -2,7 +2,7 @@
 
 中文优先的 Android ↔ Windows 无线文件访问工具。目标是在同一局域网内发现并验证手机，通过 HTTPS/WebDAV、rclone 和 WinFsp 将手机共享存储映射到 Windows 文件资源管理器。
 
-**Phase 0 最小技术链路已通过：修复版完成真机 LAN、可信 TLS、盘符、双向 100 MB 和 Explorer 可见性验证。Windows C# 与 Android NG 已完成 Redmi 与 Samsung S23 Ultra 的首次配对、受保护凭据、三种访问模式、安全模式写入/删除确认、锁屏共享、断线安全卸载、同设备自动重连、托盘、用户选择自启动、脱敏诊断导出、手动地址恢复、1 GB 中断缓存恢复、5/10/20 GB 双向完整性、重启后大脏缓存恢复、视频播放/随机 Seek、常见文件名路径、本地安装/升级/卸载，以及同一 Windows 同时连接 Samsung 与 Redmi 的限定验收。Windows 自启动只进入托盘，盘符由用户手动连接。正式 Android 长期签名身份、独立 USB 备份、Samsung 迁移与同签名覆盖升级均已验证；当前唯一交付目录仍为 v0.1.0 正式第三方侧载版本，v0.2.0 r20 仅是本地验收候选。**
+**Phase 0 最小技术链路已通过：修复版完成真机 LAN、可信 TLS、盘符、双向 100 MB 和 Explorer 可见性验证。Windows C# 与 Android NG 已完成 Redmi 与 Samsung S23 Ultra 的首次配对、受保护凭据、三种访问模式、安全模式写入/删除确认、锁屏共享、断线安全卸载、同设备自动重连、托盘、用户选择自启动、脱敏诊断导出、手动地址恢复、1 GB 中断缓存恢复、5/10/20 GB 双向完整性、重启后大脏缓存恢复、视频播放/随机 Seek、常见文件名路径、本地安装/升级/卸载，以及同一 Windows 同时连接 Samsung 与 Redmi 的限定验收。Windows 自启动只进入托盘，盘符由用户手动连接。正式 Android 长期签名身份、独立 USB 备份、Samsung 迁移与同签名覆盖升级均已验证；当前唯一交付目录仍为 v0.1.0 正式第三方侧载版本，v0.2.0 r21 仅是本地验收候选。**
 
 ## 当前进度
 
@@ -69,12 +69,13 @@
 | P2-003 两端 UI 实际效果验收 | 已完成；r2 的 A 图标、Android 48dp 导航图标、独立设置菜单及两端实际视觉由用户复验通过 | [验收记录](docs/audit/P2-003-UI-ACCEPTANCE.md)、[完成记录](docs/tasks/completed/P2-003-ui-acceptance-builds.md) |
 | P2-004 本地移除、截屏与配对体验收口 | 已完成；原定跨端流程及 r18 两端单一“设备备注”均已由用户验收通过 | [验收记录](docs/audit/P2-004-VALIDATION.md)、[完成记录](docs/tasks/completed/P2-004-local-removal-and-screenshot-policy.md) |
 | P2-005 按设备隔离的多会话核心 | 已完成；Windows 294/294、r20 双设备双盘符与单设备断开隔离实测通过 | [验收记录](docs/audit/P2-005-VALIDATION.md)、[完成记录](docs/tasks/completed/P2-005-multi-device-sessions.md) |
+| P2-006 UI、多会话接线与完整语言收口 | 已完成；Windows 297/297，r21 Windows 与 Redmi 当前界面及冷启动 English 保持通过，单卡忙碌/取消隔离有针对性测试 | [验收记录](docs/audit/P2-006-VALIDATION.md)、[完成记录](docs/tasks/completed/P2-006-ui-language-finalization.md) |
 | Phase 1 新版 Windows 客户端 | 配对、挂载、文件操作、生命周期与本地安装交付主链路已验收 | [开发规则](DEVELOPMENT_RULES.md) |
 | MVP 验收 | 15 项通过 | [15 项产品验收](docs/PRODUCT.md)、[P1-030 最终需求验收](docs/audit/P1-030-VALIDATION.md) |
 
 当前唯一交付目录是 `.audit/delivery/output/`；正式交付包含安装器、正式 APK、对应源码 ZIP、README、SHA256SUMS 和 manifest。二进制构建后运行 `scripts/New-SourceDelivery.ps1` 生成并核验对应源码包。`.audit/runs/` 中的文件只用于历史验证，不作为当前安装入口。先阅读交付目录内的 `README.txt`。
 
-`.audit/ui-acceptance/` 当前保存 P2-005 r20 本地验收候选，不是正式交付，也不替换上述 v0.1.0 安装入口。每个候选修订使用独立 Windows 数据根和独立 Android 应用 ID，不读取上轮验收或正式配对数据；正式升级仍保留正式用户数据。
+`.audit/ui-acceptance/` 当前保存 P2-006 r21 本地验收候选，并保留 r20 多设备证据；它们不是正式交付，也不替换上述 v0.1.0 安装入口。每个候选修订使用独立 Windows 数据根和独立 Android 应用 ID，不读取上轮验收或正式配对数据；正式升级仍保留正式用户数据。
 
 P0-001 的 107 个通过测试、1 个跳过用例及 7 项离线问题复现仅为上游审计证据，不能代表真实手机、Explorer、大文件或断网恢复通过。
 

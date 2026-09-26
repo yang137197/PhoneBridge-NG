@@ -54,6 +54,7 @@
   <data name="OpenFailed" xml:space="preserve"><value>Could not open File Explorer. The drive may still be mounted.</value></data>
   <data name="RevokeConfirm" xml:space="preserve"><value>Disconnect this phone and delete its saved pairing credential and temporary address from Windows. The phone is not contacted and may retain the old authorization. Connecting again requires pairing as a new device. Continue?</value></data>
   <data name="Closing" xml:space="preserve"><value>Closing: cancelling work and unmounting the owned drive…</value></data>
+  <data name="Working" xml:space="preserve"><value>Working…</value></data>
   <data name="TrayOpen" xml:space="preserve"><value>Open PhoneBridge NG</value></data>
   <data name="TrayExit" xml:space="preserve"><value>Exit</value></data>
   <data name="TrayOffline" xml:space="preserve"><value>PhoneBridge NG · offline</value></data>
@@ -158,6 +159,8 @@
   <data name="AdvancedTroubleshooting" xml:space="preserve"><value>Advanced troubleshooting</value></data>
   <data name="Language" xml:space="preserve"><value>Language</value></data>
   <data name="SimplifiedChinese" xml:space="preserve"><value>简体中文</value></data>
+  <data name="English" xml:space="preserve"><value>English</value></data>
+  <data name="LanguageSaveFailed" xml:space="preserve"><value>Could not save the language setting.</value></data>
   <data name="Startup" xml:space="preserve"><value>Startup</value></data>
   <data name="AutoStartHelp" xml:space="preserve"><value>Starts the app in the tray. It does not connect or create a drive automatically.</value></data>
   <data name="DefaultDrive" xml:space="preserve"><value>Default drive</value></data>

@@ -1,5 +1,6 @@
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Net.Http;
 using System.Runtime.InteropServices;
@@ -36,7 +37,9 @@ public partial class MainWindow : Window
     private readonly AutoStartManager? autoStart;
     private readonly DiagnosticEventLog diagnostics;
     private readonly string? autoStartInitializationError;
-    private bool closing, closed, storeUnavailable, discoveryFailed, trayEnabled, exitRequested, loadingAutoStart;
+    private bool closing, closed, storeUnavailable, discoveryFailed, trayEnabled, exitRequested, loadingAutoStart, loadingLanguage;
+    private string statusKey = "Ready";
+    private object[] statusArguments = [];
     internal TrayStatus CurrentTrayStatus { get; private set; } = TrayStatus.Offline;
     internal event Action<TrayStatus>? TrayStatusChanged;
 
@@ -53,11 +56,18 @@ public partial class MainWindow : Window
         appDataRoot = isolatedDataRoot ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "PhoneBridge-NG");
         sessions = new(pairingStore ?? PairingStore.Open());
         InitializeComponent();
+        RefreshLanguageSelection();
         try { if (!uiPreview) autoStart = new(new WindowsAutoStartStore(), Environment.ProcessPath ?? string.Empty); }
         catch (AutoStartException error) { autoStartInitializationError = error.Code; }
         timer.Tick += OnTimerTick;
     }
     private static string T(string key) => TextCatalog.Get(key);
+    private void SetStatus(string key, params object[] arguments)
+    {
+        statusKey = key;
+        statusArguments = arguments;
+        Status.Text = arguments.Length == 0 ? T(key) : string.Format(T(key), arguments);
+    }
     private DeviceRow? Selected => Devices.SelectedItem as DeviceRow;
     private DeviceSession? SelectedSession => Selected?.DeviceId is { } deviceId && sessions.TryGet(deviceId, out var session) ? session : null;
 
@@ -129,6 +139,13 @@ public partial class MainWindow : Window
         else if (Connect.IsEnabled) ConnectClick(sender, e);
     }
 
+    private void DeviceCancelClick(object sender, RoutedEventArgs e)
+    {
+        if (sender is not WpfButton { DataContext: DeviceRow row } || !sessions.TryGet(row.DeviceId, out var session)) return;
+        SelectDevice(row);
+        if (session?.OperationInProgress == true) session.CancelOperation();
+    }
+
     private void DeviceDisconnectClick(object sender, RoutedEventArgs e)
     {
         if (sender is not WpfButton { DataContext: DeviceRow row }) return;
@@ -155,7 +172,7 @@ public partial class MainWindow : Window
         discoveryTask = Task.Run(async () =>
         {
             try { await discovery.RunAsync(change => Dispatcher.BeginInvoke(() => Apply(change)), lifetime.Token); }
-            catch (Exception error) { await Dispatcher.InvokeAsync(() => { diagnostics.WriteFailure(DiagnosticEventName.DiscoveryFailed, DiagnosticResultCode.Failure, error); discoveryFailed = true; Status.Text = T("DiscoveryFailed"); UpdateControls(); }); }
+            catch (Exception error) { await Dispatcher.InvokeAsync(() => { diagnostics.WriteFailure(DiagnosticEventName.DiscoveryFailed, DiagnosticResultCode.Failure, error); discoveryFailed = true; SetStatus("DiscoveryFailed"); UpdateControls(); }); }
         });
         timer.Start(); UpdateControls();
     }
@@ -183,7 +200,7 @@ public partial class MainWindow : Window
             bool isConnected = DeviceListPolicy.IsConnected(record?.DeviceId,
                 session.Client.Mount.State == MountState.Mounted ? session.Client.Connected?.Record.DeviceId : null);
             return new DeviceRow(c.Id, deviceId, c, record, isConnected,
-                isConnected ? session.Client.Connected?.DriveLetter : null, session.OperationInProgress || session.SupervisorBusy);
+                isConnected ? session.Client.Connected?.DriveLetter : null, session.OperationInProgress, session.SupervisorBusy);
         }).ToList();
         rows.AddRange(records.Where(r => !candidates.Values.Any(c => c.DeviceIdHint == r.DeviceId))
             .Select(r =>
@@ -192,7 +209,7 @@ public partial class MainWindow : Window
                 bool isConnected = DeviceListPolicy.IsConnected(r.DeviceId,
                     session.Client.Mount.State == MountState.Mounted ? session.Client.Connected?.Record.DeviceId : null);
                 return new DeviceRow(r.DeviceId, r.DeviceId, null, r, isConnected,
-                    isConnected ? session.Client.Connected?.DriveLetter : null, session.OperationInProgress || session.SupervisorBusy);
+                    isConnected ? session.Client.Connected?.DriveLetter : null, session.OperationInProgress, session.SupervisorBusy);
             }));
         var ordered = rows.OrderBy(r => r.Name, StringComparer.CurrentCulture).ToArray();
         Devices.ItemsSource = ordered;
@@ -212,7 +229,7 @@ public partial class MainWindow : Window
             foreach (var record in records) sessions.GetOrCreate(record.DeviceId);
             storeUnavailable = false;
         }
-        catch { records = []; storeUnavailable = true; Status.Text = T("StoreFailed"); }
+        catch { records = []; storeUnavailable = true; SetStatus("StoreFailed"); }
         RebuildRows();
     }
     private void OnTimerTick(object? sender, EventArgs e)
@@ -353,7 +370,7 @@ public partial class MainWindow : Window
         Drives.SelectedItem is char letter ? letter : throw new ConnectionException("drive-occupied"));
     private IProgress<ConnectionStage> Progress(DeviceSession session) => new Progress<ConnectionStage>(stage =>
     {
-        if (Selected?.DeviceId == session.DeviceId) Status.Text = T(stage.ToString());
+        if (Selected?.DeviceId == session.DeviceId) SetStatus(stage.ToString());
     });
     private static bool Terminal(ConnectionException error) => error.Code is
         "unauthorized" or "identity-mismatch" or "record-changed" or "mode-changed" or "invalid-response";
@@ -370,7 +387,7 @@ public partial class MainWindow : Window
 
     private async Task SuperviseSessionAsync(DeviceSession session)
     {
-        UpdateControls();
+        RebuildRows();
         try
         {
             var now = DateTimeOffset.UtcNow;
@@ -404,7 +421,7 @@ public partial class MainWindow : Window
                     {
                         diagnostics.WriteFailure(DiagnosticEventName.NetworkCheckCompleted, DiagnosticResultCode.Failure, error, session.LogContext);
                         if (Selected?.DeviceId == session.DeviceId)
-                            Status.Text = string.Format(T("ConnectionRetry"), session.Reconnect.ConsecutiveHealthFailures, 3);
+                            SetStatus("ConnectionRetry", session.Reconnect.ConsecutiveHealthFailures, 3);
                         return;
                     }
                     SetSessionStatus(session, "ConnectionLost");
@@ -461,7 +478,7 @@ public partial class MainWindow : Window
                 diagnostics.WriteFailure(DiagnosticEventName.ConnectionCompleted, DiagnosticResultCode.Failure, error, session.LogContext);
                 session.Reconnect.ReconnectFailed(DateTimeOffset.UtcNow);
                 var seconds = Math.Max(1, (int)Math.Ceiling((session.Reconnect.NextAttempt - DateTimeOffset.UtcNow).TotalSeconds));
-                if (Selected?.DeviceId == session.DeviceId) Status.Text = string.Format(T("ReconnectBackoff"), seconds);
+                if (Selected?.DeviceId == session.DeviceId) SetStatus("ReconnectBackoff", seconds);
             }
         }
         catch (CredentialStoreException) { session.Reconnect.Suppress(); storeUnavailable = true; SetSessionStatus(session, "StoreFailed"); }
@@ -475,7 +492,7 @@ public partial class MainWindow : Window
 
     private void SetSessionStatus(DeviceSession session, string key)
     {
-        if (Selected?.DeviceId == session.DeviceId) Status.Text = T(key);
+        if (Selected?.DeviceId == session.DeviceId) SetStatus(key);
     }
 
     private MountOptions OptionsFor(string deviceId, char letter) => new(letter,
@@ -487,8 +504,8 @@ public partial class MainWindow : Window
     {
         if (closing || session.OperationInProgress) return;
         try { _ = session.StartOperation(token => ExecuteDevice(session, completionEvent, work, successKey, token, succeeded), lifetime.Token); }
-        catch (ConnectionException error) { Status.Text = T(error.Code); }
-        UpdateControls();
+        catch (ConnectionException error) { SetStatus(error.Code); }
+        RebuildRows();
     }
 
     private async Task ExecuteDevice(DeviceSession session, DiagnosticEventName completionEvent,
@@ -535,10 +552,10 @@ public partial class MainWindow : Window
         string successKey, CancellationTokenSource owned)
     {
         await Task.Yield();
-        try { await work(owned.Token); diagnostics.Write(new(completionEvent, Code: DiagnosticResultCode.Success)); Status.Text = T(successKey); }
-        catch (OperationCanceledException) when (owned.IsCancellationRequested) { diagnostics.Write(new(completionEvent, DiagnosticLevel.Warning, DiagnosticResultCode.Cancelled)); Status.Text = T("OperationCancelled"); }
-        catch (DiagnosticExportException error) { diagnostics.WriteFailure(DiagnosticEventName.DiagnosticExportFailed, DiagnosticResultCode.Failure, error); Status.Text = T("DiagnosticsExportFailed"); }
-        catch (Exception error) { diagnostics.WriteFailure(completionEvent, DiagnosticResultCode.Failure, error); Status.Text = T("OperationFailed"); }
+        try { await work(owned.Token); diagnostics.Write(new(completionEvent, Code: DiagnosticResultCode.Success)); SetStatus(successKey); }
+        catch (OperationCanceledException) when (owned.IsCancellationRequested) { diagnostics.Write(new(completionEvent, DiagnosticLevel.Warning, DiagnosticResultCode.Cancelled)); SetStatus("OperationCancelled"); }
+        catch (DiagnosticExportException error) { diagnostics.WriteFailure(DiagnosticEventName.DiagnosticExportFailed, DiagnosticResultCode.Failure, error); SetStatus("DiagnosticsExportFailed"); }
+        catch (Exception error) { diagnostics.WriteFailure(completionEvent, DiagnosticResultCode.Failure, error); SetStatus("OperationFailed"); }
         finally { owned.Dispose(); globalOperationCancellation = null; UpdateControls(); }
     }
     private void PairClick(object sender, RoutedEventArgs e)
@@ -554,7 +571,7 @@ public partial class MainWindow : Window
             finally { Marshal.ZeroFreeGlobalAllocUnicode(pointer); }
         }
         Code.Clear();
-        if (code.Length != 8 || code.Any(c => c is < '0' or > '9')) { Array.Clear(code); Status.Text = T("InvalidCode"); return; }
+        if (code.Length != 8 || code.Any(c => c is < '0' or > '9')) { Array.Clear(code); SetStatus("InvalidCode"); return; }
         var progress = Progress(session); session.Reconnect.Suppress();
         diagnostics.Write(new(DiagnosticEventName.PairingStarted, State: DiagnosticState.Starting, Session: session.LogContext));
         StartDevice(session, DiagnosticEventName.AuthenticationCompleted, async token =>
@@ -582,14 +599,14 @@ public partial class MainWindow : Window
         {
             diagnostics.Write(new(DiagnosticEventName.ManualEndpointChanged, DiagnosticLevel.Warning,
                 DiagnosticResultCode.Failure, DiagnosticState.Failed, Session: session.LogContext));
-            Status.Text = T("ManualEndpointInvalid");
+            SetStatus("ManualEndpointInvalid");
             return;
         }
         ManualAddress.Clear();
         RefreshEndpoints(endpoint);
         diagnostics.Write(new(DiagnosticEventName.ManualEndpointChanged, Code: DiagnosticResultCode.Success,
             State: DiagnosticState.Added, Session: session.LogContext));
-        Status.Text = T("ManualEndpointAdded");
+        SetStatus("ManualEndpointAdded");
         UpdateControls();
     }
     private void ClearManualAddressClick(object sender, RoutedEventArgs e)
@@ -599,7 +616,7 @@ public partial class MainWindow : Window
         RefreshEndpoints();
         diagnostics.Write(new(DiagnosticEventName.ManualEndpointChanged, Code: DiagnosticResultCode.Success,
             State: DiagnosticState.Removed, Session: session.LogContext));
-        Status.Text = T("ManualEndpointCleared");
+        SetStatus("ManualEndpointCleared");
         UpdateControls();
     }
     private void CancelClick(object sender, RoutedEventArgs e)
@@ -661,7 +678,7 @@ public partial class MainWindow : Window
         var session = SelectedSession;
         if (session?.Client.Mount.State != MountState.Mounted || session.Client.Connected is not { } active) return;
         try { Process.Start(new ProcessStartInfo("explorer.exe") { UseShellExecute = true, Arguments = $"{active.DriveLetter}:\\" }); }
-        catch { Status.Text = T("OpenFailed"); }
+        catch { SetStatus("OpenFailed"); }
     }
     private void AutoStartChanged(object sender, RoutedEventArgs e)
     {
@@ -672,13 +689,39 @@ public partial class MainWindow : Window
             autoStart.SetEnabled(enabled);
             diagnostics.Write(new(DiagnosticEventName.StartupSettingChanged, Code: DiagnosticResultCode.Success,
                 State: enabled ? DiagnosticState.Enabled : DiagnosticState.Disabled));
-            Status.Text = T(enabled ? "AutoStartEnabled" : "AutoStartDisabled");
+            SetStatus(enabled ? "AutoStartEnabled" : "AutoStartDisabled");
         }
         catch (AutoStartException error)
         {
             diagnostics.Write(new(DiagnosticEventName.StartupSettingChanged, DiagnosticLevel.Error, DiagnosticResultCode.Failure, DiagnosticState.Failed));
             RefreshAutoStart();
-            Status.Text = T(error.Code);
+            SetStatus(error.Code);
+        }
+    }
+    private void RefreshLanguageSelection()
+    {
+        loadingLanguage = true;
+        ChineseLanguage.IsChecked = CultureInfo.CurrentUICulture.Name == LanguageSettings.Chinese;
+        EnglishLanguage.IsChecked = CultureInfo.CurrentUICulture.Name == LanguageSettings.English;
+        loadingLanguage = false;
+    }
+    private void LanguageChangedClick(object sender, RoutedEventArgs e)
+    {
+        if (loadingLanguage || sender is not System.Windows.Controls.RadioButton { IsChecked: true, Tag: string language }) return;
+        try
+        {
+            LanguageSettings.Save(appDataRoot, language);
+            TextCatalog.SetCulture(language);
+            RefreshLanguageSelection();
+            RebuildRows();
+            PairingPhoneName.Text = Selected?.Name ?? T("ChoosePhoneFirst");
+            SetStatus(statusKey, statusArguments);
+            UpdateControls();
+        }
+        catch (Exception error) when (error is IOException or UnauthorizedAccessException)
+        {
+            RefreshLanguageSelection();
+            SetStatus("LanguageSaveFailed");
         }
     }
     private void RefreshAutoStart(bool reportFailure = false)
@@ -689,18 +732,18 @@ public partial class MainWindow : Window
             if (autoStart is null)
             {
                 AutoStart.IsChecked = false; AutoStart.IsEnabled = false;
-                if (reportFailure) Status.Text = T(autoStartInitializationError ?? "autostart-read-failed");
+                if (reportFailure) SetStatus(autoStartInitializationError ?? "autostart-read-failed");
                 return;
             }
             var state = autoStart.GetState();
             AutoStart.IsChecked = state == AutoStartState.Enabled;
             AutoStart.IsEnabled = state != AutoStartState.Conflict;
-            if (reportFailure && state == AutoStartState.Conflict) Status.Text = T("autostart-entry-conflict");
+            if (reportFailure && state == AutoStartState.Conflict) SetStatus("autostart-entry-conflict");
         }
         catch (AutoStartException error)
         {
             AutoStart.IsChecked = false; AutoStart.IsEnabled = false;
-            if (reportFailure) Status.Text = T(error.Code);
+            if (reportFailure) SetStatus(error.Code);
         }
         finally { loadingAutoStart = false; }
     }
@@ -731,23 +774,24 @@ public partial class MainWindow : Window
         closing = true;
         globalOperationCancellation?.Cancel();
         foreach (var session in sessions.Sessions) { session.Reconnect.Suppress(); session.CancelOperation(); }
-        UpdateControls(); Status.Text = T("Closing");
+        UpdateControls(); SetStatus("Closing");
         await globalOperation;
         try
         {
             await sessions.DisposeAsync(); lifetime.Cancel(); await discoveryTask;
             timer.Stop(); lifetime.Dispose(); closed = true; Close();
         }
-        catch { closing = false; ShowFromTray(); Status.Text = T("unmount-not-confirmed"); UpdateControls(); }
+        catch { closing = false; ShowFromTray(); SetStatus("unmount-not-confirmed"); UpdateControls(); }
     }
 
     private sealed record DeviceRow(string Id, string DeviceId, DeviceCandidate? Candidate, PairingRecord? Record,
-        bool IsConnected, char? DriveLetter, bool IsBusy)
+        bool IsConnected, char? DriveLetter, bool OperationInProgress, bool SupervisorBusy)
     {
+        public bool IsBusy => OperationInProgress || SupervisorBusy;
         public string Name => Record?.DisplayName ?? Candidate!.DisplayName;
         public string Address => Candidate is null ? T("Offline") : string.Join(", ", Candidate.Endpoints.Select(p => p.Address));
         public string Mode => Record is null ? T("NotPaired") : T(Record.Mode.ToString());
-        public string State => IsConnected ? T("ConnectedState") : Record?.State switch
+        public string State => IsBusy ? T("Working") : IsConnected ? T("ConnectedState") : Record?.State switch
         {
             PairingRecordState.Active => T("NotConnected"),
             PairingRecordState.Pending => T("Pending"),
@@ -755,10 +799,13 @@ public partial class MainWindow : Window
             PairingRecordState.NeedsRepair => T("NeedsRepair"),
             _ => Candidate?.Protocol == CandidateProtocol.ExperimentalV2 ? T("Experimental") : Candidate?.Pairing is null ? T("EnablePairing") : T("NotPaired")
         };
-        public string PrimaryAction => IsConnected ? T("OpenFiles") : Record?.State == PairingRecordState.Pending ? T("ContinueConnecting") : Record is null ? T("PairAction") : T("ConnectAction");
+        public string PrimaryAction => IsBusy ? T("Working") : IsConnected ? T("OpenFiles") : Record?.State == PairingRecordState.Pending ? T("ContinueConnecting") : Record is null ? T("PairAction") : T("ConnectAction");
         public string DriveSummary => IsConnected && DriveLetter is { } letter ? $"{letter}:\\" : Address;
         public string Accent => IsConnected ? "#16865B" : Record is null ? "#109DA8" : Record.State == PairingRecordState.Active ? "#8A96A6" : "#A85F00";
         public bool CanDisconnect => IsConnected;
+        public bool CanUsePrimary => !IsBusy;
+        public bool CanCancel => OperationInProgress;
+        public bool CanModifySession => !IsBusy;
         public bool ShowInDeviceList => Record is not null;
     }
 }

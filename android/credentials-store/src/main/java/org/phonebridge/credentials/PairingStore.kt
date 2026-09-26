@@ -87,6 +87,21 @@ class PairingStore private constructor(inputContext: Context, caSha256: String, 
         if (old.client.mode != mode) { db.entries[index] = Entry(old.client.copy(mode = mode), old.verifier); advance(db); commit(files, db) }
         db.snapshot()
     } }
+    fun updateDeviceNote(clientId: String, deviceNote: String, expectedRevision: Long): StoreSnapshot {
+        val normalized = deviceNote.trim(); Rules.optionalText(normalized)
+        if (!Rules.hex(clientId, 32)) throw StoreException(StoreError.INVALID_INPUT)
+        return transaction { files -> read(files).use { db ->
+            revision(db, expectedRevision)
+            val index = db.entries.indexOfFirst { it.client.clientId == clientId && it.client.state == ClientState.ACTIVE }
+            if (index < 0) throw StoreException(StoreError.UNAUTHORIZED)
+            val old = db.entries[index]
+            if (old.client.deviceNote != normalized) {
+                db.entries[index] = Entry(old.client.copy(deviceNote = normalized), old.verifier)
+                advance(db); commit(files, db)
+            }
+            db.snapshot()
+        } }
+    }
     /** Snapshot for one request; never cache as a session-wide authorization. */
     fun authenticate(clientId: String, token: ByteArray): PairedClient = withAuthorizedCommit(clientId, token) { it }
     /** Keep the callback short: recheck authorization and commit under the same lock used by revoke. */

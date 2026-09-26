@@ -48,6 +48,10 @@
     <string name="back">Back</string>
     <string name="permission_card_title">File access required</string>
     <string name="computer_details">Computer details</string>
+    <string name="device_note">Device note</string>
+    <string name="device_note_hint">For example: Home PC</string>
+    <string name="device_note_help">Stored only on this phone. Leave blank to use the computer\'s original name.</string>
+    <string name="save_device_note">Save device note</string>
     <string name="paired_sharing">Paired · sharing available</string>
     <string name="paired_offline">Paired · currently offline</string>
     <string name="language">Language</string>

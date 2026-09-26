@@ -85,6 +85,34 @@ class StoreTests {
         assertEquals(changed.revision, s.updateMode(client, AccessMode.READ_ONLY, changed.revision).revision)
         error(StoreError.ALREADY_EXISTS) { s.approve(client, "different", ByteArray(32), changed.revision) }
     }
+    @Test fun deviceNotePersistsWithoutChangingAuthorizationOrMode() {
+        val (s, snap) = active()
+        val changed = s.updateDeviceNote(client, "  家里电脑  ", snap.revision)
+        assertEquals("家里电脑", changed.clients.single().deviceNote)
+        assertEquals(AccessMode.SAFE, store().authenticate(client, token).mode)
+        assertEquals("家里电脑", store().snapshot().clients.single().deviceNote)
+        assertEquals(changed.revision, s.updateDeviceNote(client, "家里电脑", changed.revision).revision)
+        error(StoreError.REVISION_CONFLICT) { s.updateDeviceNote(client, "旧写入", snap.revision) }
+        error(StoreError.INVALID_INPUT) { s.updateDeviceNote(client, "a".repeat(65), changed.revision) }
+        error(StoreError.INVALID_INPUT) { s.updateDeviceNote(client, "bad\u0000note", changed.revision) }
+        val cleared = s.updateDeviceNote(client, "", changed.revision)
+        assertEquals("", cleared.clients.single().deviceNote)
+    }
+    @Test fun legacyVersionOneRecordLoadsWithEmptyDeviceNoteAndUpgradesOnWrite() {
+        val (s, snap) = active()
+        val plain = protection().decrypt(record.readBytes())
+        try {
+            RecordCodec.decode(plain, Rules.bytes(ca, 32)).use { db ->
+                val legacy = RecordCodec.encode(db, Rules.bytes(ca, 32), 1)
+                try { record.writeBytes(protection().encrypt(legacy)) } finally { legacy.fill(0) }
+            }
+        } finally { plain.fill(0) }
+        assertEquals("", store().snapshot().clients.single().deviceNote)
+        val upgraded = s.updateDeviceNote(client, "Office PC", snap.revision)
+        assertEquals("Office PC", upgraded.clients.single().deviceNote)
+        val upgradedPlain = protection().decrypt(record.readBytes())
+        try { assertEquals(2, upgradedPlain[4].toInt()) } finally { upgradedPlain.fill(0) }
+    }
     @Test fun twoClientsRemainIndependent() {
         val (s, first) = active(); val other = "33".repeat(16); val otherToken = ByteArray(32) { 9 }
         val second = s.approve(other, "second", otherToken, first.revision, AccessMode.READ_ONLY)

@@ -67,6 +67,11 @@ class ServiceTests {
             while (binder?.service?.storedClients?.singleOrNull()?.clientId != client && android.os.SystemClock.elapsedRealtime() < loaded) Thread.sleep(20)
             assertEquals(client, binder?.service?.storedClients?.single()?.clientId)
             assertFalse(binder?.service?.sharingEnabled ?: true)
+            binder?.updateDeviceNote(client, "家里电脑")
+            val noted = android.os.SystemClock.elapsedRealtime() + 10_000
+            while (binder?.service?.storedClients?.singleOrNull()?.deviceNote != "家里电脑" && android.os.SystemClock.elapsedRealtime() < noted) Thread.sleep(20)
+            assertEquals("家里电脑", binder?.service?.storedClients?.single()?.deviceNote)
+            assertEquals("家里电脑", store.snapshot().clients.single().deviceNote)
             binder?.remove(client)
             val removed = android.os.SystemClock.elapsedRealtime() + 10_000
             while (binder?.service?.storedClients?.isNotEmpty() == true && android.os.SystemClock.elapsedRealtime() < removed) Thread.sleep(20)

@@ -141,7 +141,9 @@ P1-004 最终 124 项 Windows、15 项 Kotlin 与 59 项管道互操作通过，
 
 ## 12. P1-005 Windows 受保护记录（实施前记录，现限定验收通过）
 
-新增 PhoneBridge.Credentials / PairingStore，使用系统 CryptProtectData/CryptUnprotectData，固定 UI_FORBIDDEN、当前用户，额外熵绑定协议用途和设备 CA hash；不使用 LocalMachine，不增加安全存储 NuGet 依赖。每条记录的版本、CA/指纹/device_id、client_id、随机 32-byte token、名称、状态/模式与修订号一起保护；有界二进制格式而非普通设置 JSON。P2-004 将记录格式升为 schema 2，追加只影响 Windows 显示的本地名称和备注，并保持 schema 1 只读兼容；更新使用同一修订号比较交换和原子提交，不改变 device_id、client_id、token 或证书身份。CA 须为单一规范 DER、自签名有效、RSA >=2048/SHA256withRSA、CA/KeyCertSign 和当前有效期满足要求，匹配已确认指纹。
+新增 PhoneBridge.Credentials / PairingStore，使用系统 CryptProtectData/CryptUnprotectData，固定 UI_FORBIDDEN、当前用户，额外熵绑定协议用途和设备 CA hash；不使用 LocalMachine，不增加安全存储 NuGet 依赖。每条记录的版本、CA/指纹/device_id、client_id、随机 32-byte token、名称、状态/模式与修订号一起保护；有界二进制格式而非普通设置 JSON。P2-004 将 Windows 记录格式升为 schema 2，追加本地显示别名和旧版长备注，并保持 schema 1 只读兼容；r18 界面只把显示别名呈现为“设备备注”，旧长备注仅保留格式兼容。更新使用同一修订号比较交换和原子提交，不改变 device_id、client_id、token 或证书身份。CA 须为单一规范 DER、自签名有效、RSA >=2048/SHA256withRSA、CA/KeyCertSign 和当前有效期满足要求，匹配已确认指纹。
+
+Android 加密 PairingStore 的 `PBS1` 记录在 r18 升为 version 2，为每个已配对电脑追加最多 64 个 Unicode 标量、128 UTF-8 字节的本机“设备备注”；version 1 继续读取为空备注，首次受控写入升级为 version 2。备注只参与本机显示，不进入 mDNS、配对、session、WebDAV 或访问模式判定，更新备注不关闭现有 socket。
 
 默认目录为 LocalAppData/PhoneBridge-NG/Pairings-v1。创建时使用当前用户/SYSTEM 专属 ACL；既有宽松 ACL 不自动修正。操作期间固定各级目录句柄，拒绝重解析点；记录/锁/临时文件检查 owner、DACL、类型和硬链接数。独占锁文件串行跨进程事务；只写随机命名密文临时文件，Flush(true) 后同目录 move/replace，并回读提交结果。Windows 文件替换失败可能留下不确定状态，不能宣称必然未提交；本实例停止后续凭据使用，新实例重新加载磁盘状态。进程中断不等于断电持久性已测。
 

@@ -105,6 +105,14 @@ internal class ClientConnections(private val store: PairingStore, private val on
             onChanged(result)
         } catch (_: StoreException) { failLocked(); throw ApiFailure(503, "storage_failure") }
     }
+    fun updateDeviceNote(client: String, deviceNote: String) = synchronized(gate) {
+        if (!healthy) throw ApiFailure(503, "storage_failure")
+        try { onChanged(store.updateDeviceNote(client, deviceNote, store.snapshot().revision)) }
+        catch (e: StoreException) {
+            if (e.error == StoreError.INVALID_INPUT) throw ApiFailure(400, "invalid_request")
+            failLocked(); throw ApiFailure(503, "storage_failure")
+        }
+    }
     private fun failLocked() {
         healthy = false
         for (socket in sockets.keys.toList()) closeSocket(socket)

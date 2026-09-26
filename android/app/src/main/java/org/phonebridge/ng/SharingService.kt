@@ -90,6 +90,15 @@ class SharingService : Service() {
             if (current != null) { current.updateMode(client, mode); storedClients = current.clients.clients }
             else { val store = pairingStore(); storedClients = store.updateMode(client, mode, store.snapshot().revision).clients }
         }
+        fun updateDeviceNote(client: String, deviceNote: String) = submit {
+            val current = engine
+            if (current != null) { current.updateDeviceNote(client, deviceNote); storedClients = current.clients.clients }
+            else {
+                val store = pairingStore()
+                try { storedClients = store.updateDeviceNote(client, deviceNote, store.snapshot().revision).clients }
+                catch (e: StoreException) { if (e.error == org.phonebridge.credentials.StoreError.INVALID_INPUT) throw ApiFailure(400, "invalid_request") else throw e }
+            }
+        }
     }
     private val binder = LocalBinder()
     override fun onBind(intent: Intent?): IBinder = binder

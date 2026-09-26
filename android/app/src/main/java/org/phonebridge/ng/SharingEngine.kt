@@ -39,6 +39,7 @@ internal class SharingEngine(context: Context, root: File, port: Int, private va
     fun revoke(client: String) { connections.revoke(client) }
     fun remove(client: String) { connections.remove(client) }
     fun updateMode(client: String, mode: AccessMode) { connections.updateMode(client, mode) }
+    fun updateDeviceNote(client: String, deviceNote: String) { connections.updateDeviceNote(client, deviceNote) }
     override fun close() {
         pairingInstance?.close(); pairingInstance = null
         publisher.close(); connections.close(); server.stop()

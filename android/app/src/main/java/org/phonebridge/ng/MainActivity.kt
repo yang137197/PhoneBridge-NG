@@ -28,6 +28,7 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Button
+import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -219,6 +220,7 @@ class MainActivity : Activity() {
     private fun showClient(clientId: String) {
         selectedClientId = clientId
         screen = Screen.CLIENT
+        renderedClients = null
         content.removeAllViews()
         topBar(R.string.computer_details) { showHome() }
         renderClient()
@@ -298,7 +300,8 @@ class MainActivity : Activity() {
             label(title, "▣", 20f, true, primary).apply { layoutParams = LinearLayout.LayoutParams(dp(36), dp(36)).apply { marginEnd = dp(10) }; gravity = Gravity.CENTER; background = rounded(subtle, dp(10).toFloat()) }
             val copy = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
             title.addView(copy, LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f))
-            label(copy, client.clientName, 15f, true)
+            label(copy, client.deviceNote.ifEmpty { client.clientName }, 15f, true)
+            if (client.deviceNote.isNotEmpty()) label(copy, client.clientName, 12f, false, muted)
             label(copy, getString(if (sharing) R.string.paired_sharing else R.string.paired_offline), 12f, false, if (sharing) success else muted)
             label(item, modeName(client.mode), 13f, false, text).setPadding(dp(46), dp(6), 0, 0)
         }
@@ -341,11 +344,31 @@ class MainActivity : Activity() {
         if (screen != Screen.CLIENT) return
         val client = pairedClients().firstOrNull { it.clientId == selectedClientId }
         if (client == null) { showHome(); return }
+        val sharing = binder?.service?.sharingEnabled == true
+        val renderKey = client to sharing
+        if (renderedClients == renderKey) return
+        renderedClients = renderKey
         while (content.childCount > 1) content.removeViewAt(content.childCount - 1)
         val identity = card(content, surface)
-        label(identity, client.clientName, 17f, true)
-        val sharing = binder?.service?.sharingEnabled == true
+        label(identity, client.deviceNote.ifEmpty { client.clientName }, 17f, true)
+        if (client.deviceNote.isNotEmpty()) label(identity, client.clientName, 13f, false, muted)
         label(identity, getString(if (sharing) R.string.paired_sharing else R.string.paired_offline), 13f, false, if (sharing) success else muted)
+
+        val noteCard = card(content, surface)
+        label(noteCard, getString(R.string.device_note), 18f, true)
+        val note = EditText(this).apply {
+            setText(client.deviceNote)
+            hint = getString(R.string.device_note_hint)
+            isSingleLine = true
+            filters = arrayOf(android.text.InputFilter.LengthFilter(64))
+            contentDescription = getString(R.string.device_note)
+        }
+        noteCard.addView(note, matchWrap(top = 8))
+        label(noteCard, getString(R.string.device_note_help), 12f, false, muted)
+        button(noteCard, R.string.save_device_note, primary = true) {
+            renderedClients = null
+            binder?.updateDeviceNote(client.clientId, note.text.toString())
+        }
 
         val access = card(content, surface)
         label(access, getString(R.string.access_mode), 18f, true)

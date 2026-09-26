@@ -142,7 +142,6 @@ public partial class MainWindow : Window
         SelectDevice(row);
         DeviceSettingsName.Text = row.Name;
         DeviceAlias.Text = row.Record?.DeviceAlias ?? string.Empty;
-        DeviceNote.Text = row.Record?.Note ?? string.Empty;
         ShowMainPage(DeviceSettingsPage, DevicesNavigation);
     }
 
@@ -533,15 +532,14 @@ public partial class MainWindow : Window
     private void SaveDeviceDetailsClick(object sender, RoutedEventArgs e)
     {
         if(Selected?.Record is not { } record)return;
-        string alias=DeviceAlias.Text;string note=DeviceNote.Text;
+        string deviceNote=DeviceAlias.Text;
         Start(DiagnosticEventName.DeviceMetadataChanged,async _=>
         {
-            await client.UpdateLocalMetadataAsync(record.DeviceId,alias,note);
+            await client.UpdateDeviceNoteAsync(record.DeviceId,deviceNote);
         },"DeviceDetailsSaved",()=>
         {
             DeviceSettingsName.Text=Selected?.Name??string.Empty;
             DeviceAlias.Text=Selected?.Record?.DeviceAlias??string.Empty;
-            DeviceNote.Text=Selected?.Record?.Note??string.Empty;
         });
     }
     private void DeleteClick(object sender, RoutedEventArgs e)
@@ -655,7 +653,6 @@ public partial class MainWindow : Window
         };
         public string PrimaryAction => IsConnected ? T("OpenFiles") : Record?.State == PairingRecordState.Pending ? T("ContinueConnecting") : Record is null ? T("PairAction") : T("ConnectAction");
         public string DriveSummary => IsConnected && DriveLetter is { } letter ? $"{letter}:\\" : Address;
-        public string NoteSummary => Record?.Note ?? string.Empty;
         public string Accent => IsConnected ? "#16865B" : Record is null ? "#109DA8" : Record.State == PairingRecordState.Active ? "#8A96A6" : "#A85F00";
         public bool CanDisconnect => IsConnected;
         public bool ShowInDeviceList => Record is not null;

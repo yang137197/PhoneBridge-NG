@@ -22,6 +22,20 @@ public sealed class ConnectionTests
     private sealed class StageObserver(Action<ConnectionStage> action) : IProgress<ConnectionStage> { public void Report(ConnectionStage value) => action(value); }
 
     [TestMethod]
+    public async Task DeviceNoteUpdatesDisplayAliasAndPreservesLegacyNote()
+    {
+        await using var server = new NetworkPeer(); var store = Store();
+        var pending = store.CreatePending(server.Identity, new string('a', 32), "Phone", "PC");
+        var active = store.ApplyVerifiedSession(pending, pending.DeviceId, pending.ClientId, AccessMode.Safe);
+        active = store.UpdateLocalMetadata(active, "Old label", "Legacy long note");
+        await using var client = new ConnectionClient(store);
+        var changed = await client.UpdateDeviceNoteAsync(active.DeviceId, "  家里手机  ");
+        Assert.AreEqual("家里手机", changed.DeviceAlias);
+        Assert.AreEqual("家里手机", changed.DisplayName);
+        Assert.AreEqual("Legacy long note", changed.Note);
+    }
+
+    [TestMethod]
     public async Task StrictCaAndIpTlsAcceptsOnlyMatchingIdentity()
     {
         await using var server = new NetworkPeer(); await using var other = new NetworkPeer();

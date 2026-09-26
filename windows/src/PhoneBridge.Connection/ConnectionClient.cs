@@ -20,6 +20,11 @@ public sealed class ConnectionClient(PairingStore store) : IAsyncDisposable
         var current=store.Load(deviceId);
         return Task.FromResult(store.UpdateLocalMetadata(current,deviceAlias,note));
     },CancellationToken.None);
+    public Task<PairingRecord> UpdateDeviceNoteAsync(string deviceId,string deviceNote) => RunAsync(() =>
+    {
+        var current=store.Load(deviceId);
+        return Task.FromResult(store.UpdateLocalMetadata(current,deviceNote,current.Note));
+    },CancellationToken.None);
 
     public Task<PairingRecord> PairAsync(DeviceCandidate candidate, DeviceEndpoint endpoint, char[] code,
         string clientName, IProgress<ConnectionStage>? progress, CancellationToken cancellationToken) =>

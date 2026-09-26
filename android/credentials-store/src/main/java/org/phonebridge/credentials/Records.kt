@@ -9,7 +9,8 @@ enum class StoreError { INVALID_INPUT, NEEDS_REPAIR, STORAGE_FAILURE, BUSY, LOCK
 class StoreException(val error: StoreError) : Exception("pairing_store_${error.name.lowercase()}")
 enum class AccessMode(internal val wire: Int) { READ_ONLY(1), SAFE(2), READ_WRITE(3) }
 enum class ClientState(internal val wire: Int) { ACTIVE(1), REVOKED(2) }
-data class PairedClient(val clientId: String, val clientName: String, val mode: AccessMode, val state: ClientState)
+data class PairedClient(val clientId: String, val clientName: String, val mode: AccessMode, val state: ClientState,
+    val deviceNote: String = "")
 class StoreSnapshot internal constructor(val revision: Long, clients: List<PairedClient>) {
     val clients: List<PairedClient> = Collections.unmodifiableList(ArrayList(clients))
     override fun toString(): String = "StoreSnapshot(redacted)"
@@ -41,6 +42,20 @@ internal object Rules {
             return ByteArray(encoded.remaining()).also { encoded.get(it) }
         } catch (_: Exception) { throw StoreException(StoreError.INVALID_INPUT) }
     }
+    fun optionalText(value: String, maxCodePoints: Int = 64, maxBytes: Int = 128): ByteArray {
+        try {
+            require(value.length <= maxBytes && value.codePointCount(0, value.length) <= maxCodePoints)
+            var i = 0
+            while (i < value.length) {
+                val cp = value.codePointAt(i); val category = Character.getType(cp)
+                require(category != Character.CONTROL.toInt() && category != Character.FORMAT.toInt())
+                i += Character.charCount(cp)
+            }
+            val encoded = Charsets.UTF_8.newEncoder().onMalformedInput(CodingErrorAction.REPORT).encode(java.nio.CharBuffer.wrap(value))
+            require(encoded.remaining() <= maxBytes)
+            return ByteArray(encoded.remaining()).also { encoded.get(it) }
+        } catch (_: Exception) { throw StoreException(StoreError.INVALID_INPUT) }
+    }
     fun verification(ca: ByteArray, clientId: String, token: ByteArray): ByteArray {
         if (ca.size != 32 || !hex(clientId, 32) || token.size != 32) throw StoreException(StoreError.INVALID_INPUT)
         val copy = token.copyOf()
@@ -52,16 +67,18 @@ internal object Rules {
     }
 }
 internal object RecordCodec {
-    fun encode(db: Database, ca: ByteArray): ByteArray {
-        require(db.revision > 0 && ca.size == 32 && db.entries.size <= 128)
+    fun encode(db: Database, ca: ByteArray, version: Int = 2): ByteArray {
+        require(db.revision > 0 && ca.size == 32 && db.entries.size <= 128 && version in 1..2)
         val entries = db.entries.sortedBy { it.client.clientId }
         val names = entries.map { Rules.name(it.client.clientName) }
-        val buffer = ByteBuffer.allocate(47 + names.sumOf { 52 + it.size })
-        buffer.put("PBS1".toByteArray(Charsets.US_ASCII)).put(1).put(ca).putLong(db.revision).putShort(entries.size.toShort())
+        val notes = entries.map { Rules.optionalText(it.client.deviceNote) }
+        val buffer = ByteBuffer.allocate(47 + names.indices.sumOf { 52 + names[it].size + if (version == 2) 2 + notes[it].size else 0 })
+        buffer.put("PBS1".toByteArray(Charsets.US_ASCII)).put(version.toByte()).put(ca).putLong(db.revision).putShort(entries.size.toShort())
         entries.forEachIndexed { index, entry ->
             buffer.put(Rules.bytes(entry.client.clientId, 16)).put(entry.verifier)
             buffer.put(entry.client.mode.wire.toByte()).put(entry.client.state.wire.toByte())
             buffer.putShort(names[index].size.toShort()).put(names[index])
+            if (version == 2) buffer.putShort(notes[index].size.toShort()).put(notes[index])
         }
         return buffer.array()
     }
@@ -71,7 +88,8 @@ internal object RecordCodec {
             require(bytes.size in 47..Rules.MAX_FILE)
             val b = ByteBuffer.wrap(bytes)
             fun take(n: Int): ByteArray { require(n >= 0 && n <= b.remaining()); return ByteArray(n).also { b.get(it) } }
-            require(take(4).contentEquals("PBS1".toByteArray(Charsets.US_ASCII)) && b.get().toInt() == 1)
+            require(take(4).contentEquals("PBS1".toByteArray(Charsets.US_ASCII)))
+            val version = b.get().toInt(); require(version in 1..2)
             require(MessageDigest.isEqual(take(32), ca)); val revision = b.long; require(revision > 0)
             val count = b.short.toInt() and 65535; require(count <= 128)
             var last = ""
@@ -85,7 +103,14 @@ internal object RecordCodec {
                     val nameBytes = take(length)
                     val name = Charsets.UTF_8.newDecoder().onMalformedInput(CodingErrorAction.REPORT).decode(ByteBuffer.wrap(nameBytes)).toString()
                     require(Rules.name(name).contentEquals(nameBytes))
-                    entries.add(Entry(PairedClient(id, name, mode, state), verifier))
+                    val note = if (version == 2) {
+                        val noteLength = b.short.toInt() and 65535; require(noteLength <= 128)
+                        val noteBytes = take(noteLength)
+                        Charsets.UTF_8.newDecoder().onMalformedInput(CodingErrorAction.REPORT).decode(ByteBuffer.wrap(noteBytes)).toString().also {
+                            require(Rules.optionalText(it).contentEquals(noteBytes))
+                        }
+                    } else ""
+                    entries.add(Entry(PairedClient(id, name, mode, state, note), verifier))
                 } catch (e: Exception) { verifier.fill(0); throw e }
             }
             require(!b.hasRemaining() && entries.count { it.client.state == ClientState.ACTIVE } <= 16)

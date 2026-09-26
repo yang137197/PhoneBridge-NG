@@ -1,6 +1,6 @@
 # 本地安装交付说明
 
-PhoneBridge NG `0.2.0` 采用第三方本地侧载，目标为 Windows 11 x64 与 Android 8.0（API 26）及以上。当前任务不发布 GitHub Release、不上传应用商店，也不提供自动更新。
+PhoneBridge NG `0.2.0` 采用第三方侧载，目标为 Windows 11 x64 与 Android 8.0（API 26）及以上。正式制品已发布到 [GitHub Release v0.2.0](https://github.com/yang137197/PhoneBridge-NG/releases/tag/v0.2.0)；不上传应用商店，也不提供自动更新。
 
 ## 构建产物
 

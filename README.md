@@ -2,7 +2,7 @@
 
 中文优先的 Android ↔ Windows 无线文件访问工具。目标是在同一局域网内发现并验证手机，通过 HTTPS/WebDAV、rclone 和 WinFsp 将手机共享存储映射到 Windows 文件资源管理器。
 
-**PhoneBridge NG `0.2.0` 已完成正式本地侧载验收：Windows/Android 最终图标、正式安装器、长期签名 APK、对应源码、许可、散列和 manifest 已收口；Samsung 全新安装、真实配对、Music 共享、`P:` 根目录读取与安全断开通过。`0.2.0` 是后续正式升级的首个基线，不定义 `0.1.0 → 0.2.0` 升级路径。Windows 自启动只进入托盘，盘符由用户手动连接。**
+**PhoneBridge NG `0.2.0` 已完成正式验收并发布 [GitHub Release](https://github.com/yang137197/PhoneBridge-NG/releases/tag/v0.2.0)：Windows/Android 最终图标、正式安装器、长期签名 APK、对应源码、许可、散列和 manifest 已收口；Samsung 全新安装、真实配对、Music 共享、`P:` 根目录读取与安全断开通过。`0.2.0` 是后续正式升级的首个基线，不定义 `0.1.0 → 0.2.0` 升级路径。Windows 自启动只进入托盘，盘符由用户手动连接。**
 
 ## 当前进度
 
@@ -71,12 +71,13 @@
 | P2-005 按设备隔离的多会话核心 | 已完成；Windows 294/294、r20 双设备双盘符与单设备断开隔离实测通过 | [验收记录](docs/audit/P2-005-VALIDATION.md)、[完成记录](docs/tasks/completed/P2-005-multi-device-sessions.md) |
 | P2-006 UI、多会话接线与完整语言收口 | 已完成；Windows 297/297，r21 Windows 与 Redmi 当前界面及冷启动 English 保持通过，单卡忙碌/取消隔离有针对性测试 | [验收记录](docs/audit/P2-006-VALIDATION.md)、[完成记录](docs/tasks/completed/P2-006-ui-language-finalization.md) |
 | P2-007 正式图标与 v0.2.0 交付收口 | 已完成；Windows 298/298，正式制品一致性、Samsung 全新安装、配对、挂载读取和安全断开通过 | [验收记录](docs/audit/P2-007-VALIDATION.md)、[完成记录](docs/tasks/completed/P2-007-formal-icons-and-v0.2-delivery.md) |
+| P2-008 发布 GitHub Release v0.2.0 | 已完成；标签精确绑定 P2-007 验收提交，6 项资产的 GitHub 摘要与本地制品一致并已设为 Latest | [Release](https://github.com/yang137197/PhoneBridge-NG/releases/tag/v0.2.0)、[验收记录](docs/audit/P2-008-VALIDATION.md)、[完成记录](docs/tasks/completed/P2-008-publish-v0.2.0-github-release.md) |
 | Phase 1 新版 Windows 客户端 | 配对、挂载、文件操作、生命周期与本地安装交付主链路已验收 | [开发规则](DEVELOPMENT_RULES.md) |
 | MVP 验收 | 15 项通过 | [15 项产品验收](docs/PRODUCT.md)、[P1-030 最终需求验收](docs/audit/P1-030-VALIDATION.md) |
 
 当前唯一交付目录是 `.audit/delivery/output/`；正式交付包含安装器、正式 APK、对应源码 ZIP、README、SHA256SUMS 和 manifest。二进制构建后运行 `scripts/New-SourceDelivery.ps1` 生成并核验对应源码包。`.audit/runs/` 中的文件只用于历史验证，不作为当前安装入口。先阅读交付目录内的 `README.txt`。
 
-`.audit/ui-acceptance/` 保存 P2-006 r21 和 P2-005 r20 的历史隔离验收证据，不是安装入口。当前唯一安装入口是 `.audit/delivery/output/` 中的 `0.2.0` 正式本地侧载制品；`0.1.0` 不作为 `0.2.0` 的升级来源，正式升级基线从 `0.2.0` 开始。
+`.audit/ui-acceptance/` 保存 P2-006 r21 和 P2-005 r20 的历史隔离验收证据，不是安装入口。正式安装入口是 GitHub `v0.2.0` Release；`.audit/delivery/output/` 是与其一致的本地镜像。`0.1.0` 不作为 `0.2.0` 的升级来源，正式升级基线从 `0.2.0` 开始。
 
 P0-001 的 107 个通过测试、1 个跳过用例及 7 项离线问题复现仅为上游审计证据，不能代表真实手机、Explorer、大文件或断网恢复通过。
 

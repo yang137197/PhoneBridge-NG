@@ -6,11 +6,11 @@
 
 - GitHub：<https://github.com/yang137197/PhoneBridge-NG>
 - 本地目录：`C:\Users\yang1\Documents\ChatGPT\samsung link windows\PhoneBridge-NG`
-- 当前正式本地交付版本：`0.2.0`；本轮不创建 GitHub Release。`0.1.0` 不属于 `0.2.0` 的升级来源。
+- 当前正式发布版本：[`v0.2.0`](https://github.com/yang137197/PhoneBridge-NG/releases/tag/v0.2.0)，标签提交 `60c52b729f2052fa933870bfc175df01d78f17be`。`0.1.0` 不属于 `0.2.0` 的升级来源。
 - v0.2.0 需求计划基线：`18b5e0778d4fd03fad95a0a4602cea36dcc83f28`。
 - P2-002 静态设计 r1 已由用户全部确认并冻结；视觉方向、Windows 分层/按钮命名、Android 页面层级和图标 A“桥接文件”均已确定。
 - P2-003 r2 的实际 UI 已由用户复验通过并完成。
-- P2-004 至 P2-007 均已完成：r20 的双设备双盘符与单设备断开隔离通过；r21 的 Windows/Redmi 当前界面和冷启动语言保持通过；正式 `0.2.0` 已在 Samsung 与当前 Windows 完成全新安装、真实配对、Music 共享、`P:` 根目录读取和安全断开。
+- P2-004 至 P2-008 均已完成：r20 的双设备双盘符与单设备断开隔离通过；r21 的 Windows/Redmi 当前界面和冷启动语言保持通过；正式 `0.2.0` 已在 Samsung 与当前 Windows 完成全新安装、真实配对、Music 共享、`P:` 根目录读取和安全断开，并发布 GitHub Release。
 - r10 暴露并确认 Windows“添加手机”先打开、配对候选随后到达时仍无选中项的缺陷；r11 已实机验证候选自动选中、8 位码后按钮启用、真实配对成功且不自动挂载。
 - r12 又确认未配对候选因两个空设备 ID 相等而被错误显示为“已连接”；运行证据证明当时没有真实配对、rclone 或盘符。r13 已实机确认主列表只显示已配对手机，未配对候选只进入“添加手机”，8 位码前后按钮状态正确。
 - r21 是已完成的历史隔离 UI 候选，r20 是继续有效的双设备真实链路证据；它们都不是当前安装入口。当前正式 `0.2.0` 已重新建立一条 Samsung/Windows 配对记录，制品与完整证据见 `docs/audit/P2-007-VALIDATION.md`。
@@ -133,7 +133,7 @@ P2-005 已复用发现、配对、凭据、TLS 和单个挂载实现，并把全
 
 先读取 AGENTS.md、DEVELOPMENT_RULES.md、README.md、docs/HANDOFF_V0.2.md、docs/V0.2_PLAN.md、docs/PRODUCT.md、ARCHITECTURE.md、DECISIONS.md，并核对当前 main、git status、最近提交和远端状态。以仓库当前事实为准，不沿用对话中的旧状态。
 
-P2-002 至 P2-007 均已完成。`0.2.0` 已通过 Windows/Samsung 全新安装、真实配对、Music 共享、`P:` 根目录读取和安全断开，并成为未来正式升级的首个基线；不定义 `0.1.0 → 0.2.0` 升级路径。P2-005 r20 双设备证据与 P2-006 r21 UI/语言证据继续有效。Android 永久只通过 GitHub 分发；本轮未创建 GitHub Release。保持现有 Kotlin/WPF、HTTPS/WebDAV、rclone、WinFsp、mDNS、配对与安全存储路线。
+P2-002 至 P2-008 均已完成。`v0.2.0` GitHub Release 已发布并设为 Latest，标签精确指向 `60c52b729f2052fa933870bfc175df01d78f17be`，六项 Release 资产与本地正式交付摘要一致。`0.2.0` 已通过 Windows/Samsung 全新安装、真实配对、Music 共享、`P:` 根目录读取和安全断开，并成为未来正式升级的首个基线；不定义 `0.1.0 → 0.2.0` 升级路径。P2-005 r20 双设备证据与 P2-006 r21 UI/语言证据继续有效。Android 永久只通过 GitHub 分发。保持现有 Kotlin/WPF、HTTPS/WebDAV、rclone、WinFsp、mDNS、配对与安全存储路线。
 
 当前没有已授权的后续开发任务。开始新需求前先核对当前 Git/交付状态并建立单一任务；若进入 `0.3+`，必须以当前 `0.2.0` 正式数据为升级保持基线。秘密不进聊天或仓库，不重复已经通过的双设备、大文件或睡眠测试。
 ```

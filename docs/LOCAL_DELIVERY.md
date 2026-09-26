@@ -1,6 +1,6 @@
 # 本地安装交付说明
 
-PhoneBridge NG `0.1.0` 采用第三方本地侧载，目标为 Windows 11 x64 与 Android 8.0（API 26）及以上。当前任务不发布 GitHub Release、不上传应用商店，也不提供自动更新。
+PhoneBridge NG `0.2.0` 采用第三方本地侧载，目标为 Windows 11 x64 与 Android 8.0（API 26）及以上。当前任务不发布 GitHub Release、不上传应用商店，也不提供自动更新。
 
 ## 构建产物
 
@@ -12,11 +12,11 @@ PhoneBridge NG `0.1.0` 采用第三方本地侧载，目标为 Windows 11 x64 �
 
 脚本不下载依赖、不安装驱动、不连接手机。它只使用项目 `.audit/tools` 与 `.audit/downloads` 下已经核验的固定工具，输出到被忽略的 `.audit/delivery/output`：
 
-- `PhoneBridge-NG-Setup-0.1.0.exe`：Windows 正式单一安装入口，自包含 .NET 10、固定 rclone 1.75.1，并内置官方 WinFsp 2.1.25156 MSI。只有系统未检测到 WinFsp 时才会运行该 MSI并显示系统管理员确认；安装器显示名和文件描述不含本地预览标签。
-- `PhoneBridge-NG-0.1.0-local-test.apk`：默认 `LocalTest` 模式使用当前开发用户的 Android 标准 Debug 测试证书，仅用于本机验收。
-- `PhoneBridge-NG-0.1.0.apk`：只有显式选择 `ThirdPartyRelease`、通过项目外专用密钥和预绑定证书摘要校验后才会生成，用于长期第三方侧载。
+- `PhoneBridge-NG-Setup-0.2.0.exe`：Windows 正式单一安装入口，自包含 .NET 10、固定 rclone 1.75.1，并内置官方 WinFsp 2.1.25156 MSI。只有系统未检测到 WinFsp 时才会运行该 MSI并显示系统管理员确认；安装器、EXE、窗口和任务栏使用已确认的 A“桥接文件”图标。
+- `PhoneBridge-NG-0.2.0-local-test.apk`：默认 `LocalTest` 模式使用当前开发用户的 Android 标准 Debug 测试证书，仅用于本机验收。
+- `PhoneBridge-NG-0.2.0.apk`：只有显式选择 `ThirdPartyRelease`、通过项目外专用密钥和预绑定证书摘要校验后才会生成，用于长期第三方侧载。
 - `README.txt`：与当前产品界面一致的最短安装、配对、日常连接、正确结束和排障步骤；安装后同样位于 Windows 程序目录。
-- `PhoneBridge-NG-0.1.0-source.zip`：与正式二进制对应的 Android/Windows 源码、构建脚本、测试、GPL、NOTICE 和第三方许可，不含签名私钥、密码或本机构建缓存。
+- `PhoneBridge-NG-0.2.0-source.zip`：与正式二进制对应的 Android/Windows 源码、构建脚本、测试、GPL、NOTICE 和第三方许可，不含签名私钥、密码或本机构建缓存。
 - `SHA256SUMS.txt` 与 `delivery-manifest.json`：安装器、APK、说明文件、源码包的散列、版本和 Android 签名证书摘要。
 
 `.audit/delivery/output` 是当前唯一交付目录，脚本每次构建时都会先重建它；`.audit/runs` 仅保存历史验证证据，不能从那里选择安装包交付。
@@ -80,7 +80,7 @@ Windows 客户端按当前用户安装到 `%LOCALAPPDATA%\Programs\PhoneBridge N
 
 升级覆盖应用文件，但保留 `%LOCALAPPDATA%\PhoneBridge-NG` 中的 DPAPI 配对记录、日志、会话及可能尚待恢复的 VFS 缓存。卸载同样保留这些数据，避免把未完成写入当作可删除临时文件；只在当前用户自启动值仍精确指向本次安装路径时删除该值。WinFsp 可能被其他软件使用，因此卸载 PhoneBridge NG 时不移除 WinFsp。
 
-Android 使用 `adb install -r` 覆盖安装时，只有签名证书相同才保留配对与设置。当前已安装的 `local-test` APK沿用本机测试证书；首次切换到长期发行证书必须先卸载测试版，因此配对记录不能跨签名迁移。以后所有升级必须继续使用同一长期私钥和证书。
+Android 使用 `adb install -r` 覆盖安装时，只有签名证书相同才保留配对与设置。测试签名 APK不能直接覆盖正式签名 APK；首次切换签名必须先卸载旧包，因此配对记录不能跨签名迁移。`0.2.0` 是首个正式升级基线；未来从 `0.2.x` 升级到 `0.3+` 时必须继续使用同一长期私钥和证书。
 
 ### 无 WinFsp 的干净 Windows 首装验收
 
@@ -101,4 +101,4 @@ P1-046 已在无 WinFsp/PhoneBridge 的 Windows 11 x64 Sandbox 中完成上述�
 
 ## 许可与来源
 
-安装目录包含项目 GPL、来源修改说明、第三方许可、.NET 许可和第三方通知。WinFsp 使用官方未修改安装包；用户界面和文档保留：WinFsp - Windows File System Proxy, Copyright (C) Bill Zissimopoulos，[项目仓库](https://github.com/winfsp/winfsp)。如果把二进制交给其他人，必须同时提供同一默认交付目录中的 `PhoneBridge-NG-0.1.0-source.zip`。
+安装目录包含项目 GPL、来源修改说明、第三方许可、.NET 许可和第三方通知。WinFsp 使用官方未修改安装包；用户界面和文档保留：WinFsp - Windows File System Proxy, Copyright (C) Bill Zissimopoulos，[项目仓库](https://github.com/winfsp/winfsp)。如果把二进制交给其他人，必须同时提供同一默认交付目录中的 `PhoneBridge-NG-0.2.0-source.zip`。

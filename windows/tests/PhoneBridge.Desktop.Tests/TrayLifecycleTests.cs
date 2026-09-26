@@ -8,6 +8,18 @@ namespace PhoneBridge.Desktop.Tests;
 public sealed class TrayLifecycleTests
 {
     [TestMethod]
+    public void EveryTrayStatusUsesAnEmbeddedProductIcon()
+    {
+        foreach (TrayStatus status in Enum.GetValues<TrayStatus>())
+        {
+            StringAssert.StartsWith(TrayIconAssets.ResourceName(status), "PhoneBridge.Desktop.Assets.Tray.");
+            using var icon = TrayIconAssets.Load(status);
+            Assert.IsGreaterThanOrEqualTo(16, icon.Width);
+            Assert.IsGreaterThanOrEqualTo(16, icon.Height);
+        }
+    }
+
+    [TestMethod]
     [DataRow(false, false, false, false, 0)]
     [DataRow(false, false, false, true, 1)]
     [DataRow(false, false, true, true, 2)]

@@ -169,7 +169,7 @@
   <data name="IdentityStillVerified" xml:space="preserve"><value>Choose a saved phone first. Saved phone identity verification is still required.</value></data>
   <data name="Diagnostics" xml:space="preserve"><value>Diagnostics</value></data>
   <data name="DiagnosticsNotUploaded" xml:space="preserve"><value>The diagnostic bundle is saved locally and is not uploaded automatically.</value></data>
-  <data name="VersionPreview" xml:space="preserve"><value>v0.2.0 UI acceptance build</value></data>
+  <data name="VersionPreview" xml:space="preserve"><value>v0.2.0</value></data>
   <data name="ProjectAndLicense" xml:space="preserve"><value>Project and license</value></data>
   <data name="LicenseSummary" xml:space="preserve"><value>PhoneBridge NG is distributed under GPL-3.0-or-later. It includes rclone and WinFsp; notices and source are provided with delivery builds.</value></data>
   <data name="GitHubProject" xml:space="preserve"><value>Open GitHub project</value></data>

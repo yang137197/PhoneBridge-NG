@@ -8,17 +8,17 @@ Set-StrictMode -Version Latest
 Add-Type -AssemblyName System.IO.Compression
 Add-Type -AssemblyName System.IO.Compression.FileSystem
 
-$productVersion = '0.1.0'
+$productVersion = '0.2.0'
 $projectRoot = [IO.Path]::GetFullPath((Split-Path $PSScriptRoot -Parent))
 $deliveryRoot = [IO.Path]::GetFullPath((Join-Path $projectRoot '.audit\delivery'))
 if (-not $OutputDirectory) { $OutputDirectory = Join-Path $deliveryRoot 'output' }
 $OutputDirectory = [IO.Path]::GetFullPath($OutputDirectory)
-$runDirectory = Join-Path $projectRoot '.audit\runs\P1-044'
+$runDirectory = Join-Path $projectRoot '.audit\runs\P2-007'
 $archiveName = "PhoneBridge-NG-$productVersion-source.zip"
 $archiveRoot = "PhoneBridge-NG-$productVersion-source"
 $expectedCertificate = '66FF69D71637D215C2F104DB95B93CC1F991FA1F23580F95AF3316B0763B14D4'
-$expectedApkHash = 'E53F618DB6888F14811A98BBC0EFD7965D72E44E84CE28D27C5840C427B1F0C3'
-$expectedInstallerHash = '02B63BE25590FD1F86BC661CF15B7A3941E2FE13440920AAA0F850B4E7961262'
+$expectedApkHash = '5F31E9B0E3EC20C25715014053802C97304443D8A4279BF27F9E82B198F76CF8'
+$expectedInstallerHash = 'F3856096DB4882071C4B61B9522ADDFE1CD30F3E33C654A1C2B935BCEBB5EFC7'
 $fixedTimestamp = [DateTimeOffset]::new(2000, 1, 1, 0, 0, 0, [TimeSpan]::Zero)
 $utf8 = [Text.UTF8Encoding]::new($false)
 
@@ -57,7 +57,7 @@ function Get-SourceFiles {
         if (-not (Test-Path -LiteralPath $path -PathType Leaf)) { throw "Required source file is missing: $name" }
         $items.Add((Get-Item -LiteralPath $path -Force))
     }
-    foreach ($directory in @('android', 'licenses', 'scripts', 'tests', 'windows')) {
+    foreach ($directory in @('android', 'licenses', 'scripts', 'tests', 'windows', 'docs\design\v0.2\icons')) {
         $path = Join-Path $projectRoot $directory
         foreach ($file in Get-ChildItem -LiteralPath $path -Recurse -File -Force) {
             if (-not (Test-ExcludedSourcePath $file.FullName)) { $items.Add($file) }
@@ -166,7 +166,7 @@ function Test-SourceArchive([string]$ArchivePath) {
                     throw "Source archive content mismatch: $expectedName"
                 }
             }
-            foreach ($required in @('LICENSE', 'NOTICE.md', 'scripts/Build-LocalDelivery.ps1', 'android/app/build.gradle.kts', 'windows/PhoneBridge.Windows.slnx')) {
+            foreach ($required in @('LICENSE', 'NOTICE.md', 'scripts/Build-LocalDelivery.ps1', 'android/app/build.gradle.kts', 'windows/PhoneBridge.Windows.slnx', 'docs/design/v0.2/icons/tray/offline.svg')) {
                 if (-not ($entries.FullName -ccontains "$archiveRoot/$required")) { throw "Required source entry is missing: $required" }
             }
             return [ordered]@{ entries = $entries.Count; source_files = [int]$manifest.included_file_count }
@@ -286,7 +286,7 @@ catch {
 
 $evidence = [ordered]@{
     schema = 1
-    task = 'P1-044'
+    task = 'P2-007'
     captured_at_utc = [DateTimeOffset]::UtcNow.ToString('O')
     source_archive = [ordered]@{
         file = $archiveName

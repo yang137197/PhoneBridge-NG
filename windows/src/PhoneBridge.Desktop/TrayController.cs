@@ -1,4 +1,5 @@
 using System.Drawing;
+using System.IO;
 using Forms = System.Windows.Forms;
 
 namespace PhoneBridge.Desktop;
@@ -9,7 +10,7 @@ internal sealed class TrayController : IDisposable
     private readonly Forms.ContextMenuStrip menu;
     private readonly Forms.ToolStripMenuItem open;
     private readonly Forms.ToolStripMenuItem exit;
-    private readonly Icon? applicationIcon;
+    private readonly IReadOnlyDictionary<TrayStatus, Icon> statusIcons;
     private TrayStatus status;
     internal event Action? OpenRequested;
     internal event Action? ExitRequested;
@@ -24,7 +25,7 @@ internal sealed class TrayController : IDisposable
         menu.Items.Add(open);
         menu.Items.Add(new Forms.ToolStripSeparator());
         menu.Items.Add(exit);
-        applicationIcon = Environment.ProcessPath is { } processPath ? Icon.ExtractAssociatedIcon(processPath) : null;
+        statusIcons = Enum.GetValues<TrayStatus>().ToDictionary(value => value, TrayIconAssets.Load);
         icon = new Forms.NotifyIcon { ContextMenuStrip = menu, Visible = true };
         icon.MouseDoubleClick += (_, e) => { if (e.Button == Forms.MouseButtons.Left) OpenRequested?.Invoke(); };
         TextCatalog.CultureChanged += RefreshText;
@@ -34,14 +35,7 @@ internal sealed class TrayController : IDisposable
     internal void SetStatus(TrayStatus status)
     {
         this.status = status;
-        icon.Icon = status switch
-        {
-            TrayStatus.Discovered => SystemIcons.Question,
-            TrayStatus.Connecting => SystemIcons.Warning,
-            TrayStatus.Mounted => SystemIcons.Shield,
-            TrayStatus.Error => SystemIcons.Error,
-            _ => applicationIcon ?? SystemIcons.Application
-        };
+        icon.Icon = statusIcons[status];
         icon.Text = TextCatalog.Get("Tray" + status);
     }
 
@@ -57,7 +51,20 @@ internal sealed class TrayController : IDisposable
         TextCatalog.CultureChanged -= RefreshText;
         icon.Visible = false;
         icon.Dispose();
-        applicationIcon?.Dispose();
+        foreach (Icon statusIcon in statusIcons.Values) statusIcon.Dispose();
         menu.Dispose();
+    }
+}
+
+internal static class TrayIconAssets
+{
+    internal static string ResourceName(TrayStatus status) =>
+        $"PhoneBridge.Desktop.Assets.Tray.{status}.ico";
+
+    internal static Icon Load(TrayStatus status)
+    {
+        using Stream stream = typeof(TrayIconAssets).Assembly.GetManifestResourceStream(ResourceName(status))
+            ?? throw new InvalidOperationException($"tray-icon-missing:{status}");
+        return new Icon(stream);
     }
 }

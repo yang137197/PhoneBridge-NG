@@ -6,7 +6,8 @@
     <Version>0.2.0</Version>
     <AssemblyVersion>0.2.0.0</AssemblyVersion>
     <FileVersion>0.2.0.0</FileVersion>
-    <InformationalVersion>0.2.0-ui-preview</InformationalVersion>
+    <InformationalVersion>0.2.0</InformationalVersion>
+    <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
     <Product>PhoneBridge NG</Product>
     <Company>PhoneBridge NG contributors</Company>
     <Description>Wireless access to Android files from Windows</Description>
@@ -16,6 +17,7 @@
   <ItemGroup>
     <Resource Include="Assets\PhoneBridge.ico" />
     <Resource Include="Assets\PhoneBridge.png" />
+    <EmbeddedResource Include="Assets\Tray\*.ico" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="../PhoneBridge.Connection/PhoneBridge.Connection.csproj" />

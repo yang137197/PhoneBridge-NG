@@ -18,7 +18,7 @@ param(
 $ErrorActionPreference = 'Stop'
 Set-StrictMode -Version Latest
 
-$productVersion = '0.1.0'
+$productVersion = '0.2.0'
 $rcloneVersion = '1.75.1'
 $rcloneSha256 = '033EEE51C9AD47C2DE2624B6674D355274BCD6CF0027A5F85DB4437BA24AE81C'
 $winFspVersion = '2.1.25156'
@@ -320,7 +320,7 @@ Copy-Item -LiteralPath (Join-Path (Split-Path $DotnetPath -Parent) 'LICENSE.txt'
 Copy-Item -LiteralPath (Join-Path (Split-Path $DotnetPath -Parent) 'ThirdPartyNotices.txt') -Destination (Join-Path $licenseDir.FullName 'dotnet-ThirdPartyNotices.txt') -Force
 
 $unsignedApk = Resolve-RequiredFile (Join-Path $projectRoot 'android/app/build/outputs/apk/release/app-release-unsigned.apk') 'unsigned Android Release APK'
-$alignedApk = Join-Path $OutputRoot 'PhoneBridge-NG-0.1.0-aligned-unsigned.apk'
+$alignedApk = Join-Path $OutputRoot "PhoneBridge-NG-$productVersion-aligned-unsigned.apk"
 $signedApk = Join-Path $outputDir.FullName $apkFileName
 Invoke-Checked { & $zipAlign -p -f 4 $unsignedApk $alignedApk } 'APK zip alignment failed'
 $savedJavaHome = [Environment]::GetEnvironmentVariable('JAVA_HOME', 'Process')
@@ -348,9 +348,11 @@ if ($certificateSha256 -ne $preflightCertificateSha256 -or
 }
 
 $installerScript = Resolve-RequiredFile (Join-Path $projectRoot 'windows/installer/PhoneBridge-NG.iss') 'Inno Setup script'
+$appIcon = Resolve-RequiredFile (Join-Path $projectRoot 'windows/src/PhoneBridge.Desktop/Assets/PhoneBridge.ico') 'Windows application icon'
 Invoke-Checked {
     & $InnoCompiler "/DAppVersion=$productVersion" "/DPublishDir=$($publishDir.FullName)" `
-        "/DWinFspMsi=$WinFspMsi" "/DOutputDir=$($outputDir.FullName)" $installerScript
+        "/DWinFspMsi=$WinFspMsi" "/DOutputDir=$($outputDir.FullName)" `
+        "/DAppIcon=$appIcon" $installerScript
 } 'Windows installer compilation failed'
 
 $installer = Resolve-RequiredFile (Join-Path $outputDir.FullName "PhoneBridge-NG-Setup-$productVersion.exe") 'Windows installer'

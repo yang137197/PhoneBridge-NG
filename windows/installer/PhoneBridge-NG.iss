@@ -10,6 +10,9 @@
 #ifndef OutputDir
   #error OutputDir must be supplied by Build-LocalDelivery.ps1
 #endif
+#ifndef AppIcon
+  #error AppIcon must be supplied by Build-LocalDelivery.ps1
+#endif
 
 #define AppExe "PhoneBridge.Desktop.exe"
 #define WinFspFile "winfsp-2.1.25156.msi"
@@ -24,6 +27,7 @@ DefaultDirName={localappdata}\Programs\PhoneBridge NG
 DefaultGroupName=PhoneBridge NG
 UninstallDisplayName=PhoneBridge NG
 UninstallDisplayIcon={app}\{#AppExe}
+SetupIconFile={#AppIcon}
 OutputDir={#OutputDir}
 OutputBaseFilename=PhoneBridge-NG-Setup-{#AppVersion}
 VersionInfoVersion={#AppVersion}.0

@@ -169,7 +169,7 @@
   <data name="IdentityStillVerified" xml:space="preserve"><value>请先选择已配对手机；连接仍会验证已保存的设备身份。</value></data>
   <data name="Diagnostics" xml:space="preserve"><value>诊断</value></data>
   <data name="DiagnosticsNotUploaded" xml:space="preserve"><value>诊断包只保存到本机，不会自动上传。</value></data>
-  <data name="VersionPreview" xml:space="preserve"><value>v0.2.0 UI 验收版本</value></data>
+  <data name="VersionPreview" xml:space="preserve"><value>v0.2.0</value></data>
   <data name="ProjectAndLicense" xml:space="preserve"><value>项目与许可</value></data>
   <data name="LicenseSummary" xml:space="preserve"><value>PhoneBridge NG 按 GPL-3.0-or-later 分发，包含 rclone 与 WinFsp；正式交付会提供通知和对应源码。</value></data>
   <data name="GitHubProject" xml:space="preserve"><value>打开 GitHub 项目</value></data>

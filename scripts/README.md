@@ -4,7 +4,7 @@
 
 [Build-LocalDelivery.ps1](Build-LocalDelivery.ps1) 生成本地交付物。脚本固定并核验 .NET 10.0.401、Gradle 9.3.1、rclone 1.75.1、WinFsp 2.1.25156 和 Inno Setup 7.1.0，执行 locked runtime restore、自包含 Windows 发布、Android Release 构建、zipalign、签名及安装器编译，输出安装程序、APK、SHA-256 与 manifest 到 `.audit/delivery/output`。默认 `LocalTest` 使用隔离 Debug 证书；`ThirdPartyRelease` 只接受 [Initialize-AndroidReleaseSigning.ps1](Initialize-AndroidReleaseSigning.ps1) 生成的项目外身份记录，并绑定 keystore 与证书。脚本不下载或安装依赖、不连接设备、不发布，使用边界见 [本地交付说明](../docs/LOCAL_DELIVERY.md)。
 
-[New-SourceDelivery.ps1](New-SourceDelivery.ps1) 在正式二进制构建和验收后生成 `PhoneBridge-NG-0.1.0-source.zip`，排除 `.audit`、版本库元数据、构建缓存和私钥文件类型，写入并回读逐文件散列清单，再通过同卷暂存把源码包加入默认 manifest 与 SHA256SUMS。它不读取签名身份、不重新构建二进制、不联网或发布；每次新的正式二进制构建后都必须重新运行。
+[New-SourceDelivery.ps1](New-SourceDelivery.ps1) 在正式二进制构建和验收后生成 `PhoneBridge-NG-0.2.0-source.zip`，排除 `.audit`、版本库元数据、构建缓存和私钥文件类型，写入并回读逐文件散列清单，再通过同卷暂存把源码包加入默认 manifest 与 SHA256SUMS。它不读取签名身份、不重新构建二进制、不联网或发布；每次新的正式二进制构建后都必须重新运行。
 
 [Initialize-AndroidReleaseSigning.ps1](Initialize-AndroidReleaseSigning.ps1) 一次性生成项目外的 Android 长期 PKCS12 身份、独立路径备份和无秘密身份记录。它拒绝覆盖已有文件，正式执行前必须先选择独立受保护备份介质。
 

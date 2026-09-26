@@ -390,6 +390,18 @@ public sealed class MountTests
     }
 
     [TestMethod]
+    public void DeviceSessionRootDoesNotRelocateExistingIdentityCache()
+    {
+        var identity = Identity();
+        var request = new MountRequest(identity, new("synthetic-user", "synthetic-password"), "192.0.2.1", 8443,
+            "", 'P', @"C:\test folder\rclone.exe", @"C:\test folder\sessions\device-hash",
+            MountAccessMode.ReadWrite, @"C:\test folder\sessions");
+
+        Assert.AreEqual(@"C:\test folder\sessions\device-hash", request.SessionRoot);
+        Assert.AreEqual(Path.Combine(@"C:\test folder\sessions", "VfsCache-v1", identity.Sha256), request.CacheRoot);
+    }
+
+    [TestMethod]
     public void CacheDrainRequiresEmptyQueueAndHealthyCounters()
     {
         using var emptyQueue = JsonDocument.Parse("{\"queue\":[]}");

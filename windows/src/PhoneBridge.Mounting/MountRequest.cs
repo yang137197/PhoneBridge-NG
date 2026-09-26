@@ -73,7 +73,7 @@ public sealed class MountRequest
 
     public MountRequest(ConfirmedIdentity identity, SessionCredentials credentials, string address, int port,
         string remoteDirectory, char driveLetter, string rclonePath, string sessionRoot,
-        MountAccessMode accessMode = MountAccessMode.ReadOnly)
+        MountAccessMode accessMode = MountAccessMode.ReadOnly, string? cacheBaseRoot = null)
     {
         if (address is null || !CandidateParser.TryManual(address, port, out var candidate)) throw new MountException("invalid-endpoint");
         if (remoteDirectory is null || remoteDirectory.Length > 1024 || remoteDirectory.StartsWith('/') || remoteDirectory.EndsWith('/') ||
@@ -83,7 +83,9 @@ public sealed class MountRequest
         driveLetter = char.ToUpperInvariant(driveLetter);
         if (driveLetter is < 'C' or > 'Z') throw new MountException("invalid-drive");
         if (!Path.IsPathFullyQualified(rclonePath) || !Path.IsPathFullyQualified(sessionRoot) ||
-            rclonePath.StartsWith("\\\\", StringComparison.Ordinal) || sessionRoot.StartsWith("\\\\", StringComparison.Ordinal))
+            (cacheBaseRoot is not null && !Path.IsPathFullyQualified(cacheBaseRoot)) ||
+            rclonePath.StartsWith("\\\\", StringComparison.Ordinal) || sessionRoot.StartsWith("\\\\", StringComparison.Ordinal) ||
+            (cacheBaseRoot?.StartsWith("\\\\", StringComparison.Ordinal) ?? false))
             throw new MountException("local-absolute-path-required");
         Identity = identity ?? throw new MountException("identity-required");
         Credentials = credentials ?? throw new MountException("credentials-required");
@@ -92,7 +94,8 @@ public sealed class MountRequest
         DriveLetter = driveLetter;
         RclonePath = Path.GetFullPath(rclonePath);
         SessionRoot = Path.GetFullPath(sessionRoot);
-        CacheRoot = Path.Combine(SessionRoot, "VfsCache-v1", Identity.Sha256);
+        string cacheBase = cacheBaseRoot is null ? SessionRoot : Path.GetFullPath(cacheBaseRoot);
+        CacheRoot = Path.Combine(cacheBase, "VfsCache-v1", Identity.Sha256);
         AccessMode = accessMode;
     }
 }

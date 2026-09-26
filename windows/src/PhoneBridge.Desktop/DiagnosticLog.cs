@@ -39,7 +39,8 @@ internal readonly record struct DiagnosticEvent(
     DiagnosticResultCode Code = DiagnosticResultCode.None,
     DiagnosticState State = DiagnosticState.None,
     int? Count = null,
-    long? DurationMs = null);
+    long? DurationMs = null,
+    int? Session = null);
 
 internal sealed class DiagnosticEventLog : IDisposable
 {
@@ -102,12 +103,13 @@ internal sealed class DiagnosticEventLog : IDisposable
             try
             {
                 ReopenIfPathWasReplaced();
-                var entry = new LogEntry(1, DateTimeOffset.UtcNow.ToString("O", CultureInfo.InvariantCulture),
+                var entry = new LogEntry(2, DateTimeOffset.UtcNow.ToString("O", CultureInfo.InvariantCulture),
                     ++sequence, version, Name(item.Level), Name(item.Event),
                     item.Code == DiagnosticResultCode.None ? null : Name(item.Code),
                     item.State == DiagnosticState.None ? null : Name(item.State),
                     item.Count is >= 0 ? item.Count : null,
-                    item.DurationMs is >= 0 ? item.DurationMs : null);
+                    item.DurationMs is >= 0 ? item.DurationMs : null,
+                    item.Session is > 0 ? item.Session : null);
                 byte[] json = JsonSerializer.SerializeToUtf8Bytes(entry, JsonOptions);
                 long required = json.Length + 1L;
                 if (required > maxFileBytes) { Disable("event-too-large"); return; }
@@ -121,8 +123,8 @@ internal sealed class DiagnosticEventLog : IDisposable
         }
     }
 
-    internal void WriteFailure(DiagnosticEventName name, DiagnosticResultCode code, Exception ignored) =>
-        Write(new(name, DiagnosticLevel.Error, code, DiagnosticState.Failed));
+    internal void WriteFailure(DiagnosticEventName name, DiagnosticResultCode code, Exception ignored, int? session = null) =>
+        Write(new(name, DiagnosticLevel.Error, code, DiagnosticState.Failed, Session: session));
 
     internal IReadOnlyList<DiagnosticLogFile> Snapshot()
     {
@@ -249,7 +251,7 @@ internal sealed class DiagnosticEventLog : IDisposable
     private static string Name<T>(T value) where T : struct, Enum => value.ToString();
 
     private sealed record LogEntry(int Schema, string Utc, long Sequence, string AppVersion,
-        string Level, string Event, string? Code, string? State, int? Count, long? DurationMs);
+        string Level, string Event, string? Code, string? State, int? Count, long? DurationMs, int? Session);
 }
 
 internal readonly record struct DiagnosticLogFile(string Name, byte[] Content);

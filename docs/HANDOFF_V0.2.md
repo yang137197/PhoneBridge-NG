@@ -10,10 +10,10 @@
 - v0.2.0 需求计划基线：`18b5e0778d4fd03fad95a0a4602cea36dcc83f28`。
 - P2-002 静态设计 r1 已由用户全部确认并冻结；视觉方向、Windows 分层/按钮命名、Android 页面层级和图标 A“桥接文件”均已确定。
 - P2-003 r2 的实际 UI 已由用户复验通过并完成。
-- P2-004 已完成：配对、停止共享后的记录、手机存储跨端浏览、两端移除、旧凭据失效、全新配对及 r18 两端单一“设备备注”均已由用户验收通过。多设备核心尚未开始。
+- P2-004 已完成全部既定体验；P2-005 也已完成：r20 在 Samsung 与 Redmi 上同时挂载两个盘符、各自双向小文件复制及单设备断开隔离均通过。
 - r10 暴露并确认 Windows“添加手机”先打开、配对候选随后到达时仍无选中项的缺陷；r11 已实机验证候选自动选中、8 位码后按钮启用、真实配对成功且不自动挂载。
 - r12 又确认未配对候选因两个空设备 ID 相等而被错误显示为“已连接”；运行证据证明当时没有真实配对、rclone 或盘符。r13 已实机确认主列表只显示已配对手机，未配对候选只进入“添加手机”，8 位码前后按钮状态正确。
-- Windows r18 使用独立 `0.2.0.18` 数据根；Android `org.phonebridge.ng.uipreviewr18` 已按新包名全新安装，不继承 r17 身份或配对记录。两端当前均无配对，Windows 无 rclone 或候选盘符；制品和散列见 `docs/UI_ACCEPTANCE.md`。
+- Windows r20 验收必须从打包目录运行 `PhoneBridge.Desktop.exe --ui-preview`，使用独立 `0.2.0.20` 数据根；Android 包名为 `org.phonebridge.ng.uipreviewr20`。最终验收已从托盘安全退出，桌面进程、全部 rclone 和 P:/E: 均为 0；隔离根保留两条配对。一次误用开发入口后的清理使正式 Windows 配对记录变为 0，未找到备份；如仍需要旧正式配对只能重新配对。制品、散列和完整证据见 `docs/UI_ACCEPTANCE.md` 与 `docs/audit/P2-005-VALIDATION.md`。
 - 开始新任务前必须重新检查 `git status --short --branch`、`git log -5 --oneline --decorate` 和远端状态，不从本交接推断后来发生的变化。
 
 ## 2. 新对话必读顺序
@@ -27,7 +27,7 @@
 7. `ARCHITECTURE.md` 与 `DECISIONS.md`
 8. `docs/tasks/completed/P2-001-v0.2-requirements-and-ui-plan.md`
 9. `docs/design/v0.2/README.md` 与 `docs/tasks/completed/P2-002-ui-wireframes-and-icon-concepts.md`
-10. `docs/UI_ACCEPTANCE.md`、`docs/audit/P2-004-VALIDATION.md` 与 `docs/tasks/completed/P2-004-local-removal-and-screenshot-policy.md`
+10. `docs/UI_ACCEPTANCE.md`、`docs/audit/P2-005-VALIDATION.md` 与 `docs/tasks/completed/P2-005-multi-device-sessions.md`
 
 涉及实现时再读对应 Windows/Android 源码和安全、配对、测试规范，不在任务开始时无差别展开所有历史验收文件。
 
@@ -63,9 +63,9 @@
 
 ## 5. 已确认的代码事实
 
-- P2-003 候选的 `windows/src/PhoneBridge.Desktop/MainWindow.xaml` 已按“设备 / 设置 / 关于”及子页面分层；原有连接、挂载和安全操作仍由同一个窗口代码接入。
-- `windows/src/PhoneBridge.Desktop/MainWindow.xaml.cs` 当前创建一个 `ConnectionClient`。
-- `windows/src/PhoneBridge.Connection/ConnectionClient.cs` 当前持有一个 `ReadOnlyMountManager` 和一个 `Connected` 设备状态；多设备必须重构为按 `device_id` 隔离的会话所有权。
+- `windows/src/PhoneBridge.Desktop/MainWindow.xaml` 已按“设备 / 设置 / 关于”及子页面分层；`MainWindow.xaml.cs` 通过 `DeviceSessionCoordinator` 把设备卡片操作接到各自会话。
+- `DeviceSessionCoordinator` 按 `device_id` 创建会话；每个 `ConnectionClient` 绑定一个设备并独占 `ReadOnlyMountManager`。会话另行持有盘符预留、取消、健康监督、重连和进程内日志序号。
+- 每设备短期会话文件位于 `Sessions/<device_id hash>/...`，既有 `VfsCache-v1/<certificate sha256>` 路径保持稳定。日志 schema 2 只记录非身份会话序号。
 - Android 主界面仍位于 `android/app/src/main/java/org/phonebridge/ng/MainActivity.kt`，已用原生程序化布局实现首页、配对、电脑详情、设置菜单和语言子页；P2-004 已移除 `FLAG_SECURE`。
 - Android 停止共享时也可启动仅配对前台服务；session 返回 `share_ready=false`，文件路由关闭。Windows 配对成功只激活记录，不挂载或设置恢复意图；共享开始后仍由用户手动连接。
 - Android 共享引擎停止后仍独立读取加密配对库，所以已配对电脑可继续显示、修改访问模式、保存本机设备备注和本地删除；共享目录保留既有七项并追加内部共享存储根目录。`PBS1` version 2 保存设备备注并向后读取 version 1。
@@ -91,34 +91,34 @@
 
 ## 7. 多设备实现边界
 
-可复用发现、配对、凭据、TLS 和单个挂载实现。必须把全局唯一连接所有权改成按 `device_id` 隔离的会话：每个会话拥有自己的盘符、rclone 进程、RC 端口、缓存目录、取消令牌、健康检查、重连状态和日志上下文。
+P2-005 已复用发现、配对、凭据、TLS 和单个挂载实现，并把全局唯一连接所有权改成按 `device_id` 隔离的会话：每个会话拥有自己的盘符、rclone 进程、RC 端口、会话目录、取消令牌、健康检查、重连状态和日志上下文。
 
-只增加一个轻量会话协调器管理会话集合、盘符冲突、应用退出和托盘汇总。一个设备的取消、断开或失败不得停止另一设备。第一条真实通过线是 Samsung 与 Redmi 在同一 LAN 同时挂载两个盘符，各自可打开和双向复制；断开其中一个后另一个继续可用。
+轻量会话协调器只管理会话集合、盘符冲突、应用退出和托盘汇总。r20 已确认 Samsung 与 Redmi 在同一 LAN 同时挂载两个盘符、各自打开和双向复制；停止 Redmi 后 Samsung 继续可用。
 
-## 8. 唯一下一任务：P2-005 多设备会话核心
+## 8. 唯一下一任务：P2-006 UI、多会话接线与完整语言收口
 
 ### 目标
 
-将 Windows 当前全局唯一连接所有权改为按 `device_id` 隔离的会话，并完成最小双设备真实链路；不重复 P2-004 已通过的流程。
+按已确认的 r1/r2 设计收口 Windows 与 Android UI，完成多会话状态在最终界面的必要接线，并补齐两端简体中文/English 可见文本及持久化；不重复 P2-004/P2-005 已通过流程。
 
 ### 必须交付
 
-- 每个设备会话独立持有盘符、rclone 进程、RC 端口、缓存目录、取消令牌、健康检查、重连状态和日志上下文。
-- 只增加轻量会话协调器管理会话集合、盘符冲突、应用退出和托盘汇总；一个设备的取消、断开或失败不得停止另一设备。
-- 使用 Samsung 与 Redmi 在同一真实局域网完成最小双设备链路；不重复与多设备隔离无关的大文件、睡眠或升级矩阵。
-- 不扩展 P2-006 UI/完整语言覆盖、P2-007 正式图标和交付刷新。
+- Windows 设备、设置、关于及子页面使用已确认的层级与控件状态；多设备状态不回退为全局忙状态。
+- 两端默认简体中文、English 切换后当前界面更新并持久化；Windows 托盘、对话框、错误与诊断入口纳入同一语言选择。
+- 只验证本轮 UI/语言和多会话接线风险，不重复大文件、睡眠、重启或 P2-004/P2-005 真机矩阵。
+- 不开始 P2-007 正式图标、安装器、升级和交付刷新。
 
 ### 通过条件
 
-Samsung 与 Redmi 同时挂载为两个不同盘符，两个盘符均能打开、读取并各完成一次双向复制；停止或断开其中一台时，另一台仍可浏览和传输，进程、缓存、凭据与日志不串设备。
+两端既定流程均使用确认后的 UI；默认中文和 English 可切换并在冷启动后保持；Windows 多设备卡片在连接、处理、断开和错误状态下只影响对应设备，既有安全与挂载行为不回归。
 
 ## 9. 后续顺序
 
 1. P2-002：已完成并经用户确认。
 2. P2-003：两端原生 UI 验收（已完成并由用户复验通过）。
 3. P2-004：已完成；原定跨端流程及 r18 两端设备备注均已由用户验收通过。
-4. P2-005：按设备隔离的多会话核心和真实双设备最小链路。
-5. P2-006：按验收结果收口 UI、多会话接线和完整语言覆盖。
+4. P2-005：已完成；按设备隔离的多会话核心和真实双设备最小链路通过。
+5. P2-006：唯一下一任务；按验收结果收口 UI、多会话接线和完整语言覆盖。
 6. P2-007：正式图标收口、升级验证和 v0.2.0 交付刷新。
 
 编号以后续实际任务文件为准，但顺序和每次一个根因的原则不变。
@@ -133,7 +133,7 @@ Samsung 与 Redmi 同时挂载为两个不同盘符，两个盘符均能打开�
 
 先读取 AGENTS.md、DEVELOPMENT_RULES.md、README.md、docs/HANDOFF_V0.2.md、docs/V0.2_PLAN.md、docs/PRODUCT.md、ARCHITECTURE.md、DECISIONS.md，并核对当前 main、git status、最近提交和远端状态。以仓库当前事实为准，不沿用对话中的旧状态。
 
-v0.1.0 已发布。P2-002 静态设计和 P2-003 实际 UI 已由用户确认。P2-004 的配对、记录管理、手机存储跨端浏览、两端移除、旧凭据失效、全新配对及 r18 两端设备备注均已由用户验收通过。r18 自动验证包括 Windows 289/289、Android 123 个任务和 Samsung 三条定向测试。多设备核心尚未开始。Android 永久只通过 GitHub 分发。保持现有 Kotlin/WPF、HTTPS/WebDAV、rclone、WinFsp、mDNS、配对与安全存储路线。
+v0.1.0 已发布。P2-002 静态设计、P2-003 实际 UI、P2-004 配对与记录体验均已完成。P2-005 已把 Windows 改为按 device_id 隔离的多会话：Windows 294/294 测试通过，r20 在 Samsung 与 Redmi 上同时挂载两个盘符、各自双向小文件散列一致，停止 Redmi 后 Samsung 继续浏览和传输。正式 Windows 配对记录当前为 0；如需旧正式配对必须重新配对。UI 验收只能运行打包候选并传入 --ui-preview，不能用 scripts/Start-WindowsPreview.ps1 代替隔离验收。Android 永久只通过 GitHub 分发。保持现有 Kotlin/WPF、HTTPS/WebDAV、rclone、WinFsp、mDNS、配对与安全存储路线。
 
-本轮只执行 P2-005：将 Windows 单一连接所有权改为按 `device_id` 隔离的多会话核心，并完成 Samsung 与 Redmi 同时挂载两个盘符、断开一台不影响另一台的最小真实链路。不要重复 P2-004 已通过的配对、移除、手机存储或大文件测试，不开始 P2-006/P2-007，不扩大功能或测试范围。完成后把状态、未验证项和唯一下一任务写入仓库并提交推送。
+本轮只执行 P2-006：按已确认设计收口 Windows/Android UI、多会话状态接线和完整简体中文/English 覆盖。不要重复 P2-004 的配对/移除/设备备注或 P2-005 的双盘符传输，不开始 P2-007 正式图标、安装器和交付刷新，不扩大测试范围。完成后把状态、未验证项和唯一下一任务写入仓库并提交推送。
 ```

@@ -22,22 +22,21 @@ namespace PhoneBridge.Desktop;
 
 public partial class MainWindow : Window
 {
-    private readonly ConnectionClient client;
+    private readonly DeviceSessionCoordinator sessions;
     private readonly string appDataRoot;
     private readonly DiscoveryService discovery = new();
     private readonly CancellationTokenSource lifetime = new();
-    private readonly ReconnectPolicy reconnect = new();
     private readonly ManualEndpointSession manualEndpoints = new();
     private readonly Dictionary<string, DeviceCandidate> candidates = new(StringComparer.Ordinal);
+    private readonly Dictionary<int, MountSnapshot> lastMountSnapshots = [];
     private IReadOnlyList<PairingRecord> records = [];
-    private Task discoveryTask = Task.CompletedTask, operation = Task.CompletedTask;
-    private CancellationTokenSource? operationCancellation;
+    private Task discoveryTask = Task.CompletedTask, globalOperation = Task.CompletedTask;
+    private CancellationTokenSource? globalOperationCancellation;
     private readonly DispatcherTimer timer = new() { Interval = TimeSpan.FromSeconds(1) };
     private readonly AutoStartManager? autoStart;
     private readonly DiagnosticEventLog diagnostics;
     private readonly string? autoStartInitializationError;
-    private bool closing, closed, storeUnavailable, supervisorBusy, discoveryFailed, trayEnabled, exitRequested, loadingAutoStart;
-    private MountSnapshot? lastMountSnapshot;
+    private bool closing, closed, storeUnavailable, discoveryFailed, trayEnabled, exitRequested, loadingAutoStart;
     internal TrayStatus CurrentTrayStatus { get; private set; } = TrayStatus.Offline;
     internal event Action<TrayStatus>? TrayStatusChanged;
 
@@ -52,7 +51,7 @@ public partial class MainWindow : Window
     {
         this.diagnostics = diagnostics;
         appDataRoot = isolatedDataRoot ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "PhoneBridge-NG");
-        client = new(pairingStore ?? PairingStore.Open());
+        sessions = new(pairingStore ?? PairingStore.Open());
         InitializeComponent();
         try { if (!uiPreview) autoStart = new(new WindowsAutoStartStore(), Environment.ProcessPath ?? string.Empty); }
         catch (AutoStartException error) { autoStartInitializationError = error.Code; }
@@ -60,6 +59,7 @@ public partial class MainWindow : Window
     }
     private static string T(string key) => TextCatalog.Get(key);
     private DeviceRow? Selected => Devices.SelectedItem as DeviceRow;
+    private DeviceSession? SelectedSession => Selected?.DeviceId is { } deviceId && sessions.TryGet(deviceId, out var session) ? session : null;
 
     private void ShowMainPage(UIElement page, WpfButton activeNavigation)
     {
@@ -174,20 +174,25 @@ public partial class MainWindow : Window
     private void RebuildRows()
     {
         string? selected = Selected?.Id;
-        string? connectedDevice = client.Mount.State == MountState.Mounted ? client.Connected?.Record.DeviceId : null;
-        char? connectedDrive = connectedDevice is null ? null : client.Connected?.DriveLetter;
         var rows = candidates.Values.Where(c => DeviceListPolicy.IncludeCandidate(c.Pairing is not null,
             records.Any(r => r.DeviceId == c.DeviceIdHint))).Select(c =>
         {
             var record = records.FirstOrDefault(r => r.DeviceId == c.DeviceIdHint);
-            bool isConnected = DeviceListPolicy.IsConnected(record?.DeviceId, connectedDevice);
-            return new DeviceRow(c.Id, c, record, isConnected, isConnected ? connectedDrive : null);
+            string deviceId = record?.DeviceId ?? c.DeviceIdHint ?? c.Id;
+            var session = sessions.GetOrCreate(deviceId);
+            bool isConnected = DeviceListPolicy.IsConnected(record?.DeviceId,
+                session.Client.Mount.State == MountState.Mounted ? session.Client.Connected?.Record.DeviceId : null);
+            return new DeviceRow(c.Id, deviceId, c, record, isConnected,
+                isConnected ? session.Client.Connected?.DriveLetter : null, session.OperationInProgress || session.SupervisorBusy);
         }).ToList();
         rows.AddRange(records.Where(r => !candidates.Values.Any(c => c.DeviceIdHint == r.DeviceId))
             .Select(r =>
             {
-                bool isConnected = DeviceListPolicy.IsConnected(r.DeviceId, connectedDevice);
-                return new DeviceRow(r.DeviceId, null, r, isConnected, isConnected ? connectedDrive : null);
+                var session = sessions.GetOrCreate(r.DeviceId);
+                bool isConnected = DeviceListPolicy.IsConnected(r.DeviceId,
+                    session.Client.Mount.State == MountState.Mounted ? session.Client.Connected?.Record.DeviceId : null);
+                return new DeviceRow(r.DeviceId, r.DeviceId, null, r, isConnected,
+                    isConnected ? session.Client.Connected?.DriveLetter : null, session.OperationInProgress || session.SupervisorBusy);
             }));
         var ordered = rows.OrderBy(r => r.Name, StringComparer.CurrentCulture).ToArray();
         Devices.ItemsSource = ordered;
@@ -201,7 +206,12 @@ public partial class MainWindow : Window
         row.Candidate is { Protocol: CandidateProtocol.PairedV3, Pairing: not null };
     private async Task ReloadRecords()
     {
-        try { records = await client.RecordsAsync(); storeUnavailable = false; }
+        try
+        {
+            records = await sessions.RecordsAsync();
+            foreach (var record in records) sessions.GetOrCreate(record.DeviceId);
+            storeUnavailable = false;
+        }
         catch { records = []; storeUnavailable = true; Status.Text = T("StoreFailed"); }
         RebuildRows();
     }
@@ -214,6 +224,7 @@ public partial class MainWindow : Window
     {
         if (Endpoints is null) return;
         RefreshEndpoints(Endpoints.SelectedItem as DeviceEndpoint);
+        FillDrives();
         ManualAddress.Clear();
         ManualPort.Text = ManualEndpointSession.DefaultPort;
         if (PairingPhoneName is not null) PairingPhoneName.Text = Selected?.Name ?? T("ChoosePhoneFirst");
@@ -235,10 +246,13 @@ public partial class MainWindow : Window
     private void UpdateControls()
     {
         if (Pair is null) return;
-        bool busy = !operation.IsCompleted || supervisorBusy || closing;
-        bool mounted = client.Mount.State == MountState.Mounted;
         var row = Selected;
-        bool idle = client.Mount.State is MountState.Idle or MountState.Stopped or MountState.Failed;
+        var session = SelectedSession;
+        var mount = session?.Client.Mount ?? new MountSnapshot(MountState.Idle);
+        bool globalBusy = !globalOperation.IsCompleted || closing;
+        bool busy = globalBusy || session?.OperationInProgress == true || session?.SupervisorBusy == true;
+        bool mounted = mount.State == MountState.Mounted && session?.Client.Connected?.Record.DeviceId == row?.Record?.DeviceId;
+        bool idle = mount.State is MountState.Idle or MountState.Stopped or MountState.Failed;
         Pair.IsEnabled = !busy && !storeUnavailable && idle && Code.SecurePassword.Length == 8 && row?.Record is null && row?.Candidate?.Protocol == CandidateProtocol.PairedV3 && row.Candidate.Pairing is not null;
         Connect.IsEnabled = !busy && !storeUnavailable && idle &&
             row?.Record?.State is (PairingRecordState.Pending or PairingRecordState.Active) && Endpoints.SelectedItem is DeviceEndpoint;
@@ -247,7 +261,7 @@ public partial class MainWindow : Window
         DeleteConfirmed.IsEnabled = !busy && !storeUnavailable && row?.Record is { State: PairingRecordState.Active, Mode: not AccessMode.ReadOnly } && Endpoints.SelectedItem is DeviceEndpoint;
         Open.IsEnabled = !busy && mounted;
         Unmount.IsEnabled = !busy && !idle;
-        Cancel.IsEnabled = !busy ? false : !closing && operationCancellation is not null;
+        Cancel.IsEnabled = !closing && (session?.OperationInProgress == true || globalOperationCancellation is not null);
         Code.IsEnabled = !busy;
         DeletePath.IsEnabled = !busy;
         ExportBundle.IsEnabled = !busy;
@@ -258,35 +272,44 @@ public partial class MainWindow : Window
         ManualPort.IsEnabled = canUseManual;
         ClearManualAddress.IsEnabled = canUseManual && row?.Record is { } manualRecord && manualEndpoints.TryGet(manualRecord.DeviceId, out _);
         Drives.IsEnabled = !busy && idle; Endpoints.IsEnabled = !busy;
-        ConnectionStatus.Text = mounted && client.Connected is { } active
+        ConnectionStatus.Text = mounted && session?.Client.Connected is { } active
             ? string.Format(T("MountedAt"), active.DriveLetter, active.Record.DisplayName, T(active.Record.Mode.ToString()))
-            : client.Mount.State == MountState.RecoveringWrites ? T("RecoveringWrites")
-            : client.Mount.State == MountState.StopFailed ? T(client.Mount.ErrorCode ?? "unmount-not-confirmed") : T("NoMount");
+            : mount.State == MountState.RecoveringWrites ? T("RecoveringWrites")
+            : mount.State == MountState.StopFailed ? T(mount.ErrorCode ?? "unmount-not-confirmed") : T("NoMount");
+        var allSessions = sessions.Sessions;
         SetTrayStatus(TrayPolicy.ResolveStatus(
-            storeUnavailable || discoveryFailed || client.Mount.State is MountState.Failed or MountState.StopFailed,
-            mounted, busy, candidates.Count > 0));
-        ObserveMount();
+            storeUnavailable || discoveryFailed || allSessions.Any(item => item.Client.Mount.State is MountState.Failed or MountState.StopFailed),
+            allSessions.Any(item => item.Client.Mount.State == MountState.Mounted),
+            !globalOperation.IsCompleted || allSessions.Any(item => item.OperationInProgress || item.SupervisorBusy),
+            candidates.Count > 0));
+        ObserveMounts(allSessions);
     }
-    private void ObserveMount()
+    private void ObserveMounts(IReadOnlyList<DeviceSession> allSessions)
     {
-        var current = client.Mount;
-        if (lastMountSnapshot is not null && current.State == lastMountSnapshot.State && current.ErrorCode == lastMountSnapshot.ErrorCode &&
-            current.ExitCode == lastMountSnapshot.ExitCode && current.Forced == lastMountSnapshot.Forced) return;
-        diagnostics.Write(new(DiagnosticEventName.MountStateChanged,
-            current.State is MountState.Failed or MountState.StopFailed ? DiagnosticLevel.Error : DiagnosticLevel.Information,
-            DiagnosticCodeMap.From(current.ErrorCode),
-            current.State switch { MountState.Starting => DiagnosticState.Starting, MountState.RecoveringWrites => DiagnosticState.Recovering, MountState.Mounted => DiagnosticState.Mounted,
-                MountState.Stopping => DiagnosticState.Stopping, MountState.Stopped or MountState.Idle => DiagnosticState.Stopped, _ => DiagnosticState.Failed }));
-        if (current.State == MountState.Mounted)
-            diagnostics.Write(new(DiagnosticEventName.WinFspChecked, Code: DiagnosticResultCode.Success, State: DiagnosticState.Healthy));
-        if (current.ErrorCode == "winfsp-missing")
-            diagnostics.Write(new(DiagnosticEventName.WinFspChecked, DiagnosticLevel.Error, DiagnosticResultCode.WinFspMissing, DiagnosticState.Failed));
-        if (current.ExitCode is not null && current.ExitCode != lastMountSnapshot?.ExitCode)
-            diagnostics.Write(new(DiagnosticEventName.RcloneExited,
-                current.ExitCode == 0 ? DiagnosticLevel.Information : DiagnosticLevel.Error,
-                current.ExitCode == 0 ? DiagnosticResultCode.Success : DiagnosticResultCode.Failure,
-                current.State is MountState.Stopped ? DiagnosticState.Stopped : DiagnosticState.Failed));
-        lastMountSnapshot = current;
+        foreach (var session in allSessions)
+        {
+            var current = session.Client.Mount;
+            lastMountSnapshots.TryGetValue(session.LogContext, out var previous);
+            if (previous is not null && current.State == previous.State && current.ErrorCode == previous.ErrorCode &&
+                current.ExitCode == previous.ExitCode && current.Forced == previous.Forced) continue;
+            diagnostics.Write(new(DiagnosticEventName.MountStateChanged,
+                current.State is MountState.Failed or MountState.StopFailed ? DiagnosticLevel.Error : DiagnosticLevel.Information,
+                DiagnosticCodeMap.From(current.ErrorCode),
+                current.State switch { MountState.Starting => DiagnosticState.Starting, MountState.RecoveringWrites => DiagnosticState.Recovering, MountState.Mounted => DiagnosticState.Mounted,
+                    MountState.Stopping => DiagnosticState.Stopping, MountState.Stopped or MountState.Idle => DiagnosticState.Stopped, _ => DiagnosticState.Failed },
+                Session: session.LogContext));
+            if (current.State == MountState.Mounted)
+                diagnostics.Write(new(DiagnosticEventName.WinFspChecked, Code: DiagnosticResultCode.Success, State: DiagnosticState.Healthy, Session: session.LogContext));
+            if (current.ErrorCode == "winfsp-missing")
+                diagnostics.Write(new(DiagnosticEventName.WinFspChecked, DiagnosticLevel.Error, DiagnosticResultCode.WinFspMissing, DiagnosticState.Failed, Session: session.LogContext));
+            if (current.ExitCode is not null && current.ExitCode != previous?.ExitCode)
+                diagnostics.Write(new(DiagnosticEventName.RcloneExited,
+                    current.ExitCode == 0 ? DiagnosticLevel.Information : DiagnosticLevel.Error,
+                    current.ExitCode == 0 ? DiagnosticResultCode.Success : DiagnosticResultCode.Failure,
+                    current.State is MountState.Stopped ? DiagnosticState.Stopped : DiagnosticState.Failed,
+                    Session: session.LogContext));
+            lastMountSnapshots[session.LogContext] = current;
+        }
     }
     private void SetTrayStatus(TrayStatus value)
     {
@@ -320,12 +343,18 @@ public partial class MainWindow : Window
     {
         char current = Drives.SelectedItem is char value ? value : 'P';
         var used = DriveInfo.GetDrives().Select(d => char.ToUpperInvariant(d.Name[0])).ToHashSet();
-        var available = Enumerable.Range('D', 'Z' - 'D' + 1).Select(n => (char)n).Where(c => !used.Contains(c)).ToArray();
+        string? selectedDevice = Selected?.DeviceId;
+        char? ownReservation = SelectedSession?.ReservedDrive;
+        var available = Enumerable.Range('D', 'Z' - 'D' + 1).Select(n => (char)n)
+            .Where(c => (!used.Contains(c) || ownReservation == c) && sessions.CanUseDrive(selectedDevice, c)).ToArray();
         Drives.ItemsSource = available; Drives.SelectedItem = available.Contains(current) ? current : available.FirstOrDefault();
     }
-    private MountOptions Options() => new(Drives.SelectedItem is char letter ? letter : throw new ConnectionException("drive-occupied"),
-        Path.Combine(AppContext.BaseDirectory, "tools", "rclone.exe"), Path.Combine(appDataRoot, "Sessions"));
-    private IProgress<ConnectionStage> Progress() => new Progress<ConnectionStage>(stage => Status.Text = T(stage.ToString()));
+    private MountOptions Options(string deviceId) => OptionsFor(deviceId,
+        Drives.SelectedItem is char letter ? letter : throw new ConnectionException("drive-occupied"));
+    private IProgress<ConnectionStage> Progress(DeviceSession session) => new Progress<ConnectionStage>(stage =>
+    {
+        if (Selected?.DeviceId == session.DeviceId) Status.Text = T(stage.ToString());
+    });
     private static bool Terminal(ConnectionException error) => error.Code is
         "unauthorized" or "identity-mismatch" or "record-changed" or "mode-changed" or "invalid-response";
     private static bool Terminal(MountException error) => error.Code is
@@ -333,135 +362,189 @@ public partial class MainWindow : Window
 
     private async Task SuperviseAsync()
     {
-        if (supervisorBusy || !operation.IsCompleted || closing || storeUnavailable) return;
-        supervisorBusy = true; UpdateControls();
+        if (closing || storeUnavailable) return;
+        foreach (var session in sessions.Sessions)
+            if (!session.OperationInProgress && session.TryEnterSupervisor()) _ = SuperviseSessionAsync(session);
+        await Task.CompletedTask;
+    }
+
+    private async Task SuperviseSessionAsync(DeviceSession session)
+    {
+        UpdateControls();
         try
         {
             var now = DateTimeOffset.UtcNow;
-            if (client.Mount.State == MountState.Mounted && client.Connected is { } active)
+            if (session.Client.Mount.State == MountState.Mounted && session.Client.Connected is { } active)
             {
-                if (!reconnect.Armed)
-                    reconnect.Arm(active.Record.DeviceId, OptionsFor(active.DriveLetter), now);
-                if (!reconnect.HealthDue(now)) return;
+                if (!session.Reconnect.Armed)
+                    session.Reconnect.Arm(active.Record.DeviceId, OptionsFor(active.Record.DeviceId, active.DriveLetter), now);
+                if (!session.Reconnect.HealthDue(now)) return;
                 try
                 {
-                    Status.Text = T("ConnectionChecking");
-                    diagnostics.Write(new(DiagnosticEventName.NetworkCheckCompleted, State: DiagnosticState.Checking));
-                    await client.CheckSessionAsync(active.Record.DeviceId, active.Endpoint, lifetime.Token);
-                    reconnect.HealthSucceeded(DateTimeOffset.UtcNow);
-                    diagnostics.Write(new(DiagnosticEventName.NetworkCheckCompleted, Code: DiagnosticResultCode.Success, State: DiagnosticState.Healthy));
-                    Status.Text = T("ConnectionHealthy");
+                    SetSessionStatus(session, "ConnectionChecking");
+                    diagnostics.Write(new(DiagnosticEventName.NetworkCheckCompleted, State: DiagnosticState.Checking, Session: session.LogContext));
+                    await session.Client.CheckSessionAsync(active.Record.DeviceId, active.Endpoint, lifetime.Token);
+                    session.Reconnect.HealthSucceeded(DateTimeOffset.UtcNow);
+                    diagnostics.Write(new(DiagnosticEventName.NetworkCheckCompleted, Code: DiagnosticResultCode.Success, State: DiagnosticState.Healthy, Session: session.LogContext));
+                    SetSessionStatus(session, "ConnectionHealthy");
                 }
                 catch (ConnectionException error) when (error.Code == "operation-in-progress") { }
                 catch (ConnectionException error) when (Terminal(error))
                 {
-                    diagnostics.Write(new(DiagnosticEventName.NetworkCheckCompleted, DiagnosticLevel.Error, DiagnosticCodeMap.From(error.Code), DiagnosticState.Failed));
-                    reconnect.Suppress();
-                    try { await client.StopAsync(); }
-                    catch (ConnectionException stop) { Status.Text = T(stop.Code); return; }
+                    diagnostics.Write(new(DiagnosticEventName.NetworkCheckCompleted, DiagnosticLevel.Error, DiagnosticCodeMap.From(error.Code), DiagnosticState.Failed, Session: session.LogContext));
+                    session.Reconnect.Suppress();
+                    try { await sessions.StopAsync(session.DeviceId); }
+                    catch (ConnectionException stop) { SetSessionStatus(session, stop.Code); return; }
                     if (error.Code == "mode-changed") await ReloadRecords();
-                    FillDrives(); Status.Text = T(error.Code);
+                    FillDrives(); SetSessionStatus(session, error.Code);
                 }
                 catch (Exception error) when (error is HttpRequestException or IOException or OperationCanceledException or ConnectionException)
                 {
-                    if (!reconnect.HealthFailed(DateTimeOffset.UtcNow))
+                    if (!session.Reconnect.HealthFailed(DateTimeOffset.UtcNow))
                     {
-                        diagnostics.WriteFailure(DiagnosticEventName.NetworkCheckCompleted, DiagnosticResultCode.Failure, error);
-                        Status.Text = string.Format(T("ConnectionRetry"), reconnect.ConsecutiveHealthFailures, 3);
+                        diagnostics.WriteFailure(DiagnosticEventName.NetworkCheckCompleted, DiagnosticResultCode.Failure, error, session.LogContext);
+                        if (Selected?.DeviceId == session.DeviceId)
+                            Status.Text = string.Format(T("ConnectionRetry"), session.Reconnect.ConsecutiveHealthFailures, 3);
                         return;
                     }
-                    Status.Text = T("ConnectionLost");
-                    diagnostics.Write(new(DiagnosticEventName.NetworkCheckCompleted, DiagnosticLevel.Error, DiagnosticResultCode.Failure, DiagnosticState.Lost, reconnect.ConsecutiveHealthFailures));
+                    SetSessionStatus(session, "ConnectionLost");
+                    diagnostics.Write(new(DiagnosticEventName.NetworkCheckCompleted, DiagnosticLevel.Error, DiagnosticResultCode.Failure,
+                        DiagnosticState.Lost, session.Reconnect.ConsecutiveHealthFailures, Session: session.LogContext));
                     try
                     {
-                        await client.StopAsync();
-                        reconnect.Disconnected(DateTimeOffset.UtcNow);
-                        diagnostics.Write(new(DiagnosticEventName.ReconnectScheduled, State: DiagnosticState.Waiting));
-                        FillDrives(); Status.Text = T("ReconnectWaiting");
+                        await sessions.StopAsync(session.DeviceId, preserveDriveReservation: true);
+                        session.Reconnect.Disconnected(DateTimeOffset.UtcNow);
+                        diagnostics.Write(new(DiagnosticEventName.ReconnectScheduled, State: DiagnosticState.Waiting, Session: session.LogContext));
+                        FillDrives(); SetSessionStatus(session, "ReconnectWaiting");
                     }
-                    catch (ConnectionException stop) { Status.Text = T(stop.Code); }
+                    catch (ConnectionException stop) { SetSessionStatus(session, stop.Code); }
                 }
                 return;
             }
 
-            if (!reconnect.Armed || client.Mount.State is not (MountState.Idle or MountState.Stopped or MountState.Failed)) return;
-            if (client.Connected is not null)
+            if (!session.Reconnect.Armed || session.Client.Mount.State is not (MountState.Idle or MountState.Stopped or MountState.Failed)) return;
+            if (session.Client.Connected is not null)
             {
-                try { await client.StopAsync(); }
-                catch (ConnectionException stop) { Status.Text = T(stop.Code); return; }
-                reconnect.Disconnected(DateTimeOffset.UtcNow); FillDrives();
+                try { await sessions.StopAsync(session.DeviceId, preserveDriveReservation: true); }
+                catch (ConnectionException stop) { SetSessionStatus(session, stop.Code); return; }
+                session.Reconnect.Disconnected(DateTimeOffset.UtcNow); FillDrives();
             }
             var attemptTime = DateTimeOffset.UtcNow;
-            if (reconnect.DeviceId is not { } reconnectDevice || !reconnect.CanReconnect(reconnectDevice, attemptTime)) return;
+            if (session.Reconnect.DeviceId is not { } reconnectDevice || !session.Reconnect.CanReconnect(reconnectDevice, attemptTime)) return;
             DeviceEndpoint? endpoint = manualEndpoints.SelectForReconnect(reconnectDevice, candidates.Values);
-            if (endpoint is null || reconnect.Options is not { } options) return;
+            if (endpoint is null || session.Reconnect.Options is not { } options) return;
             try
             {
-                Status.Text = T("Reconnecting");
-                diagnostics.Write(new(DiagnosticEventName.ConnectionStarted, State: DiagnosticState.Starting));
-                var record = await client.ConnectAsync(reconnect.DeviceId!, endpoint, options, Progress(), lifetime.Token);
-                reconnect.Arm(record.DeviceId, options, DateTimeOffset.UtcNow);
-                diagnostics.Write(new(DiagnosticEventName.ConnectionCompleted, Code: DiagnosticResultCode.Success, State: DiagnosticState.Mounted));
-                Status.Text = T("ReconnectComplete");
+                SetSessionStatus(session, "Reconnecting");
+                diagnostics.Write(new(DiagnosticEventName.ConnectionStarted, State: DiagnosticState.Starting, Session: session.LogContext));
+                var record = await sessions.ConnectAsync(session.DeviceId, endpoint, options, Progress(session), lifetime.Token);
+                session.Reconnect.Arm(record.DeviceId, options, DateTimeOffset.UtcNow);
+                diagnostics.Write(new(DiagnosticEventName.ConnectionCompleted, Code: DiagnosticResultCode.Success, State: DiagnosticState.Mounted, Session: session.LogContext));
+                SetSessionStatus(session, "ReconnectComplete");
             }
             catch (ConnectionException error) when (Terminal(error))
             {
-                diagnostics.Write(new(DiagnosticEventName.ConnectionCompleted, DiagnosticLevel.Error, DiagnosticCodeMap.From(error.Code), DiagnosticState.Failed));
-                reconnect.Suppress(); Status.Text = T(error.Code);
+                diagnostics.Write(new(DiagnosticEventName.ConnectionCompleted, DiagnosticLevel.Error, DiagnosticCodeMap.From(error.Code), DiagnosticState.Failed, Session: session.LogContext));
+                session.Reconnect.Suppress();
+                try { await sessions.StopAsync(session.DeviceId); } catch { }
+                SetSessionStatus(session, error.Code);
             }
             catch (MountException error) when (Terminal(error))
             {
-                diagnostics.Write(new(DiagnosticEventName.ConnectionCompleted, DiagnosticLevel.Error, DiagnosticCodeMap.From(error.Code), DiagnosticState.Failed));
-                reconnect.Suppress(); Status.Text = T(error.Code);
+                diagnostics.Write(new(DiagnosticEventName.ConnectionCompleted, DiagnosticLevel.Error, DiagnosticCodeMap.From(error.Code), DiagnosticState.Failed, Session: session.LogContext));
+                session.Reconnect.Suppress();
+                try { await sessions.StopAsync(session.DeviceId); } catch { }
+                SetSessionStatus(session, error.Code);
             }
             catch (Exception error) when (error is HttpRequestException or IOException or OperationCanceledException or ConnectionException or MountException)
             {
-                diagnostics.WriteFailure(DiagnosticEventName.ConnectionCompleted, DiagnosticResultCode.Failure, error);
-                reconnect.ReconnectFailed(DateTimeOffset.UtcNow);
-                var seconds = Math.Max(1, (int)Math.Ceiling((reconnect.NextAttempt - DateTimeOffset.UtcNow).TotalSeconds));
-                Status.Text = string.Format(T("ReconnectBackoff"), seconds);
+                diagnostics.WriteFailure(DiagnosticEventName.ConnectionCompleted, DiagnosticResultCode.Failure, error, session.LogContext);
+                session.Reconnect.ReconnectFailed(DateTimeOffset.UtcNow);
+                var seconds = Math.Max(1, (int)Math.Ceiling((session.Reconnect.NextAttempt - DateTimeOffset.UtcNow).TotalSeconds));
+                if (Selected?.DeviceId == session.DeviceId) Status.Text = string.Format(T("ReconnectBackoff"), seconds);
             }
         }
-        catch (CredentialStoreException) { reconnect.Suppress(); storeUnavailable = true; Status.Text = T("StoreFailed"); }
-        finally { supervisorBusy = false; UpdateControls(); }
-    }
-
-    private MountOptions OptionsFor(char letter) => new(letter,
-        Path.Combine(AppContext.BaseDirectory, "tools", "rclone.exe"),
-        Path.Combine(appDataRoot, "Sessions"));
-    private void Start(DiagnosticEventName completionEvent, Func<CancellationToken, Task> work, string successKey = "Completed", Action? succeeded = null)
-    {
-        if (!operation.IsCompleted || closing) return;
-        operationCancellation = new();
-        operation = Execute(completionEvent, work, successKey, operationCancellation.Token, succeeded);
-        UpdateControls();
-    }
-    private async Task Execute(DiagnosticEventName completionEvent, Func<CancellationToken, Task> work, string successKey, CancellationToken token, Action? succeeded)
-    {
-        // Ensure operation has been assigned before controls are recomputed.
-        await Task.Yield();
-        bool completed=false;
-        try { await work(token); diagnostics.Write(new(completionEvent, Code: DiagnosticResultCode.Success)); Status.Text = T(successKey); completed=true; }
-        catch (OperationCanceledException) when (token.IsCancellationRequested) { diagnostics.Write(new(completionEvent, DiagnosticLevel.Warning, DiagnosticResultCode.Cancelled)); Status.Text = T("OperationCancelled"); }
-        catch (OperationCanceledException) { diagnostics.Write(new(completionEvent, DiagnosticLevel.Warning, DiagnosticResultCode.Timeout)); Status.Text = T("TimedOut"); }
-        catch (ConnectionException error) { diagnostics.Write(new(completionEvent, DiagnosticLevel.Error, DiagnosticCodeMap.From(error.Code), DiagnosticState.Failed)); Status.Text = T(error.Code); }
-        catch (MountException error) { diagnostics.Write(new(completionEvent, DiagnosticLevel.Error, DiagnosticCodeMap.From(error.Code), DiagnosticState.Failed)); Status.Text = T(error.Code); }
-        catch (CredentialStoreException error) { diagnostics.WriteFailure(completionEvent, DiagnosticResultCode.StorageFailure, error); Status.Text = T("StoreFailed"); }
-        catch (DiagnosticExportException error) { diagnostics.WriteFailure(DiagnosticEventName.DiagnosticExportFailed, DiagnosticResultCode.Failure, error); Status.Text = T("DiagnosticsExportFailed"); }
-        catch (Exception error) { diagnostics.WriteFailure(completionEvent, DiagnosticResultCode.Failure, error); Status.Text = T("OperationFailed"); }
+        catch (CredentialStoreException) { session.Reconnect.Suppress(); storeUnavailable = true; SetSessionStatus(session, "StoreFailed"); }
         finally
         {
-            Code.Clear(); operationCancellation?.Dispose(); operationCancellation = null;
+            session.ExitSupervisor();
+            RebuildRows();
+            UpdateControls();
+        }
+    }
+
+    private void SetSessionStatus(DeviceSession session, string key)
+    {
+        if (Selected?.DeviceId == session.DeviceId) Status.Text = T(key);
+    }
+
+    private MountOptions OptionsFor(string deviceId, char letter) => new(letter,
+        Path.Combine(AppContext.BaseDirectory, "tools", "rclone.exe"),
+        sessions.SessionRoot(Path.Combine(appDataRoot, "Sessions"), deviceId),
+        Path.Combine(appDataRoot, "Sessions"));
+    private void StartDevice(DeviceSession session, DiagnosticEventName completionEvent, Func<CancellationToken, Task> work,
+        string successKey = "Completed", Action? succeeded = null)
+    {
+        if (closing || session.OperationInProgress) return;
+        try { _ = session.StartOperation(token => ExecuteDevice(session, completionEvent, work, successKey, token, succeeded), lifetime.Token); }
+        catch (ConnectionException error) { Status.Text = T(error.Code); }
+        UpdateControls();
+    }
+
+    private async Task ExecuteDevice(DeviceSession session, DiagnosticEventName completionEvent,
+        Func<CancellationToken, Task> work, string successKey, CancellationToken token, Action? succeeded)
+    {
+        bool completed=false;
+        try
+        {
+            await work(token);
+            diagnostics.Write(new(completionEvent, Code: DiagnosticResultCode.Success, Session: session.LogContext));
+            SetSessionStatus(session, successKey);
+            completed=true;
+        }
+        catch (OperationCanceledException) when (token.IsCancellationRequested)
+        { diagnostics.Write(new(completionEvent, DiagnosticLevel.Warning, DiagnosticResultCode.Cancelled, Session: session.LogContext)); SetSessionStatus(session, "OperationCancelled"); }
+        catch (OperationCanceledException)
+        { diagnostics.Write(new(completionEvent, DiagnosticLevel.Warning, DiagnosticResultCode.Timeout, Session: session.LogContext)); SetSessionStatus(session, "TimedOut"); }
+        catch (ConnectionException error)
+        { diagnostics.Write(new(completionEvent, DiagnosticLevel.Error, DiagnosticCodeMap.From(error.Code), DiagnosticState.Failed, Session: session.LogContext)); SetSessionStatus(session, error.Code); }
+        catch (MountException error)
+        { diagnostics.Write(new(completionEvent, DiagnosticLevel.Error, DiagnosticCodeMap.From(error.Code), DiagnosticState.Failed, Session: session.LogContext)); SetSessionStatus(session, error.Code); }
+        catch (CredentialStoreException error)
+        { diagnostics.WriteFailure(completionEvent, DiagnosticResultCode.StorageFailure, error, session.LogContext); SetSessionStatus(session, "StoreFailed"); }
+        catch (Exception error)
+        { diagnostics.WriteFailure(completionEvent, DiagnosticResultCode.Failure, error, session.LogContext); SetSessionStatus(session, "OperationFailed"); }
+        finally
+        {
+            Code.Clear();
             await ReloadRecords();
-            // Keep the selected letter while it is occupied by our active mount. Refill only
-            // after the mount manager has confirmed that the drive disappeared.
-            if (client.Mount.State != MountState.Mounted) FillDrives();
+            FillDrives();
             if(completed)succeeded?.Invoke();
         }
     }
+
+    private void StartGlobal(DiagnosticEventName completionEvent, Func<CancellationToken, Task> work, string successKey)
+    {
+        if (!globalOperation.IsCompleted || closing) return;
+        globalOperationCancellation = CancellationTokenSource.CreateLinkedTokenSource(lifetime.Token);
+        globalOperation = ExecuteGlobal(completionEvent, work, successKey, globalOperationCancellation);
+        UpdateControls();
+    }
+
+    private async Task ExecuteGlobal(DiagnosticEventName completionEvent, Func<CancellationToken, Task> work,
+        string successKey, CancellationTokenSource owned)
+    {
+        await Task.Yield();
+        try { await work(owned.Token); diagnostics.Write(new(completionEvent, Code: DiagnosticResultCode.Success)); Status.Text = T(successKey); }
+        catch (OperationCanceledException) when (owned.IsCancellationRequested) { diagnostics.Write(new(completionEvent, DiagnosticLevel.Warning, DiagnosticResultCode.Cancelled)); Status.Text = T("OperationCancelled"); }
+        catch (DiagnosticExportException error) { diagnostics.WriteFailure(DiagnosticEventName.DiagnosticExportFailed, DiagnosticResultCode.Failure, error); Status.Text = T("DiagnosticsExportFailed"); }
+        catch (Exception error) { diagnostics.WriteFailure(completionEvent, DiagnosticResultCode.Failure, error); Status.Text = T("OperationFailed"); }
+        finally { owned.Dispose(); globalOperationCancellation = null; UpdateControls(); }
+    }
     private void PairClick(object sender, RoutedEventArgs e)
     {
-        if (Selected?.Candidate is not { } candidate || Endpoints.SelectedItem is not DeviceEndpoint endpoint) return;
+        if (Selected?.Candidate is not { DeviceIdHint: { } deviceId } candidate || Endpoints.SelectedItem is not DeviceEndpoint endpoint) return;
+        var session = sessions.GetOrCreate(deviceId);
         char[] code;
         using (var password = Code.SecurePassword)
         {
@@ -472,59 +555,73 @@ public partial class MainWindow : Window
         }
         Code.Clear();
         if (code.Length != 8 || code.Any(c => c is < '0' or > '9')) { Array.Clear(code); Status.Text = T("InvalidCode"); return; }
-        var progress = Progress(); reconnect.Suppress();
-        diagnostics.Write(new(DiagnosticEventName.PairingStarted, State: DiagnosticState.Starting));
-        Start(DiagnosticEventName.AuthenticationCompleted, async token =>
+        var progress = Progress(session); session.Reconnect.Suppress();
+        diagnostics.Write(new(DiagnosticEventName.PairingStarted, State: DiagnosticState.Starting, Session: session.LogContext));
+        StartDevice(session, DiagnosticEventName.AuthenticationCompleted, async token =>
         {
-            await client.PairAsync(candidate, endpoint, code, Environment.MachineName, progress, token);
+            await session.Client.PairAsync(candidate, endpoint, code, Environment.MachineName, progress, token);
         }, "PairingCompleted", () => ShowMainPage(DevicesPage, DevicesNavigation));
     }
     private void ConnectClick(object sender, RoutedEventArgs e)
     {
         if (Selected?.Record is not { } record || Endpoints.SelectedItem is not DeviceEndpoint endpoint) return;
-        var options = Options(); var progress = Progress(); reconnect.Suppress();
-        diagnostics.Write(new(DiagnosticEventName.ConnectionStarted, State: DiagnosticState.Starting));
-        Start(DiagnosticEventName.ConnectionCompleted, async token =>
+        var session = sessions.GetOrCreate(record.DeviceId);
+        var options = Options(record.DeviceId); var progress = Progress(session); session.Reconnect.Suppress();
+        diagnostics.Write(new(DiagnosticEventName.ConnectionStarted, State: DiagnosticState.Starting, Session: session.LogContext));
+        StartDevice(session, DiagnosticEventName.ConnectionCompleted, async token =>
         {
-            var connected = await client.ConnectAsync(record.DeviceId, endpoint, options, progress, token);
-            reconnect.Arm(connected.DeviceId, options, DateTimeOffset.UtcNow);
+            var connected = await sessions.ConnectAsync(record.DeviceId, endpoint, options, progress, token);
+            session.Reconnect.Arm(connected.DeviceId, options, DateTimeOffset.UtcNow);
         });
     }
     private void ManualAddressClick(object sender, RoutedEventArgs e)
     {
         if (Selected?.Record is not { } record) return;
+        var session = sessions.GetOrCreate(record.DeviceId);
         if (!manualEndpoints.TrySet(record.DeviceId, ManualAddress.Text, ManualPort.Text, out var endpoint))
         {
             diagnostics.Write(new(DiagnosticEventName.ManualEndpointChanged, DiagnosticLevel.Warning,
-                DiagnosticResultCode.Failure, DiagnosticState.Failed));
+                DiagnosticResultCode.Failure, DiagnosticState.Failed, Session: session.LogContext));
             Status.Text = T("ManualEndpointInvalid");
             return;
         }
         ManualAddress.Clear();
         RefreshEndpoints(endpoint);
         diagnostics.Write(new(DiagnosticEventName.ManualEndpointChanged, Code: DiagnosticResultCode.Success,
-            State: DiagnosticState.Added));
+            State: DiagnosticState.Added, Session: session.LogContext));
         Status.Text = T("ManualEndpointAdded");
         UpdateControls();
     }
     private void ClearManualAddressClick(object sender, RoutedEventArgs e)
     {
         if (Selected?.Record is not { } record || !manualEndpoints.Clear(record.DeviceId)) return;
+        var session = sessions.GetOrCreate(record.DeviceId);
         RefreshEndpoints();
         diagnostics.Write(new(DiagnosticEventName.ManualEndpointChanged, Code: DiagnosticResultCode.Success,
-            State: DiagnosticState.Removed));
+            State: DiagnosticState.Removed, Session: session.LogContext));
         Status.Text = T("ManualEndpointCleared");
         UpdateControls();
     }
-    private void CancelClick(object sender, RoutedEventArgs e) => operationCancellation?.Cancel();
-    private void UnmountClick(object sender, RoutedEventArgs e) { reconnect.Suppress(); Start(DiagnosticEventName.MountStateChanged, async _ => { await client.StopAsync(); }); }
+    private void CancelClick(object sender, RoutedEventArgs e)
+    {
+        if (SelectedSession?.OperationInProgress == true) SelectedSession.CancelOperation();
+        else globalOperationCancellation?.Cancel();
+    }
+    private void UnmountClick(object sender, RoutedEventArgs e)
+    {
+        if (Selected?.Record is not { } record) return;
+        var session = sessions.GetOrCreate(record.DeviceId);
+        session.Reconnect.Suppress();
+        StartDevice(session, DiagnosticEventName.MountStateChanged, async _ => { await sessions.StopAsync(record.DeviceId); });
+    }
     private void RemovePhoneClick(object sender, RoutedEventArgs e)
     {
         if (Selected?.Record is not { } record || MessageBox.Show(this, T("RevokeConfirm"), "PhoneBridge NG", MessageBoxButton.OKCancel, MessageBoxImage.Question) != MessageBoxResult.OK) return;
-        reconnect.Suppress();
-        Start(DiagnosticEventName.AuthenticationCompleted, async _ =>
+        var session = sessions.GetOrCreate(record.DeviceId);
+        session.Reconnect.Suppress();
+        StartDevice(session, DiagnosticEventName.AuthenticationCompleted, async _ =>
         {
-            await client.RemoveLocallyAsync(record.DeviceId);
+            await sessions.RemoveLocallyAsync(record.DeviceId);
             manualEndpoints.Clear(record.DeviceId);
             ShowMainPage(DevicesPage, DevicesNavigation);
         });
@@ -532,10 +629,11 @@ public partial class MainWindow : Window
     private void SaveDeviceDetailsClick(object sender, RoutedEventArgs e)
     {
         if(Selected?.Record is not { } record)return;
+        var session=sessions.GetOrCreate(record.DeviceId);
         string deviceNote=DeviceAlias.Text;
-        Start(DiagnosticEventName.DeviceMetadataChanged,async _=>
+        StartDevice(session,DiagnosticEventName.DeviceMetadataChanged,async _=>
         {
-            await client.UpdateDeviceNoteAsync(record.DeviceId,deviceNote);
+            await sessions.UpdateDeviceNoteAsync(record.DeviceId,deviceNote);
         },"DeviceDetailsSaved",()=>
         {
             DeviceSettingsName.Text=Selected?.Name??string.Empty;
@@ -545,21 +643,23 @@ public partial class MainWindow : Window
     private void DeleteClick(object sender, RoutedEventArgs e)
     {
         if (Selected?.Record is not { } record || Endpoints.SelectedItem is not DeviceEndpoint endpoint) return;
+        var session = sessions.GetOrCreate(record.DeviceId);
         string path = DeletePath.Text;
-        Start(DiagnosticEventName.ConnectionCompleted, async token =>
+        StartDevice(session, DiagnosticEventName.ConnectionCompleted, async token =>
         {
-            var preview = await client.PrepareDeletionAsync(record.DeviceId, endpoint, path, token);
+            var preview = await session.Client.PrepareDeletionAsync(record.DeviceId, endpoint, path, token);
             string kind = preview.Directory ? T("Directory") : T("File");
             string message = string.Format(T("DeleteConfirm"), preview.Path, kind, preview.Size);
             if (MessageBox.Show(this, message, "PhoneBridge NG", MessageBoxButton.OKCancel, MessageBoxImage.Warning) != MessageBoxResult.OK)
                 throw new ConnectionException("delete-cancelled");
-            await client.ConfirmDeletionAsync(preview, endpoint, token);
+            await session.Client.ConfirmDeletionAsync(preview, endpoint, token);
             DeletePath.Clear();
         });
     }
     private void OpenClick(object sender, RoutedEventArgs e)
     {
-        if (client.Mount.State != MountState.Mounted || client.Connected is not { } active) return;
+        var session = SelectedSession;
+        if (session?.Client.Mount.State != MountState.Mounted || session.Client.Connected is not { } active) return;
         try { Process.Start(new ProcessStartInfo("explorer.exe") { UseShellExecute = true, Arguments = $"{active.DriveLetter}:\\" }); }
         catch { Status.Text = T("OpenFailed"); }
     }
@@ -614,7 +714,7 @@ public partial class MainWindow : Window
             OverwritePrompt = true
         };
         if (dialog.ShowDialog(this) != true) return;
-        Start(DiagnosticEventName.DiagnosticExportCompleted,
+        StartGlobal(DiagnosticEventName.DiagnosticExportCompleted,
             token => new DiagnosticBundleExporter(diagnostics).ExportAsync(dialog.FileName, token), "DiagnosticsExported");
     }
     private async void OnClosing(object? sender, CancelEventArgs e)
@@ -628,17 +728,21 @@ public partial class MainWindow : Window
             return;
         }
         if (closing) return;
-        closing = true; reconnect.Suppress(); operationCancellation?.Cancel(); UpdateControls(); Status.Text = T("Closing");
-        await operation;
+        closing = true;
+        globalOperationCancellation?.Cancel();
+        foreach (var session in sessions.Sessions) { session.Reconnect.Suppress(); session.CancelOperation(); }
+        UpdateControls(); Status.Text = T("Closing");
+        await globalOperation;
         try
         {
-            await client.DisposeAsync(); lifetime.Cancel(); await discoveryTask;
+            await sessions.DisposeAsync(); lifetime.Cancel(); await discoveryTask;
             timer.Stop(); lifetime.Dispose(); closed = true; Close();
         }
         catch { closing = false; ShowFromTray(); Status.Text = T("unmount-not-confirmed"); UpdateControls(); }
     }
 
-    private sealed record DeviceRow(string Id, DeviceCandidate? Candidate, PairingRecord? Record, bool IsConnected, char? DriveLetter)
+    private sealed record DeviceRow(string Id, string DeviceId, DeviceCandidate? Candidate, PairingRecord? Record,
+        bool IsConnected, char? DriveLetter, bool IsBusy)
     {
         public string Name => Record?.DisplayName ?? Candidate!.DisplayName;
         public string Address => Candidate is null ? T("Offline") : string.Join(", ", Candidate.Endpoints.Select(p => p.Address));

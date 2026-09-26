@@ -15,14 +15,16 @@ public sealed class DiagnosticLogTests
     {
         using var temporary = new TemporaryDirectory();
         using var log = DiagnosticEventLog.Open(temporary.Child("logs"), "1.2.3");
-        log.Write(new(DiagnosticEventName.DiscoveryChanged, State: DiagnosticState.Added, Count: 2, DurationMs: 9));
+        log.Write(new(DiagnosticEventName.DiscoveryChanged, State: DiagnosticState.Added, Count: 2, DurationMs: 9, Session: 7));
         var line = Encoding.UTF8.GetString(log.Snapshot().Single().Content).Trim();
         using var json = JsonDocument.Parse(line);
         var names = json.RootElement.EnumerateObject().Select(property => property.Name).Order().ToArray();
-        CollectionAssert.AreEqual(new[] { "appVersion", "count", "durationMs", "event", "level", "schema", "sequence", "state", "utc" }.Order().ToArray(), names);
+        CollectionAssert.AreEqual(new[] { "appVersion", "count", "durationMs", "event", "level", "schema", "sequence", "session", "state", "utc" }.Order().ToArray(), names);
         Assert.AreEqual("DiscoveryChanged", json.RootElement.GetProperty("event").GetString());
+        Assert.AreEqual(2, json.RootElement.GetProperty("schema").GetInt32());
         Assert.AreEqual("Added", json.RootElement.GetProperty("state").GetString());
         Assert.AreEqual("1.2.3", json.RootElement.GetProperty("appVersion").GetString());
+        Assert.AreEqual(7, json.RootElement.GetProperty("session").GetInt32());
     }
 
     [TestMethod]

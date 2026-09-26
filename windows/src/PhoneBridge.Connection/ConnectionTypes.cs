@@ -8,7 +8,7 @@ public sealed class ConnectionException(string code) : Exception(code)
     public string Code { get; } = code;
 }
 public enum ConnectionStage { ConfirmingCode, SavingPending, WaitingApproval, Validating, Mounting, Mounted, Revoking }
-public sealed record MountOptions(char DriveLetter, string RclonePath, string SessionRoot);
+public sealed record MountOptions(char DriveLetter, string RclonePath, string SessionRoot, string? CacheBaseRoot = null);
 public sealed record ConnectedDevice(PairingRecord Record, DeviceEndpoint Endpoint, char DriveLetter);
 public sealed record DeletionPreview(string DeviceId, string ConfirmationId, string Path, bool Directory, long Size, long Modified);
 

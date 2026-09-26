@@ -6,22 +6,35 @@ using PhoneBridge.Mounting;
 
 namespace PhoneBridge.Connection;
 
-/// <summary>One serialized desktop owner. All synchronous crypto/storage runs on a worker.</summary>
-public sealed class ConnectionClient(PairingStore store) : IAsyncDisposable
+/// <summary>One serialized device-session owner. All synchronous crypto/storage runs on a worker.</summary>
+public sealed class ConnectionClient : IAsyncDisposable
 {
+    private readonly PairingStore store;
     private readonly SemaphoreSlim operations = new(1, 1);
     private readonly ReadOnlyMountManager mounts = new();
     private bool disposed;
+    public string DeviceId { get; }
     public ConnectedDevice? Connected { get; private set; }
     public MountSnapshot Mount => mounts.Snapshot;
+
+    public ConnectionClient(PairingStore store, string deviceId)
+    {
+        this.store = store ?? throw new ArgumentNullException(nameof(store));
+        if (string.IsNullOrWhiteSpace(deviceId) || deviceId.Length > 128 || deviceId.Any(char.IsControl))
+            throw new ArgumentException("device id required", nameof(deviceId));
+        DeviceId = deviceId;
+    }
+
     public Task<IReadOnlyList<PairingRecord>> RecordsAsync() => Task.Run(store.List);
     public Task<PairingRecord> UpdateLocalMetadataAsync(string deviceId,string deviceAlias,string note) => RunAsync(() =>
     {
+        RequireDevice(deviceId);
         var current=store.Load(deviceId);
         return Task.FromResult(store.UpdateLocalMetadata(current,deviceAlias,note));
     },CancellationToken.None);
     public Task<PairingRecord> UpdateDeviceNoteAsync(string deviceId,string deviceNote) => RunAsync(() =>
     {
+        RequireDevice(deviceId);
         var current=store.Load(deviceId);
         return Task.FromResult(store.UpdateLocalMetadata(current,deviceNote,current.Note));
     },CancellationToken.None);
@@ -30,6 +43,9 @@ public sealed class ConnectionClient(PairingStore store) : IAsyncDisposable
         string clientName, IProgress<ConnectionStage>? progress, CancellationToken cancellationToken) =>
         RunAsync(async () =>
         {
+            if (candidate.DeviceIdHint is not { } candidateDeviceId)
+                throw new ConnectionException("session-device-mismatch");
+            RequireDevice(candidateDeviceId);
             PairingRecord? record = null;
             DeviceApi? api = null;
             byte[]? grant = null;
@@ -94,6 +110,7 @@ public sealed class ConnectionClient(PairingStore store) : IAsyncDisposable
     public Task<PairingRecord> ConnectAsync(string deviceId, DeviceEndpoint endpoint, MountOptions options,
         IProgress<ConnectionStage>? progress, CancellationToken cancellationToken) => RunAsync(async () =>
     {
+        RequireDevice(deviceId);
         RequireIdle();
         var record = store.Load(deviceId);
         using var api = new DeviceApi(record.Identity, endpoint);
@@ -105,6 +122,7 @@ public sealed class ConnectionClient(PairingStore store) : IAsyncDisposable
     public Task<bool> CheckSessionAsync(string deviceId, DeviceEndpoint endpoint,
         CancellationToken cancellationToken) => RunAsync(async () =>
     {
+        RequireDevice(deviceId);
         var record = store.Load(deviceId);
         if (!record.CanMount) throw new ConnectionException("record-changed");
         using var api = new DeviceApi(record.Identity, endpoint);
@@ -151,7 +169,7 @@ public sealed class ConnectionClient(PairingStore store) : IAsyncDisposable
                     AccessMode.Safe => MountAccessMode.Safe,
                     AccessMode.ReadWrite => MountAccessMode.ReadWrite,
                     _ => MountAccessMode.ReadOnly
-                });
+                }, options.CacheBaseRoot);
             progress?.Report(ConnectionStage.Mounting);
             await mounts.StartAsync(request, cancellationToken).ConfigureAwait(false);
             if (cancellationToken.IsCancellationRequested)
@@ -167,6 +185,7 @@ public sealed class ConnectionClient(PairingStore store) : IAsyncDisposable
 
     public Task<bool> RevokeAsync(string deviceId, DeviceEndpoint? endpoint, CancellationToken cancellationToken) => RunAsync(async () =>
     {
+        RequireDevice(deviceId);
         var record = store.Load(deviceId);
         record = store.BeginRevocation(record); // Disable before stopping mount or touching the network.
         if (Connected?.Record.DeviceId == deviceId) await StopCoreAsync().ConfigureAwait(false);
@@ -178,6 +197,7 @@ public sealed class ConnectionClient(PairingStore store) : IAsyncDisposable
     public Task<DeletionPreview> PrepareDeletionAsync(string deviceId, DeviceEndpoint endpoint, string path,
         CancellationToken cancellationToken) => RunAsync(async () =>
     {
+        RequireDevice(deviceId);
         path = NormalizeDeletionPath(path);
         var record = store.Load(deviceId);
         if (!record.CanMount || record.Mode == AccessMode.ReadOnly) throw new ConnectionException("rejected");
@@ -192,6 +212,7 @@ public sealed class ConnectionClient(PairingStore store) : IAsyncDisposable
         if (preview is null || preview.DeviceId.Length == 0 ||
             !System.Text.RegularExpressions.Regex.IsMatch(preview.ConfirmationId, "^[0-9a-f]{32}$"))
             throw new ConnectionException("invalid_request");
+        RequireDevice(preview.DeviceId);
         var record = store.Load(preview.DeviceId);
         if (!record.CanMount || record.Mode == AccessMode.ReadOnly) throw new ConnectionException("rejected");
         using var api = new DeviceApi(record.Identity, endpoint);
@@ -241,6 +262,7 @@ public sealed class ConnectionClient(PairingStore store) : IAsyncDisposable
     public Task<bool> StopAsync() => RunAsync(async () => { await StopCoreAsync().ConfigureAwait(false); return true; }, CancellationToken.None);
     public Task<bool> RemoveLocallyAsync(string deviceId) => RunAsync(async () =>
     {
+        RequireDevice(deviceId);
         var record = store.BeginRevocation(store.Load(deviceId));
         if (Connected?.Record.DeviceId == deviceId) await StopCoreAsync().ConfigureAwait(false);
         store.RemoveLocally(record);
@@ -256,6 +278,11 @@ public sealed class ConnectionClient(PairingStore store) : IAsyncDisposable
     {
         if (Mount.State is MountState.Starting or MountState.RecoveringWrites or MountState.Mounted or MountState.Stopping or MountState.StopFailed)
             throw new ConnectionException("mount-already-active");
+    }
+    private void RequireDevice(string deviceId)
+    {
+        if (!string.Equals(DeviceId, deviceId, StringComparison.Ordinal))
+            throw new ConnectionException("session-device-mismatch");
     }
     private static string PairPath(string attempt) => "/phonebridge/v1/pairing/" + attempt;
     private static string NormalizeDeletionPath(string value)

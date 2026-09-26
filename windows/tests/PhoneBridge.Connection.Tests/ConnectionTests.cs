@@ -28,7 +28,7 @@ public sealed class ConnectionTests
         var pending = store.CreatePending(server.Identity, new string('a', 32), "Phone", "PC");
         var active = store.ApplyVerifiedSession(pending, pending.DeviceId, pending.ClientId, AccessMode.Safe);
         active = store.UpdateLocalMetadata(active, "Old label", "Legacy long note");
-        await using var client = new ConnectionClient(store);
+        await using var client = new ConnectionClient(store, server.Identity.DeviceId);
         var changed = await client.UpdateDeviceNoteAsync(active.DeviceId, "  家里手机  ");
         Assert.AreEqual("家里手机", changed.DeviceAlias);
         Assert.AreEqual("家里手机", changed.DisplayName);
@@ -89,7 +89,7 @@ public sealed class ConnectionTests
         foreach (bool trailing in new[] { false, true })
         {
             await using var server = new NetworkPeer(); server.StartPairing(trailing: trailing);
-            var store = Store(); await using var client = new ConnectionClient(store);
+            var store = Store(); await using var client = new ConnectionClient(store, server.Identity.DeviceId);
             char[] code = (trailing ? "01234567" : "87654321").ToCharArray();
             await Assert.ThrowsAsync<Exception>(() => client.PairAsync(server.Candidate, server.Endpoint, code, "Synthetic PC", null, default));
             Assert.IsEmpty(store.List()); Assert.AreEqual(0, server.RequestCount); Assert.IsTrue(code.All(c => c == '\0'));
@@ -99,7 +99,7 @@ public sealed class ConnectionTests
     public async Task PakeCancellationDoesNotWaitForFrameDeadline()
     {
         await using var server = new NetworkPeer(); server.StartPairing(hold: true);
-        var store = Store(); await using var client = new ConnectionClient(store);
+        var store = Store(); await using var client = new ConnectionClient(store, server.Identity.DeviceId);
         using var cancel = new CancellationTokenSource(200);
         await Assert.ThrowsAsync<OperationCanceledException>(() => client.PairAsync(server.Candidate, server.Endpoint, "01234567".ToCharArray(), "Synthetic PC", null, cancel.Token));
         Assert.IsEmpty(store.List());
@@ -108,7 +108,7 @@ public sealed class ConnectionTests
     public async Task SilentPakePeerHitsFrameDeadline()
     {
         await using var server = new NetworkPeer(); server.StartPairing(hold: true);
-        var store = Store(); await using var client = new ConnectionClient(store);
+        var store = Store(); await using var client = new ConnectionClient(store, server.Identity.DeviceId);
         var watch = System.Diagnostics.Stopwatch.StartNew();
         await Assert.ThrowsAsync<OperationCanceledException>(() => client.PairAsync(server.Candidate, server.Endpoint, "01234567".ToCharArray(), "Synthetic PC", null, default));
         Assert.IsTrue(watch.Elapsed < TimeSpan.FromSeconds(10)); Assert.IsEmpty(store.List());
@@ -117,7 +117,7 @@ public sealed class ConnectionTests
     public async Task CancellationCannotDisableAReplacementClientRecord()
     {
         await using var server = new NetworkPeer(); server.StartPairing();
-        var store = Store(); await using var client = new ConnectionClient(store);
+        var store = Store(); await using var client = new ConnectionClient(store, server.Identity.DeviceId);
         server.Respond = _ => Task.FromResult(new Reply(202, Status(server, "PendingApproval")));
         using var cancel = new CancellationTokenSource();
         const string replacement = "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb";
@@ -138,7 +138,7 @@ public sealed class ConnectionTests
     public async Task CancelBeforeAndAfterApprovalDisablesAndRevokes(bool alreadyApproved)
     {
         await using var server = new NetworkPeer(); server.StartPairing();
-        var store = Store(); await using var client = new ConnectionClient(store);
+        var store = Store(); await using var client = new ConnectionClient(store, server.Identity.DeviceId);
         bool sawPost = false, deleted = false;
         server.Respond = request =>
         {
@@ -168,7 +168,7 @@ public sealed class ConnectionTests
     public async Task PairingCompletesWithoutSharingAndDoesNotMount()
     {
         await using var server = new NetworkPeer(); server.StartPairing();
-        var store = Store(); await using var client = new ConnectionClient(store);
+        var store = Store(); await using var client = new ConnectionClient(store, server.Identity.DeviceId);
         server.Respond = request => Task.FromResult(request.Path == "/phonebridge/v1/session"
             ? new Reply(200, JsonSerializer.Serialize(new { device_id = server.Identity.DeviceId, client_id = server.ClientId, mode = "safe", share_ready = false }))
             : new Reply(200, Status(server, "Active")));
@@ -181,7 +181,7 @@ public sealed class ConnectionTests
     public async Task LostPostReplyPreservesPendingAndRecoveryOnlyUsesSession()
     {
         await using var server = new NetworkPeer(); server.StartPairing();
-        var store = Store(); await using var client = new ConnectionClient(store);
+        var store = Store(); await using var client = new ConnectionClient(store, server.Identity.DeviceId);
         int posts = 0;
         server.Respond = request =>
         {
@@ -199,7 +199,7 @@ public sealed class ConnectionTests
         await using var server = new NetworkPeer(); var store = Store();
         var record = store.CreatePending(server.Identity, new string('a', 32), "Phone", "PC");
         record = store.ApplyVerifiedSession(record, record.DeviceId, record.ClientId, AccessMode.Safe);
-        await using var client = new ConnectionClient(store);
+        await using var client = new ConnectionClient(store, server.Identity.DeviceId);
         Assert.IsFalse(await client.RevokeAsync(record.DeviceId, null, default));
         Assert.AreEqual(PairingRecordState.RevocationPending, store.List().Single().State);
         await Assert.ThrowsAsync<CredentialStoreException>(() => client.ConnectAsync(record.DeviceId, server.Endpoint, NoMount, null, default));
@@ -212,7 +212,7 @@ public sealed class ConnectionTests
         await using var server = new NetworkPeer(); var store = Store();
         var record = store.CreatePending(server.Identity, new string('a', 32), "Phone", "PC");
         record = store.ApplyVerifiedSession(record, record.DeviceId, record.ClientId, AccessMode.Safe);
-        await using var client = new ConnectionClient(store);
+        await using var client = new ConnectionClient(store, server.Identity.DeviceId);
         Assert.IsTrue(await client.RemoveLocallyAsync(record.DeviceId));
         Assert.IsEmpty(store.List()); Assert.AreEqual(0, server.RequestCount);
         var fresh = store.CreatePending(server.Identity, new string('b', 32), "Phone", "PC");
@@ -223,7 +223,7 @@ public sealed class ConnectionTests
     {
         await using var server = new NetworkPeer(); var store = Store();
         var record = store.CreatePending(server.Identity, new string('a', 32), "Phone", "PC");
-        await using var client = new ConnectionClient(store);
+        await using var client = new ConnectionClient(store, server.Identity.DeviceId);
         string valid = JsonSerializer.Serialize(new { device_id = record.DeviceId, client_id = record.ClientId, mode = "safe", share_ready = true });
         foreach (string body in new[] { valid.Replace("{", "{\"mode\":\"safe\",", StringComparison.Ordinal), valid.Replace(record.ClientId, new string('b', 32), StringComparison.Ordinal), valid.Replace("true", "false", StringComparison.Ordinal) })
         {
@@ -239,7 +239,7 @@ public sealed class ConnectionTests
         await using var server = new NetworkPeer(); var store = Store();
         var record = store.CreatePending(server.Identity, new string('a', 32), "Phone", "PC");
         record = store.ApplyVerifiedSession(record, record.DeviceId, record.ClientId, AccessMode.Safe);
-        await using var client = new ConnectionClient(store);
+        await using var client = new ConnectionClient(store, server.Identity.DeviceId);
         server.Respond = _ => Task.FromResult(new Reply(200, JsonSerializer.Serialize(new
             { device_id = record.DeviceId, client_id = record.ClientId, mode = "safe", share_ready = true })));
         Assert.IsTrue(await client.CheckSessionAsync(record.DeviceId, server.Endpoint, default));
@@ -301,5 +301,97 @@ public sealed class ConnectionTests
         policy.Suppress();
         Assert.IsFalse(policy.Armed);
         Assert.IsFalse(policy.CanReconnect("pbng-device", now.AddHours(1)));
+    }
+
+    [TestMethod]
+    public async Task DeviceSessionsOwnIndependentOperationCancellationAndReconnectState()
+    {
+        var store = Store();
+        await using var coordinator = new DeviceSessionCoordinator(store);
+        var first = coordinator.GetOrCreate("device-a");
+        var second = coordinator.GetOrCreate("device-b");
+        Assert.AreNotSame(first.Client, second.Client);
+        Assert.AreNotSame(first.Reconnect, second.Reconnect);
+        Assert.AreNotEqual(first.LogContext, second.LogContext);
+
+        var firstStarted = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        var secondStarted = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        Task firstOperation = first.StartOperation(async token =>
+        {
+            firstStarted.SetResult();
+            await Task.Delay(Timeout.InfiniteTimeSpan, token);
+        }, default);
+        Task secondOperation = second.StartOperation(async token =>
+        {
+            secondStarted.SetResult();
+            await Task.Delay(Timeout.InfiniteTimeSpan, token);
+        }, default);
+        await Task.WhenAll(firstStarted.Task, secondStarted.Task);
+
+        first.CancelOperation();
+        await Assert.ThrowsAsync<TaskCanceledException>(() => firstOperation);
+        Assert.IsTrue(second.OperationInProgress);
+        Assert.IsFalse(secondOperation.IsCompleted);
+        second.CancelOperation();
+        await Assert.ThrowsAsync<TaskCanceledException>(() => secondOperation);
+    }
+
+    [TestMethod]
+    public async Task CoordinatorRejectsCrossDeviceDriveConflictAndKeepsSessionRootsSeparate()
+    {
+        var store = Store();
+        await using var coordinator = new DeviceSessionCoordinator(store);
+        var first = coordinator.GetOrCreate("device-a");
+        var second = coordinator.GetOrCreate("device-b");
+
+        coordinator.ReserveDrive(first, 'P');
+        Assert.IsTrue(coordinator.CanUseDrive("device-a", 'P'));
+        Assert.IsFalse(coordinator.CanUseDrive("device-b", 'P'));
+        var conflict = Assert.Throws<ConnectionException>(() => coordinator.ReserveDrive(second, 'P'));
+        Assert.AreEqual("drive-reserved", conflict.Code);
+
+        string root = Path.GetFullPath(Path.Combine(Path.GetTempPath(), "pbng-sessions"));
+        Assert.AreNotEqual(coordinator.SessionRoot(root, first.DeviceId), coordinator.SessionRoot(root, second.DeviceId));
+        coordinator.ReleaseDrive(first);
+        coordinator.ReserveDrive(second, 'P');
+        Assert.AreEqual('P', second.ReservedDrive);
+    }
+
+    [TestMethod]
+    public async Task StopAllContinuesAfterOneSessionOperationFails()
+    {
+        var store = Store();
+        await using var coordinator = new DeviceSessionCoordinator(store);
+        var first = coordinator.GetOrCreate("device-a");
+        var second = coordinator.GetOrCreate("device-b");
+        coordinator.ReserveDrive(first, 'P');
+        coordinator.ReserveDrive(second, 'Q');
+
+        Task failed = first.StartOperation(_ => throw new IOException("synthetic operation failure"), default);
+        var secondStarted = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        Task cancelled = second.StartOperation(async token =>
+        {
+            secondStarted.SetResult();
+            await Task.Delay(Timeout.InfiniteTimeSpan, token);
+        }, default);
+        await secondStarted.Task;
+        await Assert.ThrowsAsync<IOException>(() => failed);
+
+        await coordinator.StopAllAsync();
+
+        await Assert.ThrowsAsync<TaskCanceledException>(() => cancelled);
+        Assert.IsNull(first.ReservedDrive);
+        Assert.IsNull(second.ReservedDrive);
+    }
+
+    [TestMethod]
+    public async Task DeviceBoundClientRejectsAnotherDeviceBeforeCredentialAccess()
+    {
+        var store = Store();
+        await using var client = new ConnectionClient(store, "device-a");
+        var error = await Assert.ThrowsAsync<ConnectionException>(() =>
+            client.CheckSessionAsync("device-b", new("192.0.2.10", 8273), default));
+        Assert.AreEqual("session-device-mismatch", error.Code);
+        Assert.IsEmpty(store.List());
     }
 }

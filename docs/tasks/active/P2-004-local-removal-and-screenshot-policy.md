@@ -58,12 +58,12 @@
 - Samsung r14 实际 UI：语言子页返回设置；共享目录可选择“手机存储”；共享中二次返回仅把界面置于后台且前台共享服务继续；设置中确认“退出应用”后服务停止。验证结束已清除 r14 数据并恢复为无身份、无配对、共享停止的全新状态。
 - r14 真实日志复现：`PairingStarted` 后 `AuthenticationCompleted=Unauthorized/Failed`，手机端记录已经 Active；点击“继续连接”后严格 session 将 Windows Pending 转为 Active 并成功挂载，证明问题是批准结果收口竞态，不是短码、发现或长期凭据错误。
 - Samsung 定向 instrumentation `approvedPairingSurvivesUiBackgroundUntilWindowsReadsActive`：手机批准后模拟 UI 退到后台，配对 GET 仍返回 200/Active，长期凭据 session 返回 200 且 `share_ready=false`；1/1 通过。Android 完整构建、单元测试及 Debug/Release lint 共 123 个任务成功；r15 `assembleUiPreview lintUiPreview` 39 个任务成功。
+- 2026-09-26，用户确认 r15 配对主流程验收完毕、可正常使用；手机批准后 Windows 不能自动收口并要求“继续连接”的 r14 竞态已通过真实流程复验。
 - 本地制品及散列见 `docs/audit/P2-004-VALIDATION.md`。
 
 ## 未验证
 
-- 尚未由用户在 r15 上确认手机批准后 Windows 自动返回首页，并直接显示“已配对、未连接/连接”而不是“待确认/继续连接”。
-- r15 尚未完成手动连接、两端移除和全新重配的完整真实流程。
+- r15 尚未完成停止共享后的电脑卡片、访问模式、两端移除和全新重配的完整真实流程。
 - Windows 本地名称/备注仅通过自动测试和构建验证，尚未用真实配对记录检查保存、重启保持及实际显示。
 - “手机存储”根目录映射和后台服务已验证，但 Windows 挂载后实际浏览全部系统允许目录尚未完成跨端验收。
 - Windows 本地移除不会联系手机，故手机可能保留旧电脑授权；Android 本地移除也不会删除 Windows 保存的旧记录。两端各自删除或重新配对前的旧记录提示仍需真实流程验收。
@@ -71,4 +71,4 @@
 
 ## 唯一下一任务
 
-用户按 `docs/UI_ACCEPTANCE.md` 使用 r15 首先确认手机批准后 Windows 自动回首页且不再出现“待确认/继续连接”，再完成手动连接、停止共享后的配对记录、手机存储浏览、Windows 本地名称/备注，以及两端本地移除和全新重配验收；通过前不开始 P2-005 多设备核心。
+用户按 `docs/UI_ACCEPTANCE.md` 使用现有 r15 配对记录完成停止共享后的电脑卡片与访问模式、手机存储浏览、Windows 本地名称/备注，以及两端各一次本地移除、旧凭据失效和全新重配验收；通过前不开始 P2-005 多设备核心。

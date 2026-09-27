@@ -4,6 +4,8 @@
 
 **PhoneBridge NG `0.2.0` 已完成正式验收并发布 [GitHub Release](https://github.com/yang137197/PhoneBridge-NG/releases/tag/v0.2.0)：Windows/Android 最终图标、正式安装器、长期签名 APK、对应源码、许可、散列和 manifest 已收口；Samsung 全新安装、真实配对、Music 共享、`P:` 根目录读取与安全断开通过。`0.2.0` 是后续正式升级的首个基线，不定义 `0.1.0 → 0.2.0` 升级路径。Windows 自启动只进入托盘，盘符由用户手动连接。**
 
+安装、配对、连接、访问模式、断开和排障步骤见 [软件使用说明](docs/USER_GUIDE.md)。
+
 ## 当前进度
 
 | 阶段/任务 | 状态 | 证据 |
@@ -101,6 +103,8 @@ P0-001 的 107 个通过测试、1 个跳过用例及 7 项离线问题复现仅
 | [HANDOFF_V0.2.md](docs/HANDOFF_V0.2.md) | v0.2.0 正式验收状态、固定边界和新任务开场提示词 |
 | [v0.2 设计包](docs/design/v0.2/README.md) | P2-002 的 Windows/Android 静态稿、控件状态、视觉变量、双语文案和图标候选 |
 | [INSTALL_LOCAL.txt](docs/INSTALL_LOCAL.txt) | 第三方本地安装、首次配对和日常使用的最短步骤 |
+| [USER_GUIDE.md](docs/USER_GUIDE.md) | GitHub 用户使用说明：安装、配对、日常连接、访问模式、断开和排障 |
+| [LICENSING_AND_COMMERCIALIZATION.md](docs/LICENSING_AND_COMMERCIALIZATION.md) | 当前 GPL 事实、闭源商业版可行路径及订阅制开发门禁 |
 | [ARCHITECTURE.md](ARCHITECTURE.md) | 固定技术路线、职责、信任边界及未定方案 |
 | [DECISIONS.md](DECISIONS.md) | 已确定决策及未决问题，避免反复换方案 |
 | [DEVELOPMENT_RULES.md](DEVELOPMENT_RULES.md) | 单任务流程、证据要求、范围与交付规则 |
@@ -149,4 +153,6 @@ P0-008 真机 mDNS 成功，但无 IP SAN 的旧证书阻断 rclone；P0-009/010
 ## 上游与许可证
 
 参考 [ysachin26/PhoneBridge](https://github.com/ysachin26/PhoneBridge)，固定提交 `a378fec40561a4d18be2334f4de92ee02a0e7d0c`。上游声明 GPL-3.0-or-later，P0-004 已补齐完整 [LICENSE](LICENSE)，保留原许可证、作者与修改说明，见 [NOTICE](NOTICE.md)。源码修复以实验补丁保存；正式交付已包含完整对应源码及依赖许可。
+
+当前代码不能仅通过将仓库设为私有而转换为闭源许可。收费和订阅允许，但现有 GPL 客户端的分发仍须履行 GPL；闭源商业客户端必须先取得覆盖所用代码的商业授权，或进行不复用 GPL 实现代码的 clean-room 重写。详见[许可与商业化边界](docs/LICENSING_AND_COMMERCIALIZATION.md)。
 

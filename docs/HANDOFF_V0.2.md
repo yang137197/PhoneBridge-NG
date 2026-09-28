@@ -6,7 +6,7 @@
 
 - GitHub：<https://github.com/yang137197/PhoneBridge-NG>
 - 本地目录：`C:\Users\yang1\Documents\ChatGPT\samsung link windows\PhoneBridge-NG`
-- 当前正式发布版本：[`v0.2.2`](https://github.com/yang137197/PhoneBridge-NG/releases/tag/v0.2.2)，标签提交 `825d70367e7839c96a6880e9bcb9d1a853d44ab0`；非草稿、非预发布并为 Latest。
+- 当前正式发布版本：[`v0.2.3`](https://github.com/yang137197/PhoneBridge-NG/releases/tag/v0.2.3)，标签提交 `927135e3b51a901076b067378658e708ae805d75`；非草稿、非预发布并为 Latest。
 - v0.2.0 需求计划基线：`18b5e0778d4fd03fad95a0a4602cea36dcc83f28`。
 - P2-002 静态设计 r1 已由用户全部确认并冻结；视觉方向、Windows 分层/按钮命名、Android 页面层级和图标 A“桥接文件”均已确定。
 - P2-003 r2 的实际 UI 已由用户复验通过并完成。
@@ -16,9 +16,10 @@
 - P2-013 的 v0.2.2 全新机器验收没有执行；用户在测试机可用前明确转入 v0.2.3，因此该任务按“未执行并关闭”记录，绝不能写成通过。
 - P2-014 已完成 v0.2.3 有界自动重连实现：每轮最多 6 次实际连接或 2 分钟，`share_ready=false` 不重连，恢复后连续三个健康周期才重置预算；Windows 308/308 与 Android 123 个构建/单测/Lint 任务通过。
 - P2-015 已生成并安装 v0.2.3 最终候选：正式 v0.2.2 两端原位升级保持，真实 Wi-Fi 中断第 1 次重连恢复原 `E:`，手机停止共享后无端点等待 120263 ms 结束且重新共享不自动挂载。首个含旧 0.2.2 README 的候选已拒绝，最终 README 与制品均为 0.2.3。
+- P2-016 已把 P2-015 exact-head 六项制品发布为 `v0.2.3` Latest；标签和发布时远端 `main` 均精确指向 `927135e3b51a901076b067378658e708ae805d75`，公开后六项 GitHub 摘要与本地正式镜像一致。
 - r10 暴露并确认 Windows“添加手机”先打开、配对候选随后到达时仍无选中项的缺陷；r11 已实机验证候选自动选中、8 位码后按钮启用、真实配对成功且不自动挂载。
 - r12 又确认未配对候选因两个空设备 ID 相等而被错误显示为“已连接”；运行证据证明当时没有真实配对、rclone 或盘符。r13 已实机确认主列表只显示已配对手机，未配对候选只进入“添加手机”，8 位码前后按钮状态正确。
-- r21 是已完成的历史隔离 UI 候选，r20 是继续有效的双设备真实链路证据；它们都不是当前安装入口。当前正式安装入口是 GitHub `v0.2.2` Release；升级与发布证据见 `docs/audit/P2-011-VALIDATION.md` 和 `docs/audit/P2-012-VALIDATION.md`。
+- r21 是已完成的历史隔离 UI 候选，r20 是继续有效的双设备真实链路证据；它们都不是当前安装入口。当前正式安装入口是 GitHub `v0.2.3` Release；升级与发布证据见 `docs/audit/P2-015-VALIDATION.md` 和 `docs/audit/P2-016-VALIDATION.md`。
 - 开始新任务前必须重新检查 `git status --short --branch`、`git log -5 --oneline --decorate` 和远端状态，不从本交接推断后来发生的变化。
 
 ## 2. 新对话必读顺序
@@ -134,23 +135,25 @@ P2-005 已复用发现、配对、凭据、TLS 和单个挂载实现，并把全
 11. P2-012：已完成；`v0.2.2` GitHub Release 已发布并设为 Latest，六项资产回读一致。
 12. P2-013：未执行并关闭；相关全新机器断言必须由未来正式候选重新覆盖。
 13. P2-014：已完成；有界自动重连实现和自动验证通过。
-14. P2-015：已完成；v0.2.3 候选、正式 v0.2.2 原位升级、真实 Wi-Fi 恢复、主动停止后有界终止和手动恢复通过，仍未发布。
+14. P2-015：已完成；v0.2.3 候选、正式 v0.2.2 原位升级、真实 Wi-Fi 恢复、主动停止后有界终止和手动恢复通过。
+15. P2-016：已完成；`v0.2.3` GitHub Release 已发布并设为 Latest，六项资产回读一致。
+16. P2-017：唯一 active 任务；在全新 Windows 机器上验证正式 v0.2.3 首装、新电脑配对、备注卷名、盘符冲突和有界自动重连。
 
-当前没有 active 实现任务。推送、标签和 GitHub Release 不属于 P2-015 授权；如需发布必须新建独立发布任务并再次动态核对 Latest、exact head 和六项制品。
+当前唯一任务是 P2-017；按 `docs/V0.2.3_CLEAN_MACHINE_ACCEPTANCE.md` 执行。任一断言失败即停止并保留现场，不清数据、重装或修改正式 Release 绕过。
 
 编号以后续实际任务文件为准，但顺序和每次一个根因的原则不变。
 
 ## 10. 新对话可直接使用的开场提示词
 
 ```text
-继续维护 PhoneBridge NG；正式版本仍为 `v0.2.2`，本地 `v0.2.3` 有界自动重连、正式候选和实机验收已完成，但未推送、未打标签、未创建 Release。
+继续维护 PhoneBridge NG；正式版本为 `v0.2.3`，有界自动重连、正式候选、升级验收和 GitHub Release 已完成，下一任务是全新机器配对验收。
 
 仓库：https://github.com/yang137197/PhoneBridge-NG
 本地目录：C:\Users\yang1\Documents\ChatGPT\samsung link windows\PhoneBridge-NG
 
 先读取 AGENTS.md、DEVELOPMENT_RULES.md、README.md、docs/HANDOFF_V0.2.md、docs/V0.2_PLAN.md、docs/PRODUCT.md、ARCHITECTURE.md、DECISIONS.md，并核对当前 main、git status、最近提交和远端状态。以仓库当前事实为准，不沿用对话中的旧状态。
 
-P2-002 至 P2-012 均已完成。`v0.2.2` GitHub Release 已发布并设为 Latest，标签精确指向 `825d70367e7839c96a6880e9bcb9d1a853d44ab0`，六项 Release 资产与本地正式交付摘要一致。P2-013 全新机器验收未执行并关闭，不能记为通过。P2-014 与 P2-015 已完成 v0.2.3 实现、自动验证、候选产生、正式基线原位升级和真实断网/停止共享时序验收。Android 永久只通过 GitHub 分发。保持现有 Kotlin/WPF、HTTPS/WebDAV、rclone、WinFsp、mDNS、配对与安全存储路线。
+P2-002 至 P2-016 均已收口，其中 P2-013 未执行并关闭，不能记为通过。`v0.2.3` GitHub Release 已发布并设为 Latest，标签精确指向 `927135e3b51a901076b067378658e708ae805d75`，六项 Release 资产与本地正式交付摘要一致。P2-014 与 P2-015 已完成 v0.2.3 实现、自动验证、正式 v0.2.2 原位升级和真实断网/停止共享时序验收。Android 永久只通过 GitHub 分发。保持现有 Kotlin/WPF、HTTPS/WebDAV、rclone、WinFsp、mDNS、配对与安全存储路线。
 
-当前没有 active 实现任务。v0.2.3 最终候选位于 `.audit/delivery/P2-015-v0.2.3-candidate/output/`，证据见 `docs/audit/P2-015-VALIDATION.md`。未执行的全新机器首次配对、备注卷名和 USB/多盘符矩阵仍不能写成通过。如用户要求发布，新建独立任务，先重新核对 Latest、exact head、工作树和六项制品；未授权时不推送、不打标签、不创建 Release。
+当前唯一任务是 P2-017 v0.2.3 全新机器配对验收。只使用 GitHub Release 正式资产，按 `docs/V0.2.3_CLEAN_MACHINE_ACCEPTANCE.md` 验证首次安装、新电脑配对、备注卷名、Auto/固定盘符、停止共享和有界自动重连。任一断言失败即停止，不通过清数据、重装、重复点击或修改 Release 绕过。
 ```

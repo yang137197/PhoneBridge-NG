@@ -154,9 +154,9 @@
   <data name="RemovePhone" xml:space="preserve"><value>Remove this phone</value></data>
   <data name="DeviceLocalDetails" xml:space="preserve"><value>Local display details</value></data>
   <data name="DeviceAlias" xml:space="preserve"><value>Device note</value></data>
-  <data name="DeviceAliasHelp" xml:space="preserve"><value>Stored only on this Windows PC. Leave blank to use the phone's original name.</value></data>
-  <data name="SaveDeviceDetails" xml:space="preserve"><value>Save device note</value></data>
-  <data name="DeviceDetailsSaved" xml:space="preserve"><value>The device note was saved on this PC.</value></data>
+  <data name="DeviceAliasHelp" xml:space="preserve"><value>Stored only on this Windows PC. Leave blank to use the phone's original name. File Explorer applies this name on the next connection.</value></data>
+  <data name="SaveDeviceDetails" xml:space="preserve"><value>Save device settings</value></data>
+  <data name="DeviceDetailsSaved" xml:space="preserve"><value>The device note and drive preference were saved on this PC.</value></data>
   <data name="General" xml:space="preserve"><value>General</value></data>
   <data name="AdvancedTroubleshooting" xml:space="preserve"><value>Advanced troubleshooting</value></data>
   <data name="Language" xml:space="preserve"><value>Language</value></data>
@@ -165,13 +165,14 @@
   <data name="LanguageSaveFailed" xml:space="preserve"><value>Could not save the language setting.</value></data>
   <data name="Startup" xml:space="preserve"><value>Startup</value></data>
   <data name="AutoStartHelp" xml:space="preserve"><value>Starts the app in the tray. It does not connect or create a drive automatically.</value></data>
-  <data name="DefaultDrive" xml:space="preserve"><value>Default drive</value></data>
-  <data name="AutomaticDriveHelp" xml:space="preserve"><value>The current single-device core uses the selected available drive. Per-phone preferences follow after multi-device isolation.</value></data>
+  <data name="DefaultDrive" xml:space="preserve"><value>Drive preference</value></data>
+  <data name="AutomaticDrive" xml:space="preserve"><value>Automatic (first free drive from D–Z)</value></data>
+  <data name="AutomaticDriveHelp" xml:space="preserve"><value>Automatic avoids disks, USB drives, network drives, and other phones on each new connection. A conflicting fixed drive does not fall back. Changes apply on the next connection.</value></data>
   <data name="TemporaryManualAddress" xml:space="preserve"><value>Temporary manual address</value></data>
   <data name="IdentityStillVerified" xml:space="preserve"><value>Choose a saved phone first. Saved phone identity verification is still required.</value></data>
   <data name="Diagnostics" xml:space="preserve"><value>Diagnostics</value></data>
   <data name="DiagnosticsNotUploaded" xml:space="preserve"><value>The diagnostic bundle is saved locally and is not uploaded automatically.</value></data>
-  <data name="VersionPreview" xml:space="preserve"><value>v0.2.1</value></data>
+  <data name="VersionPreview" xml:space="preserve"><value>v0.2.2</value></data>
   <data name="ProjectAndLicense" xml:space="preserve"><value>Project and license</value></data>
   <data name="LicenseSummary" xml:space="preserve"><value>PhoneBridge NG is distributed under GPL-3.0-or-later. It includes rclone and WinFsp; notices and source are provided with delivery builds.</value></data>
   <data name="GitHubProject" xml:space="preserve"><value>Open GitHub project</value></data>

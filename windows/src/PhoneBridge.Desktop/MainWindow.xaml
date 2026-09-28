@@ -131,6 +131,9 @@
         <TextBlock Text="{local:Text DeviceAlias}" FontWeight="SemiBold" Margin="0,20,0,8"/>
         <TextBox x:Name="DeviceAlias" AutomationProperties.Name="{local:Text DeviceAlias}" AutomationProperties.AutomationId="DeviceAlias" MaxLength="64"/>
         <TextBlock Text="{local:Text DeviceAliasHelp}" Style="{StaticResource MutedText}" Margin="0,6,0,12"/>
+        <TextBlock Text="{local:Text DefaultDrive}" FontWeight="SemiBold" Margin="0,12,0,8"/>
+        <ComboBox x:Name="DeviceDrivePreference" AutomationProperties.Name="{local:Text DefaultDrive}" AutomationProperties.AutomationId="DeviceDrivePreference" DisplayMemberPath="Display" Width="300" HorizontalAlignment="Left"/>
+        <TextBlock Text="{local:Text AutomaticDriveHelp}" Style="{StaticResource MutedText}" Margin="0,6,0,12" TextWrapping="Wrap"/>
         <Button x:Name="SaveDeviceDetails" Content="{local:Text SaveDeviceDetails}" Click="SaveDeviceDetailsClick" AutomationProperties.AutomationId="SaveDeviceDetails" Style="{StaticResource PrimaryButton}" HorizontalAlignment="Left"/>
        </StackPanel>
       </Border>
@@ -165,10 +168,6 @@
         <TextBlock Text="{local:Text Startup}" Style="{StaticResource SectionTitle}" Margin="0,24,0,12"/>
         <CheckBox x:Name="AutoStart" Content="{local:Text AutoStart}" AutomationProperties.AutomationId="AutoStart" Checked="AutoStartChanged" Unchecked="AutoStartChanged"/>
         <TextBlock Text="{local:Text AutoStartHelp}" Style="{StaticResource MutedText}" Margin="24,8,0,24"/>
-        <Separator/>
-        <TextBlock Text="{local:Text DefaultDrive}" Style="{StaticResource SectionTitle}" Margin="0,24,0,10"/>
-        <ComboBox x:Name="Drives" AutomationProperties.Name="{local:Text Drive}" AutomationProperties.AutomationId="Drive" Width="220" HorizontalAlignment="Left"/>
-        <TextBlock Text="{local:Text AutomaticDriveHelp}" Style="{StaticResource MutedText}" Margin="0,8,0,0"/>
        </StackPanel>
        <StackPanel x:Name="AdvancedSettingsPage" Visibility="Collapsed" Margin="32">
         <TextBlock Text="{local:Text AdvancedTroubleshooting}" Style="{StaticResource PageTitle}" Margin="0,0,0,24"/>

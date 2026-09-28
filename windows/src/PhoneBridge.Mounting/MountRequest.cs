@@ -67,13 +67,15 @@ public sealed class MountRequest
     public string SessionRoot { get; }
     public string CacheRoot { get; }
     public MountAccessMode AccessMode { get; }
+    public string VolumeName { get; }
+    internal string NetworkVolumeName => $@"\\pbng-{Identity.Sha256[..10]}\{VolumeName}";
     internal string WebDavUrl => Endpoint.HttpsAddress + string.Join('/',
         RemoteDirectory.Split('/', StringSplitOptions.RemoveEmptyEntries).Select(Uri.EscapeDataString)) +
         (RemoteDirectory.Length == 0 ? "" : "/");
 
     public MountRequest(ConfirmedIdentity identity, SessionCredentials credentials, string address, int port,
         string remoteDirectory, char driveLetter, string rclonePath, string sessionRoot,
-        MountAccessMode accessMode = MountAccessMode.ReadOnly, string? cacheBaseRoot = null)
+        MountAccessMode accessMode = MountAccessMode.ReadOnly, string? cacheBaseRoot = null, string? volumeName = null)
     {
         if (address is null || !CandidateParser.TryManual(address, port, out var candidate)) throw new MountException("invalid-endpoint");
         if (remoteDirectory is null || remoteDirectory.Length > 1024 || remoteDirectory.StartsWith('/') || remoteDirectory.EndsWith('/') ||
@@ -97,5 +99,6 @@ public sealed class MountRequest
         string cacheBase = cacheBaseRoot is null ? SessionRoot : Path.GetFullPath(cacheBaseRoot);
         CacheRoot = Path.Combine(cacheBase, "VfsCache-v1", Identity.Sha256);
         AccessMode = accessMode;
+        VolumeName = MountVolumeName.Normalize(volumeName ?? "PhoneBridge");
     }
 }

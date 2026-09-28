@@ -56,22 +56,25 @@ public sealed class PairingRecord
     public string DeviceAlias { get; }
     public string Note { get; }
     public string DisplayName => DeviceAlias.Length == 0 ? DeviceName : DeviceAlias;
+    public char? PreferredDrive { get; }
     public string ClientName { get; }
     public PairingRecordState State { get; }
     public AccessMode Mode { get; }
     public ulong Revision { get; }
     public bool CanMount => State==PairingRecordState.Active;
     internal PairingRecord(ValidatedDeviceIdentity identity,string client,string deviceName,string clientName,PairingRecordState state,AccessMode mode,ulong revision,
-        string deviceAlias="",string note="")
+        string deviceAlias="",string note="",char? preferredDrive=null)
     {
         if (!RecordRules.Hex(client,32) || !Enum.IsDefined(state) || !Enum.IsDefined(mode) || revision==0) throw new CredentialStoreException(StoreError.InvalidInput);
+        if (preferredDrive is not null && preferredDrive is < 'D' or > 'Z') throw new CredentialStoreException(StoreError.InvalidInput);
         RecordRules.Name(deviceName);RecordRules.Name(clientName);RecordRules.OptionalText(deviceAlias,64,128);RecordRules.OptionalText(note,500,1024);
-        Identity=identity;ClientId=client;DeviceName=deviceName;DeviceAlias=deviceAlias;Note=note;ClientName=clientName;State=state;Mode=mode;Revision=revision;
+        Identity=identity;ClientId=client;DeviceName=deviceName;DeviceAlias=deviceAlias;Note=note;PreferredDrive=preferredDrive;
+        ClientName=clientName;State=state;Mode=mode;Revision=revision;
     }
     internal PairingRecord WithState(PairingRecordState state,AccessMode mode) =>
-        new(Identity,ClientId,DeviceName,ClientName,state,mode,checked(Revision+1),DeviceAlias,Note);
-    internal PairingRecord WithLocalMetadata(string deviceAlias,string note) =>
-        new(Identity,ClientId,DeviceName,ClientName,State,Mode,checked(Revision+1),deviceAlias,note);
+        new(Identity,ClientId,DeviceName,ClientName,state,mode,checked(Revision+1),DeviceAlias,Note,PreferredDrive);
+    internal PairingRecord WithLocalMetadata(string deviceAlias,string note,char? preferredDrive) =>
+        new(Identity,ClientId,DeviceName,ClientName,State,Mode,checked(Revision+1),deviceAlias,note,preferredDrive);
     public override string ToString() => "PairingRecord(redacted)";
 }
 

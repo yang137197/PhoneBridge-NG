@@ -75,12 +75,13 @@
 | P2-007 正式图标与 v0.2.0 交付收口 | 已完成；Windows 298/298，正式制品一致性、Samsung 全新安装、配对、挂载读取和安全断开通过 | [验收记录](docs/audit/P2-007-VALIDATION.md)、[完成记录](docs/tasks/completed/P2-007-formal-icons-and-v0.2-delivery.md) |
 | P2-008 发布 GitHub Release v0.2.0 | 已完成；标签精确绑定 P2-007 验收提交，6 项资产的 GitHub 摘要与本地制品一致并已设为 Latest | [Release](https://github.com/yang137197/PhoneBridge-NG/releases/tag/v0.2.0)、[验收记录](docs/audit/P2-008-VALIDATION.md)、[完成记录](docs/tasks/completed/P2-008-publish-v0.2.0-github-release.md) |
 | P2-009 v0.2.1 挂载状态一致性 | 实现完成，Windows 0 警告/0 错误、303/303 自动测试通过；真实停止共享时延和 Explorer 刷新留待 v0.2.2 最终候选验收 | [验收记录](docs/audit/P2-009-VALIDATION.md)、[完成记录](docs/tasks/completed/P2-009-v0.2.1-mount-state-consistency.md) |
+| P2-010 v0.2.2 盘符显示名与设备级分配 | 实现完成；Windows 306/306、Android 构建/单测/Lint 通过；真实手机、Explorer、盘符竞争和 v0.2.0 升级尚待独立验收 | [验收记录](docs/audit/P2-010-VALIDATION.md)、[完成记录](docs/tasks/completed/P2-010-v0.2.2-drive-identity-and-allocation.md) |
 | Phase 1 新版 Windows 客户端 | 配对、挂载、文件操作、生命周期与本地安装交付主链路已验收 | [开发规则](DEVELOPMENT_RULES.md) |
 | MVP 验收 | 15 项通过 | [15 项产品验收](docs/PRODUCT.md)、[P1-030 最终需求验收](docs/audit/P1-030-VALIDATION.md) |
 
 当前唯一交付目录是 `.audit/delivery/output/`；正式交付包含安装器、正式 APK、对应源码 ZIP、README、SHA256SUMS 和 manifest。二进制构建后运行 `scripts/New-SourceDelivery.ps1` 生成并核验对应源码包。`.audit/runs/` 中的文件只用于历史验证，不作为当前安装入口。先阅读交付目录内的 `README.txt`。
 
-`.audit/ui-acceptance/` 保存 P2-006 r21 和 P2-005 r20 的历史隔离验收证据，不是安装入口。正式安装入口是 GitHub `v0.2.0` Release；`.audit/delivery/output/` 是与其一致的本地镜像。`0.1.0` 不作为 `0.2.0` 的升级来源；后续每个正式候选均按 [开发规则 4.1](DEVELOPMENT_RULES.md#41-正式候选版本的升级验证基线) 动态使用其前一个正式 Release 验证升级。
+`.audit/ui-acceptance/` 保存 P2-005 r20、P2-006 r21 和 P2-010 r22 隔离候选证据，不是安装入口。正式安装入口仍是 GitHub `v0.2.0` Release；`.audit/delivery/output/` 是与其一致的本地镜像。P2-009/v0.2.1 与 P2-010/v0.2.2 仅完成本地开发和自动验证，尚未授权正式候选、升级验收或发布。`0.1.0` 不作为 `0.2.0` 的升级来源；后续每个正式候选均按 [开发规则 4.1](DEVELOPMENT_RULES.md#41-正式候选版本的升级验证基线) 动态使用其前一个正式 Release 验证升级。
 
 P0-001 的 107 个通过测试、1 个跳过用例及 7 项离线问题复现仅为上游审计证据，不能代表真实手机、Explorer、大文件或断网恢复通过。
 

@@ -29,10 +29,11 @@ public sealed class ConnectionTests
         var active = store.ApplyVerifiedSession(pending, pending.DeviceId, pending.ClientId, AccessMode.Safe);
         active = store.UpdateLocalMetadata(active, "Old label", "Legacy long note");
         await using var client = new ConnectionClient(store, server.Identity.DeviceId);
-        var changed = await client.UpdateDeviceNoteAsync(active.DeviceId, "  家里手机  ");
+        var changed = await client.UpdateDeviceSettingsAsync(active.DeviceId, "  家里手机  ", 'T');
         Assert.AreEqual("家里手机", changed.DeviceAlias);
         Assert.AreEqual("家里手机", changed.DisplayName);
         Assert.AreEqual("Legacy long note", changed.Note);
+        Assert.AreEqual('T', changed.PreferredDrive);
     }
 
     [TestMethod]
@@ -377,6 +378,33 @@ public sealed class ConnectionTests
         coordinator.ReleaseDrive(first);
         coordinator.ReserveDrive(second, 'P');
         Assert.AreEqual('P', second.ReservedDrive);
+    }
+
+    [TestMethod]
+    public async Task CoordinatorAllocatesAutomaticDrivesFromDAndFixedPreferencesNeverFallback()
+    {
+        var store = Store();
+        await using var coordinator = new DeviceSessionCoordinator(store);
+        var first = coordinator.GetOrCreate("device-a");
+        var second = coordinator.GetOrCreate("device-b");
+
+        Assert.AreEqual('D', coordinator.ReservePreferredDrive(first, null, new[] { 'C' }));
+        coordinator.ReleaseDrive(first);
+        Assert.AreEqual('E', coordinator.ReservePreferredDrive(first, null, new[] { 'C', 'D', 'F' }));
+        Assert.AreEqual('G', coordinator.ReservePreferredDrive(second, null, new[] { 'C', 'D', 'F' }));
+        coordinator.ReleaseDrive(first);
+        Assert.AreEqual('E', coordinator.ReservePreferredDrive(first, 'e', new[] { 'C', 'D' }));
+
+        coordinator.ReleaseDrive(first);
+        var occupied = Assert.Throws<ConnectionException>(() =>
+            coordinator.ReservePreferredDrive(first, 'D', new[] { 'C', 'D' }));
+        Assert.AreEqual("drive-occupied", occupied.Code);
+        var reserved = Assert.Throws<ConnectionException>(() =>
+            coordinator.ReservePreferredDrive(first, 'G', new[] { 'C', 'D' }));
+        Assert.AreEqual("drive-reserved", reserved.Code);
+        var exhausted = Assert.Throws<ConnectionException>(() => coordinator.ReservePreferredDrive(first, null,
+            Enumerable.Range('D', 'Z' - 'D' + 1).Select(value => (char)value)));
+        Assert.AreEqual("drive-occupied", exhausted.Code);
     }
 
     [TestMethod]

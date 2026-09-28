@@ -43,10 +43,10 @@ public sealed class StoreTests
     [TestMethod]
     public void UiPreviewRevisionsUseSeparateNonProductionRoots()
     {
-        string first=PairingStore.UiPreviewDataRoot("0.2.0.8");
-        string second=PairingStore.UiPreviewDataRoot("0.2.0.9");
+        string first=PairingStore.UiPreviewDataRoot("0.2.2.8");
+        string second=PairingStore.UiPreviewDataRoot("0.2.2.9");
         Assert.AreNotEqual(first,second);
-        StringAssert.Contains(first,Path.Combine("PhoneBridge-NG-UiPreview","0.2.0.8"));
+        StringAssert.Contains(first,Path.Combine("PhoneBridge-NG-UiPreview","0.2.2.8"));
         Assert.Throws<ArgumentException>(()=>PairingStore.UiPreviewDataRoot("../unsafe"));
     }
     [TestCleanup] public void ReportIoFailure()
@@ -103,17 +103,19 @@ public sealed class StoreTests
     public void LocalAliasAndNotePersistWithoutChangingDeviceIdentity()
     {
         var store=PairingStore.OpenAt(_root);var active=Active(store);
-        var changed=store.UpdateLocalMetadata(active,"  我的手机  ","  主力设备  ");
+        var changed=store.UpdateLocalSettings(active,"  我的手机  ","  主力设备  ",'r');
         Assert.AreEqual(active.DeviceId,changed.DeviceId);Assert.AreEqual(active.ClientId,changed.ClientId);
         Assert.AreEqual("我的手机",changed.DeviceAlias);Assert.AreEqual("主力设备",changed.Note);Assert.AreEqual("我的手机",changed.DisplayName);
+        Assert.AreEqual('R',changed.PreferredDrive);
         var restored=PairingStore.OpenAt(_root).Load(active.DeviceId);
-        Assert.AreEqual("我的手机",restored.DeviceAlias);Assert.AreEqual("主力设备",restored.Note);
+        Assert.AreEqual("我的手机",restored.DeviceAlias);Assert.AreEqual("主力设备",restored.Note);Assert.AreEqual('R',restored.PreferredDrive);
         var cleared=PairingStore.OpenAt(_root).UpdateLocalMetadata(restored,"","");
-        Assert.AreEqual(cleared.DeviceName,cleared.DisplayName);
+        Assert.AreEqual(cleared.DeviceName,cleared.DisplayName);Assert.AreEqual('R',cleared.PreferredDrive);
         Error(StoreError.RevisionConflict,()=>store.UpdateLocalMetadata(active,"stale",""));
+        Error(StoreError.InvalidInput,()=>store.UpdateLocalSettings(cleared,"","",'C'));
     }
     [TestMethod]
-    public void LocalAliasAndNoteAreBoundedAndOldSchemaRemainsReadable()
+    public void LocalSettingsAreBoundedAndOldSchemasDefaultToAutomaticDrive()
     {
         var store=PairingStore.OpenAt(_root);var pending=Pending(store);
         Error(StoreError.InvalidInput,()=>store.UpdateLocalMetadata(pending,new string('a',65),""));
@@ -121,13 +123,19 @@ public sealed class StoreTests
         var plain=CurrentUserProtection.Unprotect(File.ReadAllBytes(RecordPath),pending.DeviceId);
         try
         {
-            Assert.AreEqual(2,plain[4]);Assert.AreEqual(0,plain[^1]);Assert.AreEqual(0,plain[^2]);Assert.AreEqual(0,plain[^3]);Assert.AreEqual(0,plain[^4]);
-            plain[4]=1;Array.Resize(ref plain,plain.Length-4);
-            File.WriteAllBytes(RecordPath,CurrentUserProtection.Protect(plain,pending.DeviceId));
+            Assert.AreEqual(3,plain[4]);Assert.AreEqual(0,plain[^1]);
+            var schema1=plain[..^5];schema1[4]=1;
+            File.WriteAllBytes(RecordPath,CurrentUserProtection.Protect(schema1,pending.DeviceId));
+            var restored1=PairingStore.OpenAt(_root).Load(pending.DeviceId);
+            Assert.AreEqual("",restored1.DeviceAlias);Assert.AreEqual("",restored1.Note);Assert.IsNull(restored1.PreferredDrive);
+
+            var schema2=plain[..^1];schema2[4]=2;
+            File.WriteAllBytes(RecordPath,CurrentUserProtection.Protect(schema2,pending.DeviceId));
+            var restored2=PairingStore.OpenAt(_root).Load(pending.DeviceId);
+            Assert.AreEqual("",restored2.DeviceAlias);Assert.AreEqual("",restored2.Note);Assert.IsNull(restored2.PreferredDrive);
+            CryptographicOperations.ZeroMemory(schema1);CryptographicOperations.ZeroMemory(schema2);
         }
         finally { CryptographicOperations.ZeroMemory(plain); }
-        var restored=PairingStore.OpenAt(_root).Load(pending.DeviceId);
-        Assert.AreEqual("",restored.DeviceAlias);Assert.AreEqual("",restored.Note);Assert.AreEqual(restored.DeviceName,restored.DisplayName);
     }
     [TestMethod]
     public void PendingPersistsWithoutPlaintextAndCannotMount()
@@ -263,7 +271,7 @@ public sealed class StoreTests
 
     [TestMethod]
     [DataRow("wrong-magic")] [DataRow("version")] [DataRow("revision")] [DataRow("state")] [DataRow("mode")]
-    [DataRow("ca-hash")] [DataRow("device")] [DataRow("utf8")] [DataRow("trailing")] [DataRow("short")]
+    [DataRow("ca-hash")] [DataRow("device")] [DataRow("utf8")] [DataRow("drive")] [DataRow("trailing")] [DataRow("short")]
     public void ProtectedMalformedRecordFailsClosed(string mutation)
     {
         var store=PairingStore.OpenAt(_root);Pending(store);var plain=CurrentUserProtection.Unprotect(File.ReadAllBytes(RecordPath),_identity.DeviceId);
@@ -272,9 +280,10 @@ public sealed class StoreTests
             int n=BinaryPrimitives.ReadUInt16BigEndian(plain.AsSpan(15));
             switch(mutation)
             {
-                case "wrong-magic":plain[0]^=1;break;case "version":plain[4]=3;break;case "revision":Array.Clear(plain,5,8);break;
+                case "wrong-magic":plain[0]^=1;break;case "version":plain[4]=4;break;case "revision":Array.Clear(plain,5,8);break;
                 case "state":plain[13]=255;break;case "mode":plain[14]=255;break;case "ca-hash":plain[17+n]^=1;break;
-                case "device":plain[49+n]^=1;break;case "utf8":plain[^1]=255;break;
+                case "device":plain[49+n]^=1;break;case "utf8":plain[168+n]=255;break;
+                case "drive":plain[^1]=(byte)'C';break;
                 case "trailing":var longer=new byte[plain.Length+1];plain.CopyTo(longer,0);CryptographicOperations.ZeroMemory(plain);plain=longer;break;
                 case "short":CryptographicOperations.ZeroMemory(plain);plain=[1];break;
             }

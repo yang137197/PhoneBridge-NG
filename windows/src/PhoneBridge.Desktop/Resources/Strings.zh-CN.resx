@@ -154,9 +154,9 @@
   <data name="RemovePhone" xml:space="preserve"><value>移除此手机</value></data>
   <data name="DeviceLocalDetails" xml:space="preserve"><value>本机显示信息</value></data>
   <data name="DeviceAlias" xml:space="preserve"><value>设备备注</value></data>
-  <data name="DeviceAliasHelp" xml:space="preserve"><value>只保存在这台 Windows 电脑；留空时显示手机原始名称。</value></data>
-  <data name="SaveDeviceDetails" xml:space="preserve"><value>保存设备备注</value></data>
-  <data name="DeviceDetailsSaved" xml:space="preserve"><value>设备备注已保存在本机。</value></data>
+  <data name="DeviceAliasHelp" xml:space="preserve"><value>只保存在这台 Windows 电脑；留空时使用手机原始名称。资源管理器会在下次连接时应用此名称。</value></data>
+  <data name="SaveDeviceDetails" xml:space="preserve"><value>保存设备设置</value></data>
+  <data name="DeviceDetailsSaved" xml:space="preserve"><value>设备备注和盘符偏好已保存在本机。</value></data>
   <data name="General" xml:space="preserve"><value>常规</value></data>
   <data name="AdvancedTroubleshooting" xml:space="preserve"><value>高级排障</value></data>
   <data name="Language" xml:space="preserve"><value>语言</value></data>
@@ -165,13 +165,14 @@
   <data name="LanguageSaveFailed" xml:space="preserve"><value>无法保存语言设置。</value></data>
   <data name="Startup" xml:space="preserve"><value>启动</value></data>
   <data name="AutoStartHelp" xml:space="preserve"><value>只启动客户端并进入托盘，不自动连接或创建盘符。</value></data>
-  <data name="DefaultDrive" xml:space="preserve"><value>默认盘符</value></data>
-  <data name="AutomaticDriveHelp" xml:space="preserve"><value>当前单设备核心使用选中的空闲盘符；设备级偏好将在多会话隔离后接入。</value></data>
+  <data name="DefaultDrive" xml:space="preserve"><value>盘符偏好</value></data>
+  <data name="AutomaticDrive" xml:space="preserve"><value>自动（D–Z 首个空闲盘符）</value></data>
+  <data name="AutomaticDriveHelp" xml:space="preserve"><value>自动会在每次新连接时避开硬盘、USB、网络盘和其他手机。固定盘符冲突时不会改用其他盘符。保存后从下次连接生效。</value></data>
   <data name="TemporaryManualAddress" xml:space="preserve"><value>临时手动地址</value></data>
   <data name="IdentityStillVerified" xml:space="preserve"><value>请先选择已配对手机；连接仍会验证已保存的设备身份。</value></data>
   <data name="Diagnostics" xml:space="preserve"><value>诊断</value></data>
   <data name="DiagnosticsNotUploaded" xml:space="preserve"><value>诊断包只保存到本机，不会自动上传。</value></data>
-  <data name="VersionPreview" xml:space="preserve"><value>v0.2.1</value></data>
+  <data name="VersionPreview" xml:space="preserve"><value>v0.2.2</value></data>
   <data name="ProjectAndLicense" xml:space="preserve"><value>项目与许可</value></data>
   <data name="LicenseSummary" xml:space="preserve"><value>PhoneBridge NG 按 GPL-3.0-or-later 分发，包含 rclone 与 WinFsp；正式交付会提供通知和对应源码。</value></data>
   <data name="GitHubProject" xml:space="preserve"><value>打开 GitHub 项目</value></data>

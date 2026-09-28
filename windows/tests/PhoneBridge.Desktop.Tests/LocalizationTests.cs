@@ -13,7 +13,8 @@ public sealed class LocalizationTests
         var chinese = CultureInfo.GetCultureInfo("zh-CN");
         foreach (string key in new[] { "ExportDiagnostics", "DiagnosticsZipFilter", "DiagnosticsExported", "DiagnosticsExportFailed",
             "ManualAddress", "ManualPort", "UseManualAddress", "ClearManualAddress", "ManualEndpointInvalid",
-            "ManualEndpointAdded", "ManualEndpointCleared", "English", "Working", "LanguageSaveFailed" })
+            "ManualEndpointAdded", "ManualEndpointCleared", "English", "Working", "LanguageSaveFailed",
+            "AutomaticDrive", "AutomaticDriveHelp", "DefaultDrive", "MountedSummary", "UnmountingDrive" })
         {
             string en = TextCatalog.Get(key, english);
             string zh = TextCatalog.Get(key, chinese);

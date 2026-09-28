@@ -159,6 +159,7 @@ public partial class MainWindow : Window
         SelectDevice(row);
         DeviceSettingsName.Text = row.Name;
         DeviceAlias.Text = row.Record?.DeviceAlias ?? string.Empty;
+        FillDeviceDrivePreference(row.Record);
         ShowMainPage(DeviceSettingsPage, DevicesNavigation);
     }
 
@@ -166,7 +167,6 @@ public partial class MainWindow : Window
 
     private async void OnLoaded(object sender, RoutedEventArgs e)
     {
-        FillDrives();
         await ReloadRecords();
         RefreshAutoStart(reportFailure: autoStart is not null);
         discoveryTask = Task.Run(async () =>
@@ -249,7 +249,6 @@ public partial class MainWindow : Window
     {
         if (Endpoints is null) return;
         RefreshEndpoints(Endpoints.SelectedItem as DeviceEndpoint);
-        FillDrives();
         ManualAddress.Clear();
         ManualPort.Text = ManualEndpointSession.DefaultPort;
         if (PairingPhoneName is not null) PairingPhoneName.Text = Selected?.Name ?? T("ChoosePhoneFirst");
@@ -296,7 +295,8 @@ public partial class MainWindow : Window
         ManualAddress.IsEnabled = canUseManual;
         ManualPort.IsEnabled = canUseManual;
         ClearManualAddress.IsEnabled = canUseManual && row?.Record is { } manualRecord && manualEndpoints.TryGet(manualRecord.DeviceId, out _);
-        Drives.IsEnabled = !busy && idle; Endpoints.IsEnabled = !busy;
+        DeviceDrivePreference.IsEnabled = !busy && row?.Record is not null;
+        Endpoints.IsEnabled = !busy;
         var allSessions = sessions.Sessions;
         var summary = DeviceListPolicy.SummarizeMounts(allSessions.Select(item =>
             (item.Client.Mount, item.Client.Connected?.DriveLetter ?? item.ReservedDrive)));
@@ -372,18 +372,15 @@ public partial class MainWindow : Window
         ShowFromTray();
         Close();
     }
-    private void FillDrives()
+    private void FillDeviceDrivePreference(PairingRecord? record)
     {
-        char current = Drives.SelectedItem is char value ? value : 'P';
-        var used = DriveInfo.GetDrives().Select(d => char.ToUpperInvariant(d.Name[0])).ToHashSet();
-        string? selectedDevice = Selected?.DeviceId;
-        char? ownReservation = SelectedSession?.ReservedDrive;
-        var available = Enumerable.Range('D', 'Z' - 'D' + 1).Select(n => (char)n)
-            .Where(c => (!used.Contains(c) || ownReservation == c) && sessions.CanUseDrive(selectedDevice, c)).ToArray();
-        Drives.ItemsSource = available; Drives.SelectedItem = available.Contains(current) ? current : available.FirstOrDefault();
+        var choices = new[] { new DriveChoice(null, T("AutomaticDrive")) }.Concat(
+            Enumerable.Range('D', 'Z' - 'D' + 1).Select(value => new DriveChoice((char)value, $"{(char)value}:\\"))).ToArray();
+        DeviceDrivePreference.ItemsSource = choices;
+        DeviceDrivePreference.SelectedItem = choices.First(choice => choice.Letter == record?.PreferredDrive);
     }
-    private MountOptions Options(string deviceId) => OptionsFor(deviceId,
-        Drives.SelectedItem is char letter ? letter : throw new ConnectionException("drive-occupied"));
+    private static char[] SystemDriveLetters() => DriveInfo.GetDrives()
+        .Where(drive => drive.Name.Length >= 1).Select(drive => char.ToUpperInvariant(drive.Name[0])).ToArray();
     private IProgress<ConnectionStage> Progress(DeviceSession session) => new Progress<ConnectionStage>(stage =>
     {
         if (Selected?.DeviceId == session.DeviceId) SetStatus(stage.ToString());
@@ -436,7 +433,7 @@ public partial class MainWindow : Window
                     try { await sessions.StopAsync(session.DeviceId); }
                     catch (ConnectionException stop) { SetSessionStatus(session, stop.Code); return; }
                     if (error.Code == "mode-changed") await ReloadRecords();
-                    FillDrives(); SetSessionStatus(session, error.Code);
+                    SetSessionStatus(session, error.Code);
                 }
                 catch (Exception error) when (error is HttpRequestException or IOException or OperationCanceledException or ConnectionException)
                 {
@@ -460,7 +457,7 @@ public partial class MainWindow : Window
             {
                 try { await sessions.StopAsync(session.DeviceId, preserveDriveReservation: true); }
                 catch (ConnectionException stop) { SetSessionStatus(session, stop.Code); return; }
-                session.Reconnect.Disconnected(DateTimeOffset.UtcNow); FillDrives();
+                session.Reconnect.Disconnected(DateTimeOffset.UtcNow);
             }
             var attemptTime = DateTimeOffset.UtcNow;
             if (session.Reconnect.DeviceId is not { } reconnectDevice || !session.Reconnect.CanReconnect(reconnectDevice, attemptTime)) return;
@@ -519,7 +516,6 @@ public partial class MainWindow : Window
             session.Reconnect.Disconnected(DateTimeOffset.UtcNow);
             diagnostics.Write(new(DiagnosticEventName.ReconnectScheduled, State: DiagnosticState.Waiting,
                 Session: session.LogContext));
-            FillDrives();
             SetSessionStatus(session, "ReconnectWaiting");
         }
         catch (ConnectionException stop) { SetSessionStatus(session, stop.Code); }
@@ -565,7 +561,6 @@ public partial class MainWindow : Window
         {
             Code.Clear();
             await ReloadRecords();
-            FillDrives();
             if(completed)succeeded?.Invoke();
         }
     }
@@ -613,10 +608,12 @@ public partial class MainWindow : Window
     {
         if (Selected?.Record is not { } record || Endpoints.SelectedItem is not DeviceEndpoint endpoint) return;
         var session = sessions.GetOrCreate(record.DeviceId);
-        var options = Options(record.DeviceId); var progress = Progress(session); session.Reconnect.Suppress();
+        var progress = Progress(session); session.Reconnect.Suppress();
         diagnostics.Write(new(DiagnosticEventName.ConnectionStarted, State: DiagnosticState.Starting, Session: session.LogContext));
         StartDevice(session, DiagnosticEventName.ConnectionCompleted, async token =>
         {
+            char drive = sessions.ReservePreferredDrive(record.DeviceId, record.PreferredDrive, SystemDriveLetters());
+            var options = OptionsFor(record.DeviceId, drive);
             var connected = await sessions.ConnectAsync(record.DeviceId, endpoint, options, progress, token);
             session.Reconnect.Arm(connected.DeviceId, options, DateTimeOffset.UtcNow);
         });
@@ -678,13 +675,15 @@ public partial class MainWindow : Window
         if(Selected?.Record is not { } record)return;
         var session=sessions.GetOrCreate(record.DeviceId);
         string deviceNote=DeviceAlias.Text;
+        char? preferredDrive=(DeviceDrivePreference.SelectedItem as DriveChoice)?.Letter;
         StartDevice(session,DiagnosticEventName.DeviceMetadataChanged,async _=>
         {
-            await sessions.UpdateDeviceNoteAsync(record.DeviceId,deviceNote);
+            await sessions.UpdateDeviceSettingsAsync(record.DeviceId,deviceNote,preferredDrive);
         },"DeviceDetailsSaved",()=>
         {
             DeviceSettingsName.Text=Selected?.Name??string.Empty;
             DeviceAlias.Text=Selected?.Record?.DeviceAlias??string.Empty;
+            FillDeviceDrivePreference(Selected?.Record);
         });
     }
     private void DeleteClick(object sender, RoutedEventArgs e)
@@ -745,6 +744,7 @@ public partial class MainWindow : Window
             RefreshLanguageSelection();
             RebuildRows();
             PairingPhoneName.Text = Selected?.Name ?? T("ChoosePhoneFirst");
+            if (DeviceSettingsPage.Visibility == Visibility.Visible) FillDeviceDrivePreference(Selected?.Record);
             SetStatus(statusKey, statusArguments);
             UpdateControls();
         }
@@ -777,7 +777,7 @@ public partial class MainWindow : Window
         }
         finally { loadingAutoStart = false; }
     }
-    private async void RefreshClick(object sender, RoutedEventArgs e) { discovery.RequestRefresh(); await ReloadRecords(); FillDrives(); }
+    private async void RefreshClick(object sender, RoutedEventArgs e) { discovery.RequestRefresh(); await ReloadRecords(); }
     private void ExportDiagnosticsClick(object sender, RoutedEventArgs e)
     {
         var dialog = new SaveFileDialog
@@ -838,4 +838,5 @@ public partial class MainWindow : Window
         public bool CanModifySession => !IsBusy;
         public bool ShowInDeviceList => Record is not null;
     }
+    private sealed record DriveChoice(char? Letter, string Display);
 }

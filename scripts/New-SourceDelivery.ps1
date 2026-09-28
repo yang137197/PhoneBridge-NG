@@ -22,6 +22,13 @@ $expectedInstallerHash = 'F3856096DB4882071C4B61B9522ADDFE1CD30F3E33C654A1C2B935
 $fixedTimestamp = [DateTimeOffset]::new(2000, 1, 1, 0, 0, 0, [TimeSpan]::Zero)
 $utf8 = [Text.UTF8Encoding]::new($false)
 
+$desktopProjectPath = Join-Path $projectRoot 'windows\src\PhoneBridge.Desktop\PhoneBridge.Desktop.csproj'
+$androidProjectPath = Join-Path $projectRoot 'android\app\build.gradle.kts'
+if (-not (Select-String -LiteralPath $desktopProjectPath -SimpleMatch "<Version>$productVersion</Version>" -Quiet) -or
+    -not (Select-String -LiteralPath $androidProjectPath -SimpleMatch "versionName = `"$productVersion`"" -Quiet)) {
+    throw "New-SourceDelivery is bound to the current formal $productVersion assets and refuses source from another version."
+}
+
 function Assert-Within([string]$Path, [string]$Parent, [string]$Label) {
     $full = [IO.Path]::GetFullPath($Path)
     $fullParent = [IO.Path]::GetFullPath($Parent).TrimEnd([IO.Path]::DirectorySeparatorChar)

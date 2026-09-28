@@ -112,8 +112,8 @@ public sealed class DeviceSessionCoordinator(PairingStore store) : IAsyncDisposa
 
     public Task<IReadOnlyList<PairingRecord>> RecordsAsync() => Task.Run(store.List);
 
-    public Task<PairingRecord> UpdateDeviceNoteAsync(string deviceId, string note) =>
-        GetOrCreate(deviceId).Client.UpdateDeviceNoteAsync(deviceId, note);
+    public Task<PairingRecord> UpdateDeviceSettingsAsync(string deviceId, string note, char? preferredDrive) =>
+        GetOrCreate(deviceId).Client.UpdateDeviceSettingsAsync(deviceId, note, preferredDrive);
 
     public async Task<PairingRecord> ConnectAsync(string deviceId, DeviceEndpoint endpoint, MountOptions options,
         IProgress<ConnectionStage>? progress, CancellationToken cancellationToken)
@@ -176,6 +176,44 @@ public sealed class DeviceSessionCoordinator(PairingStore store) : IAsyncDisposa
             session.ReservedDrive = driveLetter;
         }
     }
+
+    internal char ReservePreferredDrive(DeviceSession session, char? preferredDrive, IEnumerable<char> occupiedDrives)
+    {
+        ArgumentNullException.ThrowIfNull(occupiedDrives);
+        var occupied = occupiedDrives.Select(char.ToUpperInvariant).Where(letter => letter is >= 'A' and <= 'Z').ToHashSet();
+        if (preferredDrive is not null)
+        {
+            preferredDrive = char.ToUpperInvariant(preferredDrive.Value);
+            if (preferredDrive is < 'D' or > 'Z') throw new ConnectionException("drive-occupied");
+        }
+        lock (gate)
+        {
+            if (session.ReservedDrive is { } current)
+            {
+                if (preferredDrive is not null && preferredDrive != current) throw new ConnectionException("drive-reserved");
+                return current;
+            }
+            char selected;
+            if (preferredDrive is { } fixedDrive)
+            {
+                if (occupied.Contains(fixedDrive)) throw new ConnectionException("drive-occupied");
+                if (sessions.Values.Any(item => !ReferenceEquals(item, session) && item.ReservedDrive == fixedDrive))
+                    throw new ConnectionException("drive-reserved");
+                selected = fixedDrive;
+            }
+            else
+            {
+                selected = Enumerable.Range('D', 'Z' - 'D' + 1).Select(value => (char)value).FirstOrDefault(letter =>
+                    !occupied.Contains(letter) && sessions.Values.All(item => ReferenceEquals(item, session) || item.ReservedDrive != letter));
+                if (selected == default) throw new ConnectionException("drive-occupied");
+            }
+            session.ReservedDrive = selected;
+            return selected;
+        }
+    }
+
+    public char ReservePreferredDrive(string deviceId, char? preferredDrive, IEnumerable<char> occupiedDrives) =>
+        ReservePreferredDrive(GetOrCreate(deviceId), preferredDrive, occupiedDrives);
 
     internal void ReleaseDrive(DeviceSession session)
     {

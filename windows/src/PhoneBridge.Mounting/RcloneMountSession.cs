@@ -55,7 +55,7 @@ internal sealed class RcloneMountSession : IMountSession
     {
         var info = ChildInfo(request.RclonePath);
         foreach (var argument in new[] { "mount", RemoteName + ":", $"{request.DriveLetter}:", "--config", configPath,
-            "--ca-cert", caPath, "--network-mode", "--volname", "PhoneBridge-" + Guid.NewGuid().ToString("N"),
+            "--ca-cert", caPath, "--network-mode", "--volname", request.NetworkVolumeName,
             "--no-console", "--rc", "--rc-addr", $"127.0.0.1:{rcPort}", "--contimeout", "5s", "--timeout", "15s",
             "--dir-cache-time", "5s", "--poll-interval", "0", "--log-level", "ERROR" })
             info.ArgumentList.Add(argument);

@@ -32,11 +32,11 @@ public sealed class ConnectionClient : IAsyncDisposable
         var current=store.Load(deviceId);
         return Task.FromResult(store.UpdateLocalMetadata(current,deviceAlias,note));
     },CancellationToken.None);
-    public Task<PairingRecord> UpdateDeviceNoteAsync(string deviceId,string deviceNote) => RunAsync(() =>
+    public Task<PairingRecord> UpdateDeviceSettingsAsync(string deviceId,string deviceNote,char? preferredDrive) => RunAsync(() =>
     {
         RequireDevice(deviceId);
         var current=store.Load(deviceId);
-        return Task.FromResult(store.UpdateLocalMetadata(current,deviceNote,current.Note));
+        return Task.FromResult(store.UpdateLocalSettings(current,deviceNote,current.Note,preferredDrive));
     },CancellationToken.None);
 
     public Task<PairingRecord> PairAsync(DeviceCandidate candidate, DeviceEndpoint endpoint, char[] code,
@@ -169,7 +169,7 @@ public sealed class ConnectionClient : IAsyncDisposable
                     AccessMode.Safe => MountAccessMode.Safe,
                     AccessMode.ReadWrite => MountAccessMode.ReadWrite,
                     _ => MountAccessMode.ReadOnly
-                }, options.CacheBaseRoot);
+                }, options.CacheBaseRoot, record.DisplayName);
             progress?.Report(ConnectionStage.Mounting);
             await mounts.StartAsync(request, cancellationToken).ConfigureAwait(false);
             if (cancellationToken.IsCancellationRequested)

@@ -99,15 +99,22 @@ public sealed class PairingStore
     }
     public PairingRecord BeginRevocation(PairingRecord expected) => Change(expected,PairingRecordState.RevocationPending,expected.Mode);
     public PairingRecord MarkNeedsRepair(PairingRecord expected) => Change(expected,PairingRecordState.NeedsRepair,expected.Mode);
-    public PairingRecord UpdateLocalMetadata(PairingRecord expected,string deviceAlias,string note) => Run(false,files=>
+    public PairingRecord UpdateLocalMetadata(PairingRecord expected,string deviceAlias,string note) =>
+        UpdateLocalSettings(expected,deviceAlias,note,expected.PreferredDrive);
+    public PairingRecord UpdateLocalSettings(PairingRecord expected,string deviceAlias,string note,char? preferredDrive) => Run(false,files=>
     {
         deviceAlias=(deviceAlias??string.Empty).Trim();note=(note??string.Empty).Trim();
         RecordRules.OptionalText(deviceAlias,64,128);RecordRules.OptionalText(note,500,1024);
+        if(preferredDrive is not null)
+        {
+            preferredDrive=char.ToUpperInvariant(preferredDrive.Value);
+            if(preferredDrive is < 'D' or > 'Z')throw new CredentialStoreException(StoreError.InvalidInput);
+        }
         using var record=Read(files,expected.DeviceId);var current=record.Metadata;
         if(current.ClientId!=expected.ClientId)throw new CredentialStoreException(StoreError.IdentityMismatch);
         if(current.Revision!=expected.Revision)throw new CredentialStoreException(StoreError.RevisionConflict);
-        if(current.DeviceAlias==deviceAlias&&current.Note==note)return current;
-        record.Metadata=current.WithLocalMetadata(deviceAlias,note);Commit(files,record,true);return record.Metadata;
+        if(current.DeviceAlias==deviceAlias&&current.Note==note&&current.PreferredDrive==preferredDrive)return current;
+        record.Metadata=current.WithLocalMetadata(deviceAlias,note,preferredDrive);Commit(files,record,true);return record.Metadata;
     });
 
     private PairingRecord Change(PairingRecord expected,PairingRecordState state,AccessMode mode) => Run(false,files=>
@@ -147,6 +154,7 @@ public sealed class PairingStore
             if(committed.Metadata.ClientId!=record.Metadata.ClientId || committed.Metadata.Revision!=record.Metadata.Revision ||
                 committed.Metadata.State!=record.Metadata.State || committed.Metadata.Mode!=record.Metadata.Mode ||
                 committed.Metadata.DeviceAlias!=record.Metadata.DeviceAlias || committed.Metadata.Note!=record.Metadata.Note ||
+                committed.Metadata.PreferredDrive!=record.Metadata.PreferredDrive ||
                 !CryptographicOperations.FixedTimeEquals(committed.Token,record.Token)) throw new IOException();
         }
         catch { _uncertainWrite=true;throw new CredentialStoreException(StoreError.IoFailure); }

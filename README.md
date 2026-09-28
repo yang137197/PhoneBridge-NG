@@ -76,6 +76,7 @@
 | P2-008 发布 GitHub Release v0.2.0 | 已完成；标签精确绑定 P2-007 验收提交，6 项资产的 GitHub 摘要与本地制品一致并已设为 Latest | [Release](https://github.com/yang137197/PhoneBridge-NG/releases/tag/v0.2.0)、[验收记录](docs/audit/P2-008-VALIDATION.md)、[完成记录](docs/tasks/completed/P2-008-publish-v0.2.0-github-release.md) |
 | P2-009 v0.2.1 挂载状态一致性 | 实现完成，Windows 0 警告/0 错误、303/303 自动测试通过；真实停止共享时延和 Explorer 刷新留待 v0.2.2 最终候选验收 | [验收记录](docs/audit/P2-009-VALIDATION.md)、[完成记录](docs/tasks/completed/P2-009-v0.2.1-mount-state-consistency.md) |
 | P2-010 v0.2.2 盘符显示名与设备级分配 | 实现完成；Windows 306/306、Android 构建/单测/Lint 通过；真实手机、Explorer、盘符竞争和 v0.2.0 升级尚待独立验收 | [验收记录](docs/audit/P2-010-VALIDATION.md)、[完成记录](docs/tasks/completed/P2-010-v0.2.2-drive-identity-and-allocation.md) |
+| P2-011 v0.2.2 正式候选与升级验收 | 已完成；与 v0.2.0 同一 Android 签名，Windows/Android 原位升级、配对保持、Auto E:、真实读取和停止共享自动卸载通过 | [验收记录](docs/audit/P2-011-VALIDATION.md)、[完成记录](docs/tasks/completed/P2-011-v0.2.2-formal-candidate-and-upgrade.md)、[全新机器清单](docs/V0.2.2_CLEAN_MACHINE_ACCEPTANCE.md) |
 | Phase 1 新版 Windows 客户端 | 配对、挂载、文件操作、生命周期与本地安装交付主链路已验收 | [开发规则](DEVELOPMENT_RULES.md) |
 | MVP 验收 | 15 项通过 | [15 项产品验收](docs/PRODUCT.md)、[P1-030 最终需求验收](docs/audit/P1-030-VALIDATION.md) |
 

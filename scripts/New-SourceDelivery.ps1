@@ -8,17 +8,17 @@ Set-StrictMode -Version Latest
 Add-Type -AssemblyName System.IO.Compression
 Add-Type -AssemblyName System.IO.Compression.FileSystem
 
-$productVersion = '0.2.0'
+$productVersion = '0.2.2'
 $projectRoot = [IO.Path]::GetFullPath((Split-Path $PSScriptRoot -Parent))
 $deliveryRoot = [IO.Path]::GetFullPath((Join-Path $projectRoot '.audit\delivery'))
 if (-not $OutputDirectory) { $OutputDirectory = Join-Path $deliveryRoot 'output' }
 $OutputDirectory = [IO.Path]::GetFullPath($OutputDirectory)
-$runDirectory = Join-Path $projectRoot '.audit\runs\P2-007'
+$runDirectory = Join-Path $projectRoot '.audit\runs\P2-011'
 $archiveName = "PhoneBridge-NG-$productVersion-source.zip"
 $archiveRoot = "PhoneBridge-NG-$productVersion-source"
 $expectedCertificate = '66FF69D71637D215C2F104DB95B93CC1F991FA1F23580F95AF3316B0763B14D4'
-$expectedApkHash = '5F31E9B0E3EC20C25715014053802C97304443D8A4279BF27F9E82B198F76CF8'
-$expectedInstallerHash = 'F3856096DB4882071C4B61B9522ADDFE1CD30F3E33C654A1C2B935BCEBB5EFC7'
+$expectedApkHash = '908A7C93D5ABE750702E470F82A58555A03B201F9F85ABBD985382BF8DC6E1E4'
+$expectedInstallerHash = '246C5280812006129A0E77E2B1FB0440A634C6021608D90856AA6B67EB2960CE'
 $fixedTimestamp = [DateTimeOffset]::new(2000, 1, 1, 0, 0, 0, [TimeSpan]::Zero)
 $utf8 = [Text.UTF8Encoding]::new($false)
 
@@ -293,7 +293,7 @@ catch {
 
 $evidence = [ordered]@{
     schema = 1
-    task = 'P2-007'
+    task = 'P2-011'
     captured_at_utc = [DateTimeOffset]::UtcNow.ToString('O')
     source_archive = [ordered]@{
         file = $archiveName

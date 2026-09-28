@@ -38,7 +38,7 @@
   <data name="Open" xml:space="preserve"><value>打开盘符</value></data>
   <data name="Unmount" xml:space="preserve"><value>卸载</value></data>
   <data name="Revoke" xml:space="preserve"><value>撤销配对</value></data>
-  <data name="Ready" xml:space="preserve"><value>选择手机后开始。</value></data>
+  <data name="Ready" xml:space="preserve"><value>请连接手机。</value></data>
   <data name="Completed" xml:space="preserve"><value>操作已完成。</value></data>
   <data name="PairingCompleted" xml:space="preserve"><value>配对已完成。请先在手机上开始共享，再点击“连接”。</value></data>
   <data name="OperationCancelled" xml:space="preserve"><value>已取消。未确认的远端授权保持本地禁用，请查看配对状态。</value></data>
@@ -52,6 +52,11 @@
   <data name="ReadWrite" xml:space="preserve"><value>完全读写</value></data>
   <data name="NoMount" xml:space="preserve"><value>当前无挂载盘符。</value></data>
   <data name="MountedSummary" xml:space="preserve"><value>已挂载 {1} 个盘符：{0}</value></data>
+  <data name="ConnectedDevicesSummary" xml:space="preserve"><value>{0} 已连接。</value></data>
+  <data name="MountedDeviceItem" xml:space="preserve"><value>{0} 挂载在 {1}:\</value></data>
+  <data name="MountedDevicesSummary" xml:space="preserve"><value>{0}。</value></data>
+  <data name="FooterNameSeparator" xml:space="preserve"><value>、</value></data>
+  <data name="FooterItemSeparator" xml:space="preserve"><value>；</value></data>
   <data name="UnmountingDrive" xml:space="preserve"><value>正在安全卸载盘符…</value></data>
   <data name="Offline" xml:space="preserve"><value>离线</value></data>
   <data name="InvalidCode" xml:space="preserve"><value>请输入手机显示的 8 位数字。</value></data>
@@ -174,7 +179,7 @@
   <data name="IdentityStillVerified" xml:space="preserve"><value>请先选择已配对手机；连接仍会验证已保存的设备身份。</value></data>
   <data name="Diagnostics" xml:space="preserve"><value>诊断</value></data>
   <data name="DiagnosticsNotUploaded" xml:space="preserve"><value>诊断包只保存到本机，不会自动上传。</value></data>
-  <data name="VersionPreview" xml:space="preserve"><value>v0.2.3</value></data>
+  <data name="VersionPreview" xml:space="preserve"><value>v0.2.4</value></data>
   <data name="ProjectAndLicense" xml:space="preserve"><value>项目与许可</value></data>
   <data name="LicenseSummary" xml:space="preserve"><value>PhoneBridge NG 按 GPL-3.0-or-later 分发，包含 rclone 与 WinFsp；正式交付会提供通知和对应源码。</value></data>
   <data name="GitHubProject" xml:space="preserve"><value>打开 GitHub 项目</value></data>

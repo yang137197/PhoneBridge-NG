@@ -298,16 +298,21 @@ public partial class MainWindow : Window
         DeviceDrivePreference.IsEnabled = !busy && row?.Record is not null;
         Endpoints.IsEnabled = !busy;
         var allSessions = sessions.Sessions;
-        var summary = DeviceListPolicy.SummarizeMounts(allSessions.Select(item =>
-            (item.Client.Mount, item.Client.Connected?.DriveLetter ?? item.ReservedDrive)));
+        var summary = DeviceListPolicy.SummarizeMounts(records.Select(record =>
+        {
+            var deviceSession = sessions.GetOrCreate(record.DeviceId);
+            return new DeviceMountStatus(record.DeviceId, record.DisplayName,
+                deviceSession.Client.Connected?.Record.DeviceId, deviceSession.Client.Mount,
+                deviceSession.Client.Connected?.DriveLetter ?? deviceSession.ReservedDrive);
+        }));
+        if (UseConnectionFooter(statusKey)) Status.Text = FooterTextPolicy.Connection(summary, T);
         ConnectionStatus.Text = summary.Kind switch
         {
             MountSummaryKind.StopFailed => T(summary.ErrorCode ?? "unmount-not-confirmed"),
             MountSummaryKind.RecoveringWrites => T("RecoveringWrites"),
             MountSummaryKind.Stopping => T("UnmountingDrive"),
             MountSummaryKind.Starting => T("Mounting"),
-            MountSummaryKind.Mounted => string.Format(T("MountedSummary"),
-                string.Join(", ", summary.Drives.Select(letter => $"{letter}:\\")), summary.Drives.Count),
+            MountSummaryKind.Mounted => FooterTextPolicy.Mounts(summary, T),
             _ => T("NoMount")
         };
         SetTrayStatus(TrayPolicy.ResolveStatus(
@@ -317,6 +322,9 @@ public partial class MainWindow : Window
             candidates.Count > 0));
         ObserveMounts(allSessions);
     }
+    private static bool UseConnectionFooter(string key) => key is
+        "Ready" or "Completed" or "ConnectedState" or "ConnectionHealthy" or "ConnectionChecking" or
+        "Mounted" or "ReconnectComplete" or "ReconnectStopped" or "SharingStopped";
     private void ObserveMounts(IReadOnlyList<DeviceSession> allSessions)
     {
         foreach (var session in allSessions)

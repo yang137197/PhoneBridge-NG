@@ -15,7 +15,9 @@ public sealed class LocalizationTests
             "ManualAddress", "ManualPort", "UseManualAddress", "ClearManualAddress", "ManualEndpointInvalid",
             "ManualEndpointAdded", "ManualEndpointCleared", "English", "Working", "LanguageSaveFailed",
             "AutomaticDrive", "AutomaticDriveHelp", "DefaultDrive", "MountedSummary", "UnmountingDrive",
-            "ReconnectWaiting", "ReconnectBackoff", "ReconnectStopped", "SharingStopped" })
+            "ReconnectWaiting", "ReconnectBackoff", "ReconnectStopped", "SharingStopped",
+            "ConnectedDevicesSummary", "MountedDeviceItem", "MountedDevicesSummary",
+            "FooterNameSeparator", "FooterItemSeparator" })
         {
             string en = TextCatalog.Get(key, english);
             string zh = TextCatalog.Get(key, chinese);
@@ -54,9 +56,9 @@ public sealed class LocalizationTests
         try
         {
             TextCatalog.SetCulture(LanguageSettings.English);
-            Assert.AreEqual("Select a phone to begin.", TextCatalog.Get("Ready"));
+            Assert.AreEqual("Connect a phone.", TextCatalog.Get("Ready"));
             TextCatalog.SetCulture(LanguageSettings.Chinese);
-            Assert.AreEqual("选择手机后开始。", TextCatalog.Get("Ready"));
+            Assert.AreEqual("请连接手机。", TextCatalog.Get("Ready"));
             Assert.IsGreaterThanOrEqualTo(1, changes);
         }
         finally

@@ -40,19 +40,22 @@ public sealed class DeviceListPolicyTests
     {
         var summary = DeviceListPolicy.SummarizeMounts(new[]
         {
-            (new MountSnapshot(MountState.Mounted), (char?)'P'),
-            (new MountSnapshot(MountState.Mounted), (char?)'E'),
-            (new MountSnapshot(MountState.Stopped), (char?)null)
+            new DeviceMountStatus("phone-p", "Redmi K40", "phone-p", new MountSnapshot(MountState.Mounted), 'P'),
+            new DeviceMountStatus("phone-e", "客厅手机", "phone-e", new MountSnapshot(MountState.Mounted), 'E'),
+            new DeviceMountStatus("phone-z", "离线手机", null, new MountSnapshot(MountState.Stopped), null)
         });
         Assert.AreEqual(MountSummaryKind.Mounted, summary.Kind);
-        CollectionAssert.AreEqual(new[] { 'E', 'P' }, summary.Drives.ToArray());
+        CollectionAssert.AreEqual(new[] { 'E', 'P' }, summary.Devices.Select(item => item.Drive).ToArray());
+        CollectionAssert.AreEqual(new[] { "客厅手机", "Redmi K40" }, summary.Devices.Select(item => item.DisplayName).ToArray());
 
         var stopping = DeviceListPolicy.SummarizeMounts(new[]
         {
-            (new MountSnapshot(MountState.Mounted), (char?)'P'),
-            (new MountSnapshot(MountState.Stopping), (char?)'E')
+            new DeviceMountStatus("phone-p", "Redmi K40", "phone-p", new MountSnapshot(MountState.Mounted), 'P'),
+            new DeviceMountStatus("phone-e", "客厅手机", "phone-e", new MountSnapshot(MountState.Stopping), 'E')
         });
         Assert.AreEqual(MountSummaryKind.Stopping, stopping.Kind);
+        Assert.HasCount(1, stopping.Devices);
+        Assert.AreEqual("phone-p", stopping.Devices[0].DeviceId);
     }
 
     [TestMethod]
@@ -60,11 +63,51 @@ public sealed class DeviceListPolicyTests
     {
         var summary = DeviceListPolicy.SummarizeMounts(new[]
         {
-            (new MountSnapshot(MountState.Mounted), (char?)'P'),
-            (new MountSnapshot(MountState.StopFailed, ErrorCode: "pending-writes-not-confirmed"), (char?)'E')
+            new DeviceMountStatus("phone-p", "Redmi K40", "phone-p", new MountSnapshot(MountState.Mounted), 'P'),
+            new DeviceMountStatus("phone-e", "客厅手机", "phone-e",
+                new MountSnapshot(MountState.StopFailed, ErrorCode: "pending-writes-not-confirmed"), 'E')
         });
         Assert.AreEqual(MountSummaryKind.StopFailed, summary.Kind);
         Assert.AreEqual("pending-writes-not-confirmed", summary.ErrorCode);
+        Assert.HasCount(1, summary.Devices);
+        Assert.AreEqual("phone-p", summary.Devices[0].DeviceId);
+    }
+
+    [TestMethod]
+    public void MountFooterRequiresExactMountedIdentity()
+    {
+        var summary = DeviceListPolicy.SummarizeMounts(new[]
+        {
+            new DeviceMountStatus("phone-a", "客厅手机", "phone-b", new MountSnapshot(MountState.Mounted), 'E'),
+            new DeviceMountStatus("phone-b", "Redmi K40", null, new MountSnapshot(MountState.Mounted), 'P')
+        });
+
+        Assert.AreEqual(MountSummaryKind.None, summary.Kind);
+        Assert.IsEmpty(summary.Devices);
+    }
+
+    [TestMethod]
+    public void FooterTextListsEveryConnectedDeviceWithItsDrive()
+    {
+        var summary = DeviceListPolicy.SummarizeMounts(new[]
+        {
+            new DeviceMountStatus("phone-p", "Redmi K40", "phone-p", new MountSnapshot(MountState.Mounted), 'P'),
+            new DeviceMountStatus("phone-e", "客厅手机", "phone-e", new MountSnapshot(MountState.Mounted), 'E')
+        });
+        var chinese = System.Globalization.CultureInfo.GetCultureInfo("zh-CN");
+        string Zh(string key) => TextCatalog.Get(key, chinese);
+
+        Assert.AreEqual("客厅手机、Redmi K40 已连接。", FooterTextPolicy.Connection(summary, Zh));
+        Assert.AreEqual("客厅手机 挂载在 E:\\；Redmi K40 挂载在 P:\\。", FooterTextPolicy.Mounts(summary, Zh));
+
+        var empty = new MountSummary(MountSummaryKind.None, []);
+        Assert.AreEqual("请连接手机。", FooterTextPolicy.Connection(empty, Zh));
+        Assert.AreEqual("当前无挂载盘符。", FooterTextPolicy.Mounts(empty, Zh));
+
+        var english = System.Globalization.CultureInfo.GetCultureInfo("en-US");
+        string En(string key) => TextCatalog.Get(key, english);
+        Assert.AreEqual("Connected: 客厅手机, Redmi K40.", FooterTextPolicy.Connection(summary, En));
+        Assert.AreEqual("客厅手机 is mounted at E:\\; Redmi K40 is mounted at P:\\.", FooterTextPolicy.Mounts(summary, En));
     }
 
     [TestMethod]

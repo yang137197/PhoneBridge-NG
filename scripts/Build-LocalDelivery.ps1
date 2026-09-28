@@ -40,6 +40,11 @@ if ($OutputRoot -ne $deliveryRoot -and -not $OutputRoot.StartsWith($deliveryRoot
     throw "OutputRoot must stay within $deliveryRoot"
 }
 
+$desktopProjectPath = Join-Path $projectRoot 'windows/src/PhoneBridge.Desktop/PhoneBridge.Desktop.csproj'
+if (-not (Select-String -LiteralPath $desktopProjectPath -SimpleMatch "<Version>$productVersion</Version>" -Quiet)) {
+    throw "Build-LocalDelivery is bound to formal version $productVersion and refuses source from another version."
+}
+
 $installInstructionsPath = Join-Path $projectRoot 'docs/INSTALL_LOCAL.txt'
 $installInstructions = Get-Content -LiteralPath $installInstructionsPath -Raw
 $requiredInstructionTokens = @(

@@ -2,7 +2,7 @@
 
 中文优先的 Android ↔ Windows 无线文件访问工具。目标是在同一局域网内发现并验证手机，通过 HTTPS/WebDAV、rclone 和 WinFsp 将手机共享存储映射到 Windows 文件资源管理器。
 
-**当前正式版本为 [v0.2.3](https://github.com/yang137197/PhoneBridge-NG/releases/tag/v0.2.3)。本版本增加有界自动重连：活动连接临时断网最多尝试 6 次或持续 2 分钟，恢复后连续三个健康周期才重置预算；明确停止共享不会再次自动挂载。Windows 自启动仍只进入托盘，盘符由用户手动连接。**
+**当前正式版本为 [v0.2.3](https://github.com/yang137197/PhoneBridge-NG/releases/tag/v0.2.3)。本地 `v0.2.4` 已完成按设备汇总底栏状态：无挂载时提示连接手机，单/多设备明确显示备注优先的设备名称和对应盘符；Windows 310/310 测试通过，但尚未生成、安装或发布候选。Windows 自启动仍只进入托盘，盘符由用户手动连接。**
 
 安装、配对、连接、访问模式、断开和排障步骤见 [软件使用说明](docs/USER_GUIDE.md)。
 
@@ -82,7 +82,9 @@
 | P2-014 v0.2.3 有界自动重连 | 实现完成；Windows 0 警告/0 错误、308/308，Android 123 个构建/单测/Lint 任务通过；安装版实机时序已由 P2-015 通过 | [验收记录](docs/audit/P2-014-VALIDATION.md)、[完成记录](docs/tasks/completed/P2-014-v0.2.3-bounded-auto-reconnect.md) |
 | P2-015 v0.2.3 安装候选与有界重连实机验收 | 已完成；v0.2.2 两端原位升级保持，短时断网恢复原 E:，停止共享后 120263 ms 有界终止，重新共享必须手动连接 | [验收记录](docs/audit/P2-015-VALIDATION.md)、[完成记录](docs/tasks/completed/P2-015-v0.2.3-installed-reconnect-acceptance.md) |
 | P2-016 发布 GitHub Release v0.2.3 | 已完成；标签与远端 main 精确绑定 P2-015 head，6 项 GitHub 资产与本地摘要一致并已设为 Latest | [Release](https://github.com/yang137197/PhoneBridge-NG/releases/tag/v0.2.3)、[验收记录](docs/audit/P2-016-VALIDATION.md)、[完成记录](docs/tasks/completed/P2-016-publish-v0.2.3-github-release.md) |
-| P2-017 v0.2.3 全新机器配对验收 | 待开始；只使用正式 Release 验证首次安装、新电脑配对、备注卷名、盘符冲突与有界重连 | [任务](docs/tasks/active/P2-017-v0.2.3-clean-machine-pairing-acceptance.md)、[验收清单](docs/V0.2.3_CLEAN_MACHINE_ACCEPTANCE.md) |
+| P2-017 v0.2.3 全新机器配对验收 | 未执行并关闭；用户要求先修复底栏设备状态，不能记为通过 | [关闭记录](docs/tasks/completed/P2-017-v0.2.3-clean-machine-pairing-acceptance.md)、[历史清单](docs/V0.2.3_CLEAN_MACHINE_ACCEPTANCE.md) |
+| P2-018 v0.2.4 按设备汇总底栏状态 | 实现完成；Windows 0 警告/0 错误、310/310 测试通过，安装版单/多设备界面待独立验收 | [验收记录](docs/audit/P2-018-VALIDATION.md)、[完成记录](docs/tasks/completed/P2-018-v0.2.4-device-footer-status.md) |
+| P2-019 v0.2.4 安装候选与底栏实机验收 | 待开始；动态使用正式基线验证升级、单设备和多设备底栏映射，不发布 | [任务](docs/tasks/active/P2-019-v0.2.4-installed-footer-acceptance.md) |
 | Phase 1 新版 Windows 客户端 | 配对、挂载、文件操作、生命周期与本地安装交付主链路已验收 | [开发规则](DEVELOPMENT_RULES.md) |
 | MVP 验收 | 15 项通过 | [15 项产品验收](docs/PRODUCT.md)、[P1-030 最终需求验收](docs/audit/P1-030-VALIDATION.md) |
 
@@ -109,7 +111,7 @@ P0-001 的 107 个通过测试、1 个跳过用例及 7 项离线问题复现仅
 | [AGENTS.md](AGENTS.md) | 用户原始项目约束，每次开始工作先读 |
 | [PRODUCT.md](docs/PRODUCT.md) | 用户、目标、非目标、MVP 与验收标准 |
 | [V0.2_PLAN.md](docs/V0.2_PLAN.md) | 下一版本的 UI、图标、语言、多设备范围、预期效果和开发顺序 |
-| [HANDOFF_V0.2.md](docs/HANDOFF_V0.2.md) | v0.2.3 正式基线、固定边界和下一任务 |
+| [HANDOFF_V0.2.md](docs/HANDOFF_V0.2.md) | v0.2.3 正式基线、v0.2.4 开发状态、固定边界和下一任务 |
 | [v0.2 设计包](docs/design/v0.2/README.md) | P2-002 的 Windows/Android 静态稿、控件状态、视觉变量、双语文案和图标候选 |
 | [INSTALL_LOCAL.txt](docs/INSTALL_LOCAL.txt) | 第三方本地安装、首次配对和日常使用的最短步骤 |
 | [USER_GUIDE.md](docs/USER_GUIDE.md) | GitHub 用户使用说明：安装、配对、日常连接、访问模式、断开和排障 |

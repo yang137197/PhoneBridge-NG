@@ -8,17 +8,17 @@ Set-StrictMode -Version Latest
 Add-Type -AssemblyName System.IO.Compression
 Add-Type -AssemblyName System.IO.Compression.FileSystem
 
-$productVersion = '0.2.2'
+$productVersion = '0.2.3'
 $projectRoot = [IO.Path]::GetFullPath((Split-Path $PSScriptRoot -Parent))
 $deliveryRoot = [IO.Path]::GetFullPath((Join-Path $projectRoot '.audit\delivery'))
 if (-not $OutputDirectory) { $OutputDirectory = Join-Path $deliveryRoot 'output' }
 $OutputDirectory = [IO.Path]::GetFullPath($OutputDirectory)
-$runDirectory = Join-Path $projectRoot '.audit\runs\P2-011'
+$runDirectory = Join-Path $projectRoot '.audit\runs\P2-015'
 $archiveName = "PhoneBridge-NG-$productVersion-source.zip"
 $archiveRoot = "PhoneBridge-NG-$productVersion-source"
 $expectedCertificate = '66FF69D71637D215C2F104DB95B93CC1F991FA1F23580F95AF3316B0763B14D4'
-$expectedApkHash = '908A7C93D5ABE750702E470F82A58555A03B201F9F85ABBD985382BF8DC6E1E4'
-$expectedInstallerHash = '246C5280812006129A0E77E2B1FB0440A634C6021608D90856AA6B67EB2960CE'
+$expectedApkHash = 'E6965EE66289339E5AB313FEC5EBF059A49EA68B45BCFCF48337C0D9861E68B6'
+$expectedInstallerHash = 'FF86F6EB412F811372B1CF36B44939CBBAFF78EB5390F031B5F86740390ED76A'
 $fixedTimestamp = [DateTimeOffset]::new(2000, 1, 1, 0, 0, 0, [TimeSpan]::Zero)
 $utf8 = [Text.UTF8Encoding]::new($false)
 
@@ -27,6 +27,25 @@ $androidProjectPath = Join-Path $projectRoot 'android\app\build.gradle.kts'
 if (-not (Select-String -LiteralPath $desktopProjectPath -SimpleMatch "<Version>$productVersion</Version>" -Quiet) -or
     -not (Select-String -LiteralPath $androidProjectPath -SimpleMatch "versionName = `"$productVersion`"" -Quiet)) {
     throw "New-SourceDelivery is bound to the current formal $productVersion assets and refuses source from another version."
+}
+$installInstructionsPath = Join-Path $projectRoot 'docs\INSTALL_LOCAL.txt'
+$installInstructions = Get-Content -LiteralPath $installInstructionsPath -Raw
+$requiredInstructionTokens = @(
+    "PhoneBridge NG $productVersion",
+    "PhoneBridge-NG-Setup-$productVersion.exe",
+    "PhoneBridge-NG-$productVersion-source.zip"
+)
+foreach ($token in $requiredInstructionTokens) {
+    if (-not $installInstructions.Contains($token, [StringComparison]::Ordinal)) {
+        throw "INSTALL_LOCAL.txt is not bound to product version $productVersion; missing: $token"
+    }
+}
+$mismatchedInstructionArtifact = [regex]::Matches(
+    $installInstructions,
+    'PhoneBridge-NG-(?:Setup-)?(?<version>\d+\.\d+\.\d+)(?:-source)?\.(?:exe|zip)'
+) | Where-Object { $_.Groups['version'].Value -cne $productVersion } | Select-Object -First 1
+if ($mismatchedInstructionArtifact) {
+    throw "INSTALL_LOCAL.txt contains an artifact for another version: $($mismatchedInstructionArtifact.Value)"
 }
 
 function Assert-Within([string]$Path, [string]$Parent, [string]$Label) {
@@ -231,8 +250,8 @@ $archiveVerification = Test-SourceArchive $temporaryArchive
 $archiveHash = (Get-FileHash -LiteralPath $temporaryArchive -Algorithm SHA256).Hash
 
 $operationId = [guid]::NewGuid().ToString('N')
-$staging = [IO.Path]::GetFullPath((Join-Path $deliveryRoot ".p1-044-staging-$operationId"))
-$backup = [IO.Path]::GetFullPath((Join-Path $deliveryRoot ".p1-044-backup-$operationId"))
+$staging = [IO.Path]::GetFullPath((Join-Path $deliveryRoot ".p2-015-staging-$operationId"))
+$backup = [IO.Path]::GetFullPath((Join-Path $deliveryRoot ".p2-015-backup-$operationId"))
 Assert-Within $staging $deliveryRoot 'Staging directory'
 Assert-Within $backup $deliveryRoot 'Backup directory'
 $destinationMoved = $false
@@ -293,7 +312,7 @@ catch {
 
 $evidence = [ordered]@{
     schema = 1
-    task = 'P2-011'
+    task = 'P2-015'
     captured_at_utc = [DateTimeOffset]::UtcNow.ToString('O')
     source_archive = [ordered]@{
         file = $archiveName

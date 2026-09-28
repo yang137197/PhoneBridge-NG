@@ -37,4 +37,4 @@
 
 ## 下一步
 
-唯一下一任务是 [P2-015 v0.2.3 安装候选与有界重连实机验收](../tasks/active/P2-015-v0.2.3-installed-reconnect-acceptance.md)。
+随后任务 [P2-015 v0.2.3 安装候选与有界重连实机验收](../tasks/completed/P2-015-v0.2.3-installed-reconnect-acceptance.md) 已完成。

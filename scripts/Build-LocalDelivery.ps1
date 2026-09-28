@@ -40,6 +40,26 @@ if ($OutputRoot -ne $deliveryRoot -and -not $OutputRoot.StartsWith($deliveryRoot
     throw "OutputRoot must stay within $deliveryRoot"
 }
 
+$installInstructionsPath = Join-Path $projectRoot 'docs/INSTALL_LOCAL.txt'
+$installInstructions = Get-Content -LiteralPath $installInstructionsPath -Raw
+$requiredInstructionTokens = @(
+    "PhoneBridge NG $productVersion",
+    "PhoneBridge-NG-Setup-$productVersion.exe",
+    "PhoneBridge-NG-$productVersion-source.zip"
+)
+foreach ($token in $requiredInstructionTokens) {
+    if (-not $installInstructions.Contains($token, [StringComparison]::Ordinal)) {
+        throw "INSTALL_LOCAL.txt is not bound to product version $productVersion; missing: $token"
+    }
+}
+$mismatchedInstructionArtifact = [regex]::Matches(
+    $installInstructions,
+    'PhoneBridge-NG-(?:Setup-)?(?<version>\d+\.\d+\.\d+)(?:-source)?\.(?:exe|zip)'
+) | Where-Object { $_.Groups['version'].Value -cne $productVersion } | Select-Object -First 1
+if ($mismatchedInstructionArtifact) {
+    throw "INSTALL_LOCAL.txt contains an artifact for another version: $($mismatchedInstructionArtifact.Value)"
+}
+
 function Resolve-RequiredFile([string]$Path, [string]$Label) {
     if (-not (Test-Path -LiteralPath $Path -PathType Leaf)) { throw "$Label was not found: $Path" }
     return (Resolve-Path -LiteralPath $Path).Path

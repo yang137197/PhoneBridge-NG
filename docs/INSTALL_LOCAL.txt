@@ -1,4 +1,4 @@
-PhoneBridge NG 0.2.0 本地安装与使用
+PhoneBridge NG 0.2.2 本地安装与使用
 ====================================
 
 适用范围
@@ -11,7 +11,7 @@ PhoneBridge NG 0.2.0 本地安装与使用
 安装
 ----
 1. 在 Android 手机上安装交付目录中由 delivery-manifest.json 的 android.apk.file 指定的 APK。
-2. 在电脑上运行 PhoneBridge-NG-Setup-0.2.0.exe。
+2. 在电脑上运行 PhoneBridge-NG-Setup-0.2.2.exe。
 3. 如果电脑尚未安装 WinFsp，安装程序会调用内置的官方 WinFsp 安装包，并显示 Windows 管理员确认。
 
 首次配对和连接
@@ -28,6 +28,13 @@ PhoneBridge NG 0.2.0 本地安装与使用
 1. 手机上打开 PhoneBridge NG，确认共享目录后点击“开始共享”。
 2. Windows 打开 PhoneBridge NG，在对应设备卡片点击“连接”；连接后点击“打开文件”。
 3. 即使已经勾选“Windows 登录时自动运行 PhoneBridge NG”，软件也只会进入托盘；电脑重启或重新登录后仍需手动点击连接。
+
+设备备注与盘符
+--------------
+- Windows“设备设置”可以保存本机设备备注，并选择“自动”或固定 D:–Z: 盘符；设置只保存在本机。
+- “自动”会在每次新连接时选择 D:–Z: 中首个未被硬盘、USB、网络盘或其他手机占用的盘符。
+- 固定盘符发生冲突时连接会停止并提示冲突，不会静默改用其他盘符。
+- 已连接时修改备注或盘符偏好不会中断传输；断开并再次连接后生效。资源管理器优先显示设备备注，未填写时显示手机设备名称。
 
 访问模式
 --------
@@ -51,8 +58,8 @@ PhoneBridge NG 0.2.0 本地安装与使用
 
 校验文件
 --------
-交付目录中的 SHA256SUMS.txt 和 delivery-manifest.json 记录本次安装器、APK、本说明及对应源码包的 SHA-256。`PhoneBridge-NG-0.2.0-source.zip` 包含该版本 Android/Windows 源码、构建脚本、测试、GPL、NOTICE 和第三方许可；不含签名私钥、密码或本机构建缓存。Windows PowerShell 可使用以下命令核对文件：
+交付目录中的 SHA256SUMS.txt 和 delivery-manifest.json 记录本次安装器、APK、本说明及对应源码包的 SHA-256。`PhoneBridge-NG-0.2.2-source.zip` 包含该版本 Android/Windows 源码、构建脚本、测试、GPL、NOTICE 和第三方许可；不含签名私钥、密码或本机构建缓存。Windows PowerShell 可使用以下命令核对文件：
 
-Get-FileHash .\PhoneBridge-NG-Setup-0.2.0.exe -Algorithm SHA256
+Get-FileHash .\PhoneBridge-NG-Setup-0.2.2.exe -Algorithm SHA256
 Get-FileHash .\*.apk -Algorithm SHA256
-Get-FileHash .\PhoneBridge-NG-0.2.0-source.zip -Algorithm SHA256
+Get-FileHash .\PhoneBridge-NG-0.2.2-source.zip -Algorithm SHA256

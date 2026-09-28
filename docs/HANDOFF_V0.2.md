@@ -1,4 +1,4 @@
-# PhoneBridge NG v0.2.0 新对话交接
+# PhoneBridge NG v0.2.2 新对话交接
 
 更新时间：2026-09-28。正式基线分支：`main`；后续本地开发分支：`codex/v0.2.1-v0.2.2`。
 
@@ -6,16 +6,16 @@
 
 - GitHub：<https://github.com/yang137197/PhoneBridge-NG>
 - 本地目录：`C:\Users\yang1\Documents\ChatGPT\samsung link windows\PhoneBridge-NG`
-- 当前正式发布版本：[`v0.2.0`](https://github.com/yang137197/PhoneBridge-NG/releases/tag/v0.2.0)，标签提交 `60c52b729f2052fa933870bfc175df01d78f17be`。`0.1.0` 不属于 `0.2.0` 的升级来源。
+- 当前正式发布版本：[`v0.2.2`](https://github.com/yang137197/PhoneBridge-NG/releases/tag/v0.2.2)，标签提交 `825d70367e7839c96a6880e9bcb9d1a853d44ab0`；非草稿、非预发布并为 Latest。
 - v0.2.0 需求计划基线：`18b5e0778d4fd03fad95a0a4602cea36dcc83f28`。
 - P2-002 静态设计 r1 已由用户全部确认并冻结；视觉方向、Windows 分层/按钮命名、Android 页面层级和图标 A“桥接文件”均已确定。
 - P2-003 r2 的实际 UI 已由用户复验通过并完成。
 - P2-004 至 P2-008 均已完成：r20 的双设备双盘符与单设备断开隔离通过；r21 的 Windows/Redmi 当前界面和冷启动语言保持通过；正式 `0.2.0` 已在 Samsung 与当前 Windows 完成全新安装、真实配对、Music 共享、`P:` 根目录读取和安全断开，并发布 GitHub Release。
 - P2-009/v0.2.1 与 P2-010/v0.2.2 已在本地开发分支完成：挂载/会话状态一致性、Explorer 移除通知、备注驱动器显示名、D–Z Auto 分配和设备级 Auto/固定盘符设置已实现；Windows 306/306 及 Android 构建/单测/Lint 通过。其正式候选与升级结果由后续 P2-011 记录。
-- P2-011 已生成使用既有长期 Android 身份的 `v0.2.2` 正式候选，并完成 Windows/Android 从正式 `v0.2.0` 原位升级、配对保持、Auto `E:`、真实目录读取和手机停止共享自动卸载；全新机器首次配对仍按独立清单待验收，标签和 Release 尚未创建。
+- P2-011 已完成 Windows/Android 从正式 `v0.2.0` 原位升级、配对保持、Auto `E:`、真实目录读取和手机停止共享自动卸载；P2-012 已把 exact-head 六项制品发布为 `v0.2.2` Latest。全新机器首次配对仍按 P2-013 独立清单待验收。
 - r10 暴露并确认 Windows“添加手机”先打开、配对候选随后到达时仍无选中项的缺陷；r11 已实机验证候选自动选中、8 位码后按钮启用、真实配对成功且不自动挂载。
 - r12 又确认未配对候选因两个空设备 ID 相等而被错误显示为“已连接”；运行证据证明当时没有真实配对、rclone 或盘符。r13 已实机确认主列表只显示已配对手机，未配对候选只进入“添加手机”，8 位码前后按钮状态正确。
-- r21 是已完成的历史隔离 UI 候选，r20 是继续有效的双设备真实链路证据；它们都不是当前安装入口。当前正式 `0.2.0` 已重新建立一条 Samsung/Windows 配对记录，制品与完整证据见 `docs/audit/P2-007-VALIDATION.md`。
+- r21 是已完成的历史隔离 UI 候选，r20 是继续有效的双设备真实链路证据；它们都不是当前安装入口。当前正式安装入口是 GitHub `v0.2.2` Release；升级与发布证据见 `docs/audit/P2-011-VALIDATION.md` 和 `docs/audit/P2-012-VALIDATION.md`。
 - 开始新任务前必须重新检查 `git status --short --branch`、`git log -5 --oneline --decorate` 和远端状态，不从本交接推断后来发生的变化。
 
 ## 2. 新对话必读顺序
@@ -126,21 +126,22 @@ P2-005 已复用发现、配对、凭据、TLS 和单个挂载实现，并把全
 8. P2-009：本地开发与自动验证完成；真实停止共享时延和 Explorer 刷新待验收。
 9. P2-010：本地开发与自动验证完成；真实备注卷名、盘符竞争和 v0.2.0 升级待独立验收。
 10. P2-011：正式候选与 v0.2.0 原位升级验收完成；全新机器验收清单已准备。
-11. P2-012：待把 P2-011 exact-head 六项制品发布为 GitHub `v0.2.2` Release 并回读。
+11. P2-012：已完成；`v0.2.2` GitHub Release 已发布并设为 Latest，六项资产回读一致。
+12. P2-013：已准备；在真正全新 Windows 机器完成首次安装、首次配对和七项盘符/状态验收。
 
 编号以后续实际任务文件为准，但顺序和每次一个根因的原则不变。
 
 ## 10. 新对话可直接使用的开场提示词
 
 ```text
-继续维护 PhoneBridge NG；`0.2.0` 正式本地侧载验收已完成。
+继续维护 PhoneBridge NG；`v0.2.2` 已正式发布，下一任务是全新机器首次配对验收。
 
 仓库：https://github.com/yang137197/PhoneBridge-NG
 本地目录：C:\Users\yang1\Documents\ChatGPT\samsung link windows\PhoneBridge-NG
 
 先读取 AGENTS.md、DEVELOPMENT_RULES.md、README.md、docs/HANDOFF_V0.2.md、docs/V0.2_PLAN.md、docs/PRODUCT.md、ARCHITECTURE.md、DECISIONS.md，并核对当前 main、git status、最近提交和远端状态。以仓库当前事实为准，不沿用对话中的旧状态。
 
-P2-002 至 P2-008 均已完成。`v0.2.0` GitHub Release 已发布并设为 Latest，标签精确指向 `60c52b729f2052fa933870bfc175df01d78f17be`，六项 Release 资产与本地正式交付摘要一致。`0.2.0` 已通过 Windows/Samsung 全新安装、真实配对、Music 共享、`P:` 根目录读取和安全断开，并成为未来正式升级的首个基线；不定义 `0.1.0 → 0.2.0` 升级路径。P2-005 r20 双设备证据与 P2-006 r21 UI/语言证据继续有效。Android 永久只通过 GitHub 分发。保持现有 Kotlin/WPF、HTTPS/WebDAV、rclone、WinFsp、mDNS、配对与安全存储路线。
+P2-002 至 P2-012 均已完成。`v0.2.2` GitHub Release 已发布并设为 Latest，标签精确指向 `825d70367e7839c96a6880e9bcb9d1a853d44ab0`，六项 Release 资产与本地正式交付摘要一致。Windows 与 Android 已从正式 `v0.2.0` 原位升级并保持配对/访问模式；真实 Auto `E:`、目录读取及停止共享自动卸载通过。全新机器首次配对、备注卷名和完整盘符冲突矩阵尚未验收，严格按 `docs/V0.2.2_CLEAN_MACHINE_ACCEPTANCE.md` 执行。Android 永久只通过 GitHub 分发。保持现有 Kotlin/WPF、HTTPS/WebDAV、rclone、WinFsp、mDNS、配对与安全存储路线。
 
-当前没有已授权的后续开发任务。开始新需求前先核对当前 Git/交付状态并建立单一任务；准备任何新正式候选时，必须按 `DEVELOPMENT_RULES.md` 4.1 实时解析候选之前最近一个正式 Release，以其正式制品和真实数据验证升级保持，不得固定版本号。秘密不进聊天或仓库，不重复已经通过的双设备、大文件或睡眠测试。
+当前唯一任务是 P2-013 全新机器配对验收，不开发新功能。先核对测试机确为全新环境，再只使用 GitHub `v0.2.2` Release 六项资产；任一前置条件或断言不符即停止，不通过重装、清数据、重复点击或换盘符绕过。秘密不进聊天或仓库，不重复已经通过的双设备、大文件或睡眠测试。
 ```

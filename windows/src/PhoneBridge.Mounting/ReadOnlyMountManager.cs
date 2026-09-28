@@ -10,6 +10,7 @@ internal readonly record struct MountProbe(MountReadiness Readiness, long Recove
 internal interface IMountSession : IAsyncDisposable
 {
     int ProcessId { get; }
+    char DriveLetter { get; }
     Task<int> Exit { get; }
     bool IsDrivePresent { get; }
     bool ForceStopSafe { get; }
@@ -30,17 +31,20 @@ public sealed class ReadOnlyMountManager : IAsyncDisposable
     private readonly object sync = new();
     private readonly Func<MountRequest, CancellationToken, Task<IMountSession>> startSession;
     private readonly MountTimeouts timeouts;
+    private readonly Action<char> driveRemoved;
     private MountSnapshot snapshot = new(MountState.Idle);
     private Task run = Task.CompletedTask;
     private TaskCompletionSource<MountSnapshot>? ready;
     private TaskCompletionSource? stopSignal;
     private CancellationTokenSource? startupStop;
     private IMountSession? retained;
+    private bool retainedDriveNotificationPending;
     private bool disposed;
 
-    public ReadOnlyMountManager() : this(RcloneMountSession.StartAsync, MountTimeouts.Default) { }
-    internal ReadOnlyMountManager(Func<MountRequest, CancellationToken, Task<IMountSession>> startSession, MountTimeouts timeouts)
-    { this.startSession = startSession; this.timeouts = timeouts; }
+    public ReadOnlyMountManager() : this(RcloneMountSession.StartAsync, MountTimeouts.Default, ShellDriveNotifications.NotifyRemoved) { }
+    internal ReadOnlyMountManager(Func<MountRequest, CancellationToken, Task<IMountSession>> startSession,
+        MountTimeouts timeouts, Action<char>? driveRemoved = null)
+    { this.startSession = startSession; this.timeouts = timeouts; this.driveRemoved = driveRemoved ?? (_ => { }); }
     public MountSnapshot Snapshot { get { lock (sync) return snapshot; } }
 
     public Task<MountSnapshot> StartAsync(MountRequest request, CancellationToken cancellationToken = default)
@@ -186,7 +190,11 @@ public sealed class ReadOnlyMountManager : IAsyncDisposable
             if (session is null) Set(new(stopSignal!.Task.IsCompleted ? MountState.Stopped : MountState.Failed, ErrorCode: failure));
             else if (retainRecovery)
             {
-                lock (sync) retained = session;
+                lock (sync)
+                {
+                    retained = session;
+                    retainedDriveNotificationPending = session.IsDrivePresent;
+                }
                 Set(new(MountState.StopFailed, session.ProcessId, ErrorCode: failure, RecoveryBytes: recoveryBytes));
             }
             else await CleanupAsync(session, failure).ConfigureAwait(false);
@@ -199,6 +207,9 @@ public sealed class ReadOnlyMountManager : IAsyncDisposable
 
     private async Task CleanupAsync(IMountSession session, string? failure)
     {
+        bool notifyDriveRemoval;
+        lock (sync)
+            notifyDriveRemoval = retainedDriveNotificationPending || session.IsDrivePresent || Snapshot.State == MountState.Mounted;
         var forced = Snapshot.Forced;
         Set(new(MountState.Stopping, session.ProcessId, ErrorCode: failure, Forced: forced));
         try
@@ -217,7 +228,11 @@ public sealed class ReadOnlyMountManager : IAsyncDisposable
                     {
                         if (!session.ForceStopSafe)
                         {
-                            lock (sync) retained = session;
+                            lock (sync)
+                            {
+                                retained = session;
+                                retainedDriveNotificationPending = notifyDriveRemoval;
+                            }
                             Set(new(MountState.StopFailed, session.ProcessId,
                                 ErrorCode: error is MountException mount ? mount.Code : "pending-writes-not-confirmed", Forced: forced));
                             return;
@@ -231,14 +246,27 @@ public sealed class ReadOnlyMountManager : IAsyncDisposable
             var exitCode = await session.Exit.ConfigureAwait(false);
             using var removal = new CancellationTokenSource(timeouts.DriveRemoval);
             while (session.IsDrivePresent) await Task.Delay(50, removal.Token).ConfigureAwait(false);
+            if (notifyDriveRemoval)
+            {
+                driveRemoved(session.DriveLetter);
+                notifyDriveRemoval = false;
+            }
             await session.DisposeAsync().ConfigureAwait(false);
-            lock (sync) retained = null;
+            lock (sync)
+            {
+                retained = null;
+                retainedDriveNotificationPending = false;
+            }
             Set(new(failure is null || failure == "start-stopped" ? MountState.Stopped : MountState.Failed,
                 session.ProcessId, exitCode, failure, forced));
         }
         catch
         {
-            lock (sync) retained = session;
+            lock (sync)
+            {
+                retained = session;
+                retainedDriveNotificationPending = notifyDriveRemoval;
+            }
             Set(new(MountState.StopFailed, session.ProcessId, ErrorCode: "unmount-not-confirmed", Forced: forced));
         }
     }

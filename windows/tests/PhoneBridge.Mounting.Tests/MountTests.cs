@@ -41,6 +41,7 @@ public sealed class MountTests
         internal readonly Queue<MountProbe> Probes = new();
         internal string? StopFailure;
         public int ProcessId => 1234;
+        public char DriveLetter => 'P';
         public Task<int> Exit => Completion.Task;
         public bool IsDrivePresent => Drive;
         public bool ForceStopSafe => SafeToForce;
@@ -241,13 +242,28 @@ public sealed class MountTests
     public async Task LingeringDriveCannotBeReportedStopped()
     {
         var session = new FakeSession();
-        await using var manager = new ReadOnlyMountManager((_, _) => Task.FromResult<IMountSession>(session), Limits);
+        var notifications = new List<char>();
+        await using var manager = new ReadOnlyMountManager((_, _) => Task.FromResult<IMountSession>(session), Limits,
+            notifications.Add);
         await manager.StartAsync(Request());
         session.Completion.TrySetResult(99); // process exit does not prove drive removal
         await WaitState(manager, MountState.StopFailed);
-        Assert.IsFalse(session.Disposed);
+        Assert.IsFalse(session.Disposed); Assert.HasCount(0, notifications);
         session.Drive = false;
         Assert.AreEqual(MountState.Stopped, (await manager.StopAsync()).State);
+        CollectionAssert.AreEqual(new[] { 'P' }, notifications);
+    }
+
+    [TestMethod]
+    public async Task ConfirmedUnmountNotifiesShellExactlyOnce()
+    {
+        var session = new FakeSession();
+        var notifications = new List<char>();
+        await using var manager = new ReadOnlyMountManager((_, _) => Task.FromResult<IMountSession>(session), Limits,
+            notifications.Add);
+        await manager.StartAsync(Request());
+        Assert.AreEqual(MountState.Stopped, (await manager.StopAsync()).State);
+        CollectionAssert.AreEqual(new[] { 'P' }, notifications);
     }
 
     [TestMethod]

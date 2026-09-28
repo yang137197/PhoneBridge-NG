@@ -1,5 +1,6 @@
 using System.Reflection;
 using PhoneBridge.Desktop;
+using PhoneBridge.Mounting;
 
 namespace PhoneBridge.Desktop.Tests;
 
@@ -24,6 +25,46 @@ public sealed class DeviceListPolicyTests
         Assert.IsTrue(DeviceListPolicy.IsConnected("phone-a", "phone-a"));
         Assert.IsFalse(DeviceListPolicy.IsConnected("phone-a", "phone-b"));
         Assert.IsFalse(DeviceListPolicy.IsConnected("phone-a", null));
+    }
+
+    [TestMethod]
+    public void SavedDeviceRowIdentityDoesNotChangeWithDiscoveryInstance()
+    {
+        Assert.AreEqual("phone-a", DeviceListPolicy.StableRowId("candidate-old", "phone-a", true));
+        Assert.AreEqual("phone-a", DeviceListPolicy.StableRowId("candidate-new", "phone-a", true));
+        Assert.AreEqual("candidate-new", DeviceListPolicy.StableRowId("candidate-new", "phone-a", false));
+    }
+
+    [TestMethod]
+    public void MountFooterAggregatesAllSessionsWithoutDependingOnSelection()
+    {
+        var summary = DeviceListPolicy.SummarizeMounts(new[]
+        {
+            (new MountSnapshot(MountState.Mounted), (char?)'P'),
+            (new MountSnapshot(MountState.Mounted), (char?)'E'),
+            (new MountSnapshot(MountState.Stopped), (char?)null)
+        });
+        Assert.AreEqual(MountSummaryKind.Mounted, summary.Kind);
+        CollectionAssert.AreEqual(new[] { 'E', 'P' }, summary.Drives.ToArray());
+
+        var stopping = DeviceListPolicy.SummarizeMounts(new[]
+        {
+            (new MountSnapshot(MountState.Mounted), (char?)'P'),
+            (new MountSnapshot(MountState.Stopping), (char?)'E')
+        });
+        Assert.AreEqual(MountSummaryKind.Stopping, stopping.Kind);
+    }
+
+    [TestMethod]
+    public void MountFooterPrioritizesProtectedStopFailure()
+    {
+        var summary = DeviceListPolicy.SummarizeMounts(new[]
+        {
+            (new MountSnapshot(MountState.Mounted), (char?)'P'),
+            (new MountSnapshot(MountState.StopFailed, ErrorCode: "pending-writes-not-confirmed"), (char?)'E')
+        });
+        Assert.AreEqual(MountSummaryKind.StopFailed, summary.Kind);
+        Assert.AreEqual("pending-writes-not-confirmed", summary.ErrorCode);
     }
 
     [TestMethod]

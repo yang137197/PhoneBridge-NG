@@ -304,6 +304,28 @@ public sealed class ConnectionTests
     }
 
     [TestMethod]
+    public void DiscoveryRemovalAcceleratesButDoesNotReplaceStrictHealthConfirmation()
+    {
+        var policy = new ReconnectPolicy();
+        var now = DateTimeOffset.Parse("2026-09-28T00:00:00Z");
+        policy.Arm("pbng-device", NoMount, now);
+        policy.SuspectDisconnect(now.AddSeconds(1));
+        Assert.IsTrue(policy.HealthDue(now.AddSeconds(1)));
+        Assert.AreEqual(2, policy.HealthFailureLimit);
+        Assert.IsFalse(policy.HealthFailed(now.AddSeconds(1)));
+        Assert.IsFalse(policy.HealthDue(now.AddMilliseconds(1500)));
+        Assert.IsTrue(policy.HealthDue(now.AddSeconds(2)));
+        Assert.IsTrue(policy.HealthFailed(now.AddSeconds(2)));
+
+        policy.Arm("pbng-device", NoMount, now);
+        policy.SuspectDisconnect(now);
+        policy.HealthSucceeded(now);
+        Assert.AreEqual(3, policy.HealthFailureLimit);
+        Assert.AreEqual(0, policy.ConsecutiveHealthFailures);
+        Assert.IsFalse(policy.HealthDue(now.AddSeconds(4)));
+    }
+
+    [TestMethod]
     public async Task DeviceSessionsOwnIndependentOperationCancellationAndReconnectState()
     {
         var store = Store();

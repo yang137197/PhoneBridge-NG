@@ -18,6 +18,7 @@ internal sealed class RcloneMountSession : IMountSession
     private volatile bool forceStopSafe;
     private long recoveryBytes;
     public int ProcessId => process.ProcessId;
+    public char DriveLetter => drive;
     public Task<int> Exit => process.Exit;
     public bool IsDrivePresent => MountResources.DrivePresent(drive);
 

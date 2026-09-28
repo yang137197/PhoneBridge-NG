@@ -179,8 +179,16 @@ public partial class MainWindow : Window
     private void Apply(DiscoveryChange change)
     {
         if (closing) return;
+        candidates.TryGetValue(change.Id, out var removedCandidate);
         if (change.Candidate is { } candidate) candidates[change.Id] = candidate;
         else if (change.Kind == DiscoveryChangeKind.Removed) candidates.Remove(change.Id);
+        if (change.Kind == DiscoveryChangeKind.Removed && removedCandidate?.DeviceIdHint is { } removedDeviceId &&
+            !candidates.Values.Any(item => string.Equals(item.DeviceIdHint, removedDeviceId, StringComparison.Ordinal)) &&
+            sessions.TryGet(removedDeviceId, out var removedSession) && removedSession?.Client.Mount.State == MountState.Mounted)
+        {
+            removedSession.Reconnect.SuspectDisconnect(DateTimeOffset.UtcNow);
+            SetSessionStatus(removedSession, "ConnectionChecking");
+        }
         diagnostics.Write(new(DiagnosticEventName.DiscoveryChanged,
             change.Kind == DiscoveryChangeKind.Rejected ? DiagnosticLevel.Warning : DiagnosticLevel.Information,
             change.Kind == DiscoveryChangeKind.Rejected ? DiagnosticResultCode.Failure : DiagnosticResultCode.Success,
@@ -190,7 +198,7 @@ public partial class MainWindow : Window
     }
     private void RebuildRows()
     {
-        string? selected = Selected?.Id;
+        string? selectedDeviceId = Selected?.DeviceId;
         var rows = candidates.Values.Where(c => DeviceListPolicy.IncludeCandidate(c.Pairing is not null,
             records.Any(r => r.DeviceId == c.DeviceIdHint))).Select(c =>
         {
@@ -199,7 +207,7 @@ public partial class MainWindow : Window
             var session = sessions.GetOrCreate(deviceId);
             bool isConnected = DeviceListPolicy.IsConnected(record?.DeviceId,
                 session.Client.Mount.State == MountState.Mounted ? session.Client.Connected?.Record.DeviceId : null);
-            return new DeviceRow(c.Id, deviceId, c, record, isConnected,
+            return new DeviceRow(DeviceListPolicy.StableRowId(c.Id, deviceId, record is not null), deviceId, c, record, isConnected,
                 isConnected ? session.Client.Connected?.DriveLetter : null, session.OperationInProgress, session.SupervisorBusy);
         }).ToList();
         rows.AddRange(records.Where(r => !candidates.Values.Any(c => c.DeviceIdHint == r.DeviceId))
@@ -213,7 +221,7 @@ public partial class MainWindow : Window
             }));
         var ordered = rows.OrderBy(r => r.Name, StringComparer.CurrentCulture).ToArray();
         Devices.ItemsSource = ordered;
-        var restored = ordered.FirstOrDefault(r => r.Id == selected);
+        var restored = ordered.FirstOrDefault(r => r.DeviceId == selectedDeviceId);
         if (restored is null && AddPhonePage.Visibility == Visibility.Visible)
             restored = ordered.FirstOrDefault(CanPair);
         Devices.SelectedItem = restored;
@@ -289,11 +297,19 @@ public partial class MainWindow : Window
         ManualPort.IsEnabled = canUseManual;
         ClearManualAddress.IsEnabled = canUseManual && row?.Record is { } manualRecord && manualEndpoints.TryGet(manualRecord.DeviceId, out _);
         Drives.IsEnabled = !busy && idle; Endpoints.IsEnabled = !busy;
-        ConnectionStatus.Text = mounted && session?.Client.Connected is { } active
-            ? string.Format(T("MountedAt"), active.DriveLetter, active.Record.DisplayName, T(active.Record.Mode.ToString()))
-            : mount.State == MountState.RecoveringWrites ? T("RecoveringWrites")
-            : mount.State == MountState.StopFailed ? T(mount.ErrorCode ?? "unmount-not-confirmed") : T("NoMount");
         var allSessions = sessions.Sessions;
+        var summary = DeviceListPolicy.SummarizeMounts(allSessions.Select(item =>
+            (item.Client.Mount, item.Client.Connected?.DriveLetter ?? item.ReservedDrive)));
+        ConnectionStatus.Text = summary.Kind switch
+        {
+            MountSummaryKind.StopFailed => T(summary.ErrorCode ?? "unmount-not-confirmed"),
+            MountSummaryKind.RecoveringWrites => T("RecoveringWrites"),
+            MountSummaryKind.Stopping => T("UnmountingDrive"),
+            MountSummaryKind.Starting => T("Mounting"),
+            MountSummaryKind.Mounted => string.Format(T("MountedSummary"),
+                string.Join(", ", summary.Drives.Select(letter => $"{letter}:\\")), summary.Drives.Count),
+            _ => T("NoMount")
+        };
         SetTrayStatus(TrayPolicy.ResolveStatus(
             storeUnavailable || discoveryFailed || allSessions.Any(item => item.Client.Mount.State is MountState.Failed or MountState.StopFailed),
             allSessions.Any(item => item.Client.Mount.State == MountState.Mounted),
@@ -403,9 +419,16 @@ public partial class MainWindow : Window
                     await session.Client.CheckSessionAsync(active.Record.DeviceId, active.Endpoint, lifetime.Token);
                     session.Reconnect.HealthSucceeded(DateTimeOffset.UtcNow);
                     diagnostics.Write(new(DiagnosticEventName.NetworkCheckCompleted, Code: DiagnosticResultCode.Success, State: DiagnosticState.Healthy, Session: session.LogContext));
-                    SetSessionStatus(session, "ConnectionHealthy");
+                    SetSessionStatus(session, "ConnectedState");
                 }
                 catch (ConnectionException error) when (error.Code == "operation-in-progress") { }
+                catch (ConnectionException error) when (error.Code == "share-not-ready")
+                {
+                    SetSessionStatus(session, "ConnectionLost");
+                    diagnostics.Write(new(DiagnosticEventName.NetworkCheckCompleted, DiagnosticLevel.Error,
+                        DiagnosticCodeMap.From(error.Code), DiagnosticState.Lost, Session: session.LogContext));
+                    await DisconnectForReconnectAsync(session);
+                }
                 catch (ConnectionException error) when (Terminal(error))
                 {
                     diagnostics.Write(new(DiagnosticEventName.NetworkCheckCompleted, DiagnosticLevel.Error, DiagnosticCodeMap.From(error.Code), DiagnosticState.Failed, Session: session.LogContext));
@@ -421,20 +444,13 @@ public partial class MainWindow : Window
                     {
                         diagnostics.WriteFailure(DiagnosticEventName.NetworkCheckCompleted, DiagnosticResultCode.Failure, error, session.LogContext);
                         if (Selected?.DeviceId == session.DeviceId)
-                            SetStatus("ConnectionRetry", session.Reconnect.ConsecutiveHealthFailures, 3);
+                            SetStatus("ConnectionRetry", session.Reconnect.ConsecutiveHealthFailures, session.Reconnect.HealthFailureLimit);
                         return;
                     }
                     SetSessionStatus(session, "ConnectionLost");
                     diagnostics.Write(new(DiagnosticEventName.NetworkCheckCompleted, DiagnosticLevel.Error, DiagnosticResultCode.Failure,
                         DiagnosticState.Lost, session.Reconnect.ConsecutiveHealthFailures, Session: session.LogContext));
-                    try
-                    {
-                        await sessions.StopAsync(session.DeviceId, preserveDriveReservation: true);
-                        session.Reconnect.Disconnected(DateTimeOffset.UtcNow);
-                        diagnostics.Write(new(DiagnosticEventName.ReconnectScheduled, State: DiagnosticState.Waiting, Session: session.LogContext));
-                        FillDrives(); SetSessionStatus(session, "ReconnectWaiting");
-                    }
-                    catch (ConnectionException stop) { SetSessionStatus(session, stop.Code); }
+                    await DisconnectForReconnectAsync(session);
                 }
                 return;
             }
@@ -493,6 +509,20 @@ public partial class MainWindow : Window
     private void SetSessionStatus(DeviceSession session, string key)
     {
         if (Selected?.DeviceId == session.DeviceId) SetStatus(key);
+    }
+
+    private async Task DisconnectForReconnectAsync(DeviceSession session)
+    {
+        try
+        {
+            await sessions.StopAsync(session.DeviceId, preserveDriveReservation: true);
+            session.Reconnect.Disconnected(DateTimeOffset.UtcNow);
+            diagnostics.Write(new(DiagnosticEventName.ReconnectScheduled, State: DiagnosticState.Waiting,
+                Session: session.LogContext));
+            FillDrives();
+            SetSessionStatus(session, "ReconnectWaiting");
+        }
+        catch (ConnectionException stop) { SetSessionStatus(session, stop.Code); }
     }
 
     private MountOptions OptionsFor(string deviceId, char letter) => new(letter,

@@ -74,6 +74,7 @@
 | P2-006 UI、多会话接线与完整语言收口 | 已完成；Windows 297/297，r21 Windows 与 Redmi 当前界面及冷启动 English 保持通过，单卡忙碌/取消隔离有针对性测试 | [验收记录](docs/audit/P2-006-VALIDATION.md)、[完成记录](docs/tasks/completed/P2-006-ui-language-finalization.md) |
 | P2-007 正式图标与 v0.2.0 交付收口 | 已完成；Windows 298/298，正式制品一致性、Samsung 全新安装、配对、挂载读取和安全断开通过 | [验收记录](docs/audit/P2-007-VALIDATION.md)、[完成记录](docs/tasks/completed/P2-007-formal-icons-and-v0.2-delivery.md) |
 | P2-008 发布 GitHub Release v0.2.0 | 已完成；标签精确绑定 P2-007 验收提交，6 项资产的 GitHub 摘要与本地制品一致并已设为 Latest | [Release](https://github.com/yang137197/PhoneBridge-NG/releases/tag/v0.2.0)、[验收记录](docs/audit/P2-008-VALIDATION.md)、[完成记录](docs/tasks/completed/P2-008-publish-v0.2.0-github-release.md) |
+| P2-009 v0.2.1 挂载状态一致性 | 实现完成，Windows 0 警告/0 错误、303/303 自动测试通过；真实停止共享时延和 Explorer 刷新留待 v0.2.2 最终候选验收 | [验收记录](docs/audit/P2-009-VALIDATION.md)、[完成记录](docs/tasks/completed/P2-009-v0.2.1-mount-state-consistency.md) |
 | Phase 1 新版 Windows 客户端 | 配对、挂载、文件操作、生命周期与本地安装交付主链路已验收 | [开发规则](DEVELOPMENT_RULES.md) |
 | MVP 验收 | 15 项通过 | [15 项产品验收](docs/PRODUCT.md)、[P1-030 最终需求验收](docs/audit/P1-030-VALIDATION.md) |
 

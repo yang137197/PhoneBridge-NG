@@ -49,6 +49,8 @@
   <data name="Safe" xml:space="preserve"><value>safe mode</value></data>
   <data name="ReadWrite" xml:space="preserve"><value>full read/write</value></data>
   <data name="NoMount" xml:space="preserve"><value>No drive mounted.</value></data>
+  <data name="MountedSummary" xml:space="preserve"><value>{1} mounted drive(s): {0}</value></data>
+  <data name="UnmountingDrive" xml:space="preserve"><value>Safely unmounting the drive…</value></data>
   <data name="Offline" xml:space="preserve"><value>Offline</value></data>
   <data name="InvalidCode" xml:space="preserve"><value>Enter the 8 digits displayed on the phone.</value></data>
   <data name="OpenFailed" xml:space="preserve"><value>Could not open File Explorer. The drive may still be mounted.</value></data>
@@ -169,7 +171,7 @@
   <data name="IdentityStillVerified" xml:space="preserve"><value>Choose a saved phone first. Saved phone identity verification is still required.</value></data>
   <data name="Diagnostics" xml:space="preserve"><value>Diagnostics</value></data>
   <data name="DiagnosticsNotUploaded" xml:space="preserve"><value>The diagnostic bundle is saved locally and is not uploaded automatically.</value></data>
-  <data name="VersionPreview" xml:space="preserve"><value>v0.2.0</value></data>
+  <data name="VersionPreview" xml:space="preserve"><value>v0.2.1</value></data>
   <data name="ProjectAndLicense" xml:space="preserve"><value>Project and license</value></data>
   <data name="LicenseSummary" xml:space="preserve"><value>PhoneBridge NG is distributed under GPL-3.0-or-later. It includes rclone and WinFsp; notices and source are provided with delivery builds.</value></data>
   <data name="GitHubProject" xml:space="preserve"><value>Open GitHub project</value></data>

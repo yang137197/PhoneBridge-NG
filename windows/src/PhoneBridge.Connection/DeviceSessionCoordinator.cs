@@ -119,14 +119,14 @@ public sealed class DeviceSessionCoordinator(PairingStore store) : IAsyncDisposa
         IProgress<ConnectionStage>? progress, CancellationToken cancellationToken)
     {
         var session = GetOrCreate(deviceId);
-        ReserveDrive(session, options.DriveLetter);
+        bool acquiredDrive = ReserveDrive(session, options.DriveLetter);
         try
         {
             return await session.Client.ConnectAsync(deviceId, endpoint, options, progress, cancellationToken).ConfigureAwait(false);
         }
         catch
         {
-            if (!OwnsMount(session.Client.Mount) && session.Client.Connected is null) ReleaseDrive(session);
+            if (acquiredDrive && !OwnsMount(session.Client.Mount) && session.Client.Connected is null) ReleaseDrive(session);
             throw;
         }
     }
@@ -163,7 +163,7 @@ public sealed class DeviceSessionCoordinator(PairingStore store) : IAsyncDisposa
         return Path.Combine(root, key);
     }
 
-    internal void ReserveDrive(DeviceSession session, char driveLetter)
+    internal bool ReserveDrive(DeviceSession session, char driveLetter)
     {
         driveLetter = char.ToUpperInvariant(driveLetter);
         if (driveLetter is < 'D' or > 'Z') throw new ConnectionException("drive-occupied");
@@ -173,7 +173,9 @@ public sealed class DeviceSessionCoordinator(PairingStore store) : IAsyncDisposa
                 throw new ConnectionException("drive-reserved");
             if (sessions.Values.Any(item => !ReferenceEquals(item, session) && item.ReservedDrive == driveLetter))
                 throw new ConnectionException("drive-reserved");
+            if (session.ReservedDrive == driveLetter) return false;
             session.ReservedDrive = driveLetter;
+            return true;
         }
     }
 

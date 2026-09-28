@@ -12,10 +12,12 @@
   <data name="ConnectionHealthy" xml:space="preserve"><value>手机会话正常。</value></data>
   <data name="ConnectionRetry" xml:space="preserve"><value>手机检查失败（{0}/{1}），确认故障前保持当前盘符。</value></data>
   <data name="ConnectionLost" xml:space="preserve"><value>手机连接不可用，正在安全卸载后准备恢复…</value></data>
-  <data name="ReconnectWaiting" xml:space="preserve"><value>正在等待同一台已配对手机重新出现…</value></data>
+  <data name="ReconnectWaiting" xml:space="preserve"><value>正在有限时间内等待同一台已配对手机重新出现…</value></data>
   <data name="Reconnecting" xml:space="preserve"><value>已发现配对手机，正在重新验证身份并连接…</value></data>
   <data name="ReconnectComplete" xml:space="preserve"><value>已恢复同一台手机和原盘符。</value></data>
-  <data name="ReconnectBackoff" xml:space="preserve"><value>重连失败，将在 {0} 秒后重试。</value></data>
+  <data name="ReconnectBackoff" xml:space="preserve"><value>重连失败（{0}/{1}），将在 {2} 秒后重试。</value></data>
+  <data name="ReconnectStopped" xml:space="preserve"><value>自动重连已停止。请确认手机已开始共享，然后点击“连接”。</value></data>
+  <data name="SharingStopped" xml:space="preserve"><value>手机已停止共享。重新开始共享后，请点击“连接”。</value></data>
   <data name="DeletePath" xml:space="preserve"><value>确认删除的手机路径（以 / 开头）</value></data>
   <data name="DeleteConfirmed" xml:space="preserve"><value>确认删除…</value></data>
   <data name="DeleteConfirm" xml:space="preserve"><value>永久删除以下手机项目？&#10;&#10;路径：{0}&#10;类型：{1}&#10;大小：{2} 字节&#10;&#10;确认仅在 30 秒内有效，项目变化后会拒绝。</value></data>
@@ -172,7 +174,7 @@
   <data name="IdentityStillVerified" xml:space="preserve"><value>请先选择已配对手机；连接仍会验证已保存的设备身份。</value></data>
   <data name="Diagnostics" xml:space="preserve"><value>诊断</value></data>
   <data name="DiagnosticsNotUploaded" xml:space="preserve"><value>诊断包只保存到本机，不会自动上传。</value></data>
-  <data name="VersionPreview" xml:space="preserve"><value>v0.2.2</value></data>
+  <data name="VersionPreview" xml:space="preserve"><value>v0.2.3</value></data>
   <data name="ProjectAndLicense" xml:space="preserve"><value>项目与许可</value></data>
   <data name="LicenseSummary" xml:space="preserve"><value>PhoneBridge NG 按 GPL-3.0-or-later 分发，包含 rclone 与 WinFsp；正式交付会提供通知和对应源码。</value></data>
   <data name="GitHubProject" xml:space="preserve"><value>打开 GitHub 项目</value></data>

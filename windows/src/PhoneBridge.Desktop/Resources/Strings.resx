@@ -12,10 +12,12 @@
   <data name="ConnectionHealthy" xml:space="preserve"><value>Phone session is healthy.</value></data>
   <data name="ConnectionRetry" xml:space="preserve"><value>Phone check failed ({0}/{1}); the drive remains mounted while the failure is confirmed.</value></data>
   <data name="ConnectionLost" xml:space="preserve"><value>Phone connection is unavailable. Safely unmounting before recovery…</value></data>
-  <data name="ReconnectWaiting" xml:space="preserve"><value>Waiting for the same paired phone to reappear…</value></data>
+  <data name="ReconnectWaiting" xml:space="preserve"><value>Waiting a limited time for the same paired phone to reappear…</value></data>
   <data name="Reconnecting" xml:space="preserve"><value>The paired phone is available. Verifying identity and reconnecting…</value></data>
   <data name="ReconnectComplete" xml:space="preserve"><value>The paired phone and original drive were reconnected.</value></data>
-  <data name="ReconnectBackoff" xml:space="preserve"><value>Reconnect failed. Retrying in {0} seconds.</value></data>
+  <data name="ReconnectBackoff" xml:space="preserve"><value>Reconnect failed ({0}/{1}). Retrying in {2} seconds.</value></data>
+  <data name="ReconnectStopped" xml:space="preserve"><value>Automatic reconnect stopped. Start sharing on the phone, then select Connect.</value></data>
+  <data name="SharingStopped" xml:space="preserve"><value>The phone stopped sharing. Start sharing again, then select Connect.</value></data>
   <data name="DeletePath" xml:space="preserve"><value>Phone path to delete (starts with /)</value></data>
   <data name="DeleteConfirmed" xml:space="preserve"><value>Confirm deletion…</value></data>
   <data name="DeleteConfirm" xml:space="preserve"><value>Permanently delete this phone item?&#10;&#10;Path: {0}&#10;Type: {1}&#10;Size: {2} bytes&#10;&#10;Confirmation expires after 30 seconds and is rejected if the item changes.</value></data>
@@ -172,7 +174,7 @@
   <data name="IdentityStillVerified" xml:space="preserve"><value>Choose a saved phone first. Saved phone identity verification is still required.</value></data>
   <data name="Diagnostics" xml:space="preserve"><value>Diagnostics</value></data>
   <data name="DiagnosticsNotUploaded" xml:space="preserve"><value>The diagnostic bundle is saved locally and is not uploaded automatically.</value></data>
-  <data name="VersionPreview" xml:space="preserve"><value>v0.2.2</value></data>
+  <data name="VersionPreview" xml:space="preserve"><value>v0.2.3</value></data>
   <data name="ProjectAndLicense" xml:space="preserve"><value>Project and license</value></data>
   <data name="LicenseSummary" xml:space="preserve"><value>PhoneBridge NG is distributed under GPL-3.0-or-later. It includes rclone and WinFsp; notices and source are provided with delivery builds.</value></data>
   <data name="GitHubProject" xml:space="preserve"><value>Open GitHub project</value></data>

@@ -421,10 +421,9 @@ public partial class MainWindow : Window
                 catch (ConnectionException error) when (error.Code == "operation-in-progress") { }
                 catch (ConnectionException error) when (error.Code == "share-not-ready")
                 {
-                    SetSessionStatus(session, "ConnectionLost");
                     diagnostics.Write(new(DiagnosticEventName.NetworkCheckCompleted, DiagnosticLevel.Error,
                         DiagnosticCodeMap.From(error.Code), DiagnosticState.Lost, Session: session.LogContext));
-                    await DisconnectForReconnectAsync(session);
+                    await StopAutomaticReconnectAsync(session, "SharingStopped", DiagnosticResultCode.Success);
                 }
                 catch (ConnectionException error) when (Terminal(error))
                 {
@@ -460,17 +459,39 @@ public partial class MainWindow : Window
                 session.Reconnect.Disconnected(DateTimeOffset.UtcNow);
             }
             var attemptTime = DateTimeOffset.UtcNow;
-            if (session.Reconnect.DeviceId is not { } reconnectDevice || !session.Reconnect.CanReconnect(reconnectDevice, attemptTime)) return;
+            if (session.Reconnect.RecoveryExhausted(attemptTime))
+            {
+                await StopAutomaticReconnectAsync(session, "ReconnectStopped", DiagnosticResultCode.Timeout);
+                return;
+            }
+            if (session.Reconnect.DeviceId is not { } reconnectDevice) return;
             DeviceEndpoint? endpoint = manualEndpoints.SelectForReconnect(reconnectDevice, candidates.Values);
-            if (endpoint is null || session.Reconnect.Options is not { } options) return;
+            if (endpoint is null)
+            {
+                SetSessionStatus(session, "ReconnectWaiting");
+                return;
+            }
+            if (!session.Reconnect.CanReconnect(reconnectDevice, attemptTime) || session.Reconnect.Options is not { } options) return;
+            if (!session.Reconnect.BeginReconnectAttempt(attemptTime))
+            {
+                await StopAutomaticReconnectAsync(session, "ReconnectStopped", DiagnosticResultCode.Timeout);
+                return;
+            }
             try
             {
                 SetSessionStatus(session, "Reconnecting");
-                diagnostics.Write(new(DiagnosticEventName.ConnectionStarted, State: DiagnosticState.Starting, Session: session.LogContext));
+                diagnostics.Write(new(DiagnosticEventName.ConnectionStarted, State: DiagnosticState.Starting,
+                    Count: session.Reconnect.ReconnectAttempts, Session: session.LogContext));
                 var record = await sessions.ConnectAsync(session.DeviceId, endpoint, options, Progress(session), lifetime.Token);
-                session.Reconnect.Arm(record.DeviceId, options, DateTimeOffset.UtcNow);
+                session.Reconnect.ReconnectSucceeded(DateTimeOffset.UtcNow);
                 diagnostics.Write(new(DiagnosticEventName.ConnectionCompleted, Code: DiagnosticResultCode.Success, State: DiagnosticState.Mounted, Session: session.LogContext));
                 SetSessionStatus(session, "ReconnectComplete");
+            }
+            catch (ConnectionException error) when (error.Code == "share-not-ready")
+            {
+                diagnostics.Write(new(DiagnosticEventName.ConnectionCompleted, DiagnosticLevel.Error,
+                    DiagnosticCodeMap.From(error.Code), DiagnosticState.Failed, Session: session.LogContext));
+                await StopAutomaticReconnectAsync(session, "SharingStopped", DiagnosticResultCode.Success);
             }
             catch (ConnectionException error) when (Terminal(error))
             {
@@ -489,9 +510,14 @@ public partial class MainWindow : Window
             catch (Exception error) when (error is HttpRequestException or IOException or OperationCanceledException or ConnectionException or MountException)
             {
                 diagnostics.WriteFailure(DiagnosticEventName.ConnectionCompleted, DiagnosticResultCode.Failure, error, session.LogContext);
-                session.Reconnect.ReconnectFailed(DateTimeOffset.UtcNow);
+                if (session.Reconnect.ReconnectFailed(DateTimeOffset.UtcNow))
+                {
+                    await StopAutomaticReconnectAsync(session, "ReconnectStopped", DiagnosticResultCode.Timeout);
+                    return;
+                }
                 var seconds = Math.Max(1, (int)Math.Ceiling((session.Reconnect.NextAttempt - DateTimeOffset.UtcNow).TotalSeconds));
-                if (Selected?.DeviceId == session.DeviceId) SetStatus("ReconnectBackoff", seconds);
+                if (Selected?.DeviceId == session.DeviceId) SetStatus("ReconnectBackoff",
+                    session.Reconnect.ReconnectAttempts, session.Reconnect.ReconnectAttemptLimit, seconds);
             }
         }
         catch (CredentialStoreException) { session.Reconnect.Suppress(); storeUnavailable = true; SetSessionStatus(session, "StoreFailed"); }
@@ -517,6 +543,23 @@ public partial class MainWindow : Window
             diagnostics.Write(new(DiagnosticEventName.ReconnectScheduled, State: DiagnosticState.Waiting,
                 Session: session.LogContext));
             SetSessionStatus(session, "ReconnectWaiting");
+        }
+        catch (ConnectionException stop) { SetSessionStatus(session, stop.Code); }
+    }
+
+    private async Task StopAutomaticReconnectAsync(DeviceSession session, string status, DiagnosticResultCode result)
+    {
+        var now = DateTimeOffset.UtcNow;
+        int attempts = session.Reconnect.ReconnectAttempts;
+        long duration = session.Reconnect.RecoveryElapsedMilliseconds(now);
+        session.Reconnect.Suppress();
+        diagnostics.Write(new(DiagnosticEventName.ReconnectScheduled,
+            result == DiagnosticResultCode.Success ? DiagnosticLevel.Information : DiagnosticLevel.Warning,
+            result, DiagnosticState.Disabled, attempts, duration, session.LogContext));
+        try
+        {
+            await sessions.StopAsync(session.DeviceId);
+            SetSessionStatus(session, status);
         }
         catch (ConnectionException stop) { SetSessionStatus(session, stop.Code); }
     }

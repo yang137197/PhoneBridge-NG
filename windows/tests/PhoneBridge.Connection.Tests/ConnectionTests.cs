@@ -283,7 +283,7 @@ public sealed class ConnectionTests
     }
 
     [TestMethod]
-    public void ReconnectPolicyRequiresExactIdentityBacksOffAndCanBeSuppressed()
+    public void ReconnectPolicyUsesBoundedAttemptsAndExistingBackoff()
     {
         var policy = new ReconnectPolicy();
         var now = DateTimeOffset.Parse("2026-09-21T00:00:00Z");
@@ -291,17 +291,76 @@ public sealed class ConnectionTests
         policy.Disconnected(now);
         Assert.IsFalse(policy.CanReconnect("pbng-other", now));
         Assert.IsTrue(policy.CanReconnect("pbng-device", now));
-        foreach (var delay in new[] { 2, 5, 10, 20, 30, 30 })
+        foreach (var delay in new[] { 2, 5, 10, 20, 30 })
         {
-            policy.ReconnectFailed(now);
+            Assert.IsTrue(policy.BeginReconnectAttempt(now));
+            Assert.IsFalse(policy.ReconnectFailed(now));
             Assert.AreEqual(now.AddSeconds(delay), policy.NextAttempt);
             Assert.IsFalse(policy.CanReconnect("pbng-device", policy.NextAttempt.AddMilliseconds(-1)));
             Assert.IsTrue(policy.CanReconnect("pbng-device", policy.NextAttempt));
             now = policy.NextAttempt;
         }
+        Assert.AreEqual(5, policy.ReconnectAttempts);
+        Assert.IsTrue(policy.BeginReconnectAttempt(now));
+        Assert.IsTrue(policy.ReconnectFailed(now));
+        Assert.AreEqual(6, policy.ReconnectAttempts);
+        Assert.AreEqual(6, policy.ReconnectAttemptLimit);
+        Assert.IsTrue(policy.RecoveryExhausted(now));
+        Assert.IsFalse(policy.CanReconnect("pbng-device", now.AddHours(1)));
         policy.Suppress();
         Assert.IsFalse(policy.Armed);
         Assert.IsFalse(policy.CanReconnect("pbng-device", now.AddHours(1)));
+    }
+
+    [TestMethod]
+    public void ReconnectPolicyExpiresAfterTwoMinutesWithoutConsumingAttemptsForMissingEndpoints()
+    {
+        var policy = new ReconnectPolicy();
+        var now = DateTimeOffset.Parse("2026-09-28T00:00:00Z");
+        policy.Arm("pbng-device", NoMount, now);
+        policy.Disconnected(now);
+
+        Assert.AreEqual(now.AddMinutes(2), policy.RecoveryDeadline);
+        Assert.AreEqual(0, policy.ReconnectAttempts);
+        Assert.IsFalse(policy.RecoveryExhausted(now.AddMinutes(2).AddTicks(-1)));
+        Assert.IsTrue(policy.CanReconnect("pbng-device", now.AddMinutes(2).AddTicks(-1)));
+        Assert.IsTrue(policy.RecoveryExhausted(now.AddMinutes(2)));
+        Assert.IsFalse(policy.BeginReconnectAttempt(now.AddMinutes(2)));
+        Assert.AreEqual(0, policy.ReconnectAttempts);
+    }
+
+    [TestMethod]
+    public void ReconnectPolicyRequiresThreeHealthyCyclesBeforeResettingRecoveryBudget()
+    {
+        var policy = new ReconnectPolicy();
+        var now = DateTimeOffset.Parse("2026-09-28T00:00:00Z");
+        policy.Arm("pbng-device", NoMount, now);
+        policy.Disconnected(now);
+        var deadline = policy.RecoveryDeadline;
+        Assert.IsTrue(policy.BeginReconnectAttempt(now));
+        policy.ReconnectSucceeded(now);
+
+        policy.HealthSucceeded(now.AddSeconds(5));
+        policy.HealthSucceeded(now.AddSeconds(10));
+        Assert.IsTrue(policy.Recovering);
+        Assert.AreEqual(2, policy.StableHealthSuccesses);
+
+        Assert.IsFalse(policy.HealthFailed(now.AddSeconds(15)));
+        Assert.IsFalse(policy.HealthFailed(now.AddSeconds(20)));
+        Assert.IsTrue(policy.HealthFailed(now.AddSeconds(25)));
+        policy.Disconnected(now.AddSeconds(25));
+        Assert.AreEqual(deadline, policy.RecoveryDeadline);
+        Assert.AreEqual(1, policy.ReconnectAttempts);
+        Assert.IsTrue(policy.BeginReconnectAttempt(now.AddSeconds(25)));
+        policy.ReconnectSucceeded(now.AddSeconds(25));
+
+        policy.HealthSucceeded(now.AddSeconds(30));
+        policy.HealthSucceeded(now.AddSeconds(35));
+        Assert.IsTrue(policy.Recovering);
+        policy.HealthSucceeded(now.AddSeconds(40));
+        Assert.IsFalse(policy.Recovering);
+        Assert.AreEqual(0, policy.ReconnectAttempts);
+        Assert.AreEqual(default, policy.RecoveryDeadline);
     }
 
     [TestMethod]
@@ -367,7 +426,8 @@ public sealed class ConnectionTests
         var first = coordinator.GetOrCreate("device-a");
         var second = coordinator.GetOrCreate("device-b");
 
-        coordinator.ReserveDrive(first, 'P');
+        Assert.IsTrue(coordinator.ReserveDrive(first, 'P'));
+        Assert.IsFalse(coordinator.ReserveDrive(first, 'P'));
         Assert.IsTrue(coordinator.CanUseDrive("device-a", 'P'));
         Assert.IsFalse(coordinator.CanUseDrive("device-b", 'P'));
         var conflict = Assert.Throws<ConnectionException>(() => coordinator.ReserveDrive(second, 'P'));

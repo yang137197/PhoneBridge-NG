@@ -18,7 +18,7 @@ param(
 $ErrorActionPreference = 'Stop'
 Set-StrictMode -Version Latest
 
-$productVersion = '0.2.2'
+$productVersion = '0.2.3'
 $rcloneVersion = '1.75.1'
 $rcloneSha256 = '033EEE51C9AD47C2DE2624B6674D355274BCD6CF0027A5F85DB4437BA24AE81C'
 $winFspVersion = '2.1.25156'

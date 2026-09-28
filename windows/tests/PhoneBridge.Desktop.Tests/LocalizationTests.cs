@@ -14,7 +14,8 @@ public sealed class LocalizationTests
         foreach (string key in new[] { "ExportDiagnostics", "DiagnosticsZipFilter", "DiagnosticsExported", "DiagnosticsExportFailed",
             "ManualAddress", "ManualPort", "UseManualAddress", "ClearManualAddress", "ManualEndpointInvalid",
             "ManualEndpointAdded", "ManualEndpointCleared", "English", "Working", "LanguageSaveFailed",
-            "AutomaticDrive", "AutomaticDriveHelp", "DefaultDrive", "MountedSummary", "UnmountingDrive" })
+            "AutomaticDrive", "AutomaticDriveHelp", "DefaultDrive", "MountedSummary", "UnmountingDrive",
+            "ReconnectWaiting", "ReconnectBackoff", "ReconnectStopped", "SharingStopped" })
         {
             string en = TextCatalog.Get(key, english);
             string zh = TextCatalog.Get(key, chinese);

@@ -43,10 +43,10 @@ public sealed class StoreTests
     [TestMethod]
     public void UiPreviewRevisionsUseSeparateNonProductionRoots()
     {
-        string first=PairingStore.UiPreviewDataRoot("0.2.2.8");
-        string second=PairingStore.UiPreviewDataRoot("0.2.2.9");
+        string first=PairingStore.UiPreviewDataRoot("0.2.3.8");
+        string second=PairingStore.UiPreviewDataRoot("0.2.3.9");
         Assert.AreNotEqual(first,second);
-        StringAssert.Contains(first,Path.Combine("PhoneBridge-NG-UiPreview","0.2.2.8"));
+        StringAssert.Contains(first,Path.Combine("PhoneBridge-NG-UiPreview","0.2.3.8"));
         Assert.Throws<ArgumentException>(()=>PairingStore.UiPreviewDataRoot("../unsafe"));
     }
     [TestCleanup] public void ReportIoFailure()

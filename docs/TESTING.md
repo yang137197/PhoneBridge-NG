@@ -187,3 +187,7 @@ Verify-AndroidCredentials 脚本的 Debug/Release AAR、测试 APK 和两套 Lin
 Windows Release 构建 0 warnings/0 errors，218 项测试通过；Android Debug/Release/test APK、单元测试和双配置 Lint 共 123 个 Gradle task 成功。Redmi K40/API 36 的 45 个仪器用例均分别通过，但最后一个 120 秒用例因息屏单独重跑，不记为一次不中断的 45/45。
 
 正式 WPF 以保存配对恢复 SAFE 挂载，Explorer 完成新建目录、重命名和 7 字节文件写回；ADB 独立确认手机端结果。30 秒删除确认过期后目标保留，刷新确认后文件和目录均删除；安全卸载后 `P:`、rclone、桌面进程、共享服务和 ADB 转发均不存在，稳定缓存保留。详见 [P1-009](audit/P1-009-VALIDATION.md)。SEC-04 获得限定真机与自动化证据；大文件、已有目标 Explorer 覆盖、断网/磁盘满/异常退出恢复、三星和自动重连仍未运行。
+
+## P2-014 v0.2.3 有界自动重连
+
+定向 Connection 29/29 与完整 Windows 308/308 通过，Release 构建 0 警告/0 错误；覆盖 6 次实际尝试、2 分钟期限、同身份、既有退避、缺少候选不消耗次数、短暂恢复不重置预算，以及连续三个健康周期后才回到稳定状态。Android 仅更新版本元数据，既有 Debug/Release/test APK、单元测试和双配置 Lint 共 123 个 Gradle task 成功。未安装 v0.2.3，真实主动停止、临时断网恢复、盘符释放和缓存保护仍需 P2-015 验收，详见 [P2-014](audit/P2-014-VALIDATION.md)。

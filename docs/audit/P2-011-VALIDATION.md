@@ -16,10 +16,12 @@
 | `PhoneBridge-NG-Setup-0.2.2.exe` | `246C5280812006129A0E77E2B1FB0440A634C6021608D90856AA6B67EB2960CE` |
 | `PhoneBridge-NG-0.2.2.apk` | `908A7C93D5ABE750702E470F82A58555A03B201F9F85ABBD985382BF8DC6E1E4` |
 | `README.txt` | `662491B5962BBE51CF8E9EF8488C25BFAB25DEFC4F78450DA236DEAC5AE05F88` |
+| `PhoneBridge-NG-0.2.2-source.zip` | `C948CA3CC1B56E19BA2BD8A8E674B5763ED6DC181E67FBEEA8F246D1014DC0FD` |
 
 - Windows 安装器文件/产品版本为 `0.2.2.0` / `0.2.2`，仍未做 Authenticode 产品签名。
 - Android 为 package `org.phonebridge.ng`、`versionCode 4`、`versionName 0.2.2`、minSdk 26、targetSdk 36。
 - APK v2/v3 签名验证通过，唯一签名证书 SHA-256 为 `66FF69D71637D215C2F104DB95B93CC1F991FA1F23580F95AF3316B0763B14D4`，与 `v0.2.0` 完全一致。
+- 对应源码包含 302 个源码文件和 303 个 ZIP 条目；逐文件清单、必需入口、私钥标记扫描及最终回读全部通过。
 - 首个二进制候选的安装包内仍复制旧 `0.2.0` 交付说明，核对时即拒绝；修正文档后重新构建，未把该候选用于安装或发布。
 
 ## 原位升级保持

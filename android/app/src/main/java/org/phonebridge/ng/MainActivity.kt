@@ -676,15 +676,19 @@ class MainActivity : Activity() {
         }
     }
     private fun beginSharing(selected: Int) {
-        if (Build.VERSION.SDK_INT >= 33 && checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED)
-            requestPermissions(arrayOf(Manifest.permission.POST_NOTIFICATIONS), 2)
+        requestNotificationPermissionIfNeeded(ForegroundAction.START_SHARING)
         startForegroundService(Intent(this, SharingService::class.java).setAction(SharingService.START).putExtra("folder", selected))
     }
     private fun requestPairing(selected: Int) {
         if (!SharedFolders.allowed(this)) { status.setText(R.string.permission_missing); return }
-        if (Build.VERSION.SDK_INT >= 33 && checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED)
-            requestPermissions(arrayOf(Manifest.permission.POST_NOTIFICATIONS), 2)
+        requestNotificationPermissionIfNeeded(ForegroundAction.OPEN_PAIRING)
         startForegroundService(Intent(this, SharingService::class.java).setAction(SharingService.PAIR).putExtra("folder", selected))
+    }
+    private fun requestNotificationPermissionIfNeeded(action: ForegroundAction) {
+        if (Build.VERSION.SDK_INT < 33) return
+        if (NotificationPermissionPolicy.shouldRequest(action, Build.VERSION.SDK_INT,
+                checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED))
+            requestPermissions(arrayOf(Manifest.permission.POST_NOTIFICATIONS), 2)
     }
     private fun requestStorage() {
         if (Build.VERSION.SDK_INT >= 30) startActivity(Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION, Uri.parse("package:$packageName")))

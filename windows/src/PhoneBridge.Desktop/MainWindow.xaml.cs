@@ -258,7 +258,7 @@ public partial class MainWindow : Window
             return false;
         }
     }
-    private void RebuildRows()
+    private void RebuildRows(bool force = false)
     {
         string? selectedDeviceId = Selected?.DeviceId;
         var rows = candidates.Values.Where(c => DeviceListPolicy.IncludeCandidate(c.Pairing is not null,
@@ -271,7 +271,7 @@ public partial class MainWindow : Window
                 session.Client.Mount.State == MountState.Mounted ? session.Client.Connected?.Record.DeviceId : null);
             return new DeviceRow(DeviceListPolicy.StableRowId(c.Id, deviceId, record is not null), deviceId, c, record, isConnected,
                 isConnected ? session.Client.Connected?.DriveLetter : null,
-                isConnected ? session.Client.Connected?.Endpoint : null, session.OperationInProgress, session.SupervisorBusy);
+                isConnected ? session.Client.Connected?.Endpoint : null, session.OperationInProgress);
         }).ToList();
         rows.AddRange(records.Where(r => !candidates.Values.Any(c => c.DeviceIdHint == r.DeviceId))
             .Select(r =>
@@ -281,14 +281,20 @@ public partial class MainWindow : Window
                     session.Client.Mount.State == MountState.Mounted ? session.Client.Connected?.Record.DeviceId : null);
                 return new DeviceRow(r.DeviceId, r.DeviceId, null, r, isConnected,
                     isConnected ? session.Client.Connected?.DriveLetter : null,
-                    isConnected ? session.Client.Connected?.Endpoint : null, session.OperationInProgress, session.SupervisorBusy);
+                    isConnected ? session.Client.Connected?.Endpoint : null, session.OperationInProgress);
             }));
         var ordered = rows.OrderBy(r => r.Name, StringComparer.CurrentCulture).ToArray();
-        Devices.ItemsSource = ordered;
-        var restored = ordered.FirstOrDefault(r => r.DeviceId == selectedDeviceId);
+        var current = (Devices.ItemsSource as IEnumerable<DeviceRow>)?.ToArray();
+        IReadOnlyList<DeviceRow> displayed = current ?? ordered;
+        if (force || DeviceListPolicy.RowsChanged(current, ordered))
+        {
+            Devices.ItemsSource = ordered;
+            displayed = ordered;
+        }
+        var restored = displayed.FirstOrDefault(r => r.DeviceId == selectedDeviceId);
         if (restored is null && AddPhonePage.Visibility == Visibility.Visible)
-            restored = ordered.FirstOrDefault(CanPair);
-        Devices.SelectedItem = restored;
+            restored = displayed.FirstOrDefault(CanPair);
+        if (!ReferenceEquals(Devices.SelectedItem, restored)) Devices.SelectedItem = restored;
         UpdateControls();
     }
     private static bool CanPair(DeviceRow row) => row.Record is null &&
@@ -877,7 +883,7 @@ public partial class MainWindow : Window
             TextCatalog.SetCulture(language);
             RefreshLanguageSelection();
             RefreshVersionText();
-            RebuildRows();
+            RebuildRows(force: true);
             PairingPhoneName.Text = Selected?.Name ?? T("ChoosePhoneFirst");
             if (DeviceSettingsPage.Visibility == Visibility.Visible) FillDeviceDrivePreference(Selected?.Record);
             SetStatus(statusKey, statusArguments);
@@ -1042,10 +1048,9 @@ public partial class MainWindow : Window
     }
 
     private sealed record DeviceRow(string Id, string DeviceId, DeviceCandidate? Candidate, PairingRecord? Record,
-        bool IsConnected, char? DriveLetter, DeviceEndpoint? ConnectedEndpoint, bool OperationInProgress,
-        bool SupervisorBusy)
+        bool IsConnected, char? DriveLetter, DeviceEndpoint? ConnectedEndpoint, bool OperationInProgress)
     {
-        public bool IsBusy => OperationInProgress || SupervisorBusy;
+        public bool IsBusy => OperationInProgress;
         public string Name => Record?.DisplayName ?? Candidate!.DisplayName;
         private DevicePresence Presence => DeviceListPolicy.ResolvePresence(IsConnected, ConnectedEndpoint,
             Candidate?.Endpoints, Record?.LastVerifiedAddress, Record?.LastVerifiedPort);

@@ -12,13 +12,13 @@ public sealed class UpdateServiceTests
     public async Task LatestFormalReleaseDoesNotDowngradeNewerInstalledVersion()
     {
         byte[] installer = Encoding.ASCII.GetBytes("installer");
-        using var client = Client(_ => JsonResponse(Release("0.2.3", installer)));
+        using var client = Client(_ => JsonResponse(Release("0.2.4", installer)));
         using var service = new UpdateService(client);
 
-        UpdateCheckResult result = await service.CheckAsync("0.2.4", CancellationToken.None);
+        UpdateCheckResult result = await service.CheckAsync("0.2.5", CancellationToken.None);
 
         Assert.AreEqual(UpdateCheckKind.Current, result.Kind);
-        Assert.AreEqual("0.2.3", result.Latest.DisplayVersion);
+        Assert.AreEqual("0.2.4", result.Latest.DisplayVersion);
     }
 
     [TestMethod]
@@ -26,13 +26,13 @@ public sealed class UpdateServiceTests
     {
         byte[] installer = Encoding.ASCII.GetBytes("future-windows-installer");
         using var client = Client(request => request.RequestUri?.Host == "api.github.com"
-            ? JsonResponse(Release("0.2.5", installer))
+            ? JsonResponse(Release("0.2.6", installer))
             : BinaryResponse(installer));
         using var service = new UpdateService(client);
         string root = Path.Combine(Path.GetTempPath(), "PhoneBridge-UpdateTests", Guid.NewGuid().ToString("N"));
         try
         {
-            UpdateCheckResult check = await service.CheckAsync("0.2.4", CancellationToken.None);
+            UpdateCheckResult check = await service.CheckAsync("0.2.5", CancellationToken.None);
             PendingUpdate pending = await service.DownloadAsync(check.Latest, root, CancellationToken.None);
 
             Assert.AreEqual(UpdateCheckKind.Available, check.Kind);
@@ -54,13 +54,13 @@ public sealed class UpdateServiceTests
         byte[] expected = Encoding.ASCII.GetBytes("expected-installer");
         byte[] received = Encoding.ASCII.GetBytes("received-installer");
         using var client = Client(request => request.RequestUri?.Host == "api.github.com"
-            ? JsonResponse(Release("0.2.5", expected, received.Length))
+            ? JsonResponse(Release("0.2.6", expected, received.Length))
             : BinaryResponse(received));
         using var service = new UpdateService(client);
         string root = Path.Combine(Path.GetTempPath(), "PhoneBridge-UpdateTests", Guid.NewGuid().ToString("N"));
         try
         {
-            UpdateCheckResult check = await service.CheckAsync("0.2.4", CancellationToken.None);
+            UpdateCheckResult check = await service.CheckAsync("0.2.5", CancellationToken.None);
             UpdateException error = await Assert.ThrowsExactlyAsync<UpdateException>(
                 () => service.DownloadAsync(check.Latest, root, CancellationToken.None));
 
@@ -78,7 +78,7 @@ public sealed class UpdateServiceTests
     public async Task UntrustedAssetUrlIsRejectedBeforeDownload()
     {
         byte[] installer = Encoding.ASCII.GetBytes("installer");
-        string json = Release("0.2.5", installer).Replace(
+        string json = Release("0.2.6", installer).Replace(
             "https://github.com/yang137197/PhoneBridge-NG/releases/download/",
             "https://example.com/yang137197/PhoneBridge-NG/releases/download/",
             StringComparison.Ordinal);
@@ -86,7 +86,7 @@ public sealed class UpdateServiceTests
         using var service = new UpdateService(client);
 
         UpdateException error = await Assert.ThrowsExactlyAsync<UpdateException>(
-            () => service.CheckAsync("0.2.4", CancellationToken.None));
+            () => service.CheckAsync("0.2.5", CancellationToken.None));
 
         Assert.AreEqual("UpdateResponseInvalid", error.Code);
     }

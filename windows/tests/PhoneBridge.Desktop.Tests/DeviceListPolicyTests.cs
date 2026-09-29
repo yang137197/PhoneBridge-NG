@@ -163,7 +163,7 @@ public sealed class DeviceListPolicyTests
     {
         Type type = typeof(MainWindow).GetNestedType("DeviceRow", BindingFlags.NonPublic)!;
         object NewRow(string id, bool busy) => Activator.CreateInstance(type, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic,
-            binder: null, args: [id, id, null, null, false, null, null, busy, false], culture: null)!;
+            binder: null, args: [id, id, null, null, false, null, null, busy], culture: null)!;
         object busy = NewRow("a", true);
         object other = NewRow("b", false);
         T Property<T>(object row, string name) => (T)type.GetProperty(name)!.GetValue(row)!;
@@ -177,5 +177,21 @@ public sealed class DeviceListPolicyTests
         Assert.IsTrue(Property<bool>(other, "CanUsePrimary"));
         Assert.IsFalse(Property<bool>(other, "CanCancel"));
         Assert.IsTrue(Property<bool>(other, "CanModifySession"));
+    }
+
+    [TestMethod]
+    public void EquivalentDeviceRowsDoNotRequireReplacingTheVisibleCard()
+    {
+        Type type = typeof(MainWindow).GetNestedType("DeviceRow", BindingFlags.NonPublic)!;
+        object NewRow(bool operationInProgress) => Activator.CreateInstance(type,
+            BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic, binder: null,
+            args: ["phone-a", "phone-a", null, null, false, null, null, operationInProgress], culture: null)!;
+
+        object visible = NewRow(false);
+        object unchanged = NewRow(false);
+        object busy = NewRow(true);
+
+        Assert.IsFalse(DeviceListPolicy.RowsChanged<object>([visible], [unchanged]));
+        Assert.IsTrue(DeviceListPolicy.RowsChanged<object>([visible], [busy]));
     }
 }

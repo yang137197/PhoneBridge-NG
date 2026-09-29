@@ -2,7 +2,7 @@
 
 中文优先的 Android ↔ Windows 无线文件访问工具。目标是在同一局域网内发现并验证手机，通过 HTTPS/WebDAV、rclone 和 WinFsp 将手机共享存储映射到 Windows 文件资源管理器。
 
-**当前正式版本为 [v0.2.4](https://github.com/yang137197/PhoneBridge-NG/releases/tag/v0.2.4)。六项公开资产与本地正式镜像的大小和 SHA-256 已逐项回读一致；v0.2.3 到 v0.2.4 的两端原位升级、设备状态/IP/刷新、固定磁盘卷名与容量、安全断开及 Windows/Android 手动更新检查已经真机验收。P2-021 未形成全新 Windows 机器证据；其发现的 Android 首次点击配对缺陷已由 P2-022 完成定向修复和真机验收，尚未形成新正式版本。当前下一任务是 P2-023 v0.2.5 正式候选与升级验收。Windows 自启动仍只进入托盘，盘符由用户手动连接。**
+**当前正式版本仍为 [v0.2.4](https://github.com/yang137197/PhoneBridge-NG/releases/tag/v0.2.4)。v0.2.5 正式候选已完成两端原位升级、配对与设置保持、首次点击配对、基础连接、文件访问和首次点击安全断开的真机验收，并已生成六项一致资产；该候选尚未推送、打标签或发布。Windows 自启动仍只进入托盘，盘符由用户手动连接。**
 
 安装、配对、连接、访问模式、断开和排障步骤见 [软件使用说明](docs/USER_GUIDE.md)。
 
@@ -88,7 +88,7 @@
 | P2-020 发布 GitHub Release v0.2.4 | 已完成；注释标签精确绑定候选 head，六项 GitHub 资产与本地摘要一致并已设为 Latest | [Release](https://github.com/yang137197/PhoneBridge-NG/releases/tag/v0.2.4)、[验收记录](docs/audit/P2-020-VALIDATION.md)、[完成记录](docs/tasks/completed/P2-020-publish-v0.2.4-github-release.md) |
 | P2-021 v0.2.4 全新机器配对验收 | 未通过并关闭；本轮使用当前电脑卸载重装，不能形成全新 Windows 机器证据，且 Android 首次点击配对暴露缺陷 | [关闭记录](docs/tasks/completed/P2-021-v0.2.4-clean-machine-pairing-acceptance.md)、[历史清单](docs/V0.2.4_CLEAN_MACHINE_ACCEPTANCE.md) |
 | P2-022 Android 首次点击打开配对 | 已完成；通知权限未授予时真实手机首次单击立即显示配对码，正式签名一致，未接受配对且无残留服务 | [验收记录](docs/audit/P2-022-VALIDATION.md)、[完成记录](docs/tasks/completed/P2-022-android-first-tap-pairing.md) |
-| P2-023 v0.2.5 正式候选与升级验收 | 待开始；统一递增版本并动态从最近正式 Release 做 Windows/Android 原位升级和六项制品一致性验收 | [任务](docs/tasks/active/P2-023-v0.2.5-formal-candidate-and-upgrade.md) |
+| P2-023 v0.2.5 正式候选与升级验收 | 已完成；以正式 v0.2.4 为动态基线，两端原位升级、状态保持、首次点击配对、连接/文件访问/安全断开及六项制品一致性通过 | [完成记录](docs/tasks/completed/P2-023-v0.2.5-formal-candidate-and-upgrade.md) |
 | Phase 1 新版 Windows 客户端 | 配对、挂载、文件操作、生命周期与本地安装交付主链路已验收 | [开发规则](DEVELOPMENT_RULES.md) |
 | MVP 验收 | 15 项通过 | [15 项产品验收](docs/PRODUCT.md)、[P1-030 最终需求验收](docs/audit/P1-030-VALIDATION.md) |
 
@@ -115,7 +115,7 @@ P0-001 的 107 个通过测试、1 个跳过用例及 7 项离线问题复现仅
 | [AGENTS.md](AGENTS.md) | 用户原始项目约束，每次开始工作先读 |
 | [PRODUCT.md](docs/PRODUCT.md) | 用户、目标、非目标、MVP 与验收标准 |
 | [V0.2_PLAN.md](docs/V0.2_PLAN.md) | 下一版本的 UI、图标、语言、多设备范围、预期效果和开发顺序 |
-| [HANDOFF_V0.2.md](docs/HANDOFF_V0.2.md) | v0.2.3 正式基线、v0.2.4 开发状态、固定边界和下一任务 |
+| [HANDOFF_V0.2.md](docs/HANDOFF_V0.2.md) | v0.2.4 正式基线、v0.2.5 候选状态、固定边界和后续发布门禁 |
 | [v0.2 设计包](docs/design/v0.2/README.md) | P2-002 的 Windows/Android 静态稿、控件状态、视觉变量、双语文案和图标候选 |
 | [INSTALL_LOCAL.txt](docs/INSTALL_LOCAL.txt) | 第三方本地安装、首次配对和日常使用的最短步骤 |
 | [USER_GUIDE.md](docs/USER_GUIDE.md) | GitHub 用户使用说明：安装、配对、日常连接、访问模式、断开和排障 |

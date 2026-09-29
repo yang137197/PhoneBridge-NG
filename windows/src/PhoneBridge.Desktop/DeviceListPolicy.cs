@@ -15,6 +15,9 @@ internal sealed record DevicePresence(DevicePresenceKind Kind, IReadOnlyList<str
 
 internal static class DeviceListPolicy
 {
+    internal static bool RowsChanged<T>(IEnumerable<T>? current, IReadOnlyList<T> next) =>
+        current is null || !current.SequenceEqual(next);
+
     internal static bool IncludeCandidate(bool pairingWindowOpen, bool hasSavedPairing) =>
         pairingWindowOpen || hasSavedPairing;
 

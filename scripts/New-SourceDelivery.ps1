@@ -18,8 +18,8 @@ $runDirectory = Join-Path $projectRoot '.audit\runs\P2-019'
 $archiveName = "PhoneBridge-NG-$productVersion-source.zip"
 $archiveRoot = "PhoneBridge-NG-$productVersion-source"
 $expectedCertificate = '66FF69D71637D215C2F104DB95B93CC1F991FA1F23580F95AF3316B0763B14D4'
-$expectedApkHash = 'B14E116C23FA6F1C71A53183A9A8FA5E04BB5B3B83B9A412EE8F257DB51A755D'
-$expectedInstallerHash = '4512419B6441DA0CBF7A60A5285F5AE09485EE196414B6083511717B003AF774'
+$expectedApkHash = '578E135C03EED32C8EC70ECAB4EDCAE023F4637E7A0BB1B7C4F03909B693DD1F'
+$expectedInstallerHash = '3461D050CE4FA09B5A02C1A1F7E0B39E02F2F02FE40E24A0117E5090A012C13E'
 $fixedTimestamp = [DateTimeOffset]::new(2000, 1, 1, 0, 0, 0, [TimeSpan]::Zero)
 $utf8 = [Text.UTF8Encoding]::new($false)
 

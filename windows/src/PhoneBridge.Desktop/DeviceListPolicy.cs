@@ -1,3 +1,5 @@
+using PhoneBridge.Discovery;
+
 namespace PhoneBridge.Desktop;
 
 internal enum MountSummaryKind { None, Starting, RecoveringWrites, Mounted, Stopping, StopFailed }
@@ -5,6 +7,11 @@ internal sealed record DeviceMountStatus(string DeviceId, string DisplayName, st
     PhoneBridge.Mounting.MountSnapshot Mount, char? Drive);
 internal sealed record MountedDeviceSummary(string DeviceId, string DisplayName, char Drive);
 internal sealed record MountSummary(MountSummaryKind Kind, IReadOnlyList<MountedDeviceSummary> Devices, string? ErrorCode = null);
+internal enum DevicePresenceKind { NotFound, SavedAddress, Discovered, Connected }
+internal sealed record DevicePresence(DevicePresenceKind Kind, IReadOnlyList<string> Addresses)
+{
+    internal bool CanConnect => Kind is not DevicePresenceKind.NotFound;
+}
 
 internal static class DeviceListPolicy
 {
@@ -17,6 +24,24 @@ internal static class DeviceListPolicy
 
     internal static string StableRowId(string candidateId, string deviceId, bool hasSavedPairing) =>
         hasSavedPairing ? deviceId : candidateId;
+
+    internal static DevicePresence ResolvePresence(bool connected, DeviceEndpoint? activeEndpoint,
+        IEnumerable<DeviceEndpoint>? discovered, string? lastVerifiedAddress, int? lastVerifiedPort)
+    {
+        if (connected)
+            return new(DevicePresenceKind.Connected,
+                activeEndpoint is null ? [] : [activeEndpoint.Address]);
+        var current = (discovered ?? []).Select(endpoint => endpoint.Address)
+            .Distinct(StringComparer.Ordinal).ToArray();
+        if (current.Length > 0) return new(DevicePresenceKind.Discovered, current);
+        return string.IsNullOrEmpty(lastVerifiedAddress) || lastVerifiedPort is null
+            ? new(DevicePresenceKind.NotFound, [])
+            : new(DevicePresenceKind.SavedAddress, [lastVerifiedAddress]);
+    }
+
+    internal static int CountRefreshedDevices(IEnumerable<string> discoveredKeys,
+        IEnumerable<string> verifiedDeviceIds) => discoveredKeys.Concat(verifiedDeviceIds)
+        .Distinct(StringComparer.Ordinal).Count();
 
     internal static MountSummary SummarizeMounts(IEnumerable<DeviceMountStatus> sessions)
     {

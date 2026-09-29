@@ -115,6 +115,7 @@ public sealed class ConnectionClient : IAsyncDisposable
         var record = store.Load(deviceId);
         using var api = new DeviceApi(record.Identity, endpoint);
         record = await ValidateAsync(api, record, progress, cancellationToken).ConfigureAwait(false);
+        record = store.UpdateVerifiedEndpoint(record, endpoint.Address, endpoint.Port);
         await MountAsync(record, endpoint, options, progress, cancellationToken).ConfigureAwait(false);
         return record;
     }, cancellationToken);

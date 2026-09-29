@@ -25,6 +25,9 @@ public sealed class CandidateRegistry
     public DiscoveryChange? RemoveService(string serviceKey, string reason = "service-removed") =>
         Remove(CandidateParser.Key(CandidateSource.Mdns, serviceKey), reason);
 
+    public DeviceCandidate? FindService(string serviceKey) =>
+        candidates.GetValueOrDefault(CandidateParser.Key(CandidateSource.Mdns, serviceKey));
+
     public IReadOnlyList<DiscoveryChange> CompleteScan(IReadOnlySet<string> observed)
     {
         var changes = new List<DiscoveryChange>();
@@ -37,6 +40,10 @@ public sealed class CandidateRegistry
         }
         return changes;
     }
+
+    public IReadOnlyList<DeviceCandidate> CandidatesRequiringVerification(IReadOnlySet<string> observed) =>
+        candidates.Values.Where(candidate => candidate.Source == CandidateSource.Mdns &&
+            !observed.Contains(candidate.Id) && missedScans.GetValueOrDefault(candidate.Id) == 1).ToArray();
 
     public IReadOnlyList<DiscoveryChange> Clear(string reason, CandidateSource? source = null)
     {

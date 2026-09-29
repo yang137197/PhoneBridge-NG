@@ -117,6 +117,18 @@ public sealed class PairingStore
         record.Metadata=current.WithLocalMetadata(deviceAlias,note,preferredDrive);Commit(files,record,true);return record.Metadata;
     });
 
+    /// <summary>Caller must first authenticate this exact endpoint with the saved CA and credential.</summary>
+    public PairingRecord UpdateVerifiedEndpoint(PairingRecord expected,string address,int port) => Run(false,files=>
+    {
+        RecordRules.VerifiedEndpoint(address,port);
+        using var record=Read(files,expected.DeviceId);var current=record.Metadata;
+        if(current.ClientId!=expected.ClientId)throw new CredentialStoreException(StoreError.IdentityMismatch);
+        if(current.Revision!=expected.Revision)throw new CredentialStoreException(StoreError.RevisionConflict);
+        if(current.State!=PairingRecordState.Active)throw new CredentialStoreException(StoreError.StateConflict);
+        if(current.LastVerifiedAddress==address&&current.LastVerifiedPort==port)return current;
+        record.Metadata=current.WithVerifiedEndpoint(address,port);Commit(files,record,true);return record.Metadata;
+    });
+
     private PairingRecord Change(PairingRecord expected,PairingRecordState state,AccessMode mode) => Run(false,files=>
     {
         using var record=Read(files,expected.DeviceId);var current=record.Metadata;
@@ -155,6 +167,8 @@ public sealed class PairingStore
                 committed.Metadata.State!=record.Metadata.State || committed.Metadata.Mode!=record.Metadata.Mode ||
                 committed.Metadata.DeviceAlias!=record.Metadata.DeviceAlias || committed.Metadata.Note!=record.Metadata.Note ||
                 committed.Metadata.PreferredDrive!=record.Metadata.PreferredDrive ||
+                committed.Metadata.LastVerifiedAddress!=record.Metadata.LastVerifiedAddress ||
+                committed.Metadata.LastVerifiedPort!=record.Metadata.LastVerifiedPort ||
                 !CryptographicOperations.FixedTimeEquals(committed.Token,record.Token)) throw new IOException();
         }
         catch { _uncertainWrite=true;throw new CredentialStoreException(StoreError.IoFailure); }

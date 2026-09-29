@@ -13,6 +13,7 @@ public sealed class DeviceSession : IAsyncDisposable
     private CancellationTokenSource? operationCancellation;
     private Task operation = Task.CompletedTask;
     private int supervisorBusy;
+    private TaskCompletionSource<bool>? supervisorCompletion;
 
     internal DeviceSession(string deviceId, int logContext, ConnectionClient client)
     {
@@ -25,9 +26,10 @@ public sealed class DeviceSession : IAsyncDisposable
     public int LogContext { get; }
     public ConnectionClient Client { get; }
     public ReconnectPolicy Reconnect { get; } = new();
+    public DeviceEndpoint? LastSuccessfulEndpoint { get; internal set; }
     public char? ReservedDrive { get; internal set; }
     public bool OperationInProgress { get { lock (operationGate) return operationCancellation is not null; } }
-    public bool SupervisorBusy => Volatile.Read(ref supervisorBusy) != 0;
+    public bool SupervisorBusy { get { lock (operationGate) return supervisorBusy != 0; } }
 
     public Task StartOperation(Func<CancellationToken, Task> work, CancellationToken applicationLifetime)
     {
@@ -37,16 +39,22 @@ public sealed class DeviceSession : IAsyncDisposable
             if (operationCancellation is not null) throw new ConnectionException("operation-in-progress");
             var owned = CancellationTokenSource.CreateLinkedTokenSource(applicationLifetime);
             operationCancellation = owned;
-            operation = RunOwnedAsync(work, owned);
+            Task supervisor = supervisorCompletion?.Task ?? Task.CompletedTask;
+            operation = RunOwnedAsync(work, owned, supervisor);
             return operation;
         }
     }
 
-    private async Task RunOwnedAsync(Func<CancellationToken, Task> work, CancellationTokenSource owned)
+    private async Task RunOwnedAsync(Func<CancellationToken, Task> work, CancellationTokenSource owned,
+        Task supervisor)
     {
         // Let StartOperation publish the task and cancellation owner before completion can run.
         await Task.Yield();
-        try { await work(owned.Token).ConfigureAwait(false); }
+        try
+        {
+            await supervisor.WaitAsync(owned.Token).ConfigureAwait(false);
+            await work(owned.Token).ConfigureAwait(false);
+        }
         finally
         {
             lock (operationGate)
@@ -67,8 +75,29 @@ public sealed class DeviceSession : IAsyncDisposable
         lock (operationGate) return operation;
     }
 
-    public bool TryEnterSupervisor() => Interlocked.CompareExchange(ref supervisorBusy, 1, 0) == 0;
-    public void ExitSupervisor() => Volatile.Write(ref supervisorBusy, 0);
+    public bool TryEnterSupervisor()
+    {
+        lock (operationGate)
+        {
+            if (operationCancellation is not null || supervisorBusy != 0) return false;
+            supervisorBusy = 1;
+            supervisorCompletion = new(TaskCreationOptions.RunContinuationsAsynchronously);
+            return true;
+        }
+    }
+
+    public void ExitSupervisor()
+    {
+        TaskCompletionSource<bool>? completion;
+        lock (operationGate)
+        {
+            if (supervisorBusy == 0) return;
+            supervisorBusy = 0;
+            completion = supervisorCompletion;
+            supervisorCompletion = null;
+        }
+        completion?.TrySetResult(true);
+    }
 
     public async ValueTask DisposeAsync()
     {
@@ -110,6 +139,14 @@ public sealed class DeviceSessionCoordinator(PairingStore store) : IAsyncDisposa
         lock (gate) return sessions.TryGetValue(deviceId, out session);
     }
 
+    public void RestoreVerifiedEndpoint(PairingRecord record)
+    {
+        ArgumentNullException.ThrowIfNull(record);
+        var session = GetOrCreate(record.DeviceId);
+        session.LastSuccessfulEndpoint = record.LastVerifiedPort is { } port
+            ? new DeviceEndpoint(record.LastVerifiedAddress, port) : null;
+    }
+
     public Task<IReadOnlyList<PairingRecord>> RecordsAsync() => Task.Run(store.List);
 
     public Task<PairingRecord> UpdateDeviceSettingsAsync(string deviceId, string note, char? preferredDrive) =>
@@ -122,7 +159,9 @@ public sealed class DeviceSessionCoordinator(PairingStore store) : IAsyncDisposa
         bool acquiredDrive = ReserveDrive(session, options.DriveLetter);
         try
         {
-            return await session.Client.ConnectAsync(deviceId, endpoint, options, progress, cancellationToken).ConfigureAwait(false);
+            var record = await session.Client.ConnectAsync(deviceId, endpoint, options, progress, cancellationToken).ConfigureAwait(false);
+            session.LastSuccessfulEndpoint = endpoint;
+            return record;
         }
         catch
         {
@@ -144,6 +183,7 @@ public sealed class DeviceSessionCoordinator(PairingStore store) : IAsyncDisposa
         bool removed = await session.Client.RemoveLocallyAsync(deviceId).ConfigureAwait(false);
         ReleaseDrive(session);
         session.Reconnect.Suppress();
+        if (removed) session.LastSuccessfulEndpoint = null;
         return removed;
     }
 

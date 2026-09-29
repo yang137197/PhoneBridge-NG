@@ -17,7 +17,15 @@ public sealed class LocalizationTests
             "AutomaticDrive", "AutomaticDriveHelp", "DefaultDrive", "MountedSummary", "UnmountingDrive",
             "ReconnectWaiting", "ReconnectBackoff", "ReconnectStopped", "SharingStopped",
             "ConnectedDevicesSummary", "MountedDeviceItem", "MountedDevicesSummary",
-            "FooterNameSeparator", "FooterItemSeparator" })
+            "FooterNameSeparator", "FooterItemSeparator", "LegacyExplorerMigrationPrompt",
+            "LegacyExplorerMigrationCompleted", "LegacyExplorerMigrationFailed",
+            "LegacyExplorerMigrationInspectionFailed", "DeviceDiscovered", "SavedAddressAvailable",
+            "DeviceNotFound", "DeviceIp", "LastVerifiedDeviceIp", "MountedDrive", "RefreshingDevices",
+            "RefreshDevicesFound", "RefreshNoDevices", "RefreshFailed", "CurrentVersion", "CheckForUpdates",
+            "CheckingForUpdates", "UpdateIsCurrent", "UpdateAvailable", "UpdateDownloadPrompt",
+            "UpdateDownloading", "UpdateDownloaded", "UpdateInstallPrompt", "UpdateInstalling",
+            "UpdateCurrentVersionInvalid", "UpdateCheckFailed", "UpdateResponseInvalid", "UpdateAssetMissing",
+            "UpdateIntegrityFailed", "UpdateDownloadFailed" })
         {
             string en = TextCatalog.Get(key, english);
             string zh = TextCatalog.Get(key, chinese);

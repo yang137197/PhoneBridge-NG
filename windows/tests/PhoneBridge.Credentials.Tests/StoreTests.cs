@@ -123,19 +123,44 @@ public sealed class StoreTests
         var plain=CurrentUserProtection.Unprotect(File.ReadAllBytes(RecordPath),pending.DeviceId);
         try
         {
-            Assert.AreEqual(3,plain[4]);Assert.AreEqual(0,plain[^1]);
-            var schema1=plain[..^5];schema1[4]=1;
+            Assert.AreEqual(4,plain[4]);Assert.IsTrue(plain[^4..].All(value=>value==0));
+            var schema1=plain[..^9];schema1[4]=1;
             File.WriteAllBytes(RecordPath,CurrentUserProtection.Protect(schema1,pending.DeviceId));
             var restored1=PairingStore.OpenAt(_root).Load(pending.DeviceId);
-            Assert.AreEqual("",restored1.DeviceAlias);Assert.AreEqual("",restored1.Note);Assert.IsNull(restored1.PreferredDrive);
+            Assert.AreEqual("",restored1.DeviceAlias);Assert.AreEqual("",restored1.Note);Assert.IsNull(restored1.PreferredDrive);Assert.IsNull(restored1.LastVerifiedPort);
 
-            var schema2=plain[..^1];schema2[4]=2;
+            var schema2=plain[..^5];schema2[4]=2;
             File.WriteAllBytes(RecordPath,CurrentUserProtection.Protect(schema2,pending.DeviceId));
             var restored2=PairingStore.OpenAt(_root).Load(pending.DeviceId);
-            Assert.AreEqual("",restored2.DeviceAlias);Assert.AreEqual("",restored2.Note);Assert.IsNull(restored2.PreferredDrive);
-            CryptographicOperations.ZeroMemory(schema1);CryptographicOperations.ZeroMemory(schema2);
+            Assert.AreEqual("",restored2.DeviceAlias);Assert.AreEqual("",restored2.Note);Assert.IsNull(restored2.PreferredDrive);Assert.IsNull(restored2.LastVerifiedPort);
+
+            var schema3=plain[..^4];schema3[4]=3;
+            File.WriteAllBytes(RecordPath,CurrentUserProtection.Protect(schema3,pending.DeviceId));
+            var restored3=PairingStore.OpenAt(_root).Load(pending.DeviceId);
+            Assert.IsNull(restored3.LastVerifiedPort);Assert.AreEqual("",restored3.LastVerifiedAddress);
+            CryptographicOperations.ZeroMemory(schema1);CryptographicOperations.ZeroMemory(schema2);CryptographicOperations.ZeroMemory(schema3);
         }
         finally { CryptographicOperations.ZeroMemory(plain); }
+    }
+
+    [TestMethod]
+    public void StrictlyVerifiedEndpointPersistsAndPreservesOtherMetadata()
+    {
+        var store=PairingStore.OpenAt(_root);var active=Active(store);
+        var updated=store.UpdateVerifiedEndpoint(active,"192.168.1.40",8273);
+        Assert.AreEqual(active.Revision+1,updated.Revision);
+        Assert.AreEqual("192.168.1.40",updated.LastVerifiedAddress);Assert.AreEqual(8273,updated.LastVerifiedPort);
+        var unchanged=store.UpdateVerifiedEndpoint(updated,"192.168.1.40",8273);
+        Assert.AreEqual(updated.Revision,unchanged.Revision);
+        var metadata=store.UpdateLocalSettings(unchanged,"K40","",'E');
+        Assert.AreEqual("192.168.1.40",metadata.LastVerifiedAddress);Assert.AreEqual(8273,metadata.LastVerifiedPort);
+        var restored=PairingStore.OpenAt(_root).Load(active.DeviceId);
+        Assert.AreEqual("K40",restored.DeviceAlias);Assert.AreEqual('E',restored.PreferredDrive);
+        Assert.AreEqual("192.168.1.40",restored.LastVerifiedAddress);Assert.AreEqual(8273,restored.LastVerifiedPort);
+        Error(StoreError.RevisionConflict,()=>store.UpdateVerifiedEndpoint(active,"192.168.1.41",8273));
+        Error(StoreError.InvalidInput,()=>store.UpdateVerifiedEndpoint(restored,"127.0.0.1",8273));
+        Error(StoreError.InvalidInput,()=>store.UpdateVerifiedEndpoint(restored,"https://192.168.1.40",8273));
+        Error(StoreError.InvalidInput,()=>store.UpdateVerifiedEndpoint(restored,"192.168.1.40",0));
     }
     [TestMethod]
     public void PendingPersistsWithoutPlaintextAndCannotMount()
@@ -280,10 +305,10 @@ public sealed class StoreTests
             int n=BinaryPrimitives.ReadUInt16BigEndian(plain.AsSpan(15));
             switch(mutation)
             {
-                case "wrong-magic":plain[0]^=1;break;case "version":plain[4]=4;break;case "revision":Array.Clear(plain,5,8);break;
+                case "wrong-magic":plain[0]^=1;break;case "version":plain[4]=5;break;case "revision":Array.Clear(plain,5,8);break;
                 case "state":plain[13]=255;break;case "mode":plain[14]=255;break;case "ca-hash":plain[17+n]^=1;break;
                 case "device":plain[49+n]^=1;break;case "utf8":plain[168+n]=255;break;
-                case "drive":plain[^1]=(byte)'C';break;
+                case "drive":plain[^5]=(byte)'C';break;
                 case "trailing":var longer=new byte[plain.Length+1];plain.CopyTo(longer,0);CryptographicOperations.ZeroMemory(plain);plain=longer;break;
                 case "short":CryptographicOperations.ZeroMemory(plain);plain=[1];break;
             }

@@ -11,6 +11,10 @@ import java.util.UUID
 
 // PhoneBridge NG, 2026-09-19. SPDX-License-Identifier: GPL-3.0-or-later
 internal data class SharedEntry(val path: SharedPath, val directory: Boolean, val size: Long, val modified: Long)
+internal data class StorageQuota(val totalBytes: Long, val availableBytes: Long) {
+    init { require(totalBytes > 0 && availableBytes in 0..totalBytes) }
+    val usedBytes: Long get() = totalBytes - availableBytes
+}
 internal data class DeleteSnapshot(val entry: SharedEntry, internal val digest: ByteArray)
 internal typealias StorageCommit = ((() -> Unit) -> Unit)
 
@@ -83,6 +87,14 @@ internal class SharedStorage(rootDir: File) : Closeable {
     @Synchronized fun info(path: SharedPath): SharedEntry {
         if (path.isRoot) return entry(path, Os.fstat(root.fileDescriptor))
         return directory(path.parts.dropLast(1)).use { entry(path, required(child(it, path.name))) }
+    }
+
+    @Synchronized fun quota(): StorageQuota {
+        check(!closed) { "Storage closed" }
+        val stats = Os.fstatvfs(root.fileDescriptor)
+        val total = Math.multiplyExact(stats.f_frsize, stats.f_blocks)
+        val available = Math.multiplyExact(stats.f_frsize, stats.f_bavail)
+        return StorageQuota(total, available)
     }
 
     @Synchronized fun list(path: SharedPath): List<SharedEntry> = directory(path.parts).use { dir ->

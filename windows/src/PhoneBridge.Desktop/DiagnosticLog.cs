@@ -17,20 +17,21 @@ internal enum DiagnosticEventName
     PairingStarted, AuthenticationCompleted, ConnectionStarted, ConnectionCompleted,
     MountStateChanged, RcloneExited, WinFspChecked, NetworkCheckCompleted,
     ReconnectScheduled, TrayVisibilityChanged, StartupSettingChanged,
-    DiagnosticExportCompleted, DiagnosticExportFailed, ManualEndpointChanged, DeviceMetadataChanged
+    DiagnosticExportCompleted, DiagnosticExportFailed, ManualEndpointChanged, DeviceMetadataChanged,
+    ExplorerMigrationChanged, UpdateChanged
 }
 internal enum DiagnosticResultCode
 {
     None, Success, Failure, Cancelled, Timeout, Unauthorized, IdentityMismatch,
     InvalidResponse, RecordChanged, DriveOccupied, DriveReserved, WinFspMissing,
     RcloneIntegrity, PendingWrites, RecoveryStalled, RecoveryTimeout, RecoveryCancelled,
-    UnmountUnconfirmed, StorageFailure, Ambiguous
+    UnmountUnconfirmed, StorageFailure, Ambiguous, IntegrityFailure
 }
 internal enum DiagnosticState
 {
     None, Manual, Startup, Added, Updated, Removed, Checking, Healthy, Lost,
     Starting, Recovering, Mounted, Stopping, Stopped, Failed, Hidden, Visible, Enabled,
-    Disabled, Waiting
+    Disabled, Waiting, Available, Downloaded
 }
 
 internal readonly record struct DiagnosticEvent(

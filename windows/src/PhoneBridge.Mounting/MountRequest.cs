@@ -68,7 +68,6 @@ public sealed class MountRequest
     public string CacheRoot { get; }
     public MountAccessMode AccessMode { get; }
     public string VolumeName { get; }
-    internal string NetworkVolumeName => $@"\\pbng-{Identity.Sha256[..10]}\{VolumeName}";
     internal string WebDavUrl => Endpoint.HttpsAddress + string.Join('/',
         RemoteDirectory.Split('/', StringSplitOptions.RemoveEmptyEntries).Select(Uri.EscapeDataString)) +
         (RemoteDirectory.Length == 0 ? "" : "/");

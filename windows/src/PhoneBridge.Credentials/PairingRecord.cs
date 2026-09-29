@@ -1,4 +1,6 @@
 using System.Globalization;
+using System.Net;
+using System.Net.Sockets;
 using System.Security.Cryptography;
 using System.Text;
 using Org.BouncyCastle.Asn1;
@@ -57,24 +59,30 @@ public sealed class PairingRecord
     public string Note { get; }
     public string DisplayName => DeviceAlias.Length == 0 ? DeviceName : DeviceAlias;
     public char? PreferredDrive { get; }
+    public string LastVerifiedAddress { get; }
+    public int? LastVerifiedPort { get; }
     public string ClientName { get; }
     public PairingRecordState State { get; }
     public AccessMode Mode { get; }
     public ulong Revision { get; }
     public bool CanMount => State==PairingRecordState.Active;
     internal PairingRecord(ValidatedDeviceIdentity identity,string client,string deviceName,string clientName,PairingRecordState state,AccessMode mode,ulong revision,
-        string deviceAlias="",string note="",char? preferredDrive=null)
+        string deviceAlias="",string note="",char? preferredDrive=null,string lastVerifiedAddress="",int? lastVerifiedPort=null)
     {
         if (!RecordRules.Hex(client,32) || !Enum.IsDefined(state) || !Enum.IsDefined(mode) || revision==0) throw new CredentialStoreException(StoreError.InvalidInput);
         if (preferredDrive is not null && preferredDrive is < 'D' or > 'Z') throw new CredentialStoreException(StoreError.InvalidInput);
         RecordRules.Name(deviceName);RecordRules.Name(clientName);RecordRules.OptionalText(deviceAlias,64,128);RecordRules.OptionalText(note,500,1024);
+        RecordRules.VerifiedEndpoint(lastVerifiedAddress,lastVerifiedPort);
         Identity=identity;ClientId=client;DeviceName=deviceName;DeviceAlias=deviceAlias;Note=note;PreferredDrive=preferredDrive;
+        LastVerifiedAddress=lastVerifiedAddress;LastVerifiedPort=lastVerifiedPort;
         ClientName=clientName;State=state;Mode=mode;Revision=revision;
     }
     internal PairingRecord WithState(PairingRecordState state,AccessMode mode) =>
-        new(Identity,ClientId,DeviceName,ClientName,state,mode,checked(Revision+1),DeviceAlias,Note,PreferredDrive);
+        new(Identity,ClientId,DeviceName,ClientName,state,mode,checked(Revision+1),DeviceAlias,Note,PreferredDrive,LastVerifiedAddress,LastVerifiedPort);
     internal PairingRecord WithLocalMetadata(string deviceAlias,string note,char? preferredDrive) =>
-        new(Identity,ClientId,DeviceName,ClientName,State,Mode,checked(Revision+1),deviceAlias,note,preferredDrive);
+        new(Identity,ClientId,DeviceName,ClientName,State,Mode,checked(Revision+1),deviceAlias,note,preferredDrive,LastVerifiedAddress,LastVerifiedPort);
+    internal PairingRecord WithVerifiedEndpoint(string address,int port) =>
+        new(Identity,ClientId,DeviceName,ClientName,State,Mode,checked(Revision+1),DeviceAlias,Note,PreferredDrive,address,port);
     public override string ToString() => "PairingRecord(redacted)";
 }
 
@@ -118,6 +126,19 @@ internal static class RecordRules
             int count=0;
             foreach(var rune in value.EnumerateRunes())
                 if(++count>maxRunes || Rune.GetUnicodeCategory(rune) is UnicodeCategory.Control or UnicodeCategory.Format)throw new InvalidDataException();
+        }
+        catch { throw new CredentialStoreException(StoreError.InvalidInput); }
+    }
+    internal static void VerifiedEndpoint(string address,int? port)
+    {
+        try
+        {
+            if(address.Length==0&&port is null)return;
+            if(address.Length is 0 or >80||port is null or <1 or >65535||address!=address.Trim()||
+                !IPAddress.TryParse(address,out var ip)||address!=ip.ToString()||IPAddress.IsLoopback(ip)||
+                ip.Equals(IPAddress.Any)||ip.Equals(IPAddress.IPv6Any)||ip.IsIPv6Multicast||
+                ip.AddressFamily==AddressFamily.InterNetwork&&ip.GetAddressBytes()[0] is 0 or >=224||
+                ip.IsIPv6LinkLocal&&ip.ScopeId==0)throw new InvalidDataException();
         }
         catch { throw new CredentialStoreException(StoreError.InvalidInput); }
     }

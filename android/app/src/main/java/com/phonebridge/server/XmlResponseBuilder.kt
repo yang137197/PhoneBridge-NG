@@ -8,7 +8,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 internal object XmlResponseBuilder {
-    fun buildPropfindResponse(entries: List<SharedEntry>): String = buildString {
+    fun buildPropfindResponse(entries: List<SharedEntry>, quota: StorageQuota? = null): String = buildString {
         append("<?xml version=\"1.0\" encoding=\"utf-8\"?><D:multistatus xmlns:D=\"DAV:\">")
         val format = SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss 'GMT'", Locale.US).apply {
             timeZone = TimeZone.getTimeZone("GMT")
@@ -17,6 +17,10 @@ internal object XmlResponseBuilder {
             append("<D:response><D:href>${href(item)}</D:href><D:propstat><D:prop>")
             append("<D:displayname>${escapeXml(item.path.name)}</D:displayname>")
             append("<D:getlastmodified>${format.format(Date(item.modified))}</D:getlastmodified>")
+            if (item.path.isRoot && quota != null) {
+                append("<D:quota-available-bytes>${quota.availableBytes}</D:quota-available-bytes>")
+                append("<D:quota-used-bytes>${quota.usedBytes}</D:quota-used-bytes>")
+            }
             if (item.directory) append("<D:resourcetype><D:collection/></D:resourcetype>") else {
                 append("<D:getcontentlength>${item.size}</D:getcontentlength>")
                 append("<D:getcontenttype>${guessMimeType(item.path.name)}</D:getcontenttype><D:resourcetype/>")

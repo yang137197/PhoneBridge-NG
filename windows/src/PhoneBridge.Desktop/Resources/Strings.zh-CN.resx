@@ -26,6 +26,10 @@
   <data name="delete-cancelled" xml:space="preserve"><value>已取消删除，手机文件未改动。</value></data>
   <data name="invalid-delete-path" xml:space="preserve"><value>请输入共享目录内以 / 开头的具体路径，不能选择共享根。</value></data>
   <data name="Refresh" xml:space="preserve"><value>刷新</value></data>
+  <data name="RefreshingDevices" xml:space="preserve"><value>正在刷新设备…</value></data>
+  <data name="RefreshDevicesFound" xml:space="preserve"><value>刷新完成，找到 {0} 台设备。</value></data>
+  <data name="RefreshNoDevices" xml:space="preserve"><value>刷新完成，未发现正在共享的设备。</value></data>
+  <data name="RefreshFailed" xml:space="preserve"><value>刷新失败，设备发现已停止。请检查网络后重新打开客户端。</value></data>
   <data name="Devices" xml:space="preserve"><value>附近手机与已保存配对</value></data>
   <data name="DeviceName" xml:space="preserve"><value>设备</value></data>
   <data name="DeviceState" xml:space="preserve"><value>状态</value></data>
@@ -43,6 +47,10 @@
   <data name="PairingCompleted" xml:space="preserve"><value>配对已完成。请先在手机上开始共享，再点击“连接”。</value></data>
   <data name="OperationCancelled" xml:space="preserve"><value>已取消。未确认的远端授权保持本地禁用，请查看配对状态。</value></data>
   <data name="AlreadyRunning" xml:space="preserve"><value>当前用户已运行 PhoneBridge NG。</value></data>
+  <data name="LegacyExplorerMigrationPrompt" xml:space="preserve"><value>检测到旧版本创建的网络盘显示缓存。为避免“此电脑”继续显示带红叉的旧盘符，需要关闭并重新启动 Windows 资源管理器，这会关闭所有文件管理器窗口。请先完成正在进行的复制或移动，然后点击“确定”；点击“取消”可推迟到下次启动。</value></data>
+  <data name="LegacyExplorerMigrationCompleted" xml:space="preserve"><value>旧版盘符显示缓存已清理，Windows 资源管理器已重新启动。</value></data>
+  <data name="LegacyExplorerMigrationFailed" xml:space="preserve"><value>旧版盘符显示缓存已清理，但无法重新启动 Windows 资源管理器。请在连接手机前注销并重新登录 Windows，或重启电脑。</value></data>
+  <data name="LegacyExplorerMigrationInspectionFailed" xml:space="preserve"><value>无法检查旧版盘符显示缓存。为避免错误显示，请导出诊断包后重试。</value></data>
   <data name="DiscoveryFailed" xml:space="preserve"><value>设备发现已停止。请检查网络后重新打开客户端。</value></data>
   <data name="StoreFailed" xml:space="preserve"><value>无法读取或更新受保护配对记录。连接已禁用，记录未被自动替换。</value></data>
   <data name="OperationFailed" xml:space="preserve"><value>操作未完成。请检查手机共享和 Wi-Fi 后重试，已保存配对状态会保留。</value></data>
@@ -147,6 +155,12 @@
   <data name="ContinueConnecting" xml:space="preserve"><value>继续连接</value></data>
   <data name="ConnectedState" xml:space="preserve"><value>已连接</value></data>
   <data name="NotConnected" xml:space="preserve"><value>未连接</value></data>
+  <data name="DeviceDiscovered" xml:space="preserve"><value>已查找到设备，可连接</value></data>
+  <data name="SavedAddressAvailable" xml:space="preserve"><value>未发现实时共享，可尝试连接</value></data>
+  <data name="DeviceNotFound" xml:space="preserve"><value>未查找到设备，请检查手机打开共享</value></data>
+  <data name="DeviceIp" xml:space="preserve"><value>设备 IP：{0}</value></data>
+  <data name="LastVerifiedDeviceIp" xml:space="preserve"><value>上次连接 IP：{0}</value></data>
+  <data name="MountedDrive" xml:space="preserve"><value>挂载盘符：{0}:\</value></data>
   <data name="Back" xml:space="preserve"><value>返回</value></data>
   <data name="AddPhoneSteps" xml:space="preserve"><value>1 手机打开配对    ·    2 选择手机    ·    3 输入配对码    ·    4 手机批准</value></data>
   <data name="ChoosePhoneFirst" xml:space="preserve"><value>请选择附近手机</value></data>
@@ -179,7 +193,22 @@
   <data name="IdentityStillVerified" xml:space="preserve"><value>请先选择已配对手机；连接仍会验证已保存的设备身份。</value></data>
   <data name="Diagnostics" xml:space="preserve"><value>诊断</value></data>
   <data name="DiagnosticsNotUploaded" xml:space="preserve"><value>诊断包只保存到本机，不会自动上传。</value></data>
-  <data name="VersionPreview" xml:space="preserve"><value>v0.2.4</value></data>
+  <data name="CurrentVersion" xml:space="preserve"><value>当前版本：{0}</value></data>
+  <data name="CheckForUpdates" xml:space="preserve"><value>检查更新</value></data>
+  <data name="CheckingForUpdates" xml:space="preserve"><value>正在检查更新…</value></data>
+  <data name="UpdateIsCurrent" xml:space="preserve"><value>当前已是最新版本。</value></data>
+  <data name="UpdateAvailable" xml:space="preserve"><value>发现新版本 {0}。</value></data>
+  <data name="UpdateDownloadPrompt" xml:space="preserve"><value>当前版本：{0}&#xA;最新版本：{1}&#xA;&#xA;是否从 PhoneBridge NG 官方 GitHub Release 下载？</value></data>
+  <data name="UpdateDownloading" xml:space="preserve"><value>正在下载版本 {0}…</value></data>
+  <data name="UpdateDownloaded" xml:space="preserve"><value>版本 {0} 已下载并通过完整性校验。</value></data>
+  <data name="UpdateInstallPrompt" xml:space="preserve"><value>是否立即安装？程序会先安全断开所有设备并退出，然后打开安装向导。</value></data>
+  <data name="UpdateInstalling" xml:space="preserve"><value>正在安全退出并打开安装程序…</value></data>
+  <data name="UpdateCurrentVersionInvalid" xml:space="preserve"><value>无法识别当前版本，未检查更新。</value></data>
+  <data name="UpdateCheckFailed" xml:space="preserve"><value>检查更新失败，请检查网络后重试。</value></data>
+  <data name="UpdateResponseInvalid" xml:space="preserve"><value>更新信息不完整或格式无效，未下载。</value></data>
+  <data name="UpdateAssetMissing" xml:space="preserve"><value>最新版本没有对应的 Windows 安装器。</value></data>
+  <data name="UpdateIntegrityFailed" xml:space="preserve"><value>安装器完整性校验失败，已停止安装。</value></data>
+  <data name="UpdateDownloadFailed" xml:space="preserve"><value>更新下载失败，请稍后重试。</value></data>
   <data name="ProjectAndLicense" xml:space="preserve"><value>项目与许可</value></data>
   <data name="LicenseSummary" xml:space="preserve"><value>PhoneBridge NG 按 GPL-3.0-or-later 分发，包含 rclone 与 WinFsp；正式交付会提供通知和对应源码。</value></data>
   <data name="GitHubProject" xml:space="preserve"><value>打开 GitHub 项目</value></data>

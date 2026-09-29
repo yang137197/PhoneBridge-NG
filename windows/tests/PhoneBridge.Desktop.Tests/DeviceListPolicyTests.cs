@@ -1,5 +1,6 @@
 using System.Reflection;
 using PhoneBridge.Desktop;
+using PhoneBridge.Discovery;
 using PhoneBridge.Mounting;
 
 namespace PhoneBridge.Desktop.Tests;
@@ -33,6 +34,53 @@ public sealed class DeviceListPolicyTests
         Assert.AreEqual("phone-a", DeviceListPolicy.StableRowId("candidate-old", "phone-a", true));
         Assert.AreEqual("phone-a", DeviceListPolicy.StableRowId("candidate-new", "phone-a", true));
         Assert.AreEqual("candidate-new", DeviceListPolicy.StableRowId("candidate-new", "phone-a", false));
+    }
+
+    [TestMethod]
+    public void CardKeepsSavedVerifiedAddressDistinctFromLiveDiscovery()
+    {
+        var saved = DeviceListPolicy.ResolvePresence(false, null, null, "192.168.5.3", 8273);
+        Assert.AreEqual(DevicePresenceKind.SavedAddress, saved.Kind);
+        Assert.IsTrue(saved.CanConnect);
+        CollectionAssert.AreEqual(new[] { "192.168.5.3" }, saved.Addresses.ToArray());
+
+        var missing = DeviceListPolicy.ResolvePresence(false, null, null, "192.168.5.3", null);
+        Assert.AreEqual(DevicePresenceKind.NotFound, missing.Kind);
+        Assert.IsFalse(missing.CanConnect);
+        Assert.IsEmpty(missing.Addresses);
+    }
+
+    [TestMethod]
+    public void CurrentDiscoveryAddressesTakePrecedenceOverSavedAddress()
+    {
+        var current = new[]
+        {
+            new DeviceEndpoint("192.168.5.4", 8273),
+            new DeviceEndpoint("192.168.5.4", 8274),
+            new DeviceEndpoint("2001:db8::4", 8273)
+        };
+
+        var presence = DeviceListPolicy.ResolvePresence(false, null, current, "192.168.5.3", 8273);
+        Assert.AreEqual(DevicePresenceKind.Discovered, presence.Kind);
+        Assert.IsTrue(presence.CanConnect);
+        CollectionAssert.AreEqual(new[] { "192.168.5.4", "2001:db8::4" }, presence.Addresses.ToArray());
+    }
+
+    [TestMethod]
+    public void ConnectedCardUsesOnlyTheAuthenticatedActiveEndpoint()
+    {
+        var presence = DeviceListPolicy.ResolvePresence(true, new DeviceEndpoint("192.168.5.9", 8273),
+            [new DeviceEndpoint("192.168.5.4", 8273)], "192.168.5.3", 8273);
+        Assert.AreEqual(DevicePresenceKind.Connected, presence.Kind);
+        CollectionAssert.AreEqual(new[] { "192.168.5.9" }, presence.Addresses.ToArray());
+    }
+
+    [TestMethod]
+    public void RefreshCountUnionsLiveAndStrictlyVerifiedDevicesWithoutDuplicates()
+    {
+        Assert.AreEqual(3, DeviceListPolicy.CountRefreshedDevices(
+            ["phone-a", "unpaired-candidate"], ["phone-a", "phone-b"]));
+        Assert.AreEqual(0, DeviceListPolicy.CountRefreshedDevices([], []));
     }
 
     [TestMethod]
@@ -115,7 +163,7 @@ public sealed class DeviceListPolicyTests
     {
         Type type = typeof(MainWindow).GetNestedType("DeviceRow", BindingFlags.NonPublic)!;
         object NewRow(string id, bool busy) => Activator.CreateInstance(type, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic,
-            binder: null, args: [id, id, null, null, false, null, busy, false], culture: null)!;
+            binder: null, args: [id, id, null, null, false, null, null, busy, false], culture: null)!;
         object busy = NewRow("a", true);
         object other = NewRow("b", false);
         T Property<T>(object row, string name) => (T)type.GetProperty(name)!.GetValue(row)!;

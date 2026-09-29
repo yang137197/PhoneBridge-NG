@@ -23,19 +23,22 @@ internal sealed class ManualEndpointSession
 
     internal bool Clear(string deviceId) => endpoints.Remove(deviceId);
 
-    internal IReadOnlyList<DeviceEndpoint> Merge(string deviceId, IEnumerable<DeviceEndpoint> automatic)
+    internal IReadOnlyList<DeviceEndpoint> Merge(string deviceId, IEnumerable<DeviceEndpoint> automatic,
+        DeviceEndpoint? lastSuccessful = null)
     {
         var merged = automatic.Distinct().ToList();
         if (endpoints.TryGetValue(deviceId, out var manual) && !merged.Contains(manual)) merged.Add(manual);
+        if (lastSuccessful is not null && !merged.Contains(lastSuccessful)) merged.Add(lastSuccessful);
         return merged;
     }
 
-    internal DeviceEndpoint? SelectForReconnect(string deviceId, IEnumerable<DeviceCandidate> candidates)
+    internal DeviceEndpoint? SelectForReconnect(string deviceId, IEnumerable<DeviceCandidate> candidates,
+        DeviceEndpoint? lastSuccessful = null)
     {
         var discovered = candidates.FirstOrDefault(candidate => candidate.Protocol == CandidateProtocol.PairedV3 &&
             string.Equals(candidate.DeviceIdHint, deviceId, StringComparison.Ordinal));
         return discovered?.Endpoints.OrderBy(endpoint => endpoint.Address.Contains(':')).FirstOrDefault() ??
-            (endpoints.TryGetValue(deviceId, out var manual) ? manual : null);
+            (endpoints.TryGetValue(deviceId, out var manual) ? manual : lastSuccessful);
     }
 
     private static bool TryPort(string value, out int port)

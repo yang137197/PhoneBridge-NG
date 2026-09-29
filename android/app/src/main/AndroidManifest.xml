@@ -10,6 +10,7 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_CONNECTED_DEVICE" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
     <!-- Third-party distribution: core LAN serving is unreachable during Doze; see ADR-022 and API 36 evidence. -->
     <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" tools:ignore="BatteryLife" />
     <application android:allowBackup="false" android:fullBackupContent="@xml/pbng_backup_rules"
@@ -20,6 +21,7 @@
         <activity android:name=".MainActivity" android:exported="true">
             <intent-filter><action android:name="android.intent.action.MAIN" /><category android:name="android.intent.category.LAUNCHER" /></intent-filter>
         </activity>
+        <receiver android:name=".UpdateInstallReceiver" android:exported="false" />
         <service android:name=".SharingService" android:exported="false" android:foregroundServiceType="connectedDevice" />
     </application>
 </manifest>

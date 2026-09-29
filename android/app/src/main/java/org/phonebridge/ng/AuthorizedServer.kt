@@ -336,7 +336,8 @@ internal class AuthorizedServer(port: Int, root: File, private val fingerprint: 
             val depth = session.headers["depth"] ?: "1"
             if (depth !in setOf("0", "1")) throw ApiFailure(400, "invalid_request")
             val entries = listOf(info) + if (info.directory && depth == "1") storage.list(path).filter { !it.path.isRoot && it.path.parts.firstOrNull() != "phonebridge" } else emptyList()
-            return response(207, "application/xml; charset=utf-8", XmlResponseBuilder.buildPropfindResponse(entries)).also { it.addHeader("DAV", "1") }
+            val quota = if (path.isRoot) storage.quota() else null
+            return response(207, "application/xml; charset=utf-8", XmlResponseBuilder.buildPropfindResponse(entries, quota)).also { it.addHeader("DAV", "1") }
         }
         if (method == "HEAD") return response(200, if (info.directory) "httpd/unix-directory" else XmlResponseBuilder.guessMimeType(path.name), "")
             .also { if (!info.directory) it.addHeader("Content-Length", info.size.toString()) }

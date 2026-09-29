@@ -374,8 +374,8 @@ public sealed class MountTests
         CollectionAssert.DoesNotContain(info.ArgumentList.ToArray(), "--no-check-certificate");
         CollectionAssert.Contains(info.ArgumentList.ToArray(), @"C:\test folder\ca.pem");
         int volume = info.ArgumentList.IndexOf("--volname");
-        Assert.IsGreaterThanOrEqualTo(0, volume); Assert.AreEqual(request.NetworkVolumeName, info.ArgumentList[volume + 1]);
-        StringAssert.EndsWith(info.ArgumentList[volume + 1], @"\测试手机");
+        Assert.IsGreaterThanOrEqualTo(0, volume); Assert.AreEqual(request.VolumeName, info.ArgumentList[volume + 1]);
+        CollectionAssert.DoesNotContain(info.ArgumentList.ToArray(), "--network-mode");
         Assert.IsFalse(string.Join(' ', info.ArgumentList).Contains("secret", StringComparison.Ordinal));
         StringAssert.Contains(RcloneMountSession.ConfigText(request, "obscured-test"),
             "url = https://192.0.2.1:8443/test%20folder/%E4%B8%AD%E6%96%87/\n");
@@ -383,7 +383,7 @@ public sealed class MountTests
     }
 
     [TestMethod]
-    public void VolumeNameIsStableReadableBoundedAndValidForWindowsShares()
+    public void VolumeNameIsStableReadableBoundedAndValidForWindowsLabels()
     {
         Assert.AreEqual("我的_手机___", MountVolumeName.Normalize("  我的/手机:*?. "));
         Assert.AreEqual("PhoneBridge", MountVolumeName.Normalize(" ... "));
@@ -394,9 +394,7 @@ public sealed class MountTests
         var first = Request(volumeName: "我的手机");
         var second = Request(volumeName: "我的手机");
         Assert.AreEqual("我的手机", first.VolumeName);
-        Assert.AreNotEqual(first.NetworkVolumeName, second.NetworkVolumeName);
-        StringAssert.StartsWith(first.NetworkVolumeName, @"\\pbng-");
-        StringAssert.EndsWith(first.NetworkVolumeName, @"\我的手机");
+        Assert.AreEqual(first.VolumeName, second.VolumeName);
     }
 
     [TestMethod]

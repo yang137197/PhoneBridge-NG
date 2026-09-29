@@ -26,6 +26,10 @@
   <data name="delete-cancelled" xml:space="preserve"><value>Deletion cancelled. The phone item was not changed.</value></data>
   <data name="invalid-delete-path" xml:space="preserve"><value>Enter a specific path inside the share beginning with /. The share root cannot be deleted.</value></data>
   <data name="Refresh" xml:space="preserve"><value>Refresh</value></data>
+  <data name="RefreshingDevices" xml:space="preserve"><value>Refreshing devices…</value></data>
+  <data name="RefreshDevicesFound" xml:space="preserve"><value>Refresh complete. Found {0} device(s).</value></data>
+  <data name="RefreshNoDevices" xml:space="preserve"><value>Refresh complete. No devices currently sharing were found.</value></data>
+  <data name="RefreshFailed" xml:space="preserve"><value>Refresh failed and discovery stopped. Check the network, then restart the app.</value></data>
   <data name="Devices" xml:space="preserve"><value>Nearby phones and saved pairings</value></data>
   <data name="DeviceName" xml:space="preserve"><value>Phone</value></data>
   <data name="DeviceState" xml:space="preserve"><value>Status</value></data>
@@ -43,6 +47,10 @@
   <data name="PairingCompleted" xml:space="preserve"><value>Pairing completed. Start sharing on the phone, then select Connect.</value></data>
   <data name="OperationCancelled" xml:space="preserve"><value>Cancelled. Any unconfirmed remote authorization remains disabled locally; check the saved pairing status.</value></data>
   <data name="AlreadyRunning" xml:space="preserve"><value>PhoneBridge NG is already running for this user.</value></data>
+  <data name="LegacyExplorerMigrationPrompt" xml:space="preserve"><value>PhoneBridge found File Explorer display data left by an older network-drive version. Correcting stale or disconnected drive entries requires restarting Windows File Explorer, which will close all File Explorer windows. Finish any file copies or moves, then select OK. Select Cancel to postpone this until the next launch.</value></data>
+  <data name="LegacyExplorerMigrationCompleted" xml:space="preserve"><value>The old drive display data was removed and Windows File Explorer restarted.</value></data>
+  <data name="LegacyExplorerMigrationFailed" xml:space="preserve"><value>The old drive display data was removed, but Windows File Explorer could not be restarted. Sign out and back in, or restart Windows, before connecting the phone.</value></data>
+  <data name="LegacyExplorerMigrationInspectionFailed" xml:space="preserve"><value>PhoneBridge could not inspect the old drive display data. Export a diagnostic package and try again to avoid an incorrect drive display.</value></data>
   <data name="DiscoveryFailed" xml:space="preserve"><value>Discovery stopped. Check the network, then restart the app.</value></data>
   <data name="StoreFailed" xml:space="preserve"><value>Protected pairing records could not be read or updated. Connections are disabled; no records were replaced.</value></data>
   <data name="OperationFailed" xml:space="preserve"><value>Operation did not complete. Check phone sharing and Wi-Fi, then retry. Saved pairing state is retained.</value></data>
@@ -147,6 +155,12 @@
   <data name="ContinueConnecting" xml:space="preserve"><value>Continue connecting</value></data>
   <data name="ConnectedState" xml:space="preserve"><value>Connected</value></data>
   <data name="NotConnected" xml:space="preserve"><value>Not connected</value></data>
+  <data name="DeviceDiscovered" xml:space="preserve"><value>Device found. Ready to connect.</value></data>
+  <data name="SavedAddressAvailable" xml:space="preserve"><value>No live sharing announcement. You can try the last address.</value></data>
+  <data name="DeviceNotFound" xml:space="preserve"><value>Device not found. Check that sharing is started on the phone.</value></data>
+  <data name="DeviceIp" xml:space="preserve"><value>Device IP: {0}</value></data>
+  <data name="LastVerifiedDeviceIp" xml:space="preserve"><value>Last connected IP: {0}</value></data>
+  <data name="MountedDrive" xml:space="preserve"><value>Mounted drive: {0}:\</value></data>
   <data name="Back" xml:space="preserve"><value>Back</value></data>
   <data name="AddPhoneSteps" xml:space="preserve"><value>1 Open pairing on phone    ·    2 Choose phone    ·    3 Enter code    ·    4 Approve</value></data>
   <data name="ChoosePhoneFirst" xml:space="preserve"><value>Choose a nearby phone</value></data>
@@ -179,7 +193,22 @@
   <data name="IdentityStillVerified" xml:space="preserve"><value>Choose a saved phone first. Saved phone identity verification is still required.</value></data>
   <data name="Diagnostics" xml:space="preserve"><value>Diagnostics</value></data>
   <data name="DiagnosticsNotUploaded" xml:space="preserve"><value>The diagnostic bundle is saved locally and is not uploaded automatically.</value></data>
-  <data name="VersionPreview" xml:space="preserve"><value>v0.2.4</value></data>
+  <data name="CurrentVersion" xml:space="preserve"><value>Current version: {0}</value></data>
+  <data name="CheckForUpdates" xml:space="preserve"><value>Check for updates</value></data>
+  <data name="CheckingForUpdates" xml:space="preserve"><value>Checking for updates…</value></data>
+  <data name="UpdateIsCurrent" xml:space="preserve"><value>You already have the latest version.</value></data>
+  <data name="UpdateAvailable" xml:space="preserve"><value>Version {0} is available.</value></data>
+  <data name="UpdateDownloadPrompt" xml:space="preserve"><value>Current version: {0}&#xA;Latest version: {1}&#xA;&#xA;Download it from the official PhoneBridge NG GitHub Release?</value></data>
+  <data name="UpdateDownloading" xml:space="preserve"><value>Downloading version {0}…</value></data>
+  <data name="UpdateDownloaded" xml:space="preserve"><value>Version {0} was downloaded and passed its integrity check.</value></data>
+  <data name="UpdateInstallPrompt" xml:space="preserve"><value>Install now? The app will safely disconnect every device, exit, and then open the installer.</value></data>
+  <data name="UpdateInstalling" xml:space="preserve"><value>Safely exiting and opening the installer…</value></data>
+  <data name="UpdateCurrentVersionInvalid" xml:space="preserve"><value>The current version could not be identified. No update was checked.</value></data>
+  <data name="UpdateCheckFailed" xml:space="preserve"><value>Could not check for updates. Check the network and try again.</value></data>
+  <data name="UpdateResponseInvalid" xml:space="preserve"><value>The update metadata is incomplete or invalid. Nothing was downloaded.</value></data>
+  <data name="UpdateAssetMissing" xml:space="preserve"><value>The latest release does not contain the matching Windows installer.</value></data>
+  <data name="UpdateIntegrityFailed" xml:space="preserve"><value>The installer failed its integrity check. Installation was stopped.</value></data>
+  <data name="UpdateDownloadFailed" xml:space="preserve"><value>The update could not be downloaded. Try again later.</value></data>
   <data name="ProjectAndLicense" xml:space="preserve"><value>Project and license</value></data>
   <data name="LicenseSummary" xml:space="preserve"><value>PhoneBridge NG is distributed under GPL-3.0-or-later. It includes rclone and WinFsp; notices and source are provided with delivery builds.</value></data>
   <data name="GitHubProject" xml:space="preserve"><value>Open GitHub project</value></data>

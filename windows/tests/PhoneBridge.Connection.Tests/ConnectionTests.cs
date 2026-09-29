@@ -192,7 +192,11 @@ public sealed class ConnectionTests
         await Assert.ThrowsAsync<HttpRequestException>(() => client.PairAsync(server.Candidate, server.Endpoint, "01234567".ToCharArray(), "Synthetic PC", null, default));
         Assert.AreEqual(PairingRecordState.Pending, store.List().Single().State);
         await Assert.ThrowsAsync<MountException>(() => client.ConnectAsync(server.Identity.DeviceId, server.Endpoint, NoMount, null, default));
-        Assert.AreEqual(PairingRecordState.Active, store.List().Single().State); Assert.AreEqual(1, posts);
+        var recovered=store.List().Single();
+        Assert.AreEqual(PairingRecordState.Active, recovered.State);
+        Assert.AreEqual(server.Endpoint.Address, recovered.LastVerifiedAddress);
+        Assert.AreEqual(server.Endpoint.Port, recovered.LastVerifiedPort);
+        Assert.AreEqual(1, posts);
     }
     [TestMethod]
     public async Task OfflineRevokeCannotBeReactivatedOrMounted()
@@ -416,6 +420,63 @@ public sealed class ConnectionTests
         Assert.IsFalse(secondOperation.IsCompleted);
         second.CancelOperation();
         await Assert.ThrowsAsync<TaskCanceledException>(() => secondOperation);
+    }
+
+    [TestMethod]
+    public async Task CoordinatorRestoresOnlyTheStrictlyVerifiedEndpoint()
+    {
+        await using var server = new NetworkPeer(); var store = Store();
+        var record = store.CreatePending(server.Identity, new string('a', 32), "Phone", "PC");
+        record = store.ApplyVerifiedSession(record, record.DeviceId, record.ClientId, AccessMode.Safe);
+        await using var coordinator = new DeviceSessionCoordinator(store);
+        coordinator.RestoreVerifiedEndpoint(record);
+        Assert.IsNull(coordinator.GetOrCreate(record.DeviceId).LastSuccessfulEndpoint);
+
+        record = store.UpdateVerifiedEndpoint(record, server.Endpoint.Address, server.Endpoint.Port);
+        coordinator.RestoreVerifiedEndpoint(record);
+        Assert.AreEqual(server.Endpoint, coordinator.GetOrCreate(record.DeviceId).LastSuccessfulEndpoint);
+    }
+
+    [TestMethod]
+    public async Task UserOperationQueuesBehindActiveSupervisorWithoutBeingDropped()
+    {
+        var store = Store();
+        await using var coordinator = new DeviceSessionCoordinator(store);
+        var session = coordinator.GetOrCreate("device-a");
+        Assert.IsTrue(session.TryEnterSupervisor());
+        var started = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
+
+        Task operation = session.StartOperation(_ =>
+        {
+            started.TrySetResult(true);
+            return Task.CompletedTask;
+        }, CancellationToken.None);
+
+        await Task.Yield();
+        Assert.IsFalse(started.Task.IsCompleted);
+        Assert.IsTrue(session.OperationInProgress);
+        Assert.IsFalse(session.TryEnterSupervisor());
+
+        session.ExitSupervisor();
+        await operation.WaitAsync(TimeSpan.FromSeconds(5));
+        Assert.IsTrue(started.Task.IsCompletedSuccessfully);
+        Assert.IsFalse(session.OperationInProgress);
+    }
+
+    [TestMethod]
+    public async Task ActiveUserOperationPreventsSupervisorFromStarting()
+    {
+        var store = Store();
+        await using var coordinator = new DeviceSessionCoordinator(store);
+        var session = coordinator.GetOrCreate("device-a");
+        var release = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
+        Task operation = session.StartOperation(async _ => await release.Task, CancellationToken.None);
+
+        Assert.IsFalse(session.TryEnterSupervisor());
+        release.TrySetResult(true);
+        await operation.WaitAsync(TimeSpan.FromSeconds(5));
+        Assert.IsTrue(session.TryEnterSupervisor());
+        session.ExitSupervisor();
     }
 
     [TestMethod]

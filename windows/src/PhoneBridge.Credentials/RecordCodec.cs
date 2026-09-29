@@ -13,15 +13,17 @@ internal static class RecordCodec
         if (record.Token.Length!=32) throw new CredentialStoreException(StoreError.InvalidInput);
         var ca=m.Identity.CertificateDer;var device=RecordRules.Utf8.GetBytes(m.DeviceName);var client=RecordRules.Utf8.GetBytes(m.ClientName);
         var alias=RecordRules.Utf8.GetBytes(m.DeviceAlias);var note=RecordRules.Utf8.GetBytes(m.Note);
-        var result=new byte[4+1+8+1+1+2+ca.Length+32+69+16+32+2+device.Length+2+client.Length+2+alias.Length+2+note.Length+1];
+        var address=Encoding.ASCII.GetBytes(m.LastVerifiedAddress);
+        var result=new byte[4+1+8+1+1+2+ca.Length+32+69+16+32+2+device.Length+2+client.Length+2+alias.Length+2+note.Length+1+2+address.Length+2];
         int p=0;
         void Put(byte[] value) { value.CopyTo(result,p);p+=value.Length; }
         void U16(int value) { BinaryPrimitives.WriteUInt16BigEndian(result.AsSpan(p),(ushort)value);p+=2; }
-        Put("PBC1"u8.ToArray());result[p++]=3;BinaryPrimitives.WriteUInt64BigEndian(result.AsSpan(p),m.Revision);p+=8;
+        Put("PBC1"u8.ToArray());result[p++]=4;BinaryPrimitives.WriteUInt64BigEndian(result.AsSpan(p),m.Revision);p+=8;
         result[p++]=(byte)m.State;result[p++]=(byte)m.Mode;U16(ca.Length);Put(ca);Put(Convert.FromHexString(m.Identity.Sha256));
         Put(Encoding.ASCII.GetBytes(m.DeviceId));Put(Convert.FromHexString(m.ClientId));Put(record.Token);
         U16(device.Length);Put(device);U16(client.Length);Put(client);U16(alias.Length);Put(alias);U16(note.Length);Put(note);
-        result[p++]=m.PreferredDrive is { } drive?(byte)drive:(byte)0;return result;
+        result[p++]=m.PreferredDrive is { } drive?(byte)drive:(byte)0;
+        U16(address.Length);Put(address);U16(m.LastVerifiedPort??0);return result;
     }
 
     internal static StoredRecord Decode(byte[] plaintext,string expectedDeviceId)
@@ -31,7 +33,7 @@ internal static class RecordCodec
             if (plaintext.Length is < 1 or > MaxFileBytes) throw new InvalidDataException();
             var reader=new Reader(plaintext);
             if (!reader.Take(4).SequenceEqual("PBC1"u8)) throw new InvalidDataException();
-            byte version=reader.Take(1)[0];if(version is not (1 or 2 or 3))throw new InvalidDataException();
+            byte version=reader.Take(1)[0];if(version is not (1 or 2 or 3 or 4))throw new InvalidDataException();
             ulong revision=BinaryPrimitives.ReadUInt64BigEndian(reader.Take(8));
             var state=(PairingRecordState)reader.Take(1)[0];var mode=(AccessMode)reader.Take(1)[0];
             int caLength=reader.U16();if (caLength is < 1 or > 4096) throw new InvalidDataException();
@@ -42,11 +44,14 @@ internal static class RecordCodec
             string clientName=RecordRules.Utf8.GetString(reader.Take(reader.U16()));
             string alias=version>=2?RecordRules.Utf8.GetString(reader.Take(reader.U16())):"";
             string note=version>=2?RecordRules.Utf8.GetString(reader.Take(reader.U16())):"";
-            byte preferred=version==3?reader.Take(1)[0]:(byte)0;
+            byte preferred=version>=3?reader.Take(1)[0]:(byte)0;
             char? preferredDrive=preferred==0?null:(char)preferred;
+            string lastAddress=version>=4?Encoding.ASCII.GetString(reader.Take(reader.U16())):"";
+            int storedPort=version>=4?reader.U16():0;
+            int? lastPort=storedPort==0?null:storedPort;
             if (!reader.AtEnd || device!=expectedDeviceId || device!="pbng-"+sha) throw new InvalidDataException();
             var identity=ValidatedDeviceIdentity.Validate(ca,sha);
-            return new StoredRecord(new PairingRecord(identity,client,deviceName,clientName,state,mode,revision,alias,note,preferredDrive),token.ToArray());
+            return new StoredRecord(new PairingRecord(identity,client,deviceName,clientName,state,mode,revision,alias,note,preferredDrive,lastAddress,lastPort),token.ToArray());
         }
         catch { throw new CredentialStoreException(StoreError.NeedsRepair); }
     }

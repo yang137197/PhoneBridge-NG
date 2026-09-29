@@ -76,6 +76,22 @@ public sealed class ManualEndpointSessionTests
     }
 
     [TestMethod]
+    public void LastSuccessfulEndpointRemainsAProcessLocalFallback()
+    {
+        var session = new ManualEndpointSession();
+        var lastSuccessful = new DeviceEndpoint("192.168.1.40", 8273);
+        Assert.AreEqual(lastSuccessful, session.Merge("pbng-a", [], lastSuccessful).Single());
+        Assert.AreEqual(lastSuccessful, session.SelectForReconnect("pbng-a", [], lastSuccessful));
+
+        Assert.IsTrue(session.TrySet("pbng-a", "192.168.1.41", "8273", out var manual));
+        Assert.AreEqual(manual, session.SelectForReconnect("pbng-a", [], lastSuccessful));
+        var automatic = new DeviceEndpoint("192.168.1.42", 8273);
+        var matching = new DeviceCandidate("matching", CandidateSource.Mdns, "Phone", [automatic])
+            { Protocol = CandidateProtocol.PairedV3, DeviceIdHint = "pbng-a" };
+        Assert.AreEqual(automatic, session.SelectForReconnect("pbng-a", [matching], lastSuccessful));
+    }
+
+    [TestMethod]
     public void FixedDiagnosticEventCannotContainManualInput()
     {
         const string address = "198.51.100.42";

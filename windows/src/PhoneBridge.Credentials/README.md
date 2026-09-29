@@ -7,7 +7,7 @@
 1. 宿主完成 PAKE，再以已确认 CA 的散列调用 `ValidatedDeviceIdentity.Validate`。单一规范 DER、RSA 至少 2048 位、SHA256withRSA、自签名、CA/KeyCertSign、已知 critical extensions 和当前有效期都必须通过。
 2. 新随机 client_id 使用 32 位小写 hex。`CreatePending` 内部生成 32 字节随机 token，将身份、名称、token、状态、模式和修订号一起保护、写入并回读；成功前不导出 token。同设备已有记录拒绝覆盖。
 3. `OpenCredential` 每次重新读取受保护记录；Pending 仅可用于配对提交/状态验证。`CredentialLease.CopyToken` 返回调用方拥有的副本，使用后必须清零并 Dispose lease。普通元数据和 ToString 不含 token。
-4. 严格 HTTPS/token session 验证完成后，调用 `ApplyVerifiedSession`，核对响应 device_id/client_id 和期望修订号。首次转换 Pending 为 Active；Active 可按新验证响应更新模式。只有 Active 能申请挂载凭据。
+4. 严格 HTTPS/token session 验证完成后，调用 `ApplyVerifiedSession`，核对响应 device_id/client_id 和期望修订号。首次转换 Pending 为 Active；Active 可按新验证响应更新模式。只有 Active 能申请挂载凭据。通过同一验证的规范 IP/端口可用 `UpdateVerifiedEndpoint` 写入记录，作为发现失效时的寻址回退；存储层不把地址当身份。
 5. `BeginRevocation` 先持久禁用挂载，随后由宿主停止会话并请求 self 撤销。RevocationPending 只允许取撤销凭据，NeedsRepair 不导出；迟到的激活与旧修订号不能恢复挂载。
 
 状态 API 不会发起网络连接，也不能证明调用方已经验证 HTTPS 或完成远端撤销。已取得的内存副本不能远程收回；服务端逐请求校验和宿主会话停止由 Android/Connection 宿主负责。
@@ -18,7 +18,7 @@ P1-008 增加 `List()` 的有界完整性校验枚举；任何损坏记录都会
 
 当前用户/SYSTEM 是新建目录与文件的唯一 DACL 项。操作持有各级目录防删除句柄，拒绝 reparse、文件硬链接、目录冒充记录和宽松 ACL；不静默修复既有权限。锁文件串行同机合作进程的事务。缺失、破损、错误 DPAPI 绑定、异常 schema/字段、未知状态、无效 CA 均失败关闭，不回退普通设置或旧密码。
 
-记录是有界二进制格式 PBC1/schema 2，整数大端；schema 1 仍可只读兼容，并在下次受控更新时写为 schema 2。CA <=4096 bytes，设备/客户端原始名称为 1..128 Unicode scalar 且 UTF-8 <=256 bytes；本机别名最多 64 scalar/128 UTF-8 bytes，备注最多 500 scalar/1024 UTF-8 bytes，均禁止控制/格式字符；单密文 <=65536 bytes。额外 DPAPI entropy 绑定固定用途与 device_id，不是秘密。随机临时文件只写密文，Flush(true) 后同目录 move/replace，提交后再解密校验。写入结果不确定时本实例进入 NeedsRepair；需新实例回读磁盘，再决定下一动作，不能原地盲重试授权。
+记录是有界二进制格式 PBC1/schema 4，整数大端；schema 1–3 仍可只读兼容，并在下次受控更新时写为 schema 4。schema 4 增加最后一次严格认证成功的规范 IP/端口；不接受域名、URL、回环、未指定、组播、模糊 IPv4 或无 scope 的 IPv6 link-local。CA <=4096 bytes，设备/客户端原始名称为 1..128 Unicode scalar 且 UTF-8 <=256 bytes；本机别名最多 64 scalar/128 UTF-8 bytes，备注最多 500 scalar/1024 UTF-8 bytes，均禁止控制/格式字符；单密文 <=65536 bytes。额外 DPAPI entropy 绑定固定用途与 device_id，不是秘密。随机临时文件只写密文，Flush(true) 后同目录 move/replace，提交后再解密校验。写入结果不确定时本实例进入 NeedsRepair；需新实例回读磁盘，再决定下一动作，不能原地盲重试授权。
 
 打开文件只对 32/33，替换只对 32/33/1175 占用错误最多额外重试 10 次、间隔 25ms；始终持有事务锁，替换每次重新检查两个文件，不对 1176/1177 或整个授权事务重试。持续占用仍失败关闭；不修改系统安全策略。同步 I/O 应由宿主放在有界后台工作者，不能直接阻塞 WPF 线程。
 

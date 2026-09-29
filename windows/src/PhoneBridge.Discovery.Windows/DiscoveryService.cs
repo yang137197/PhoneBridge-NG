@@ -4,15 +4,77 @@ using System.Diagnostics;
 
 namespace PhoneBridge.Discovery.Windows;
 
+public sealed record DiscoveryRefreshResult(IReadOnlyList<string> DeviceKeys)
+{
+    public int DeviceCount => DeviceKeys.Count;
+}
+
 public sealed class DiscoveryService(Func<IDiscoveryWatcher>? watcherFactory = null, bool observeNetwork = true,
-    TimeSpan? scanWindow = null)
+    TimeSpan? scanWindow = null,
+    Func<DeviceCandidate, CancellationToken, Task<bool>>? verifyMissingCandidate = null)
 {
     private readonly Func<IDiscoveryWatcher> factory = watcherFactory ?? (() => new WindowsDeviceWatcher());
+    private readonly object refreshGate = new();
     private int running;
     private int refreshRequested;
+    private TaskCompletionSource<DiscoveryRefreshResult>? refreshCompletion;
     private readonly TimeSpan window = scanWindow ?? TimeSpan.FromSeconds(12);
 
     public void RequestRefresh() => Interlocked.Exchange(ref refreshRequested, 1);
+
+    public Task<DiscoveryRefreshResult> RefreshAsync(CancellationToken cancellationToken = default)
+    {
+        Task<DiscoveryRefreshResult> refresh;
+        lock (refreshGate)
+        {
+            if (Volatile.Read(ref running) == 0)
+                return Task.FromException<DiscoveryRefreshResult>(new InvalidOperationException("discovery-not-running"));
+            refreshCompletion ??= new(TaskCreationOptions.RunContinuationsAsynchronously);
+            refresh = refreshCompletion.Task;
+            Interlocked.Exchange(ref refreshRequested, 1);
+        }
+        return cancellationToken.CanBeCanceled ? refresh.WaitAsync(cancellationToken) : refresh;
+    }
+
+    private TaskCompletionSource<DiscoveryRefreshResult>? CurrentRefresh()
+    {
+        lock (refreshGate) return refreshCompletion;
+    }
+
+    private void CompleteRefresh(TaskCompletionSource<DiscoveryRefreshResult> completion,
+        DiscoveryRefreshResult result)
+    {
+        lock (refreshGate)
+        {
+            if (ReferenceEquals(refreshCompletion, completion)) refreshCompletion = null;
+        }
+        completion.TrySetResult(result);
+    }
+
+    private void FailRefresh(TaskCompletionSource<DiscoveryRefreshResult>? completion, Exception error)
+    {
+        TaskCompletionSource<DiscoveryRefreshResult>? pending;
+        lock (refreshGate)
+        {
+            pending = refreshCompletion;
+            refreshCompletion = null;
+        }
+        completion?.TrySetException(error);
+        if (!ReferenceEquals(pending, completion)) pending?.TrySetException(error);
+    }
+
+    private void CancelRefresh(TaskCompletionSource<DiscoveryRefreshResult>? completion,
+        CancellationToken cancellationToken)
+    {
+        TaskCompletionSource<DiscoveryRefreshResult>? pending;
+        lock (refreshGate)
+        {
+            pending = refreshCompletion;
+            refreshCompletion = null;
+        }
+        completion?.TrySetCanceled(cancellationToken);
+        if (!ReferenceEquals(pending, completion)) pending?.TrySetCanceled(cancellationToken);
+    }
 
     public async Task RunAsync(Action<DiscoveryChange> publish, CancellationToken cancellationToken,
         IReadOnlyList<DeviceEndpoint>? manual = null)
@@ -29,6 +91,7 @@ public sealed class DiscoveryService(Func<IDiscoveryWatcher>? watcherFactory = n
         var overflow = 0;
         var scanStarted = Stopwatch.GetTimestamp();
         var cleanupFailed = false;
+        TaskCompletionSource<DiscoveryRefreshResult>? activeRefresh = null;
         void Emit(DiscoveryChange? change) { if (change is not null) publish(change); }
         void Clear(string reason, CandidateSource? source = null)
         {
@@ -70,10 +133,13 @@ public sealed class DiscoveryService(Func<IDiscoveryWatcher>? watcherFactory = n
             using var timer = new PeriodicTimer(TimeSpan.FromMilliseconds(100));
             while (await timer.WaitForNextTickAsync(cancellationToken).ConfigureAwait(false))
             {
-                if (Interlocked.Exchange(ref refreshRequested, 0) != 0 || Interlocked.Exchange(ref overflow, 0) != 0)
+                bool refresh = Interlocked.Exchange(ref refreshRequested, 0) != 0;
+                if (refresh || Interlocked.Exchange(ref overflow, 0) != 0)
                 {
+                    if (refresh) activeRefresh ??= CurrentRefresh();
                     await StopWatcher().ConfigureAwait(false);
-                    Clear("network-refresh", CandidateSource.Mdns);
+                    properties.Clear();
+                    observed.Clear();
                     while (queue.Reader.TryRead(out _)) { }
                     StartWatcher();
                     Emit(new(DiscoveryChangeKind.Status, "", null, "watching"));
@@ -86,11 +152,28 @@ public sealed class DiscoveryService(Func<IDiscoveryWatcher>? watcherFactory = n
                     var update = item.Event;
                     if (update.Kind == WatcherEventKind.Aborted) throw new InvalidOperationException("watcher-aborted");
                     if (update.Id.Length is 0 or > 1024) continue;
-                    if (update.Kind is WatcherEventKind.Removed or WatcherEventKind.Invalid)
+                    if (update.Kind == WatcherEventKind.Invalid)
                     {
                         properties.Remove(update.Id);
-                        var reason = update.Kind == WatcherEventKind.Invalid ? "invalid-metadata" : "service-removed";
-                        Emit(registry.RemoveService(update.Id, reason));
+                        observed.Remove(CandidateParser.Key(CandidateSource.Mdns, update.Id));
+                        Emit(registry.RemoveService(update.Id, "invalid-metadata"));
+                        continue;
+                    }
+                    if (update.Kind == WatcherEventKind.Removed)
+                    {
+                        properties.Remove(update.Id);
+                        var candidate = registry.FindService(update.Id);
+                        if (candidate is not null)
+                            observed.Remove(candidate.Id);
+                        bool verified = false;
+                        if (candidate is not null && verifyMissingCandidate is not null)
+                        {
+                            try { verified = await verifyMissingCandidate(candidate, cancellationToken).ConfigureAwait(false); }
+                            catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested) { throw; }
+                            catch { }
+                        }
+                        if (verified) observed.Add(candidate!.Id);
+                        else Emit(registry.RemoveService(update.Id, "service-removed"));
                         continue;
                     }
                     if (update.Properties is null) continue;
@@ -112,7 +195,29 @@ public sealed class DiscoveryService(Func<IDiscoveryWatcher>? watcherFactory = n
                 if (Stopwatch.GetElapsedTime(scanStarted) >= window)
                 {
                     await StopWatcher().ConfigureAwait(false);
+                    if (verifyMissingCandidate is not null)
+                    {
+                        foreach (var candidate in registry.CandidatesRequiringVerification(observed))
+                        {
+                            bool verified = false;
+                            try { verified = await verifyMissingCandidate(candidate, cancellationToken).ConfigureAwait(false); }
+                            catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested) { throw; }
+                            catch { }
+                            if (verified) observed.Add(candidate.Id);
+                        }
+                    }
                     foreach (var change in registry.CompleteScan(observed)) Emit(change);
+                    if (activeRefresh is { } completion)
+                    {
+                        string[] devices = registry.Snapshot
+                            .Where(candidate => candidate.Source == CandidateSource.Mdns && observed.Contains(candidate.Id))
+                            .Select(candidate => candidate.DeviceIdHint ?? candidate.Id)
+                            .Distinct(StringComparer.Ordinal)
+                            .Order(StringComparer.Ordinal)
+                            .ToArray();
+                        CompleteRefresh(completion, new(devices));
+                        activeRefresh = null;
+                    }
                     properties.Clear();
                     observed.Clear();
                     while (queue.Reader.TryRead(out _)) { }
@@ -120,9 +225,20 @@ public sealed class DiscoveryService(Func<IDiscoveryWatcher>? watcherFactory = n
                 }
             }
         }
-        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested) { }
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+        {
+            CancelRefresh(activeRefresh, cancellationToken);
+            activeRefresh = null;
+        }
+        catch (Exception error)
+        {
+            FailRefresh(activeRefresh, error);
+            activeRefresh = null;
+            throw;
+        }
         finally
         {
+            if (activeRefresh is not null) CancelRefresh(activeRefresh, cancellationToken);
             if (observeNetwork) NetworkChange.NetworkAddressChanged -= NetworkChanged;
             try { await StopWatcher().ConfigureAwait(false); }
             finally

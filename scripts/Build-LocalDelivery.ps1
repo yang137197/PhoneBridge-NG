@@ -18,7 +18,8 @@ param(
 $ErrorActionPreference = 'Stop'
 Set-StrictMode -Version Latest
 
-$productVersion = '0.2.3'
+$productVersion = '0.2.4'
+$androidVersionCode = 6
 $rcloneVersion = '1.75.1'
 $rcloneSha256 = '033EEE51C9AD47C2DE2624B6674D355274BCD6CF0027A5F85DB4437BA24AE81C'
 $winFspVersion = '2.1.25156'
@@ -41,8 +42,10 @@ if ($OutputRoot -ne $deliveryRoot -and -not $OutputRoot.StartsWith($deliveryRoot
 }
 
 $desktopProjectPath = Join-Path $projectRoot 'windows/src/PhoneBridge.Desktop/PhoneBridge.Desktop.csproj'
-if (-not (Select-String -LiteralPath $desktopProjectPath -SimpleMatch "<Version>$productVersion</Version>" -Quiet)) {
-    throw "Build-LocalDelivery is bound to formal version $productVersion and refuses source from another version."
+$androidProjectPath = Join-Path $projectRoot 'android/app/build.gradle.kts'
+if (-not (Select-String -LiteralPath $desktopProjectPath -SimpleMatch "<Version>$productVersion</Version>" -Quiet) -or
+    -not (Select-String -LiteralPath $androidProjectPath -SimpleMatch "versionCode = $androidVersionCode; versionName = `"$productVersion`"" -Quiet)) {
+    throw "Build-LocalDelivery is bound to version $productVersion / Android versionCode $androidVersionCode and refuses source from another version."
 }
 
 $installInstructionsPath = Join-Path $projectRoot 'docs/INSTALL_LOCAL.txt'
@@ -407,6 +410,8 @@ $manifest = [ordered]@{
         inno_setup = $innoVersion
     }
     android = [ordered]@{
+        version_code = $androidVersionCode
+        version_name = $productVersion
         minimum_sdk = 26
         target_sdk = 36
         apk = $artifacts[1]

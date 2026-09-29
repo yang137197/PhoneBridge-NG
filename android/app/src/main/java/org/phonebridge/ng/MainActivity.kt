@@ -41,6 +41,8 @@ import android.widget.Toast
 import org.phonebridge.credentials.AccessMode
 import org.phonebridge.credentials.ClientState
 import org.phonebridge.credentials.PairedClient
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executors
 
 class MainActivity : Activity() {
     private enum class Screen { HOME, PAIRING, CLIENT, SETTINGS, LANGUAGE }
@@ -75,6 +77,11 @@ class MainActivity : Activity() {
     private var selectedClientId: String? = null
     private var lastRootBackAt = 0L
     private var backCallback: OnBackInvokedCallback? = null
+    private val updateExecutor: ExecutorService = Executors.newSingleThreadExecutor()
+    private var updateBusy = false
+    private var updateButton: Button? = null
+    private var updateStatus: TextView? = null
+    private var pendingUpdateInstall: PendingApk? = null
 
     private val connection = object : ServiceConnection {
         override fun onServiceConnected(name: ComponentName, service: IBinder) {
@@ -131,11 +138,17 @@ class MainActivity : Activity() {
             if (BatteryOptimizationPolicy.isExempt(this)) beginSharing(selected)
             else if (screen == Screen.HOME) status.setText(R.string.battery_optimization_required)
         }
+        pendingUpdateInstall?.let { pending ->
+            pendingUpdateInstall = null
+            if (packageManager.canRequestPackageInstalls()) commitUpdate(pending)
+            else setUpdateStatus(R.string.update_install_permission_required)
+        }
     }
     override fun onPause() { visible = false; handler.removeCallbacks(refresh); binder?.leaveForeground(); super.onPause() }
     override fun onStop() { if (bound) { unbindService(connection); bound = false }; binder = null; super.onStop() }
     override fun onDestroy() {
         if (Build.VERSION.SDK_INT >= 33) backCallback?.let { onBackInvokedDispatcher.unregisterOnBackInvokedCallback(it) }
+        updateExecutor.shutdownNow()
         super.onDestroy()
     }
 
@@ -239,6 +252,11 @@ class MainActivity : Activity() {
             getString(if (AppLanguage.selected(this) == AppLanguage.CHINESE) R.string.language_zh else R.string.language_en),
         ) { showLanguageSettings() }
         sectionTitle(content, R.string.settings_app)
+        val updateCard = card(content, surface)
+        label(updateCard, getString(R.string.current_version, installedVersionName().substringBefore('-')), 15f, true)
+        updateStatus = label(updateCard, getString(R.string.update_ready), 12f, false, muted)
+        updateButton = button(updateCard, R.string.check_updates, primary = false) { checkForUpdates() }
+        updateButton?.isEnabled = !updateBusy
         button(content, R.string.exit_app, primary = false) { requestExitApplication() }.apply { setTextColor(danger); background = outlined(danger) }
         label(content, getString(R.string.no_theme), 12f, false, muted).setPadding(dp(4), dp(18), 0, 0)
     }
@@ -261,6 +279,127 @@ class MainActivity : Activity() {
         label(note, getString(R.string.language_behavior), 16f, true)
         label(note, getString(R.string.language_note), 13f, false, muted)
     }
+
+    private fun checkForUpdates() {
+        if (updateBusy) return
+        updateBusy = true
+        updateButton?.isEnabled = false
+        setUpdateStatus(R.string.update_checking)
+        updateExecutor.execute {
+            val result = runCatching { AndroidUpdateService(applicationContext).check(installedVersionName()) }
+            handler.post {
+                if (isFinishing || isDestroyed) return@post
+                result.fold(onSuccess = { check ->
+                    if (check.availability == UpdateAvailability.CURRENT) {
+                        updateBusy = false
+                        updateButton?.isEnabled = true
+                        setUpdateStatus(R.string.update_current)
+                    } else {
+                        updateBusy = false
+                        updateButton?.isEnabled = true
+                        setUpdateStatus(R.string.update_available, check.asset.version)
+                        AlertDialog.Builder(this)
+                            .setTitle(getString(R.string.update_available, check.asset.version))
+                            .setMessage(getString(R.string.update_download_prompt, check.currentVersion, check.asset.version))
+                            .setPositiveButton(R.string.update_download) { _, _ -> downloadUpdate(check.asset) }
+                            .setNegativeButton(R.string.cancel, null).show()
+                    }
+                }, onFailure = { error -> finishUpdateFailure(error) })
+            }
+        }
+    }
+
+    private fun downloadUpdate(asset: UpdateAsset) {
+        if (updateBusy) return
+        updateBusy = true
+        updateButton?.isEnabled = false
+        setUpdateStatus(R.string.update_downloading, asset.version)
+        updateExecutor.execute {
+            val result = runCatching {
+                AndroidUpdateService(applicationContext).download(asset).also {
+                    if (!AndroidUpdateInstaller.verify(applicationContext, it)) throw UpdateFailure("update_apk_invalid")
+                }
+            }
+            handler.post {
+                if (isFinishing || isDestroyed) return@post
+                updateBusy = false
+                updateButton?.isEnabled = true
+                result.fold(onSuccess = { pending ->
+                    setUpdateStatus(R.string.update_downloaded, pending.version)
+                    if (isSharingActive()) {
+                        AlertDialog.Builder(this).setTitle(R.string.update_install_blocked)
+                            .setMessage(R.string.update_stop_sharing_first).setPositiveButton(android.R.string.ok, null).show()
+                    } else {
+                        AlertDialog.Builder(this).setTitle(getString(R.string.update_install_title, pending.version))
+                            .setMessage(R.string.update_install_prompt)
+                            .setPositiveButton(R.string.update_install) { _, _ -> prepareInstall(pending) }
+                            .setNegativeButton(R.string.cancel, null).show()
+                    }
+                }, onFailure = { error -> finishUpdateFailure(error) })
+            }
+        }
+    }
+
+    private fun prepareInstall(pending: PendingApk) {
+        if (isSharingActive()) {
+            setUpdateStatus(R.string.update_stop_sharing_first)
+            return
+        }
+        if (!packageManager.canRequestPackageInstalls()) {
+            pendingUpdateInstall = pending
+            AlertDialog.Builder(this).setTitle(R.string.update_install_permission_title)
+                .setMessage(R.string.update_install_permission_message)
+                .setPositiveButton(R.string.open_settings) { _, _ ->
+                    try { startActivity(Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES, Uri.parse("package:$packageName"))) }
+                    catch (_: Exception) { pendingUpdateInstall = null; setUpdateStatus(R.string.update_install_permission_required) }
+                }.setNegativeButton(R.string.cancel) { _, _ -> pendingUpdateInstall = null }.show()
+            return
+        }
+        commitUpdate(pending)
+    }
+
+    private fun commitUpdate(pending: PendingApk) {
+        if (updateBusy || isSharingActive()) {
+            setUpdateStatus(R.string.update_stop_sharing_first)
+            return
+        }
+        updateBusy = true
+        updateButton?.isEnabled = false
+        setUpdateStatus(R.string.update_install_opening)
+        updateExecutor.execute {
+            val result = runCatching { AndroidUpdateInstaller.install(applicationContext, pending) }
+            handler.post {
+                if (isFinishing || isDestroyed) return@post
+                updateBusy = false
+                updateButton?.isEnabled = true
+                result.exceptionOrNull()?.let { finishUpdateFailure(it) }
+            }
+        }
+    }
+
+    private fun finishUpdateFailure(error: Throwable) {
+        updateBusy = false
+        updateButton?.isEnabled = true
+        val code = (error as? UpdateFailure)?.code
+        val message = when (code) {
+            "update_current_version_invalid" -> R.string.update_current_version_invalid
+            "update_response_invalid" -> R.string.update_response_invalid
+            "update_asset_missing" -> R.string.update_asset_missing
+            "update_integrity_failed" -> R.string.update_integrity_failed
+            "update_apk_invalid" -> R.string.update_apk_invalid
+            "update_download_failed" -> R.string.update_download_failed
+            "update_install_failed" -> R.string.update_install_failed
+            else -> R.string.update_check_failed
+        }
+        setUpdateStatus(message)
+    }
+
+    private fun setUpdateStatus(resource: Int, vararg arguments: Any) {
+        updateStatus?.text = if (arguments.isEmpty()) getString(resource) else getString(resource, *arguments)
+    }
+
+    private fun isSharingActive(): Boolean = binder?.service?.sharingEnabled == true ||
+        getSharedPreferences("settings", Context.MODE_PRIVATE).getBoolean("sharing", false)
 
     private fun render() {
         when (screen) {

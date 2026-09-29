@@ -141,6 +141,19 @@ public sealed class CandidateTests
     }
 
     [TestMethod]
+    public void VerificationIsRequestedOnlyBeforeASecondMissingScan()
+    {
+        var registry = new CandidateRegistry();
+        var candidate = registry.Apply(Valid())!.Candidate!;
+        var missing = new HashSet<string>();
+        Assert.IsEmpty(registry.CandidatesRequiringVerification(missing));
+        Assert.IsEmpty(registry.CompleteScan(missing));
+        Assert.AreEqual(candidate.Id, registry.CandidatesRequiringVerification(missing).Single().Id);
+        Assert.IsEmpty(registry.CompleteScan(new HashSet<string> { candidate.Id }));
+        Assert.IsEmpty(registry.CandidatesRequiringVerification(missing));
+    }
+
+    [TestMethod]
     public void OversizedMetadataIsRejectedBeforeRetention()
     {
         var fields = ServiceTests.Properties();

@@ -1,4 +1,4 @@
-PhoneBridge NG 0.2.3 本地安装与使用
+PhoneBridge NG 0.2.4 本地安装与使用
 ====================================
 
 适用范围
@@ -11,7 +11,7 @@ PhoneBridge NG 0.2.3 本地安装与使用
 安装
 ----
 1. 在 Android 手机上安装交付目录中由 delivery-manifest.json 的 android.apk.file 指定的 APK。
-2. 在电脑上运行 PhoneBridge-NG-Setup-0.2.3.exe。
+2. 在电脑上运行 PhoneBridge-NG-Setup-0.2.4.exe。
 3. 如果电脑尚未安装 WinFsp，安装程序会调用内置的官方 WinFsp 安装包，并显示 Windows 管理员确认。
 
 首次配对和连接
@@ -58,8 +58,8 @@ PhoneBridge NG 0.2.3 本地安装与使用
 
 校验文件
 --------
-交付目录中的 SHA256SUMS.txt 和 delivery-manifest.json 记录本次安装器、APK、本说明及对应源码包的 SHA-256。`PhoneBridge-NG-0.2.3-source.zip` 包含该版本 Android/Windows 源码、构建脚本、测试、GPL、NOTICE 和第三方许可；不含签名私钥、密码或本机构建缓存。Windows PowerShell 可使用以下命令核对文件：
+交付目录中的 SHA256SUMS.txt 和 delivery-manifest.json 记录本次安装器、APK、本说明及对应源码包的 SHA-256。`PhoneBridge-NG-0.2.4-source.zip` 包含该版本 Android/Windows 源码、构建脚本、测试、GPL、NOTICE 和第三方许可；不含签名私钥、密码或本机构建缓存。Windows PowerShell 可使用以下命令核对文件：
 
-Get-FileHash .\PhoneBridge-NG-Setup-0.2.3.exe -Algorithm SHA256
+Get-FileHash .\PhoneBridge-NG-Setup-0.2.4.exe -Algorithm SHA256
 Get-FileHash .\*.apk -Algorithm SHA256
-Get-FileHash .\PhoneBridge-NG-0.2.3-source.zip -Algorithm SHA256
+Get-FileHash .\PhoneBridge-NG-0.2.4-source.zip -Algorithm SHA256

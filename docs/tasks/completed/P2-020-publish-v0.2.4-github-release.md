@@ -1,6 +1,6 @@
 # P2-020 — 发布 GitHub Release v0.2.4
 
-状态：进行中。日期：2026-09-29。
+状态：已完成。日期：2026-09-29。
 
 ## 目标
 
@@ -22,4 +22,10 @@
 
 ## 验收结果
 
-尚未发布。
+通过。发布前 Latest 仍为正式 `v0.2.3`，远端 `main` 未漂移，`v0.2.4` 标签和 Release 均不存在。候选分支与远端 `main` 快进到 `98e17a182ec61eb6d71382544c3d450a61c1f949`，注释标签 `v0.2.4` 精确绑定同一提交。
+
+GitHub Release 为非草稿、非预发布并已设为 Latest；六项资产的文件名、大小、GitHub `digest` 和 uploaded 状态与本地候选逐项一致。本地 `.audit/delivery/output/` 已切换为同一组 `v0.2.4` 资产，原 `v0.2.3` 镜像保留。
+
+Release：<https://github.com/yang137197/PhoneBridge-NG/releases/tag/v0.2.4>
+
+完整记录见 [P2-020 验证](../../audit/P2-020-VALIDATION.md)。

@@ -2,7 +2,7 @@
 
 中文优先的 Android ↔ Windows 无线文件访问工具。目标是在同一局域网内发现并验证手机，通过 HTTPS/WebDAV、rclone 和 WinFsp 将手机共享存储映射到 Windows 文件资源管理器。
 
-**当前正式版本仍为 [v0.2.3](https://github.com/yang137197/PhoneBridge-NG/releases/tag/v0.2.3)。`v0.2.4` 正式候选已完成从 v0.2.3 原位升级、设备状态/IP/刷新、固定磁盘卷名与容量、安全断开及 Windows/Android 手动更新检查的真机验收；六项正式资产已生成并获发布授权，但在标签和 Release 实际创建前仍不称为已发布。Windows 自启动仍只进入托盘，盘符由用户手动连接。**
+**当前正式版本为 [v0.2.4](https://github.com/yang137197/PhoneBridge-NG/releases/tag/v0.2.4)。六项公开资产与本地正式镜像的大小和 SHA-256 已逐项回读一致；v0.2.3 到 v0.2.4 的两端原位升级、设备状态/IP/刷新、固定磁盘卷名与容量、安全断开及 Windows/Android 手动更新检查已经真机验收。全新 Windows 机器首次配对仍是下一项独立验收，不能写成已通过。Windows 自启动仍只进入托盘，盘符由用户手动连接。**
 
 安装、配对、连接、访问模式、断开和排障步骤见 [软件使用说明](docs/USER_GUIDE.md)。
 
@@ -84,14 +84,15 @@
 | P2-016 发布 GitHub Release v0.2.3 | 已完成；标签与远端 main 精确绑定 P2-015 head，6 项 GitHub 资产与本地摘要一致并已设为 Latest | [Release](https://github.com/yang137197/PhoneBridge-NG/releases/tag/v0.2.3)、[验收记录](docs/audit/P2-016-VALIDATION.md)、[完成记录](docs/tasks/completed/P2-016-publish-v0.2.3-github-release.md) |
 | P2-017 v0.2.3 全新机器配对验收 | 未执行并关闭；用户要求先修复底栏设备状态，不能记为通过 | [关闭记录](docs/tasks/completed/P2-017-v0.2.3-clean-machine-pairing-acceptance.md)、[历史清单](docs/V0.2.3_CLEAN_MACHINE_ACCEPTANCE.md) |
 | P2-018 v0.2.4 按设备汇总底栏状态 | 实现完成；Windows 0 警告/0 错误、310/310 测试通过，安装版单/多设备界面待独立验收 | [验收记录](docs/audit/P2-018-VALIDATION.md)、[完成记录](docs/tasks/completed/P2-018-v0.2.4-device-footer-status.md) |
-| P2-019 v0.2.4 安装候选与底栏实机验收 | 验收完成；v0.2.3 两端原位升级保持，设备状态/IP/刷新、固定卷名容量、单击断开及两端更新检查通过，六项正式资产已核验 | [任务](docs/tasks/active/P2-019-v0.2.4-installed-footer-acceptance.md) |
-| P2-020 发布 GitHub Release v0.2.4 | 进行中；只发布 P2-019 验收 head 与对应六项资产 | [任务](docs/tasks/active/P2-020-publish-v0.2.4-github-release.md) |
+| P2-019 v0.2.4 安装候选与底栏实机验收 | 已完成；v0.2.3 两端原位升级保持，设备状态/IP/刷新、固定卷名容量、单击断开及两端更新检查通过，六项正式资产已核验 | [完成记录](docs/tasks/completed/P2-019-v0.2.4-installed-footer-acceptance.md) |
+| P2-020 发布 GitHub Release v0.2.4 | 已完成；注释标签精确绑定候选 head，六项 GitHub 资产与本地摘要一致并已设为 Latest | [Release](https://github.com/yang137197/PhoneBridge-NG/releases/tag/v0.2.4)、[验收记录](docs/audit/P2-020-VALIDATION.md)、[完成记录](docs/tasks/completed/P2-020-publish-v0.2.4-github-release.md) |
+| P2-021 v0.2.4 全新机器配对验收 | 待开始；只使用公开 v0.2.4 资产验证首次安装、全新电脑配对、盘符冲突和关键生命周期 | [任务](docs/tasks/active/P2-021-v0.2.4-clean-machine-pairing-acceptance.md)、[验收清单](docs/V0.2.4_CLEAN_MACHINE_ACCEPTANCE.md) |
 | Phase 1 新版 Windows 客户端 | 配对、挂载、文件操作、生命周期与本地安装交付主链路已验收 | [开发规则](DEVELOPMENT_RULES.md) |
 | MVP 验收 | 15 项通过 | [15 项产品验收](docs/PRODUCT.md)、[P1-030 最终需求验收](docs/audit/P1-030-VALIDATION.md) |
 
 当前唯一交付目录是 `.audit/delivery/output/`；正式交付包含安装器、正式 APK、对应源码 ZIP、README、SHA256SUMS 和 manifest。二进制构建后运行 `scripts/New-SourceDelivery.ps1` 生成并核验对应源码包。`.audit/runs/` 中的文件只用于历史验证，不作为当前安装入口。先阅读交付目录内的 `README.txt`。
 
-`.audit/ui-acceptance/` 保存 P2-005 r20、P2-006 r21 和 P2-010 r22 隔离候选证据，不是安装入口。正式安装入口是 GitHub `v0.2.3` Release；`.audit/delivery/output/` 是与其一致的本地镜像。`v0.2.1` 没有单独发布，其改动随 `v0.2.2` 交付。后续每个正式候选均按 [开发规则 4.1](DEVELOPMENT_RULES.md#41-正式候选版本的升级验证基线) 动态使用其前一个正式 Release 验证升级。
+`.audit/ui-acceptance/` 保存 P2-005 r20、P2-006 r21 和 P2-010 r22 隔离候选证据，不是安装入口。正式安装入口是 GitHub `v0.2.4` Release；`.audit/delivery/output/` 是与其一致的本地镜像。`v0.2.1` 没有单独发布，其改动随 `v0.2.2` 交付。后续每个正式候选均按 [开发规则 4.1](DEVELOPMENT_RULES.md#41-正式候选版本的升级验证基线) 动态使用其前一个正式 Release 验证升级。
 
 P0-001 的 107 个通过测试、1 个跳过用例及 7 项离线问题复现仅为上游审计证据，不能代表真实手机、Explorer、大文件或断网恢复通过。
 
@@ -100,7 +101,7 @@ P0-001 的 107 个通过测试、1 个跳过用例及 7 项离线问题复现仅
 - Android：Kotlin 原生应用，遵守系统存储权限，前台服务承载共享。
 - Windows：C#、稳定 LTS .NET、WPF；2026-09-19 核对的 LTS 主版本为 .NET 10，工程已锁定 SDK 10.0.401 / runtime 10.0.12。[官方支持策略](https://dotnet.microsoft.com/en-us/platform/support/policy/dotnet-core)
 - 文件链路：HTTPS/WebDAV → rclone VFS → WinFsp → Explorer；mDNS 自动发现，手动 IP 为排障备用入口。
-- 不引入云账号、遥测、通知同步、投屏、剪贴板同步、AI、NAS、Root 或自研文件系统驱动。自动更新及专用缩略图优化不在首版实现范围。
+- 不引入云账号、遥测、通知同步、投屏、剪贴板同步、AI、NAS、Root 或自研文件系统驱动。后台静默自动更新及专用缩略图优化不在首版实现范围；v0.2.4 只提供用户手动触发的更新检查和系统确认安装。
 - Android APK 永久只通过 GitHub Release 分发，不规划 Google Play 或其他应用商店发布。
 
 目标设备为 Windows 11 与 Samsung Galaxy S23 Ultra；型号不写死。Android 安装下限 API 26，本阶段 compile/target 36；已验证 API 26/36、备用 Redmi K40 与 Samsung SM-S9180/API 36 的限定行为，其他厂商兼容仍需实测。

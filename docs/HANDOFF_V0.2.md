@@ -1,12 +1,12 @@
 # PhoneBridge NG v0.2.4 开发交接
 
-更新时间：2026-09-29。正式基线分支：`main`；当前本地发布候选分支：`codex/v0.2.4-device-footer-status`。
+更新时间：2026-09-29。正式基线分支：`main`；当前维护分支：`codex/v0.2.4-device-footer-status`。
 
 ## 1. 仓库与版本状态
 
 - GitHub：<https://github.com/yang137197/PhoneBridge-NG>
 - 本地目录：`C:\Users\yang1\Documents\ChatGPT\samsung link windows\PhoneBridge-NG`
-- 当前正式发布版本：[`v0.2.3`](https://github.com/yang137197/PhoneBridge-NG/releases/tag/v0.2.3)，标签提交 `927135e3b51a901076b067378658e708ae805d75`；非草稿、非预发布并为 Latest。
+- 当前正式发布版本：[`v0.2.4`](https://github.com/yang137197/PhoneBridge-NG/releases/tag/v0.2.4)，标签提交 `98e17a182ec61eb6d71382544c3d450a61c1f949`；非草稿、非预发布并为 Latest，六项资产已与本地正式镜像逐项核对。
 - v0.2.0 需求计划基线：`18b5e0778d4fd03fad95a0a4602cea36dcc83f28`。
 - P2-002 静态设计 r1 已由用户全部确认并冻结；视觉方向、Windows 分层/按钮命名、Android 页面层级和图标 A“桥接文件”均已确定。
 - P2-003 r2 的实际 UI 已由用户复验通过并完成。
@@ -18,10 +18,11 @@
 - P2-015 已生成并安装 v0.2.3 最终候选：正式 v0.2.2 两端原位升级保持，真实 Wi-Fi 中断第 1 次重连恢复原 `E:`，手机停止共享后无端点等待 120263 ms 结束且重新共享不自动挂载。首个含旧 0.2.2 README 的候选已拒绝，最终 README 与制品均为 0.2.3。
 - P2-016 已把 P2-015 exact-head 六项制品发布为 `v0.2.3` Latest；标签和发布时远端 `main` 均精确指向 `927135e3b51a901076b067378658e708ae805d75`，公开后六项 GitHub 摘要与本地正式镜像一致。
 - P2-017 的 v0.2.3 全新机器验收没有执行；用户在正式安装前要求先修复底栏按设备显示，因此该任务关闭，不能写成通过。
-- P2-019 已完成 v0.2.4 正式候选及真机验收：从正式 v0.2.3 原位升级后配对和设置保持；设备状态/IP/刷新、固定磁盘卷名与真实容量、单击断开、Windows/Android 手动更新检查及基础连接回归通过；六项正式资产已生成并获发布授权，尚未创建标签或 Release。
+- P2-019 已完成 v0.2.4 正式候选及真机验收：从正式 v0.2.3 原位升级后配对和设置保持；设备状态/IP/刷新、固定磁盘卷名与真实容量、单击断开、Windows/Android 手动更新检查及基础连接回归通过。
+- P2-020 已把 P2-019 exact-head 六项制品发布为 `v0.2.4` Latest；标签和发布时远端 `main` 均精确指向 `98e17a182ec61eb6d71382544c3d450a61c1f949`，公开后六项 GitHub 摘要与本地正式镜像一致。
 - r10 暴露并确认 Windows“添加手机”先打开、配对候选随后到达时仍无选中项的缺陷；r11 已实机验证候选自动选中、8 位码后按钮启用、真实配对成功且不自动挂载。
 - r12 又确认未配对候选因两个空设备 ID 相等而被错误显示为“已连接”；运行证据证明当时没有真实配对、rclone 或盘符。r13 已实机确认主列表只显示已配对手机，未配对候选只进入“添加手机”，8 位码前后按钮状态正确。
-- r21 是已完成的历史隔离 UI 候选，r20 是继续有效的双设备真实链路证据；它们都不是当前安装入口。当前正式安装入口是 GitHub `v0.2.3` Release；升级与发布证据见 `docs/audit/P2-015-VALIDATION.md` 和 `docs/audit/P2-016-VALIDATION.md`。
+- r21 是已完成的历史隔离 UI 候选，r20 是继续有效的双设备真实链路证据；它们都不是当前安装入口。当前正式安装入口是 GitHub `v0.2.4` Release；升级与发布证据见 P2-019 完成记录和 `docs/audit/P2-020-VALIDATION.md`。
 - 开始新任务前必须重新检查 `git status --short --branch`、`git log -5 --oneline --decorate` 和远端状态，不从本交接推断后来发生的变化。
 
 ## 2. 新对话必读顺序
@@ -142,24 +143,25 @@ P2-005 已复用发现、配对、凭据、TLS 和单个挂载实现，并把全
 15. P2-016：已完成；`v0.2.3` GitHub Release 已发布并设为 Latest，六项资产回读一致。
 16. P2-017：未执行并关闭；全新机器断言仍未通过。
 17. P2-018：已完成；v0.2.4 按设备汇总底栏状态实现和 Windows 310/310 自动验证通过。
-18. P2-019：候选验收完成；动态正式基线升级、设备状态与盘符映射、容量、断开及更新检查通过。
-19. P2-020：唯一 active 任务；把 P2-019 的验收 head 和六项对应资产发布为 v0.2.4，不重建或改变二进制。
+18. P2-019：已完成；动态正式基线升级、设备状态与盘符映射、容量、断开及更新检查通过。
+19. P2-020：已完成；v0.2.4 标签、Latest Release、六项公开资产和本地正式镜像回读一致。
+20. P2-021：唯一 active 任务；在全新 Windows 机器上只使用公开 v0.2.4 资产执行首次安装与全新电脑配对验收。
 
-当前唯一任务是 P2-020；发布前再次核对 GitHub Latest 仍为正式 v0.2.3、远端 main 未漂移、v0.2.4 标签和 Release 不存在，并验证六项本地资产。任一引用或摘要不一致即停止，不重建二进制或修改 Release 绕过。
+当前唯一任务是 P2-021；严格按 `docs/V0.2.4_CLEAN_MACHINE_ACCEPTANCE.md` 使用 GitHub 公开资产验收，不使用本地候选，不把以往升级或当前机器结果替代全新机器证据。
 
 编号以后续实际任务文件为准，但顺序和每次一个根因的原则不变。
 
 ## 10. 新对话可直接使用的开场提示词
 
 ```text
-继续维护 PhoneBridge NG；正式版本暂为 `v0.2.3`，`v0.2.4` 正式候选、对应源码和真机验收已完成并获发布授权，下一任务是发布 exact-head 六项资产。
+继续维护 PhoneBridge NG；正式版本为 `v0.2.4`，标签和六项公开资产已回读一致，下一任务是全新 Windows 机器首次安装与全新电脑配对验收。
 
 仓库：https://github.com/yang137197/PhoneBridge-NG
 本地目录：C:\Users\yang1\Documents\ChatGPT\samsung link windows\PhoneBridge-NG
 
 先读取 AGENTS.md、DEVELOPMENT_RULES.md、README.md、docs/HANDOFF_V0.2.md、docs/V0.2_PLAN.md、docs/PRODUCT.md、ARCHITECTURE.md、DECISIONS.md，并核对当前 main、git status、最近提交和远端状态。以仓库当前事实为准，不沿用对话中的旧状态。
 
-P2-002 至 P2-018 已收口，其中 P2-013、P2-017 未执行并关闭，不能记为通过。`v0.2.3` GitHub Release 仍为正式 Latest，标签精确指向 `927135e3b51a901076b067378658e708ae805d75`，六项 Release 资产完整。P2-019 已从该正式基线完成 v0.2.4 两端原位升级、设备状态/IP/刷新、固定盘容量、断开、更新检查和基础连接验收，并生成正式六项资产。Android 永久只通过 GitHub 分发。保持现有 Kotlin/WPF、HTTPS/WebDAV、rclone、WinFsp、mDNS、配对与安全存储路线。
+P2-002 至 P2-020 已收口，其中 P2-013、P2-017 未执行并关闭，不能记为通过。`v0.2.4` GitHub Release 为正式 Latest，标签精确指向 `98e17a182ec61eb6d71382544c3d450a61c1f949`，六项 Release 资产与本地正式镜像一致。P2-019 已从 v0.2.3 完成两端原位升级、设备状态/IP/刷新、固定盘容量、断开、更新检查和基础连接验收。Android 永久只通过 GitHub 分发。保持现有 Kotlin/WPF、HTTPS/WebDAV、rclone、WinFsp、mDNS、配对与安全存储路线。
 
-当前唯一任务是 P2-020 发布 GitHub Release v0.2.4。只允许把 P2-019 验收 head 快进到远端 main、创建精确注释标签并上传已核验六项资产；公开后逐项回读 Release 状态、标签提交、资产大小和 SHA-256，再单独提交发布记录。
+当前唯一任务是 P2-021 v0.2.4 全新机器配对验收。只从公开 Release 下载并校验资产，在没有 PhoneBridge NG 的 Windows 11 x64 机器上验证首次安装、新电脑配对、发现/IP、连接、卷名容量、盘符冲突、停止共享、单击断开和更新检查；任一断言失败即停止并保留证据。
 ```

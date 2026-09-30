@@ -37,12 +37,14 @@ public partial class MainWindow : Window
     private readonly AutoStartManager? autoStart;
     private readonly DiagnosticEventLog diagnostics;
     private readonly UpdateService updateService;
+    private readonly bool uiPreview;
     private readonly string? autoStartInitializationError;
     private Task updateOperation = Task.CompletedTask;
     private CancellationTokenSource? updateOperationCancellation;
     private string? updateDownloadVersion;
     private int updateDownloadPercentage;
     private bool closing, closed, storeUnavailable, discoveryFailed, refreshingDevices, trayEnabled, exitRequested, loadingAutoStart, loadingLanguage;
+    private bool guideOpenedForFirstUse;
     private string statusKey = "Ready";
     private object[] statusArguments = [];
     internal TrayStatus CurrentTrayStatus { get; private set; } = TrayStatus.Offline;
@@ -61,6 +63,7 @@ public partial class MainWindow : Window
     {
         this.diagnostics = diagnostics;
         this.updateService = updateService ?? new UpdateService();
+        this.uiPreview = uiPreview;
         appDataRoot = isolatedDataRoot ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "PhoneBridge-NG");
         sessions = new(pairingStore ?? PairingStore.Open());
         discovery = new(verifyMissingCandidate: VerifyMissingCandidateAsync);
@@ -83,7 +86,7 @@ public partial class MainWindow : Window
 
     private void ShowMainPage(UIElement page, WpfButton activeNavigation)
     {
-        foreach (var item in new UIElement[] { DevicesPage, AddPhonePage, DeviceSettingsPage, SettingsPage, AboutPage })
+        foreach (var item in new UIElement[] { DevicesPage, AddPhonePage, DeviceSettingsPage, SettingsPage, AboutPage, UserGuidePage })
             item.Visibility = item == page ? Visibility.Visible : Visibility.Collapsed;
         foreach (var button in new[] { DevicesNavigation, SettingsNavigation, AboutNavigation })
         {
@@ -101,6 +104,38 @@ public partial class MainWindow : Window
         ShowGeneralSettingsClick(sender, e);
     }
     private void NavigateAboutClick(object sender, RoutedEventArgs e) => ShowMainPage(AboutPage, AboutNavigation);
+
+    private void OpenGuideClick(object sender, RoutedEventArgs e) => ShowGuide(firstUse: false);
+
+    private void ShowGuide(bool firstUse)
+    {
+        guideOpenedForFirstUse = firstUse;
+        GuideDismiss.Content = T(firstUse ? "Later" : "Back");
+        ShowMainPage(UserGuidePage, firstUse ? DevicesNavigation : AboutNavigation);
+    }
+
+    private void GuideBackClick(object sender, RoutedEventArgs e) => CloseGuide();
+    private void GuideDismissClick(object sender, RoutedEventArgs e) => CloseGuide();
+
+    private void CloseGuide()
+    {
+        bool firstUse = guideOpenedForFirstUse;
+        if (firstUse) CompleteFirstUseGuide();
+        guideOpenedForFirstUse = false;
+        ShowMainPage(firstUse ? DevicesPage : AboutPage, firstUse ? DevicesNavigation : AboutNavigation);
+    }
+
+    private void GuideStartClick(object sender, RoutedEventArgs e)
+    {
+        if (guideOpenedForFirstUse) CompleteFirstUseGuide();
+        guideOpenedForFirstUse = false;
+        AddPhoneClick(sender, e);
+    }
+
+    private void CompleteFirstUseGuide()
+    {
+        if (!FirstUseGuideState.TryMarkCompleted(appDataRoot)) SetStatus("GuideStateSaveFailed");
+    }
 
     private void ShowGeneralSettingsClick(object sender, RoutedEventArgs e)
     {
@@ -178,6 +213,8 @@ public partial class MainWindow : Window
     private async void OnLoaded(object sender, RoutedEventArgs e)
     {
         await ReloadRecords();
+        if (!uiPreview && !storeUnavailable && FirstUseGuideState.ShouldShow(appDataRoot, records.Count > 0))
+            ShowGuide(firstUse: true);
         RefreshAutoStart(reportFailure: autoStart is not null);
         discoveryTask = Task.Run(async () =>
         {

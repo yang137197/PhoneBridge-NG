@@ -46,7 +46,7 @@ import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
 class MainActivity : Activity() {
-    private enum class Screen { HOME, PAIRING, CLIENT, SETTINGS, LANGUAGE }
+    private enum class Screen { HOME, PAIRING, CLIENT, SETTINGS, LANGUAGE, GUIDE }
 
     private val canvas = Color.rgb(244, 247, 251)
     private val surface = Color.WHITE
@@ -78,6 +78,9 @@ class MainActivity : Activity() {
     private var selectedClientId: String? = null
     private var lastRootBackAt = 0L
     private var backCallback: OnBackInvokedCallback? = null
+    private var onboardingEvaluated = false
+    private var guideFirstUse = false
+    private var guideReturnScreen = Screen.HOME
     private val updateExecutor: ExecutorService = Executors.newSingleThreadExecutor()
     private var updateBusy = false
     private var updateButton: Button? = null
@@ -128,11 +131,21 @@ class MainActivity : Activity() {
         when (savedInstanceState?.getString("screen")) {
             Screen.SETTINGS.name -> showSettings()
             Screen.LANGUAGE.name -> showLanguageSettings()
+            Screen.GUIDE.name -> showGuide(
+                runCatching { Screen.valueOf(savedInstanceState?.getString("guideReturnScreen") ?: Screen.HOME.name) }
+                    .getOrDefault(Screen.HOME),
+                savedInstanceState?.getBoolean("guideFirstUse") == true,
+            )
             else -> showHome()
         }
     }
 
-    override fun onSaveInstanceState(outState: Bundle) { outState.putString("screen", screen.name); super.onSaveInstanceState(outState) }
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putString("screen", screen.name)
+        outState.putString("guideReturnScreen", guideReturnScreen.name)
+        outState.putBoolean("guideFirstUse", guideFirstUse)
+        super.onSaveInstanceState(outState)
+    }
 
     override fun onStart() { super.onStart(); bound = bindService(Intent(this, SharingService::class.java), connection, BIND_AUTO_CREATE) }
     override fun onResume() {
@@ -256,6 +269,12 @@ class MainActivity : Activity() {
             R.string.language,
             getString(if (AppLanguage.selected(this) == AppLanguage.CHINESE) R.string.language_zh else R.string.language_en),
         ) { showLanguageSettings() }
+        menuItem(
+            content,
+            R.drawable.ic_help,
+            R.string.user_guide,
+            getString(R.string.user_guide_summary),
+        ) { showGuide(Screen.SETTINGS, firstUse = false) }
         sectionTitle(content, R.string.settings_app)
         val updateCard = card(content, surface)
         label(updateCard, getString(R.string.current_version, installedVersionName().substringBefore('-')), 15f, true)
@@ -283,6 +302,45 @@ class MainActivity : Activity() {
         val note = card(content, subtle)
         label(note, getString(R.string.language_behavior), 16f, true)
         label(note, getString(R.string.language_note), 13f, false, muted)
+    }
+
+    private fun showGuide(returnScreen: Screen, firstUse: Boolean) {
+        screen = Screen.GUIDE
+        guideReturnScreen = if (returnScreen == Screen.SETTINGS) Screen.SETTINGS else Screen.HOME
+        guideFirstUse = firstUse
+        content.removeAllViews()
+        topBar(R.string.guide_title) { closeGuide() }
+        label(content, getString(R.string.guide_intro), 15f, false, muted)
+        guideStep(R.string.guide_step_1_title, R.string.guide_step_1_body)
+        guideStep(R.string.guide_step_2_title, R.string.guide_step_2_body)
+        guideStep(R.string.guide_step_3_title, R.string.guide_step_3_body)
+        guideStep(R.string.guide_step_4_title, R.string.guide_step_4_body)
+        val security = card(content, subtle)
+        label(security, getString(R.string.guide_security_note), 13f, false, text)
+        val actions = row(content)
+        button(actions, if (firstUse) R.string.guide_later else R.string.back, primary = false) { closeGuide() }
+        button(actions, R.string.guide_start, primary = true) {
+            completeFirstUseGuide()
+            guideFirstUse = false
+            showHome()
+        }
+    }
+
+    private fun guideStep(titleResource: Int, bodyResource: Int) {
+        val step = card(content, surface, compact = true)
+        label(step, getString(titleResource), 16f, true, strong)
+        label(step, getString(bodyResource), 13f, false, muted)
+    }
+
+    private fun closeGuide() {
+        if (guideFirstUse) completeFirstUseGuide()
+        guideFirstUse = false
+        if (guideReturnScreen == Screen.SETTINGS) showSettings() else showHome()
+    }
+
+    private fun completeFirstUseGuide() {
+        getSharedPreferences("settings", Context.MODE_PRIVATE).edit()
+            .putBoolean(FIRST_USE_GUIDE_COMPLETED, true).apply()
     }
 
     private fun checkForUpdates() {
@@ -455,12 +513,44 @@ class MainActivity : Activity() {
         getSharedPreferences("settings", Context.MODE_PRIVATE).getBoolean("sharing", false)
 
     private fun render() {
+        if (evaluateFirstUseGuide()) return
         when (screen) {
             Screen.HOME -> renderHome()
             Screen.PAIRING -> renderPairing()
             Screen.CLIENT -> renderClient()
             Screen.SETTINGS -> Unit
             Screen.LANGUAGE -> Unit
+            Screen.GUIDE -> Unit
+        }
+    }
+
+    private fun evaluateFirstUseGuide(): Boolean {
+        if (onboardingEvaluated) return false
+        val service = binder?.service ?: return false
+        if (!service.storedClientsLoaded) return false
+        if (service.status == R.string.storage_error) {
+            onboardingEvaluated = true
+            return false
+        }
+        val preferences = getSharedPreferences("settings", Context.MODE_PRIVATE)
+        return when (FirstUseGuidePolicy.decide(
+            preferences.getBoolean(FIRST_USE_GUIDE_COMPLETED, false),
+            pairedClients().isNotEmpty(),
+        )) {
+            FirstUseGuideDecision.SHOW -> {
+                onboardingEvaluated = true
+                showGuide(Screen.HOME, firstUse = true)
+                true
+            }
+            FirstUseGuideDecision.SKIP_AND_MARK_COMPLETED -> {
+                onboardingEvaluated = true
+                preferences.edit().putBoolean(FIRST_USE_GUIDE_COMPLETED, true).apply()
+                false
+            }
+            FirstUseGuideDecision.SKIP -> {
+                onboardingEvaluated = true
+                false
+            }
         }
     }
 
@@ -692,6 +782,7 @@ class MainActivity : Activity() {
             Screen.PAIRING -> { binder?.closePairing(); showHome() }
             Screen.CLIENT, Screen.SETTINGS -> showHome()
             Screen.LANGUAGE -> showSettings()
+            Screen.GUIDE -> closeGuide()
             Screen.HOME -> handleRootBack()
         }
     }

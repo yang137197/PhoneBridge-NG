@@ -1,6 +1,6 @@
 # PhoneBridge NG 使用说明
 
-本说明适用于正式版 `v0.2.0`。安装文件请从 [GitHub Release v0.2.0](https://github.com/yang137197/PhoneBridge-NG/releases/tag/v0.2.0) 下载。
+本说明适用于当前正式版。安装文件请从 [GitHub Releases 的 Latest 正式版本](https://github.com/yang137197/PhoneBridge-NG/releases/latest) 下载，不要使用来源不明的安装包。
 
 ## 使用条件
 
@@ -13,19 +13,21 @@
 
 1. 在 Release 的 Assets 中下载 Windows 安装器、Android APK 和 `SHA256SUMS.txt`。
 2. 在 Android 手机上允许当前文件来源安装应用，然后安装 APK。
-3. 在电脑上运行 `PhoneBridge-NG-Setup-0.2.0.exe`。
+3. 在电脑上运行 `PhoneBridge-NG-Setup-<版本>.exe`。
 4. 如果电脑尚未安装 WinFsp，安装程序会启动内置的官方 WinFsp 安装包；确认 Windows 管理员提示后完成安装。
 
 建议安装前使用 PowerShell 核对 SHA-256：
 
 ```powershell
-Get-FileHash .\PhoneBridge-NG-Setup-0.2.0.exe -Algorithm SHA256
+Get-FileHash .\PhoneBridge-NG-Setup-*.exe -Algorithm SHA256
 Get-FileHash .\*.apk -Algorithm SHA256
 ```
 
 计算结果应与同一 Release 中的 `SHA256SUMS.txt` 一致。
 
 ## 首次配对
+
+全新安装首次打开时，Windows 和 Android 都会显示以下步骤；之后仍可从 Windows“关于 → 使用帮助”和 Android“设置 → 使用帮助”再次查看。已有配对记录的升级用户不会被误判为新用户并强制弹出首次引导。
 
 1. 打开手机上的 PhoneBridge NG，选择要共享的目录并授予所需权限。
 2. 点击“配对新电脑”，保持配对页面在前台，记下显示的 8 位配对码。此时无需先开始共享。
@@ -86,8 +88,8 @@ Get-FileHash .\*.apk -Algorithm SHA256
 
 Windows 左侧底部显示实际运行版本。点击“检查更新”只会查询 PhoneBridge NG 官方 GitHub Latest Release，不会后台定时检查；当前版本不低于 Latest 时明确提示已是最新版本，不会降级。发现新版本后，用户确认才下载固定名称的 Windows 安装器；文件大小和 GitHub Release 提供的 SHA-256 摘要必须同时通过，之后再次确认才会安全断开全部设备、退出客户端并打开可见安装向导。校验失败、缺少 Windows 安装器或安全卸载失败时不安装。
 
-Android 在“设置”中显示当前版本和“检查更新”。它同样只在点击后查询官方 GitHub Latest Release；发现新版本后，先由用户确认下载，再校验文件大小、SHA-256、应用包名、版本号及与当前应用相同的正式签名。手机仍在共享时不会安装；请先停止共享并确认 Windows 已断开。首次使用时 Android 可能要求允许 PhoneBridge NG 作为安装来源，随后仍会显示系统安装确认，应用不会静默安装。
+Android 在“设置”中显示当前版本和“检查更新”。它同样只在点击后查询官方 GitHub Latest Release；发现新版本后，先由用户确认下载，并显示真实下载百分比和进度条，再校验文件大小、SHA-256、应用包名、版本号及与当前应用相同的正式签名。手机仍在共享时不会安装；请先停止共享并确认 Windows 已断开。首次使用时 Android 可能要求允许 PhoneBridge NG 作为安装来源，随后仍会显示系统安装确认，应用不会静默安装。
 
-Windows 和 Android 正式版都应直接原位升级，不需要先卸载。升级前先结束文件传输；升级后核对版本、原有配对、设置和基础连接是否保留。Android 应用内入口已经通过构建、单元测试和 lint，但当前版检查、真实下载及系统安装流程仍须使用同签名正式候选在真机验收后才视为通过。正式升级来源以 GitHub Releases 中紧邻的前一个正式版本为准。
+Windows 和 Android 正式版都应直接原位升级，不需要先卸载。升级前先结束文件传输；升级后核对版本、原有配对、设置和基础连接是否保留。每个新正式候选仍须使用同签名制品完成真实检查、下载、系统安装和状态保持验收；正式升级来源以 GitHub Releases 中紧邻的前一个正式版本为准。
 
 如果 Windows 客户端检测到旧版网络盘显示缓存，会在连接手机前询问是否重启 Windows 资源管理器。该操作会关闭全部文件资源管理器窗口；请先完成正在进行的复制或移动，再点击“确定”。点击“取消”不会清理或重启，并会在下次启动时再次提示。

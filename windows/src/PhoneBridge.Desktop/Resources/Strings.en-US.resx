@@ -214,4 +214,19 @@
   <data name="ProjectAndLicense" xml:space="preserve"><value>Project and license</value></data>
   <data name="LicenseSummary" xml:space="preserve"><value>PhoneBridge NG is distributed under GPL-3.0-or-later. It includes rclone and WinFsp; notices and source are provided with delivery builds.</value></data>
   <data name="GitHubProject" xml:space="preserve"><value>Open GitHub project</value></data>
+  <data name="UserGuide" xml:space="preserve"><value>Usage help</value></data>
+  <data name="FirstUseGuideTitle" xml:space="preserve"><value>Get started</value></data>
+  <data name="FirstUseGuideIntro" xml:space="preserve"><value>Complete these steps once to pair your phone and open it as a Windows drive.</value></data>
+  <data name="GuideStep1Title" xml:space="preserve"><value>1  Prepare both devices</value></data>
+  <data name="GuideStep1Body" xml:space="preserve"><value>Connect the phone and this PC to the same local network. Open PhoneBridge NG on both devices.</value></data>
+  <data name="GuideStep2Title" xml:space="preserve"><value>2  Show a pairing code</value></data>
+  <data name="GuideStep2Body" xml:space="preserve"><value>On the phone, allow file access, choose the shared folder, then tap “Pair a new computer”. You do not need to start sharing yet.</value></data>
+  <data name="GuideStep3Title" xml:space="preserve"><value>3  Approve this computer</value></data>
+  <data name="GuideStep3Body" xml:space="preserve"><value>In Windows, select “Add phone”, choose the phone, enter its 8-digit code, then approve this computer on the phone.</value></data>
+  <data name="GuideStep4Title" xml:space="preserve"><value>4  Connect the drive</value></data>
+  <data name="GuideStep4Body" xml:space="preserve"><value>Start sharing on the phone. When Windows finds it, select “Connect”, then “Open files”.</value></data>
+  <data name="GuideSecurityNote" xml:space="preserve"><value>The pairing code is valid only for the current pairing window. Approve only the computer you are pairing now.</value></data>
+  <data name="Later" xml:space="preserve"><value>Later</value></data>
+  <data name="StartAddingPhone" xml:space="preserve"><value>Start adding a phone</value></data>
+  <data name="GuideStateSaveFailed" xml:space="preserve"><value>The guide choice could not be saved. It may appear again next time.</value></data>
 </root>

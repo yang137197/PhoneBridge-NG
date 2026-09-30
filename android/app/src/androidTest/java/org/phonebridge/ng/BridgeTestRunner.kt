@@ -60,6 +60,8 @@ class BridgeTestRunner : AndroidJUnitRunner() {
         }
         try {
             check(SharedFolders.allowed(targetContext))
+            check(targetContext.getSharedPreferences("settings", android.content.Context.MODE_PRIVATE).edit()
+                .putBoolean(FIRST_USE_GUIDE_COMPLETED, true).commit())
             val folder = SharedFolders.selected(0)
             val origin = File(folder, "phonebridge-p1-007-origin.txt")
             if (origin.exists()) check(origin.readText() == "phonebridge-p1-007-synthetic")

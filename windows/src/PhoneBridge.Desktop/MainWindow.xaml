@@ -213,7 +213,33 @@
       <TextBlock Text="{local:Text ProjectAndLicense}" Style="{StaticResource SectionTitle}"/>
       <TextBlock Text="{local:Text LicenseSummary}" Margin="0,12,0,8"/>
       <TextBlock><Hyperlink NavigateUri="https://github.com/yang137197/PhoneBridge-NG" RequestNavigate="OpenExternalLink"><Run Text="{local:Text GitHubProject}"/></Hyperlink></TextBlock>
+      <Button Content="{local:Text UserGuide}" Click="OpenGuideClick" HorizontalAlignment="Left" Margin="0,18,0,0" AutomationProperties.AutomationId="OpenUserGuide"/>
       <TextBlock Text="{local:Text WinFspAttribution}" Style="{StaticResource MutedText}" Margin="0,18,0,0"/>
+     </StackPanel>
+    </ScrollViewer>
+
+    <ScrollViewer x:Name="UserGuidePage" Visibility="Collapsed" VerticalScrollBarVisibility="Auto">
+     <StackPanel Margin="48,38" MaxWidth="820" HorizontalAlignment="Left">
+      <StackPanel Orientation="Horizontal" Margin="0,0,0,20">
+       <Button Content="←" Style="{StaticResource TextButton}" Click="GuideBackClick" Margin="0,0,8,0" AutomationProperties.Name="{local:Text Back}"/>
+       <TextBlock Text="{local:Text FirstUseGuideTitle}" Style="{StaticResource PageTitle}"/>
+      </StackPanel>
+      <TextBlock Text="{local:Text FirstUseGuideIntro}" Foreground="{StaticResource MutedTextBrush}" TextWrapping="Wrap" Margin="0,0,0,8"/>
+      <Grid>
+       <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="16"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+       <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="16"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+       <Border Style="{StaticResource Card}"><StackPanel><TextBlock Text="{local:Text GuideStep1Title}" Style="{StaticResource SectionTitle}"/><TextBlock Text="{local:Text GuideStep1Body}" Style="{StaticResource MutedText}" Margin="0,8,0,0" TextWrapping="Wrap"/></StackPanel></Border>
+       <Border Grid.Column="2" Style="{StaticResource Card}"><StackPanel><TextBlock Text="{local:Text GuideStep2Title}" Style="{StaticResource SectionTitle}"/><TextBlock Text="{local:Text GuideStep2Body}" Style="{StaticResource MutedText}" Margin="0,8,0,0" TextWrapping="Wrap"/></StackPanel></Border>
+       <Border Grid.Row="2" Style="{StaticResource Card}"><StackPanel><TextBlock Text="{local:Text GuideStep3Title}" Style="{StaticResource SectionTitle}"/><TextBlock Text="{local:Text GuideStep3Body}" Style="{StaticResource MutedText}" Margin="0,8,0,0" TextWrapping="Wrap"/></StackPanel></Border>
+       <Border Grid.Row="2" Grid.Column="2" Style="{StaticResource Card}"><StackPanel><TextBlock Text="{local:Text GuideStep4Title}" Style="{StaticResource SectionTitle}"/><TextBlock Text="{local:Text GuideStep4Body}" Style="{StaticResource MutedText}" Margin="0,8,0,0" TextWrapping="Wrap"/></StackPanel></Border>
+      </Grid>
+      <Border Background="{StaticResource SubtleBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="14" Padding="18" Margin="0,18,0,0">
+       <TextBlock Text="{local:Text GuideSecurityNote}" TextWrapping="Wrap" Foreground="{StaticResource TextBrush}"/>
+      </Border>
+      <WrapPanel HorizontalAlignment="Right" Margin="0,20,0,0">
+       <Button x:Name="GuideDismiss" Content="{local:Text Later}" Click="GuideDismissClick" Margin="0,0,10,0"/>
+       <Button Content="{local:Text StartAddingPhone}" Style="{StaticResource PrimaryButton}" Click="GuideStartClick" AutomationProperties.AutomationId="GuideStartAddingPhone"/>
+      </WrapPanel>
      </StackPanel>
     </ScrollViewer>
 

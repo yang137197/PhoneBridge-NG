@@ -58,6 +58,8 @@ class SharingService : Service() {
         private set
     @Volatile internal var storedClients: List<PairedClient> = emptyList()
         private set
+    @Volatile internal var storedClientsLoaded = false
+        private set
     private var runtimeLocks: SharingRuntimeLocks? = null
     internal val multicastLockHeld: Boolean get() = runtimeLocks?.multicastHeld == true
     internal val wakeLockHeld: Boolean get() = runtimeLocks?.wakeHeld == true
@@ -113,6 +115,7 @@ class SharingService : Service() {
                 status = R.string.storage_error
                 emptyList()
             }
+            storedClientsLoaded = true
         }
     }
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {

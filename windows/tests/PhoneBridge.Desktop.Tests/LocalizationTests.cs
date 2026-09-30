@@ -25,7 +25,9 @@ public sealed class LocalizationTests
             "CheckingForUpdates", "UpdateIsCurrent", "UpdateAvailable", "UpdateDownloadPrompt",
             "UpdateDownloading", "UpdateDownloadProgress", "UpdateDownloaded", "UpdateInstallPrompt", "UpdateInstalling",
             "UpdateCurrentVersionInvalid", "UpdateCheckFailed", "UpdateRateLimited", "UpdateResponseInvalid", "UpdateAssetMissing",
-            "UpdateIntegrityFailed", "UpdateDownloadFailed" })
+            "UpdateIntegrityFailed", "UpdateDownloadFailed", "UserGuide", "FirstUseGuideTitle", "FirstUseGuideIntro",
+            "GuideStep1Title", "GuideStep1Body", "GuideStep2Title", "GuideStep2Body", "GuideStep3Title", "GuideStep3Body",
+            "GuideStep4Title", "GuideStep4Body", "GuideSecurityNote", "Later", "StartAddingPhone", "GuideStateSaveFailed" })
         {
             string en = TextCatalog.Get(key, english);
             string zh = TextCatalog.Get(key, chinese);

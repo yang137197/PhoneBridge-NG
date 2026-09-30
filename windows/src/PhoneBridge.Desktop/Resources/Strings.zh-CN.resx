@@ -214,4 +214,19 @@
   <data name="ProjectAndLicense" xml:space="preserve"><value>项目与许可</value></data>
   <data name="LicenseSummary" xml:space="preserve"><value>PhoneBridge NG 按 GPL-3.0-or-later 分发，包含 rclone 与 WinFsp；正式交付会提供通知和对应源码。</value></data>
   <data name="GitHubProject" xml:space="preserve"><value>打开 GitHub 项目</value></data>
+  <data name="UserGuide" xml:space="preserve"><value>使用帮助</value></data>
+  <data name="FirstUseGuideTitle" xml:space="preserve"><value>首次使用</value></data>
+  <data name="FirstUseGuideIntro" xml:space="preserve"><value>首次只需按以下顺序完成配对，即可在 Windows 中把手机作为盘符打开。</value></data>
+  <data name="GuideStep1Title" xml:space="preserve"><value>1  准备两端</value></data>
+  <data name="GuideStep1Body" xml:space="preserve"><value>让手机和这台电脑连接同一局域网，并分别打开 PhoneBridge NG。</value></data>
+  <data name="GuideStep2Title" xml:space="preserve"><value>2  手机显示配对码</value></data>
+  <data name="GuideStep2Body" xml:space="preserve"><value>在手机允许文件访问、选择共享目录，再点击“配对新电脑”。此时无需先开始共享。</value></data>
+  <data name="GuideStep3Title" xml:space="preserve"><value>3  批准当前电脑</value></data>
+  <data name="GuideStep3Body" xml:space="preserve"><value>在 Windows 点击“添加手机”，选择手机并输入 8 位配对码，再回到手机批准当前电脑。</value></data>
+  <data name="GuideStep4Title" xml:space="preserve"><value>4  连接盘符</value></data>
+  <data name="GuideStep4Body" xml:space="preserve"><value>在手机点击“开始共享”。Windows 查找到设备后点击“连接”，再点击“打开文件”。</value></data>
+  <data name="GuideSecurityNote" xml:space="preserve"><value>配对码只在当前配对窗口有效；只批准你正在配对的这台电脑。</value></data>
+  <data name="Later" xml:space="preserve"><value>稍后</value></data>
+  <data name="StartAddingPhone" xml:space="preserve"><value>开始添加手机</value></data>
+  <data name="GuideStateSaveFailed" xml:space="preserve"><value>未能保存引导选择，下次启动时可能再次显示。</value></data>
 </root>

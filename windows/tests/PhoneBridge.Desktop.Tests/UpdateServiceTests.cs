@@ -1,6 +1,7 @@
 using System.Net;
 using System.Security.Cryptography;
 using System.Text;
+using System.Globalization;
 using PhoneBridge.Desktop;
 
 namespace PhoneBridge.Desktop.Tests;
@@ -91,6 +92,40 @@ public sealed class UpdateServiceTests
         Assert.AreEqual("UpdateResponseInvalid", error.Code);
     }
 
+    [TestMethod]
+    public async Task PrimaryRateLimitIsReportedAndSuppressesRequestsUntilReset()
+    {
+        byte[] installer = Encoding.ASCII.GetBytes("installer");
+        DateTimeOffset now = new(2026, 9, 30, 1, 15, 0, TimeSpan.Zero);
+        var time = new MutableTimeProvider(now);
+        int requests = 0;
+        using var client = Client(_ =>
+        {
+            requests++;
+            if (requests > 1) return JsonResponse(Release("0.2.5", installer));
+            var response = new HttpResponseMessage(HttpStatusCode.Forbidden);
+            response.Headers.Add("X-RateLimit-Remaining", "0");
+            response.Headers.Add("X-RateLimit-Reset", now.AddMinutes(5).ToUnixTimeSeconds()
+                .ToString(CultureInfo.InvariantCulture));
+            return response;
+        });
+        using var service = new UpdateService(client, time);
+
+        UpdateException first = await Assert.ThrowsExactlyAsync<UpdateException>(
+            () => service.CheckAsync("0.2.5", CancellationToken.None));
+        UpdateException suppressed = await Assert.ThrowsExactlyAsync<UpdateException>(
+            () => service.CheckAsync("0.2.5", CancellationToken.None));
+
+        Assert.AreEqual("UpdateRateLimited", first.Code);
+        Assert.AreEqual("UpdateRateLimited", suppressed.Code);
+        Assert.AreEqual(1, requests);
+
+        time.Advance(TimeSpan.FromMinutes(6));
+        UpdateCheckResult recovered = await service.CheckAsync("0.2.5", CancellationToken.None);
+        Assert.AreEqual(UpdateCheckKind.Current, recovered.Kind);
+        Assert.AreEqual(2, requests);
+    }
+
     private static HttpClient Client(Func<HttpRequestMessage, HttpResponseMessage> response) =>
         new(new StubHandler(response)) { Timeout = TimeSpan.FromSeconds(5) };
 
@@ -132,5 +167,12 @@ public sealed class UpdateServiceTests
     {
         protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request,
             CancellationToken cancellationToken) => Task.FromResult(response(request));
+    }
+
+    private sealed class MutableTimeProvider(DateTimeOffset now) : TimeProvider
+    {
+        private DateTimeOffset current = now;
+        public override DateTimeOffset GetUtcNow() => current;
+        internal void Advance(TimeSpan value) => current += value;
     }
 }

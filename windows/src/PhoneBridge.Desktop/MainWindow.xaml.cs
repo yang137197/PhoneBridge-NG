@@ -998,7 +998,12 @@ public partial class MainWindow : Window
         catch (UpdateException error)
         {
             diagnostics.WriteFailure(DiagnosticEventName.UpdateChanged,
-                error.Code == "UpdateIntegrityFailed" ? DiagnosticResultCode.IntegrityFailure : DiagnosticResultCode.Failure,
+                error.Code switch
+                {
+                    "UpdateIntegrityFailed" => DiagnosticResultCode.IntegrityFailure,
+                    "UpdateRateLimited" => DiagnosticResultCode.RateLimited,
+                    _ => DiagnosticResultCode.Failure
+                },
                 error);
             SetStatus(error.Code);
         }

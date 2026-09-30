@@ -205,6 +205,7 @@
   <data name="UpdateInstalling" xml:space="preserve"><value>正在安全退出并打开安装程序…</value></data>
   <data name="UpdateCurrentVersionInvalid" xml:space="preserve"><value>无法识别当前版本，未检查更新。</value></data>
   <data name="UpdateCheckFailed" xml:space="preserve"><value>检查更新失败，请检查网络后重试。</value></data>
+  <data name="UpdateRateLimited" xml:space="preserve"><value>GitHub 暂时限制了更新检查，请稍后重试。</value></data>
   <data name="UpdateResponseInvalid" xml:space="preserve"><value>更新信息不完整或格式无效，未下载。</value></data>
   <data name="UpdateAssetMissing" xml:space="preserve"><value>最新版本没有对应的 Windows 安装器。</value></data>
   <data name="UpdateIntegrityFailed" xml:space="preserve"><value>安装器完整性校验失败，已停止安装。</value></data>

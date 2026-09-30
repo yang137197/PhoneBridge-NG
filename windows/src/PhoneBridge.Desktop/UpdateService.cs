@@ -35,11 +35,14 @@ internal sealed partial class UpdateService : IDisposable
     internal const long MaxInstallerBytes = 512L * 1024 * 1024;
     private readonly HttpClient client;
     private readonly bool ownsClient;
+    private readonly TimeProvider timeProvider;
+    private DateTimeOffset rateLimitedUntilUtc;
 
-    internal UpdateService(HttpClient? client = null)
+    internal UpdateService(HttpClient? client = null, TimeProvider? timeProvider = null)
     {
         ownsClient = client is null;
         this.client = client ?? new HttpClient { Timeout = TimeSpan.FromSeconds(30) };
+        this.timeProvider = timeProvider ?? TimeProvider.System;
     }
 
     internal static string CurrentVersion()
@@ -54,6 +57,8 @@ internal sealed partial class UpdateService : IDisposable
     {
         if (!TryParseVersion(currentVersion, allowPrefix: false, out Version? current, out string? normalizedCurrent))
             throw new UpdateException("UpdateCurrentVersionInvalid");
+        DateTimeOffset now = timeProvider.GetUtcNow();
+        if (rateLimitedUntilUtc > now) throw new UpdateException("UpdateRateLimited");
 
         try
         {
@@ -62,11 +67,17 @@ internal sealed partial class UpdateService : IDisposable
             request.Headers.UserAgent.ParseAdd("PhoneBridge-NG/" + normalizedCurrent);
             request.Headers.Add("X-GitHub-Api-Version", "2026-03-10");
             using HttpResponseMessage response = await client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
+            if (TryGetRateLimitReset(response, timeProvider.GetUtcNow(), out DateTimeOffset retryAt))
+            {
+                rateLimitedUntilUtc = retryAt;
+                throw new UpdateException("UpdateRateLimited");
+            }
             response.EnsureSuccessStatusCode();
             await using Stream content = await response.Content.ReadAsStreamAsync(cancellationToken);
             using JsonDocument document = await JsonDocument.ParseAsync(content,
                 new JsonDocumentOptions { MaxDepth = 16 }, cancellationToken);
             UpdateRelease release = ParseRelease(document.RootElement);
+            rateLimitedUntilUtc = default;
             return new(release.Version > current ? UpdateCheckKind.Available : UpdateCheckKind.Current,
                 normalizedCurrent!, release);
         }
@@ -76,6 +87,30 @@ internal sealed partial class UpdateService : IDisposable
         {
             throw new UpdateException("UpdateCheckFailed", error);
         }
+    }
+
+    private static bool TryGetRateLimitReset(HttpResponseMessage response, DateTimeOffset now,
+        out DateTimeOffset retryAt)
+    {
+        retryAt = default;
+        bool primaryLimit = response.StatusCode == System.Net.HttpStatusCode.Forbidden &&
+            response.Headers.TryGetValues("X-RateLimit-Remaining", out IEnumerable<string>? remaining) &&
+            remaining.Any(value => value == "0");
+        if (response.StatusCode != System.Net.HttpStatusCode.TooManyRequests && !primaryLimit) return false;
+
+        retryAt = response.Headers.RetryAfter?.Date ??
+            (response.Headers.RetryAfter?.Delta is TimeSpan delta ? now + delta : default);
+        if (retryAt == default && response.Headers.TryGetValues("X-RateLimit-Reset", out IEnumerable<string>? resets))
+        {
+            string? value = resets.FirstOrDefault();
+            if (long.TryParse(value, NumberStyles.None, CultureInfo.InvariantCulture, out long seconds))
+            {
+                try { retryAt = DateTimeOffset.FromUnixTimeSeconds(seconds); }
+                catch (ArgumentOutOfRangeException) { retryAt = default; }
+            }
+        }
+        if (retryAt <= now) retryAt = now.AddMinutes(1);
+        return true;
     }
 
     internal async Task<PendingUpdate> DownloadAsync(UpdateRelease release, string appDataRoot,

@@ -25,7 +25,7 @@ internal enum DiagnosticResultCode
     None, Success, Failure, Cancelled, Timeout, Unauthorized, IdentityMismatch,
     InvalidResponse, RecordChanged, DriveOccupied, DriveReserved, WinFspMissing,
     RcloneIntegrity, PendingWrites, RecoveryStalled, RecoveryTimeout, RecoveryCancelled,
-    UnmountUnconfirmed, StorageFailure, Ambiguous, IntegrityFailure
+    UnmountUnconfirmed, StorageFailure, Ambiguous, IntegrityFailure, RateLimited
 }
 internal enum DiagnosticState
 {

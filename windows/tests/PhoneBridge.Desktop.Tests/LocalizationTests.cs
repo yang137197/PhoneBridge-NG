@@ -24,7 +24,7 @@ public sealed class LocalizationTests
             "RefreshDevicesFound", "RefreshNoDevices", "RefreshFailed", "CurrentVersion", "CheckForUpdates",
             "CheckingForUpdates", "UpdateIsCurrent", "UpdateAvailable", "UpdateDownloadPrompt",
             "UpdateDownloading", "UpdateDownloaded", "UpdateInstallPrompt", "UpdateInstalling",
-            "UpdateCurrentVersionInvalid", "UpdateCheckFailed", "UpdateResponseInvalid", "UpdateAssetMissing",
+            "UpdateCurrentVersionInvalid", "UpdateCheckFailed", "UpdateRateLimited", "UpdateResponseInvalid", "UpdateAssetMissing",
             "UpdateIntegrityFailed", "UpdateDownloadFailed" })
         {
             string en = TextCatalog.Get(key, english);

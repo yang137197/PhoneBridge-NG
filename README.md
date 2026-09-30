@@ -2,7 +2,7 @@
 
 中文优先的 Android ↔ Windows 无线文件访问工具。目标是在同一局域网内发现并验证手机，通过 HTTPS/WebDAV、rclone 和 WinFsp 将手机共享存储映射到 Windows 文件资源管理器。
 
-**当前正式版本为 [v0.2.5](https://github.com/yang137197/PhoneBridge-NG/releases/tag/v0.2.5)。六项公开资产与本地正式镜像的文件名、大小和 SHA-256 已逐项回读一致；v0.2.4 到 v0.2.5 的两端原位升级、配对与设置保持、首次点击配对、基础连接、文件访问和首次点击安全断开已经真机验收。Windows 自启动仍只进入托盘，盘符由用户手动连接。**
+**当前正式版本为 [v0.2.5](https://github.com/yang137197/PhoneBridge-NG/releases/tag/v0.2.5)。六项公开资产与本地正式镜像的文件名、大小和 SHA-256 已逐项回读一致。本地 v0.2.6 正式候选已完成双端全新应用数据安装，以及从正式 v0.2.5 开始的两端原位升级、配对保持、连接、文件访问和断开验收，但尚未推送、打标签或发布。Windows 自启动仍只进入托盘，盘符由用户手动连接。**
 
 安装、配对、连接、访问模式、断开和排障步骤见 [软件使用说明](docs/USER_GUIDE.md)。
 
@@ -95,12 +95,13 @@
 | P2-027 Windows 更新检查限流处理 | 已完成；GitHub 限流不再误报为网络故障，重置前禁止重复请求，完整 Windows 335/335 测试通过 | [完成记录](docs/tasks/completed/P2-027-windows-update-check-reliability.md) |
 | P2-028 Windows 更新下载进度反馈 | 已完成；增加真实字节进度、目标版本、确定型进度条和百分比，完整 Windows 335/335 测试通过 | [完成记录](docs/tasks/completed/P2-028-windows-update-download-progress.md) |
 | P2-029 两端首次使用引导 | 已完成；真正全新安装显示配对/共享/连接步骤，已有配对升级用户不误弹，两端均可再次打开帮助；Windows 338/338、Android 完整门禁通过 | [完成记录](docs/tasks/completed/P2-029-first-use-onboarding.md) |
+| P2-030 v0.2.6 正式候选与首次引导验收 | 已完成；双端全新应用数据安装和正式 v0.2.5 原位升级均通过，配对、引导/帮助、连接、E: 读取和断开已真机验收；候选尚未发布 | [验收记录](docs/audit/P2-030-VALIDATION.md)、[完成记录](docs/tasks/completed/P2-030-v0.2.6-formal-candidate-and-onboarding-acceptance.md) |
 | Phase 1 新版 Windows 客户端 | 配对、挂载、文件操作、生命周期与本地安装交付主链路已验收 | [开发规则](DEVELOPMENT_RULES.md) |
 | MVP 验收 | 15 项通过 | [15 项产品验收](docs/PRODUCT.md)、[P1-030 最终需求验收](docs/audit/P1-030-VALIDATION.md) |
 
-当前唯一交付目录是 `.audit/delivery/output/`；正式交付包含安装器、正式 APK、对应源码 ZIP、README、SHA256SUMS 和 manifest。二进制构建后运行 `scripts/New-SourceDelivery.ps1` 生成并核验对应源码包。`.audit/runs/` 中的文件只用于历史验证，不作为当前安装入口。先阅读交付目录内的 `README.txt`。
+当前本地 v0.2.6 候选交付目录是 `.audit/delivery/output/`；包含安装器、正式 APK、对应源码 ZIP、README、SHA256SUMS 和 manifest。二进制构建后运行 `scripts/New-SourceDelivery.ps1` 生成并核验对应源码包。`.audit/runs/` 中的文件只用于历史验证，不作为当前安装入口。先阅读交付目录内的 `README.txt`。
 
-`.audit/ui-acceptance/` 保存 P2-005 r20、P2-006 r21 和 P2-010 r22 隔离候选证据，不是安装入口。正式安装入口是 GitHub `v0.2.5` Release；`.audit/delivery/output/` 是与其一致的本地镜像。`v0.2.1` 没有单独发布，其改动随 `v0.2.2` 交付。后续每个正式候选均按 [开发规则 4.1](DEVELOPMENT_RULES.md#41-正式候选版本的升级验证基线) 动态使用其前一个正式 Release 验证升级。
+`.audit/ui-acceptance/` 保存 P2-005 r20、P2-006 r21 和 P2-010 r22 隔离候选证据，不是安装入口。当前已发布的正式安装入口仍是 GitHub `v0.2.5` Release；`.audit/delivery/output/` 是尚未发布的本地 v0.2.6 候选。`v0.2.1` 没有单独发布，其改动随 `v0.2.2` 交付。后续每个正式候选均按 [开发规则 4.1](DEVELOPMENT_RULES.md#41-正式候选版本的升级验证基线) 同时完成动态前版原位升级和双端全新应用数据安装验收。
 
 P0-001 的 107 个通过测试、1 个跳过用例及 7 项离线问题复现仅为上游审计证据，不能代表真实手机、Explorer、大文件或断网恢复通过。
 

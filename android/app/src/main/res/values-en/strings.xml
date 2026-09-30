@@ -73,6 +73,8 @@
     <string name="update_download_prompt">Current version: %1$s\nLatest version: %2$s\n\nDownload it from the official PhoneBridge NG GitHub Release?</string>
     <string name="update_download">Download</string>
     <string name="update_downloading">Downloading version %1$s…</string>
+    <string name="update_downloading_title">Downloading update</string>
+    <string name="update_downloading_progress">Downloading version %1$s: %2$d%%</string>
     <string name="update_downloaded">Version %1$s was downloaded and passed integrity and signing checks.</string>
     <string name="update_install_title">Install version %1$s</string>
     <string name="update_install_prompt">Android will show its system installation confirmation. The update preserves current app data, pairing, and settings.</string>

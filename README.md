@@ -90,6 +90,8 @@
 | P2-022 Android 首次点击打开配对 | 已完成；通知权限未授予时真实手机首次单击立即显示配对码，正式签名一致，未接受配对且无残留服务 | [验收记录](docs/audit/P2-022-VALIDATION.md)、[完成记录](docs/tasks/completed/P2-022-android-first-tap-pairing.md) |
 | P2-023 v0.2.5 正式候选与升级验收 | 已完成；以正式 v0.2.4 为动态基线，两端原位升级、状态保持、首次点击配对、连接/文件访问/安全断开及六项制品一致性通过 | [完成记录](docs/tasks/completed/P2-023-v0.2.5-formal-candidate-and-upgrade.md) |
 | P2-024 发布 GitHub Release v0.2.5 | 已完成；注释标签精确绑定 P2-023 验收 head，六项 GitHub 资产与本地摘要一致并已设为 Latest | [Release](https://github.com/yang137197/PhoneBridge-NG/releases/tag/v0.2.5)、[验收记录](docs/audit/P2-024-VALIDATION.md)、[完成记录](docs/tasks/completed/P2-024-publish-v0.2.5-github-release.md) |
+| P2-025 v0.2.5 应用内更新验收 | 已完成；Windows 与 Android 均通过应用内检查、下载和系统安装更新到正式 v0.2.5，同时确认 Android 下载期间缺少持续进度反馈 | [完成记录](docs/tasks/completed/P2-025-v0.2.5-in-app-update-acceptance.md) |
+| P2-026 Android 更新下载进度反馈 | 已完成；增加真实字节进度、确定型进度条和百分比，单元测试、完整 Android 验证及 Redmi K40 界面测试通过 | [完成记录](docs/tasks/completed/P2-026-android-update-download-progress.md) |
 | Phase 1 新版 Windows 客户端 | 配对、挂载、文件操作、生命周期与本地安装交付主链路已验收 | [开发规则](DEVELOPMENT_RULES.md) |
 | MVP 验收 | 15 项通过 | [15 项产品验收](docs/PRODUCT.md)、[P1-030 最终需求验收](docs/audit/P1-030-VALIDATION.md) |
 

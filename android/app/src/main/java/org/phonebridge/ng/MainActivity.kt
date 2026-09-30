@@ -32,6 +32,7 @@ import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.ProgressBar
 import android.widget.RadioButton
 import android.widget.RadioGroup
 import android.widget.ScrollView
@@ -81,6 +82,9 @@ class MainActivity : Activity() {
     private var updateBusy = false
     private var updateButton: Button? = null
     private var updateStatus: TextView? = null
+    private var updateProgressDialog: AlertDialog? = null
+    private var updateProgressBar: ProgressBar? = null
+    private var updateProgressLabel: TextView? = null
     private var pendingUpdateInstall: PendingApk? = null
 
     private val connection = object : ServiceConnection {
@@ -148,6 +152,7 @@ class MainActivity : Activity() {
     override fun onStop() { if (bound) { unbindService(connection); bound = false }; binder = null; super.onStop() }
     override fun onDestroy() {
         if (Build.VERSION.SDK_INT >= 33) backCallback?.let { onBackInvokedDispatcher.unregisterOnBackInvokedCallback(it) }
+        dismissUpdateProgress()
         updateExecutor.shutdownNow()
         super.onDestroy()
     }
@@ -314,14 +319,20 @@ class MainActivity : Activity() {
         updateBusy = true
         updateButton?.isEnabled = false
         setUpdateStatus(R.string.update_downloading, asset.version)
+        showUpdateProgress(asset.version)
         updateExecutor.execute {
             val result = runCatching {
-                AndroidUpdateService(applicationContext).download(asset).also {
+                AndroidUpdateService(applicationContext).download(asset) { progress ->
+                    handler.post {
+                        if (!isFinishing && !isDestroyed) renderUpdateProgress(asset.version, progress)
+                    }
+                }.also {
                     if (!AndroidUpdateInstaller.verify(applicationContext, it)) throw UpdateFailure("update_apk_invalid")
                 }
             }
             handler.post {
                 if (isFinishing || isDestroyed) return@post
+                dismissUpdateProgress()
                 updateBusy = false
                 updateButton?.isEnabled = true
                 result.fold(onSuccess = { pending ->
@@ -378,6 +389,7 @@ class MainActivity : Activity() {
     }
 
     private fun finishUpdateFailure(error: Throwable) {
+        dismissUpdateProgress()
         updateBusy = false
         updateButton?.isEnabled = true
         val code = (error as? UpdateFailure)?.code
@@ -396,6 +408,47 @@ class MainActivity : Activity() {
 
     private fun setUpdateStatus(resource: Int, vararg arguments: Any) {
         updateStatus?.text = if (arguments.isEmpty()) getString(resource) else getString(resource, *arguments)
+    }
+
+    private fun showUpdateProgress(version: String) {
+        dismissUpdateProgress()
+        val initial = getString(R.string.update_downloading_progress, version, 0)
+        val body = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            setPadding(dp(20), dp(4), dp(20), dp(8))
+        }
+        updateProgressLabel = label(body, initial, 14f, false, text)
+        updateProgressBar = ProgressBar(this, null, android.R.attr.progressBarStyleHorizontal).apply {
+            isIndeterminate = false
+            max = 100
+            progress = 0
+            contentDescription = initial
+            progressTintList = ColorStateList.valueOf(primary)
+            body.addView(this, matchWrap(top = 10))
+        }
+        updateProgressDialog = AlertDialog.Builder(this)
+            .setTitle(R.string.update_downloading_title)
+            .setView(body)
+            .setCancelable(false)
+            .create().also {
+                it.setCanceledOnTouchOutside(false)
+                it.show()
+            }
+    }
+
+    private fun renderUpdateProgress(version: String, progress: UpdateDownloadProgress) {
+        val message = getString(R.string.update_downloading_progress, version, progress.percent)
+        updateProgressLabel?.text = message
+        updateProgressBar?.progress = progress.percent
+        updateProgressBar?.contentDescription = message
+        setUpdateStatus(R.string.update_downloading_progress, version, progress.percent)
+    }
+
+    private fun dismissUpdateProgress() {
+        updateProgressDialog?.dismiss()
+        updateProgressDialog = null
+        updateProgressBar = null
+        updateProgressLabel = null
     }
 
     private fun isSharingActive(): Boolean = binder?.service?.sharingEnabled == true ||

@@ -70,6 +70,8 @@
     <string name="update_download_prompt">当前版本：%1$s\n最新版本：%2$s\n\n是否从 PhoneBridge NG 官方 GitHub Release 下载？</string>
     <string name="update_download">下载</string>
     <string name="update_downloading">正在下载版本 %1$s…</string>
+    <string name="update_downloading_title">正在下载更新</string>
+    <string name="update_downloading_progress">正在下载版本 %1$s：%2$d%%</string>
     <string name="update_downloaded">版本 %1$s 已下载并通过完整性与签名校验。</string>
     <string name="update_install_title">安装版本 %1$s</string>
     <string name="update_install_prompt">Android 将显示系统安装确认。安装会保留当前应用数据、配对和设置。</string>

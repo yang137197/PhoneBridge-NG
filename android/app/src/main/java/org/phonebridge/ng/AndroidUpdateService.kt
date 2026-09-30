@@ -41,7 +41,7 @@ class AndroidUpdateService(private val context: Context) {
         }
     }
 
-    fun download(asset: UpdateAsset): PendingApk {
+    internal fun download(asset: UpdateAsset, onProgress: (UpdateDownloadProgress) -> Unit = {}): PendingApk {
         val updateRoot = File(context.filesDir, "updates")
         val versionRoot = File(updateRoot, asset.version)
         val finalFile = File(versionRoot, asset.fileName)
@@ -50,7 +50,11 @@ class AndroidUpdateService(private val context: Context) {
             ensureSafeDirectory(updateRoot)
             ensureSafeDirectory(versionRoot)
             val pending = PendingApk(finalFile, asset.version, asset.size, asset.sha256)
-            if (finalFile.isFile && AndroidUpdateInstaller.verifyHash(pending)) return pending
+            onProgress(UpdateDownloadProgress(0, asset.size))
+            if (finalFile.isFile && AndroidUpdateInstaller.verifyHash(pending)) {
+                onProgress(UpdateDownloadProgress(asset.size, asset.size))
+                return pending
+            }
             if (finalFile.exists() && !finalFile.delete()) throw UpdateFailure("update_download_failed")
 
             val connection = open(asset.downloadUrl)
@@ -69,6 +73,7 @@ class AndroidUpdateService(private val context: Context) {
                         if (total > asset.size || total > UpdatePolicy.MAX_APK_BYTES) throw UpdateFailure("update_integrity_failed")
                         digest.update(buffer, 0, read)
                         output.write(buffer, 0, read)
+                        onProgress(UpdateDownloadProgress(total, asset.size))
                     }
                 }
             }
@@ -103,6 +108,11 @@ class AndroidUpdateService(private val context: Context) {
         if (!canonical.path.startsWith(filesRoot.path + File.separator) || canonical.isFile)
             throw UpdateFailure("update_download_failed")
     }
+}
+
+internal data class UpdateDownloadProgress(val downloadedBytes: Long, val totalBytes: Long) {
+    val percent: Int = if (totalBytes <= 0) 0 else
+        ((downloadedBytes.coerceIn(0, totalBytes) * 100L) / totalBytes).toInt()
 }
 
 internal fun Context.installedVersionName(): String {

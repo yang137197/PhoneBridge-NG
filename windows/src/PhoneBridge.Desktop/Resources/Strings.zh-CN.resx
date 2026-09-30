@@ -200,6 +200,7 @@
   <data name="UpdateAvailable" xml:space="preserve"><value>发现新版本 {0}。</value></data>
   <data name="UpdateDownloadPrompt" xml:space="preserve"><value>当前版本：{0}&#xA;最新版本：{1}&#xA;&#xA;是否从 PhoneBridge NG 官方 GitHub Release 下载？</value></data>
   <data name="UpdateDownloading" xml:space="preserve"><value>正在下载版本 {0}…</value></data>
+  <data name="UpdateDownloadProgress" xml:space="preserve"><value>正在下载版本 {0}：{1}%</value></data>
   <data name="UpdateDownloaded" xml:space="preserve"><value>版本 {0} 已下载并通过完整性校验。</value></data>
   <data name="UpdateInstallPrompt" xml:space="preserve"><value>是否立即安装？程序会先安全断开所有设备并退出，然后打开安装向导。</value></data>
   <data name="UpdateInstalling" xml:space="preserve"><value>正在安全退出并打开安装程序…</value></data>

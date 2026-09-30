@@ -25,7 +25,7 @@ public sealed class UpdateServiceTests
     [TestMethod]
     public async Task NewerReleaseDownloadsOnlyAfterExactDigestAndSizeMatch()
     {
-        byte[] installer = Encoding.ASCII.GetBytes("future-windows-installer");
+        byte[] installer = Enumerable.Range(0, 300_000).Select(index => (byte)(index % 251)).ToArray();
         using var client = Client(request => request.RequestUri?.Host == "api.github.com"
             ? JsonResponse(Release("0.2.6", installer))
             : BinaryResponse(installer));
@@ -34,11 +34,22 @@ public sealed class UpdateServiceTests
         try
         {
             UpdateCheckResult check = await service.CheckAsync("0.2.5", CancellationToken.None);
-            PendingUpdate pending = await service.DownloadAsync(check.Latest, root, CancellationToken.None);
+            var progress = new RecordingProgress();
+            PendingUpdate pending = await service.DownloadAsync(check.Latest, root, progress, CancellationToken.None);
 
             Assert.AreEqual(UpdateCheckKind.Available, check.Kind);
             Assert.IsTrue(UpdateService.VerifyInstaller(pending));
             CollectionAssert.AreEqual(installer, await File.ReadAllBytesAsync(pending.InstallerPath));
+            Assert.AreEqual(0, progress.Values[0].Percentage);
+            Assert.IsTrue(progress.Values.Any(item => item.Percentage is > 0 and < 100));
+            Assert.AreEqual(100, progress.Values[^1].Percentage);
+            Assert.IsTrue(progress.Values.Zip(progress.Values.Skip(1),
+                (left, right) => right.BytesReceived >= left.BytesReceived).All(value => value));
+
+            var cachedProgress = new RecordingProgress();
+            PendingUpdate cached = await service.DownloadAsync(check.Latest, root, cachedProgress, CancellationToken.None);
+            Assert.AreEqual(pending, cached);
+            CollectionAssert.AreEqual(new[] { 100 }, cachedProgress.Values.Select(item => item.Percentage).ToArray());
 
             await File.WriteAllTextAsync(pending.InstallerPath, "tampered");
             Assert.IsFalse(UpdateService.VerifyInstaller(pending));
@@ -174,5 +185,11 @@ public sealed class UpdateServiceTests
         private DateTimeOffset current = now;
         public override DateTimeOffset GetUtcNow() => current;
         internal void Advance(TimeSpan value) => current += value;
+    }
+
+    private sealed class RecordingProgress : IProgress<UpdateDownloadProgress>
+    {
+        internal List<UpdateDownloadProgress> Values { get; } = [];
+        public void Report(UpdateDownloadProgress value) => Values.Add(value);
     }
 }

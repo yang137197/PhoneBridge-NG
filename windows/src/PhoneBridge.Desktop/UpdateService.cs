@@ -23,6 +23,7 @@ internal sealed record UpdateRelease(
 internal sealed record UpdateCheckResult(UpdateCheckKind Kind, string CurrentVersion, UpdateRelease Latest);
 
 internal sealed record PendingUpdate(string InstallerPath, long Size, string Sha256, string DisplayVersion);
+internal readonly record struct UpdateDownloadProgress(long BytesReceived, long TotalBytes, int Percentage);
 
 internal sealed class UpdateException(string code, Exception? inner = null) : Exception(code, inner)
 {
@@ -113,8 +114,11 @@ internal sealed partial class UpdateService : IDisposable
         return true;
     }
 
+    internal Task<PendingUpdate> DownloadAsync(UpdateRelease release, string appDataRoot,
+        CancellationToken cancellationToken) => DownloadAsync(release, appDataRoot, null, cancellationToken);
+
     internal async Task<PendingUpdate> DownloadAsync(UpdateRelease release, string appDataRoot,
-        CancellationToken cancellationToken)
+        IProgress<UpdateDownloadProgress>? progress, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(release);
         if (string.IsNullOrWhiteSpace(appDataRoot) || !Path.IsPathFullyQualified(appDataRoot))
@@ -132,9 +136,16 @@ internal sealed partial class UpdateService : IDisposable
             if (File.Exists(finalPath))
             {
                 var existing = new PendingUpdate(finalPath, release.Size, release.Sha256, release.DisplayVersion);
-                if (VerifyInstaller(existing)) return existing;
+                if (VerifyInstaller(existing))
+                {
+                    ReportProgress(progress, release.Size, release.Size);
+                    return existing;
+                }
                 File.Delete(finalPath);
             }
+
+            ReportProgress(progress, 0, release.Size);
+            int reportedPercentage = 0;
 
             using var request = new HttpRequestMessage(HttpMethod.Get, release.DownloadUri);
             request.Headers.UserAgent.ParseAdd("PhoneBridge-NG/" + CurrentVersion());
@@ -157,6 +168,12 @@ internal sealed partial class UpdateService : IDisposable
                 if (total > release.Size || total > MaxInstallerBytes) throw new UpdateException("UpdateIntegrityFailed");
                 hash.AppendData(buffer, 0, read);
                 await output.WriteAsync(buffer.AsMemory(0, read), cancellationToken);
+                int currentPercentage = ProgressPercentage(total, release.Size);
+                if (currentPercentage != reportedPercentage)
+                {
+                    ReportProgress(progress, total, release.Size);
+                    reportedPercentage = currentPercentage;
+                }
             }
             await output.FlushAsync(cancellationToken);
             if (total != release.Size || !CryptographicOperations.FixedTimeEquals(
@@ -179,6 +196,16 @@ internal sealed partial class UpdateService : IDisposable
             try { if (File.Exists(partialPath)) File.Delete(partialPath); } catch { }
         }
     }
+
+    private static void ReportProgress(IProgress<UpdateDownloadProgress>? progress, long received, long total)
+    {
+        if (progress is null) return;
+        long bounded = Math.Clamp(received, 0, total);
+        int percentage = ProgressPercentage(bounded, total);
+        progress.Report(new(bounded, total, percentage));
+    }
+
+    private static int ProgressPercentage(long received, long total) => (int)(received * 100 / total);
 
     internal static bool VerifyInstaller(PendingUpdate pending)
     {

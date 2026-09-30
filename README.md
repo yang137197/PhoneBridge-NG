@@ -93,6 +93,7 @@
 | P2-025 v0.2.5 应用内更新验收 | 已完成；Windows 与 Android 均通过应用内检查、下载和系统安装更新到正式 v0.2.5，同时确认 Android 下载期间缺少持续进度反馈 | [完成记录](docs/tasks/completed/P2-025-v0.2.5-in-app-update-acceptance.md) |
 | P2-026 Android 更新下载进度反馈 | 已完成；增加真实字节进度、确定型进度条和百分比，单元测试、完整 Android 验证及 Redmi K40 界面测试通过 | [完成记录](docs/tasks/completed/P2-026-android-update-download-progress.md) |
 | P2-027 Windows 更新检查限流处理 | 已完成；GitHub 限流不再误报为网络故障，重置前禁止重复请求，完整 Windows 335/335 测试通过 | [完成记录](docs/tasks/completed/P2-027-windows-update-check-reliability.md) |
+| P2-028 Windows 更新下载进度反馈 | 已完成；增加真实字节进度、目标版本、确定型进度条和百分比，完整 Windows 335/335 测试通过 | [完成记录](docs/tasks/completed/P2-028-windows-update-download-progress.md) |
 | Phase 1 新版 Windows 客户端 | 配对、挂载、文件操作、生命周期与本地安装交付主链路已验收 | [开发规则](DEVELOPMENT_RULES.md) |
 | MVP 验收 | 15 项通过 | [15 项产品验收](docs/PRODUCT.md)、[P1-030 最终需求验收](docs/audit/P1-030-VALIDATION.md) |
 

@@ -40,6 +40,8 @@ public partial class MainWindow : Window
     private readonly string? autoStartInitializationError;
     private Task updateOperation = Task.CompletedTask;
     private CancellationTokenSource? updateOperationCancellation;
+    private string? updateDownloadVersion;
+    private int updateDownloadPercentage;
     private bool closing, closed, storeUnavailable, discoveryFailed, refreshingDevices, trayEnabled, exitRequested, loadingAutoStart, loadingLanguage;
     private string statusKey = "Ready";
     private object[] statusArguments = [];
@@ -883,6 +885,7 @@ public partial class MainWindow : Window
             TextCatalog.SetCulture(language);
             RefreshLanguageSelection();
             RefreshVersionText();
+            RefreshUpdateProgressText();
             RebuildRows(force: true);
             PairingPhoneName.Text = Selected?.Name ?? T("ChoosePhoneFirst");
             if (DeviceSettingsPage.Visibility == Visibility.Visible) FillDeviceDrivePreference(Selected?.Record);
@@ -964,6 +967,7 @@ public partial class MainWindow : Window
     {
         try
         {
+            HideUpdateProgress();
             SetStatus("CheckingForUpdates");
             diagnostics.Write(new(DiagnosticEventName.UpdateChanged, State: DiagnosticState.Checking));
             UpdateCheckResult result = await updateService.CheckAsync(UpdateService.CurrentVersion(), owned.Token);
@@ -983,7 +987,9 @@ public partial class MainWindow : Window
                 MessageBoxImage.Information) != MessageBoxResult.OK) return;
 
             SetStatus("UpdateDownloading", result.Latest.DisplayVersion);
-            PendingUpdate pending = await updateService.DownloadAsync(result.Latest, appDataRoot, owned.Token);
+            var progress = new DispatcherProgress<UpdateDownloadProgress>(Dispatcher,
+                value => ShowUpdateProgress(result.Latest.DisplayVersion, value));
+            PendingUpdate pending = await updateService.DownloadAsync(result.Latest, appDataRoot, progress, owned.Token);
             diagnostics.Write(new(DiagnosticEventName.UpdateChanged, Code: DiagnosticResultCode.Success,
                 State: DiagnosticState.Downloaded));
             SetStatus("UpdateDownloaded", pending.DisplayVersion);
@@ -1009,10 +1015,34 @@ public partial class MainWindow : Window
         }
         finally
         {
+            HideUpdateProgress();
             owned.Dispose();
             updateOperationCancellation = null;
             UpdateControls();
         }
+    }
+    private void ShowUpdateProgress(string version, UpdateDownloadProgress progress)
+    {
+        updateDownloadVersion = version;
+        updateDownloadPercentage = progress.Percentage;
+        UpdateProgressBar.Value = progress.Percentage;
+        UpdateProgressPanel.Visibility = Visibility.Visible;
+        RefreshUpdateProgressText();
+        SetStatus("UpdateDownloadProgress", version, progress.Percentage);
+    }
+    private void RefreshUpdateProgressText()
+    {
+        if (updateDownloadVersion is null) return;
+        UpdateProgressText.Text = string.Format(T("UpdateDownloadProgress"),
+            updateDownloadVersion, updateDownloadPercentage);
+    }
+    private void HideUpdateProgress()
+    {
+        UpdateProgressPanel.Visibility = Visibility.Collapsed;
+        UpdateProgressBar.Value = 0;
+        UpdateProgressText.Text = string.Empty;
+        updateDownloadVersion = null;
+        updateDownloadPercentage = 0;
     }
     private void ExportDiagnosticsClick(object sender, RoutedEventArgs e)
     {
@@ -1050,6 +1080,15 @@ public partial class MainWindow : Window
             timer.Stop(); updateService.Dispose(); lifetime.Dispose(); closed = true; Close();
         }
         catch { closing = false; ShowFromTray(); SetStatus("unmount-not-confirmed"); UpdateControls(); }
+    }
+
+    private sealed class DispatcherProgress<T>(Dispatcher dispatcher, Action<T> handler) : IProgress<T>
+    {
+        public void Report(T value)
+        {
+            if (dispatcher.CheckAccess()) handler(value);
+            else dispatcher.Invoke(() => handler(value));
+        }
     }
 
     private sealed record DeviceRow(string Id, string DeviceId, DeviceCandidate? Candidate, PairingRecord? Record,

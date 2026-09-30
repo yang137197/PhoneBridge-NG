@@ -23,6 +23,10 @@
     <StackPanel Grid.Row="3" HorizontalAlignment="Center">
      <TextBlock x:Name="CurrentVersionText" FontSize="14" Foreground="{StaticResource MutedTextBrush}" TextAlignment="Center" HorizontalAlignment="Center"/>
      <Button x:Name="CheckUpdate" Content="{local:Text CheckForUpdates}" Click="CheckUpdateClick" AutomationProperties.AutomationId="CheckUpdate" Margin="0,10,0,0" HorizontalAlignment="Center"/>
+     <StackPanel x:Name="UpdateProgressPanel" Visibility="Collapsed" Width="176" Margin="0,12,0,0">
+      <TextBlock x:Name="UpdateProgressText" Style="{StaticResource MutedText}" TextAlignment="Center" AutomationProperties.AutomationId="UpdateDownloadProgressText"/>
+      <ProgressBar x:Name="UpdateProgressBar" Minimum="0" Maximum="100" Height="8" Margin="0,7,0,0" AutomationProperties.AutomationId="UpdateDownloadProgressBar"/>
+     </StackPanel>
     </StackPanel>
    </Grid>
   </Border>

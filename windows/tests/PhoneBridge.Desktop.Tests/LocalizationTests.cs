@@ -23,7 +23,7 @@ public sealed class LocalizationTests
             "DeviceNotFound", "DeviceIp", "LastVerifiedDeviceIp", "MountedDrive", "RefreshingDevices",
             "RefreshDevicesFound", "RefreshNoDevices", "RefreshFailed", "CurrentVersion", "CheckForUpdates",
             "CheckingForUpdates", "UpdateIsCurrent", "UpdateAvailable", "UpdateDownloadPrompt",
-            "UpdateDownloading", "UpdateDownloaded", "UpdateInstallPrompt", "UpdateInstalling",
+            "UpdateDownloading", "UpdateDownloadProgress", "UpdateDownloaded", "UpdateInstallPrompt", "UpdateInstalling",
             "UpdateCurrentVersionInvalid", "UpdateCheckFailed", "UpdateRateLimited", "UpdateResponseInvalid", "UpdateAssetMissing",
             "UpdateIntegrityFailed", "UpdateDownloadFailed" })
         {

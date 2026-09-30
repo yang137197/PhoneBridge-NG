@@ -200,6 +200,7 @@
   <data name="UpdateAvailable" xml:space="preserve"><value>Version {0} is available.</value></data>
   <data name="UpdateDownloadPrompt" xml:space="preserve"><value>Current version: {0}&#xA;Latest version: {1}&#xA;&#xA;Download it from the official PhoneBridge NG GitHub Release?</value></data>
   <data name="UpdateDownloading" xml:space="preserve"><value>Downloading version {0}…</value></data>
+  <data name="UpdateDownloadProgress" xml:space="preserve"><value>Downloading version {0}: {1}%</value></data>
   <data name="UpdateDownloaded" xml:space="preserve"><value>Version {0} was downloaded and passed its integrity check.</value></data>
   <data name="UpdateInstallPrompt" xml:space="preserve"><value>Install now? The app will safely disconnect every device, exit, and then open the installer.</value></data>
   <data name="UpdateInstalling" xml:space="preserve"><value>Safely exiting and opening the installer…</value></data>

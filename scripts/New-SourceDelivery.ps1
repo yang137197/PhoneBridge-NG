@@ -18,8 +18,8 @@ $runDirectory = Join-Path $projectRoot '.audit\runs\P2-030'
 $archiveName = "PhoneBridge-NG-$productVersion-source.zip"
 $archiveRoot = "PhoneBridge-NG-$productVersion-source"
 $expectedCertificate = '66FF69D71637D215C2F104DB95B93CC1F991FA1F23580F95AF3316B0763B14D4'
-$expectedApkHash = 'PENDING-P2-030-CANDIDATE-BUILD'
-$expectedInstallerHash = 'PENDING-P2-030-CANDIDATE-BUILD'
+$expectedApkHash = 'FCBA3C719976E8C9D5399BFB1C464551BE9800D8B703D367AB94ED4D598EB2F9'
+$expectedInstallerHash = '55B979FEB1888C0415137ECFCA79B551E2C055201E22736C9389F80D9BF4C155'
 $fixedTimestamp = [DateTimeOffset]::new(2000, 1, 1, 0, 0, 0, [TimeSpan]::Zero)
 $utf8 = [Text.UTF8Encoding]::new($false)
 
@@ -251,8 +251,8 @@ $archiveVerification = Test-SourceArchive $temporaryArchive
 $archiveHash = (Get-FileHash -LiteralPath $temporaryArchive -Algorithm SHA256).Hash
 
 $operationId = [guid]::NewGuid().ToString('N')
-$staging = [IO.Path]::GetFullPath((Join-Path $deliveryRoot ".p2-023-staging-$operationId"))
-$backup = [IO.Path]::GetFullPath((Join-Path $deliveryRoot ".p2-023-backup-$operationId"))
+$staging = [IO.Path]::GetFullPath((Join-Path $deliveryRoot ".p2-030-staging-$operationId"))
+$backup = [IO.Path]::GetFullPath((Join-Path $deliveryRoot ".p2-030-backup-$operationId"))
 Assert-Within $staging $deliveryRoot 'Staging directory'
 Assert-Within $backup $deliveryRoot 'Backup directory'
 $destinationMoved = $false

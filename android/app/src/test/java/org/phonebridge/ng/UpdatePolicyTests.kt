@@ -6,27 +6,27 @@ import org.junit.Test
 
 class UpdatePolicyTests {
     @Test fun newerFormalReleaseIsAvailable() {
-        val result = release(current = "0.2.5", latest = "0.2.6")
+        val result = release(current = "0.2.6", latest = "0.2.7")
         assertEquals(UpdateAvailability.AVAILABLE, result.availability)
-        assertEquals("0.2.6", result.asset.version)
+        assertEquals("0.2.7", result.asset.version)
     }
 
     @Test fun olderFormalReleaseNeverDowngradesCandidate() {
-        assertEquals(UpdateAvailability.CURRENT, release(current = "0.2.5", latest = "0.2.4").availability)
+        assertEquals(UpdateAvailability.CURRENT, release(current = "0.2.6", latest = "0.2.5").availability)
     }
 
     @Test fun previewSuffixUsesBaseVersion() {
         assertEquals(UpdateAvailability.CURRENT,
-            release(current = "0.2.5-ui-preview-r1", latest = "0.2.5").availability)
+            release(current = "0.2.6-ui-preview-r1", latest = "0.2.6").availability)
     }
 
     @Test fun untrustedUrlAndMissingDigestAreRejected() {
         val url = assertThrows(UpdateFailure::class.java) {
-            release(current = "0.2.5", latest = "0.2.6", host = "example.com")
+            release(current = "0.2.6", latest = "0.2.7", host = "example.com")
         }
         assertEquals("update_response_invalid", url.code)
         val digest = assertThrows(UpdateFailure::class.java) {
-            release(current = "0.2.5", latest = "0.2.6", digest = "")
+            release(current = "0.2.6", latest = "0.2.7", digest = "")
         }
         assertEquals("update_response_invalid", digest.code)
     }

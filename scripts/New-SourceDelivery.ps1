@@ -8,18 +8,18 @@ Set-StrictMode -Version Latest
 Add-Type -AssemblyName System.IO.Compression
 Add-Type -AssemblyName System.IO.Compression.FileSystem
 
-$productVersion = '0.2.5'
-$androidVersionCode = 7
+$productVersion = '0.2.6'
+$androidVersionCode = 8
 $projectRoot = [IO.Path]::GetFullPath((Split-Path $PSScriptRoot -Parent))
 $deliveryRoot = [IO.Path]::GetFullPath((Join-Path $projectRoot '.audit\delivery'))
 if (-not $OutputDirectory) { $OutputDirectory = Join-Path $deliveryRoot 'output' }
 $OutputDirectory = [IO.Path]::GetFullPath($OutputDirectory)
-$runDirectory = Join-Path $projectRoot '.audit\runs\P2-023'
+$runDirectory = Join-Path $projectRoot '.audit\runs\P2-030'
 $archiveName = "PhoneBridge-NG-$productVersion-source.zip"
 $archiveRoot = "PhoneBridge-NG-$productVersion-source"
 $expectedCertificate = '66FF69D71637D215C2F104DB95B93CC1F991FA1F23580F95AF3316B0763B14D4'
-$expectedApkHash = 'CEF0172E316B8F31C9A2B80389C83FDF51C6C86D29AB7CF73E8559FE1B77CEAB'
-$expectedInstallerHash = '2A1209B9935BE2EA6A3DD3AC083A98F48E119801D99FCD616F5375BDA455DB2E'
+$expectedApkHash = 'PENDING-P2-030-CANDIDATE-BUILD'
+$expectedInstallerHash = 'PENDING-P2-030-CANDIDATE-BUILD'
 $fixedTimestamp = [DateTimeOffset]::new(2000, 1, 1, 0, 0, 0, [TimeSpan]::Zero)
 $utf8 = [Text.UTF8Encoding]::new($false)
 
@@ -313,7 +313,7 @@ catch {
 
 $evidence = [ordered]@{
     schema = 1
-    task = 'P2-023'
+    task = 'P2-030'
     captured_at_utc = [DateTimeOffset]::UtcNow.ToString('O')
     source_archive = [ordered]@{
         file = $archiveName

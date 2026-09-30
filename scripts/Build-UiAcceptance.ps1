@@ -50,12 +50,12 @@ try {
     try {
         & $dotnet restore windows/src/PhoneBridge.Desktop/PhoneBridge.Desktop.csproj --runtime win-x64 --locked-mode
         if ($LASTEXITCODE -ne 0) { throw 'Windows locked restore failed.' }
-        $assemblyVersion = "0.2.5.$revisionNumber"
+        $assemblyVersion = "0.2.6.$revisionNumber"
         & $dotnet publish windows/src/PhoneBridge.Desktop/PhoneBridge.Desktop.csproj `
             --configuration Release --runtime win-x64 --self-contained true --no-restore --output $windowsDir `
             -p:PublishSingleFile=false -p:DebugType=None -p:DebugSymbols=false `
             -p:AssemblyVersion=$assemblyVersion -p:FileVersion=$assemblyVersion `
-            -p:InformationalVersion="0.2.5-ui-preview-$Revision"
+            -p:InformationalVersion="0.2.6-ui-preview-$Revision"
         if ($LASTEXITCODE -ne 0) { throw 'Windows UI acceptance publish failed.' }
         & $gradle -p (Join-Path $projectRoot 'android') :app:assembleUiPreview :app:lintUiPreview `
             "-PuiPreviewRevision=$Revision" --dependency-verification strict --console plain
@@ -93,5 +93,5 @@ if ($DeviceSerial) {
 
 Get-FileHash -Algorithm SHA256 -LiteralPath $windowsZip, $androidApk
 Write-Output "Windows launch: PhoneBridge.Desktop.exe --ui-preview"
-Write-Output "Windows isolated data revision: 0.2.5.$revisionNumber"
+Write-Output "Windows isolated data revision: 0.2.6.$revisionNumber"
 Write-Output "Android fresh package: $packageName"

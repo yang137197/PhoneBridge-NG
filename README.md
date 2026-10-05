@@ -122,7 +122,7 @@ P0-001 的 107 个通过测试、1 个跳过用例及 7 项离线问题复现仅
 | [AGENTS.md](AGENTS.md) | 用户原始项目约束，每次开始工作先读 |
 | [PRODUCT.md](docs/PRODUCT.md) | 用户、目标、非目标、MVP 与验收标准 |
 | [V0.2_PLAN.md](docs/V0.2_PLAN.md) | 下一版本的 UI、图标、语言、多设备范围、预期效果和开发顺序 |
-| [HANDOFF_V0.2.md](docs/HANDOFF_V0.2.md) | v0.2.4 正式基线、v0.2.5 候选状态、固定边界和后续发布门禁 |
+| [HANDOFF_V0.2.md](docs/HANDOFF_V0.2.md) | v0.2.5 正式基线、v0.2.6 本地候选状态、固定边界和后续发布门禁 |
 | [v0.2 设计包](docs/design/v0.2/README.md) | P2-002 的 Windows/Android 静态稿、控件状态、视觉变量、双语文案和图标候选 |
 | [INSTALL_LOCAL.txt](docs/INSTALL_LOCAL.txt) | 第三方本地安装、首次配对和日常使用的最短步骤 |
 | [USER_GUIDE.md](docs/USER_GUIDE.md) | GitHub 用户使用说明：安装、配对、日常连接、访问模式、断开和排障 |
